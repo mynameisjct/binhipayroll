@@ -3,6 +3,7 @@ import {
     View,
     Text
 } from 'react-native';
+
 export default class Drawer extends Component {
     render(){
         return(
