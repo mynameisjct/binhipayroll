@@ -7,17 +7,18 @@ import Login from './containers/Login';
 import Drawer from './containers/Sidebar';
 import EmpeDTR from './containers/DTR';
 import EmprDashBoard from './containers/DashBoard';
+import RootDrawer from './Drawer';
 
 const AppNavigator = StackNavigator(
     {
         Login: {screen: Login},
-        Drawer: { screen: Drawer },
+        RootDrawer: { screen: RootDrawer },
         EmpeDTR: {screen: EmpeDTR},
         EmprDashBoard: {screen: EmprDashBoard}
     },
 
     {
-        initialRouteName: "Login",
+        initialRouteName: "EmpeDTR",
         headerMode: "none",
     }
 );

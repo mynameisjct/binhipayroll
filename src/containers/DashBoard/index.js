@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import {
     View,
-    Text
+    Text,
+    Button
 } from 'react-native';
 
 export default class EmprDashBoard extends Component {
@@ -9,6 +10,10 @@ export default class EmprDashBoard extends Component {
         return(
             <View>
                 <Text>This will display Employer Dash Board</Text>
+                <Button
+                    onPress={() => this.props.navigation.navigate('DrawerToggle')}
+                    title="Open Drawer"
+                />
             </View>
         );
     }
