@@ -1,6 +1,6 @@
 /**************************************************************
- *  FileName:           index.js
- *  Description:        Sidebar
+ *  FileName:           header.js
+ *  Description:        Login Header (DateTime)
  *  Copyright:          Binhi-MeDFI © 2017
  *  Original Author:    Jovanni Auxilio
  *  Date Created:       2017-11-07
@@ -12,17 +12,19 @@
 import React, { Component } from 'react';
 import {
     View,
-    Text
+    Text,
+    Button,
 } from 'react-native';
 
-export default class EmpeSidebarSidebar extends Component {
+import styles from './styles';
+
+export default class Clock extends Component{
     render(){
-        const { navigate, state } = this.props.navigation;
         return(
-            <View style={{flex:1, backgroundColor: '#212223', height: 1000}}>
-                <Text>This will display Sidebar</Text>
+            <View style={styles.flexHeader}>
+                <Text style={styles.textDate}>{this.props.date.toUpperCase() + '  ' + this.props.day}</Text>
+                <Text style={styles.textTime}>{this.props.time}</Text>
             </View>
         );
     }
 }
-

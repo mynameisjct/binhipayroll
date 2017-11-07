@@ -1,36 +1,34 @@
+/**************************************************************
+ *  FileName:           Drawer.js
+ *  Description:        App Drawer Configuration
+ *  Copyright:          Binhi-MeDFI © 2017
+ *  Original Author:    Jovanni Auxilio
+ *  Date Created:       2017-11-07
+
+ *  Modification History:
+        Date              By            Description
+
+**************************************************************/
 import React, { Component } from 'react';
-import { DrawerNavigator } from 'react-navigation';
+import { DrawerNavigator, DrawerItems } from 'react-navigation';
+
 import EmpeDTR from './containers/DTR';
 import EmprDashBoard from './containers/DashBoard';
-import Ionicons from 'react-native-vector-icons/Ionicons';
+import Sidebar from './containers/Sidebar';
+import EmployeeInfo from './containers/EmployeeInfo/';
 
-const RootDrawer = DrawerNavigator({
-    EmpeDTR: {
-      screen: EmpeDTR,
-      navigationOptions: {
-        drawerLabel: 'DTR',
-        drawerIcon: ({ tintColor, focused }) => (
-          <Ionicons
-            name={focused ? 'ios-home' : 'ios-home-outline'}
-            size={20}
-            style={{ color: tintColor }}
-          />
-        ),
-      },
-    },
-    EmprDashBoard: {
-      screen: EmprDashBoard,
-      navigationOptions: {
-        drawerLabel: 'DashBoard',
-        drawerIcon: ({ tintColor, focused }) => (
-          <Ionicons
-            name={focused ? 'ios-person' : 'ios-person-outline'}
-            size={20}
-            style={{ color: tintColor }}
-          />
-        ),
-      },
-    },
-  });
+const RootDrawer = DrawerNavigator(
+  {
+    EmprDashBoard: {screen: EmprDashBoard},
+    EmpeDTR: {screen: EmpeDTR},
+    EmployeeInfo: {screen: EmployeeInfo},
+  },
+  {
+    drawerWidth: 300,
+    drawerPosition: 'left',
+    contentComponent: props =><Sidebar {...props} />,
+    drawerBackgroundColor: 'transparent'  
+  }
+);
   
   export default RootDrawer;
