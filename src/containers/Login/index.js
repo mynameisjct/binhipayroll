@@ -82,22 +82,25 @@ export default class Login extends Component {
 
     render(){
         return(
-        <KeyboardAvoidingView behavior='position'>
             <View style={styles.container}>
-                <View style={styles.flexCont}>
-                    <Clock 
-                        time={this.state._curTime} 
-                        date={this.state._curDate} 
-                        day={this.state._curDay}/>
-                    <Logo/>
+                <View style={styles.mainCont}>
+                    <View style={[styles.boxCont, styles.boxContHeader, styles.headerCont]}>
+                        <Clock 
+                            time={this.state._curTime} 
+                            date={this.state._curDate} 
+                            day={this.state._curDay}/>
+                    </View>
+                    <View style={[styles.boxCont, styles.logoCont]}>
+                        <Logo/>
+                    </View>
 
-                    <View style={styles.flexFormUsername}> 
-                        <View style={styles.flexIcon}>
-                            <Icon style={{alignSelf: 'center'}} size={20}name='md-person' color='#838383' />
-                        </View>
-                        <View style={styles.flexFieldUsername}>
+                    <View style={[styles.boxCont, styles.formCont]}>
+                        <View style={styles.boxContField}>
+                            <View style={styles.flexIcon}>
+                                <Icon style={{alignSelf: 'center'}} size={30}name='md-person' color='#838383' />
+                            </View>
                             <TextInput 
-                                placeholder='Username ...' 
+                                placeholder='Username...' 
                                 style={styles.textinputField}
                                 onChangeText={_curUsername => this.setState({_username: _curUsername})}
                                 ref='_fieldUsername'
@@ -106,63 +109,69 @@ export default class Login extends Component {
                                 underlineColorAndroid='transparent'
                             />
                         </View>
-                    </View>
-
-                    <View style={styles.flexFormPassword}>
-                        <View style={styles.flexIcon}>
-                            <Icon size={20}name='md-person' color='#838383' />
-                        </View>
-                        <View style={styles.flexFieldPassword}>
+                        <View style={styles.boxContField}>
+                            <View style={styles.flexIcon}>
+                                <Icon style={{alignSelf: 'center'}} size={30}name='ios-lock' color='#838383' />
+                            </View>
                             <TextInput 
-                                placeholder='Password ...' 
+                                placeholder='Password...' 
                                 style={styles.textinputField}
-                                onChangeText={_password => this.setState({_password: _password})}
-                                ref='_fieldPassword'
-                                //onSubmitEditing={(event) => {this._TxtUsername._root.focus();}}
-                                returnKeyType="done"
-                                secureTextEntry={true}
+                                onChangeText={_curUsername => this.setState({_username: _curUsername})}
+                                ref='_fieldUsername'
+                                onSubmitEditing={(event) => {this.refs._fieldPassword.focus();}}
+                                returnKeyType="next" 
                                 underlineColorAndroid='transparent'
                             />
                         </View>
-                    </View>
-
-                    <View style={styles.flexButtonTime}> 
-                        <TouchableOpacity light style={{marginRight:13,width:154,
-                            justifyContent:'center',
-                            alignItems:'center',backgroundColor:'#434646',
-                        }} onPress={() => {this.doNothing}}>
-
-                        <Image source={require('../../assets/img/log-in-button.png')}/>
-                            <View style={{position: 'absolute',justifyContent:'center',alignItems:'center'}}>
-                                <Text style={{ fontFamily:'helvetica light',
-                                fontSize:18,
-                                fontWeight:'300',color:'white'}}>TIME IN</Text>
+                        <View style={[styles.boxCont, styles.btnCont]}>
+                            <View style={styles.timeCont}>
+                                <View style={[styles.btnTimeCont]}>
+                                    <TouchableOpacity 
+                                        light 
+                                        onPress={() => {this.doNothing}}>
+                                        <Image
+                                            style={{height: 45}} 
+                                            source={require('../../assets/img/log-in-button.png')}/>
+{/*                                         <View>
+                                            <Text>TIME IN</Text>
+                                        </View> */}
+                                    </TouchableOpacity>
+                                </View>
+                                <View style={[styles.btnGap]}>
+                                </View>
+                                <View style={[styles.btnTimeCont]}>
+                                    <TouchableOpacity 
+                                        light 
+                                        onPress={() => {this.doNothing}}>
+                                        <Image
+                                            style={{height: 45, alignItems: 'center', justifyContent:'center'}} 
+                                            source={require('../../assets/img/log-in-button.png')}/>
+                                        <Text style={{color: 'red', margin: 24,}}>TIME OUT</Text>
+                                    </TouchableOpacity>
+                                </View>
                             </View>
-                        </TouchableOpacity>
 
-                        <TouchableOpacity light style={{width:154,justifyContent:'center',alignItems:'center',
-                            alignItems:'center',backgroundColor:'#434646',marginRight:18}}
-                            onPress={() => {this.doNothing}}>
-                            <Image source={require('../../assets/img/log-in-button.png')}/>
-                            <View style={{position: 'absolute',justifyContent:'center',alignItems:'center'}}>
-                                <Text style={{ fontFamily:'helvetica light',
-                                fontSize:18,
-                                fontWeight:'300',color:'white'}}>TIME OUT</Text>
+                            <View style={[styles.boxContLogin, styles.loginCont]}>
+                                <TouchableOpacity 
+                                    style={{width: 330,
+                                        justifyContent:'center',
+                                        alignItems:'center',backgroundColor:'#434646',
+                                    }}
+                                    light 
+                                    onPress={() => {this.doNothing}}>
+                                    <Image 
+                                        style={{height: 45}} 
+                                        source={require('../../assets/img/log-in-button.png')}/>
+
+                                </TouchableOpacity>
                             </View>
-                        </TouchableOpacity>
+                        </View>
                     </View>
-
-                    <View style={styles.flexButton}> 
-                        <Text> Buttons Here </Text>
+                    <View style={[styles.bottomGap, styles.boxContBottom]}>
                     </View>
                 </View>
- {/*                <Text>This will display Login</Text>
-                <Button
-                  onPress={() => this.props.navigation.navigate('EmpeDTR')}
-                  title='Proceed to DTR'
-                /> */}
+
             </View>
-            </KeyboardAvoidingView>
         );
     }
 }

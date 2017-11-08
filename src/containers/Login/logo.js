@@ -21,7 +21,7 @@ import styles from './styles';
 export default class Logo extends Component{
     render(){
         return(
-            <View style={styles.flexLogo}>
+            <View>
                 <Image 
                     style={styles.imgLogo}
                     resizeMode='cover'

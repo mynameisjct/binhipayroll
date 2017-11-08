@@ -21,7 +21,7 @@ import styles from './styles';
 export default class Clock extends Component{
     render(){
         return(
-            <View style={styles.flexHeader}>
+            <View style={[styles.boxContHeader]}>
                 <Text style={styles.textDate}>{this.props.date.toUpperCase() + '  ' + this.props.day}</Text>
                 <Text style={styles.textTime}>{this.props.time}</Text>
             </View>
