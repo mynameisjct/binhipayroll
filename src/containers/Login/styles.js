@@ -137,22 +137,7 @@ export default {
     marginTop: 5,
   },
 
-  //Header Styles
-  textDate:{
-    color:'#434646',
-    fontFamily:'helvetica',
-    fontSize:13,
-    fontWeight:'100',
-    textAlign: 'center'
-  },
 
-  textTime:{
-    color:'#434646',
-    fontFamily:'helvetica',
-    fontSize:30,
-    fontWeight:'bold',
-    textAlign: 'center'
-  },
 
     //Logo Styles
     textLogoLabel:{
