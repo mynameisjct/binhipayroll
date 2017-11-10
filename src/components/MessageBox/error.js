@@ -3,7 +3,7 @@
  *  Description:        Error Prompt Component
  *  Copyright:          Binhi-MeDFI © 2017
  *  Original Author:    Jovanni Auxilio
- *  Date Created:       2017-11-09
+ *  Date Created:       2017-11-11
 
  *  Modification History:
         Date              By            Description
@@ -60,9 +60,11 @@ export default class ErrorPrompt extends Component{
                         elevation: 1,
                         }}>
 
-                        <TouchableHighlight onPress={() => {
-                            this.set_errorFormVisible(!this.state._errorForm)
-                            }} style={{
+                        <TouchableHighlight 
+                            onPress={() => {
+                                this.setState({_errorForm: false})
+                            }}
+                            style={{
                             marginLeft:400,
                             height:26,
                             backgroundColor:'#D1D4D6',
@@ -91,8 +93,10 @@ export default class ErrorPrompt extends Component{
                                 <Text style={{fontFamily:'helvetica',fontSize:20,fontWeight:'300'}}>Your username or password is wrong.</Text>
 
                                 <View style={{flex:1,flexDirection: 'row',marginTop:10}}>
-                                <TouchableHighlight onPress={() => {
-                                    this.set_errorFormVisible(!this.state._errorForm)
+                                <TouchableHighlight 
+                                    onPress={() => {
+                                        this.setState({_errorForm: false});
+                                        alert('Form Should display.');
                                     }} style={{
                                     width:170,
                                     backgroundColor:'white',
@@ -106,9 +110,11 @@ export default class ErrorPrompt extends Component{
                                     <Text style={{fontFamily:'helvetica',fontSize:15,fontWeight:'normal'}}>FORGOT PASSWORD</Text>
                                 </TouchableHighlight>
 
-                                <TouchableHighlight onPress={() => {
-                                    this.set_errorFormVisible(!this.state._errorForm)
-                                    }} style={{
+                                <TouchableHighlight 
+                                    onPress={() => {
+                                        this.setState({_errorForm: false})
+                                    }}
+                                    style={{
                                     width:170,backgroundColor:'white',
                                     height:40,
                                     borderWidth: 1,
@@ -123,7 +129,7 @@ export default class ErrorPrompt extends Component{
                             </View>
                         </View>
                     </View>
-                </Modal>   
+                </Modal> 
             </View>
         );
     }

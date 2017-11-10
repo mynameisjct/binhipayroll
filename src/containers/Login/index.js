@@ -26,17 +26,23 @@ import moment from "moment";
 
 import styles from './styles';
 import DigitalClock from '../../components/DigitalClock';
-import Logo from './logo';
-import ErrorPrompt from '../../components/ErrorPrompt';
+import Logo from '../../components/BinhiLogo';
+import ErrorPrompt from '../../components/MessageBox/error';
+import SuccessPrompt from '../../components/MessageBox/success';
 
 export default class Login extends Component {
     constructor(props){
         super(props);
         this.state = {
-            //Date Time
+            //Date Time for Clock
             _curDate: '',
+            _curDateMDY: '',
             _curTime: '',
             _curDay: '',
+            
+            //Current Date Time for Transaction
+            _transDate: '',
+            _transTime: '',
 
             //Login Credentials
             _username: '',
@@ -58,13 +64,17 @@ export default class Login extends Component {
             _resAccessToken: '',
 
             //forms
-            _errorForm: false,
-            _successForm: false,
+            _msgBoxType: '',
+            _msgBoxShow: true,
             _timeType: '',
-            _strTime: '',
-        }
+            _transTime: '',
+            _strMsg: ''
+        };
+
+        this.closeSuccessMsg = this.closeSuccessMsg.bind(this)
     }
 
+    //Initializations
     componentWillMount()
     {
         this.getCurrentTime();
@@ -81,16 +91,25 @@ export default class Login extends Component {
         }, 1000);
     }
 
+
+    closeSuccessMsg = () => {
+        this.setState({
+            _successForm: false
+        });
+    }
+
+    //Get Current Time
     getCurrentTime = () => {
         let _curWeekday = moment().format("dddd").toUpperCase()
-        
         this.setState({
             _curDate: moment().format("LL"),
+            _curDateMDY:  moment().format("MM/DD/YYYY"),
             _curTime: moment().format("LTS"),
             _curDay: this.getDayAbbrev(_curWeekday)
         });
     }
 
+    //Get Day Abbreviations
     getDayAbbrev = (_strDay) => {
         let _curAbbrev = _strDay=='SUNDAY' ? 'SUN':
         _strDay=='MONDAY' ? 'MON':
@@ -102,7 +121,8 @@ export default class Login extends Component {
 
         return _curAbbrev;
     }
-
+    
+    //Enabling-Disbling Buttons
     setUsername(_strUsername){
         this.setState({_username: _strUsername});
         this.enableButtons(_strUsername, this.state._password);
@@ -128,15 +148,42 @@ export default class Login extends Component {
         });
     }
 
-    transTimeIn(strType){
+    //Time-In
+    transTimeLog(strType){
+        this.setTransTime(
+            () => {this.fetchDataFromDB();}
+        );
+
         this.setState({
             _timeType: strType,
-            _strTime: this.state._curTime,
-            _successForm: true
-        });       
+            _strMsg: this.state._resFName + ', ' + 
+                        'your ' + strType + ' today is ' + this.state._curTime + '.',
+        },
+            function() {
+                this.setState({_successForm: true})
+            }
+        );
     }
 
-    loginFunc(){
+
+
+    setTransTime(callback) {
+        this.setState({
+            _transDate: this.state._curDateMDY,
+            _transTime: this.state._curTime
+        },
+            () => {callback();}
+        );
+    }
+
+    validateCredentials(){
+        this.setTransTime(
+            () => {this.fetchDataFromDB();}
+        );
+    }
+
+    fetchDataFromDB(){
+/*         alert(this.state._transDate + '-------' + this.state._transTime); */
         fetch('http://192.168.1.6:8080/payroll/logins.php',{
             method: 'POST',
             headers: {
@@ -144,17 +191,14 @@ export default class Login extends Component {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                sysDate: this.state._curDate,
-                sysTime: this.state._curTime,
+                sysdate: this.state._transDate,
+                systime: this.state._transTime,
                 username: this.state._username,
                 password: this.state._password,
             })
-
         }).then((response)=> response.json())
             .then((res)=>{
                     /* alert(res); */
-                    <ErrorPrompt/>
-                    
                     this.setState({ 
                         _resSuccess: res["successflag"],
                         _resMsg: res["msg"],
@@ -166,22 +210,21 @@ export default class Login extends Component {
                         _resAccessToken: res["accesstoken"]                           
                     });
                     if (res=="Username or Password is not correct"){
-                        this.setState({_errorForm: true})
+                        /* this.setState({_errorForm: true}) */
+                        alert('Wrong PW')
                     }
                     else {
                         alert('successFlag: ' + this.state._resSuccess + '\n' +
                             'msg: ' + this.state._resMsg + '\n' +
                             'userGroup: ' + this.state._resUserGroup + '\n' +
-                            'firstName: ' + this.state._resFName + '\n' +
+                            'firstName: ' + res["firstname"] + '\n' +
                             'middlename: ' + this.state._resMName + '\n' +
                             'lastname: ' + this.state._resLName + '\n' +
                             'companyName: ' + this.state._resCompany + '\n' +
                             'accessToken: ' + this.state._resAccessToken + '\n')
                     }
-
-                        
             }).catch((error)=> {
-                alert('Server is offline.');
+                alert(error);
             });
     }
 
@@ -203,7 +246,7 @@ export default class Login extends Component {
                         <View style={[styles.boxCont, styles.formCont, styles.boxContBottom]}>
                             <View style={styles.boxContField}>
                                 <View style={styles.flexIcon}>
-                                    <Icon style={styles.iconField} size={30}name='md-person' color='#838383' />
+                                    <Icon style={styles.iconField} size={30} name='md-person' color='#838383' />
                                 </View>
                                 <TextInput 
                                     placeholder='Username...'
@@ -244,7 +287,7 @@ export default class Login extends Component {
                                             disabled={this.state._enableBtn}
                                             style={styles.touchableTimeBtn}
                                             activeOpacity={0.6}
-                                            onPress={() => this.transTimeIn('Time-in')}>
+                                            onPress={() => this.transTimeLog('timein')}>
                                             <Image
                                                 style={styles.imgCustomBtn} 
                                                 source={require('../../assets/img/log-in-button.png')}/>
@@ -258,7 +301,7 @@ export default class Login extends Component {
                                             disabled={this.state._enableBtn}
                                             style={styles.touchableTimeBtn}
                                             activeOpacity={0.6}
-                                            onPress={() => {this.doNothing}}>
+                                            onPress={() => this.transTimeLog('timeout')}>
                                             <Image
                                                 style={styles.imgCustomBtn}  
                                                 source={require('../../assets/img/log-in-button.png')}/>
@@ -272,7 +315,7 @@ export default class Login extends Component {
                                         disabled={this.state._enableBtn}
                                         style={styles.touchableLoginBtn}
                                         activeOpacity={0.6}
-                                        onPress={() => {this.loginFunc()}}>
+                                        onPress={() => {this.validateCredentials()}}>
                                         <Image 
                                             style={styles.imgCustomBtn} 
                                             source={require('../../assets/img/log-in-button.png')}/>
@@ -282,190 +325,14 @@ export default class Login extends Component {
                             </View>
                         </View>
                     </View>
-                    <Modal
-                    animationType="fade"
-                    transparent={true}
-                    visible={this.state._errorForm}
-                    onRequestClose={() => {alert("Modal has been closed.")}}
-                    >
-                    <View style={{
-                        flex: 1,
-                        flexDirection: 'column',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        backgroundColor: 'rgba(0, 0, 0, 0.7);'}}>
-                        
-                        <View style={{
-                        width: 450,
-                        height: 200,
-                        backgroundColor:'#e74c3c',
-                        flexDirection: 'column',
-                        borderWidth: 1,
-                        borderRadius: 4,
-                        borderColor: '#ddd',
-                        borderBottomWidth: 0,
-                        shadowColor: '#000',
-                        shadowOffset: { width: 0, height: 2 },
-                        shadowOpacity: 0.8,
-                        shadowRadius: 4,
-                        elevation: 1,
-                        }}>
-
-                        <TouchableHighlight 
-                            onPress={() => {
-                                this.setState({_errorForm: false})
-                            }}
-                            style={{
-                            marginLeft:400,
-                            height:26,
-                            backgroundColor:'#D1D4D6',
-                            justifyContent: 'center',
-                            alignItems: 'center'
-                            }}>
-                            <Text style={{flex:1,flexDirection: 'column',fontWeight:'bold',fontSize:20}}>X</Text>
-                        </TouchableHighlight>
-
-                            <View style={{
-                            width:450,
-                            height:190,
-                            backgroundColor:'white',marginTop:0,
-                            borderWidth: 1,
-                            borderRadius: 4,
-                            borderColor: '#ddd',
-                            borderBottomWidth: 4,
-                            shadowColor: '#000',
-                            shadowOffset: { width: 0, height: 2 },
-                            shadowOpacity: 0.8,
-                            shadowRadius: 4,
-                            elevation: 4,
-                            alignItems: 'center'
-                            }}>
-                                <Text style={{fontFamily:'helvetica',fontSize:40,fontWeight:'bold',color:'#e74c3c',marginTop:10}}>Error!</Text>
-                                <Text style={{fontFamily:'helvetica',fontSize:20,fontWeight:'300'}}>Your username or password is wrong.</Text>
-
-                                <View style={{flex:1,flexDirection: 'row',marginTop:10}}>
-                                <TouchableHighlight 
-                                    onPress={() => {
-                                        this.setState({_errorForm: false});
-                                        alert('Form Should display.');
-                                    }} style={{
-                                    width:170,
-                                    backgroundColor:'white',
-                                    height:40,
-                                    borderWidth: 1,
-                                    borderRadius: 4,
-                                    marginRight:10,
-                                    alignItems: 'center',
-                                    justifyContent:'center',
-                                    }}>
-                                    <Text style={{fontFamily:'helvetica',fontSize:15,fontWeight:'normal'}}>FORGOT PASSWORD</Text>
-                                </TouchableHighlight>
-
-                                <TouchableHighlight 
-                                    onPress={() => {
-                                        this.setState({_errorForm: false})
-                                    }}
-                                    style={{
-                                    width:170,backgroundColor:'white',
-                                    height:40,
-                                    borderWidth: 1,
-                                    borderRadius: 4,
-                                    marginRight:10,
-                                    alignItems: 'center',
-                                    justifyContent:'center'
-                                    }}>
-                                    <Text style={{fontFamily:'helvetica',fontSize:15,fontWeight:'normal'}}>TRY AGAIN</Text>
-                                </TouchableHighlight>
-                                </View>
-                            </View>
-                        </View>
-                    </View>
-                </Modal> 
-                
-                    {/*modal for time in*/}
-                <Modal
-                        animationType="slide"
-                        transparent={true}
-                        visible={this.state._successForm}
-                        onRequestClose={() => {alert("Modal has been closed.")}}
-                        >
-                        <View style={{
-                            flex: 1,
-                            flexDirection: 'column',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            backgroundColor: 'rgba(0, 0, 0, 0.7);'}}>
-
-                    <View style={{
-                        width: 450,
-                        height: 200,
-                        backgroundColor:'#2C5C36',
-                        flexDirection: 'column',
-                        borderWidth: 1,
-                        borderRadius: 4,
-                        borderColor: '#ddd',
-                        borderBottomWidth: 0,
-                        shadowColor: '#000',
-                        shadowOffset: { width: 0, height: 2 },
-                        shadowOpacity: 0.8,
-                        shadowRadius: 4,
-                        elevation: 1,
-                    }}>
-
-                        <TouchableHighlight onPress={() => {
-                            this.setModalTimeinVisible(!this.state._successForm)
-                        }} style={{
-                            marginLeft:400,
-                            height:26,
-                            backgroundColor:'#D1D4D6',
-                            justifyContent: 'center',
-                            alignItems: 'center'
-                        }}>
-                            <Text style={{flex:1,flexDirection: 'column',fontWeight:'bold',fontSize:20}}>X</Text>
-                        </TouchableHighlight>
-
-                        <View style={{
-                            width:450,
-                            height:190,
-                            backgroundColor:'white',marginTop:0,
-                            borderWidth: 1,
-                            borderRadius: 4,
-                            borderColor: '#ddd',
-                            borderBottomWidth: 4,
-                            shadowColor: '#000',
-                            shadowOffset: { width: 0, height: 2 },
-                            shadowOpacity: 0.8,
-                            shadowRadius: 4,
-                            elevation: 4,
-                            alignItems: 'center'
-                        }}>
-                            <Text style={{fontFamily:'helvetica',fontSize:40,fontWeight:'bold',color:'#2C5C36',marginTop:10}}>Success!</Text>
-                            <Text style={{fontFamily:'helvetica',fontSize:20,fontWeight:'300'}}>{this.state._resFName}, your {this.state._timeType} today is {this.state._strTime}.</Text>
-
-                            <View style={{flex:1,flexDirection: 'row',marginTop:10}}>
-                                <TouchableHighlight 
-                                onPress={() => {
-                                    this.setState({_successForm: false})
-                                }} 
-                                style={{
-                                    width:170,
-                                    backgroundColor:'white',
-                                    height:40,
-                                    borderWidth: 1,
-                                    borderRadius: 4,
-                                    marginRight:10,
-                                    alignItems: 'center',
-                                    justifyContent:'center',
-                                }}>
-                                    <Text style={{fontFamily:'helvetica',fontSize:20,fontWeight:'normal'}}>OK</Text>
-                                </TouchableHighlight>
-
-                            </View>
-                        </View>
-                    </View>
-                    </View>
-                </Modal> 
                 </View>
+                <SuccessPrompt
+                    type='success'
+                    show={this.state._successForm}
+                    onClose={this.closeSuccessMsg}
+                    message={this.state._strMsg}
+                    navigate={'test'}
+                />
             </ScrollView>   
         );
     }

@@ -139,21 +139,7 @@ export default {
 
 
 
-    //Logo Styles
-    textLogoLabel:{
-      color:'#000',
-      fontFamily:'Helvetica-Light',
-      fontSize:12,
-      fontWeight:'100',
-      textAlign: 'center',
-      marginTop: 5,
-    },
-  
-    imgLogo:{
-      width:140,
-      height:60,
-      marginLeft: 10
-    },
+
     
     //Buttons Style
     touchableTimeBtn:{
