@@ -27,6 +27,7 @@ export default {
     minHeight: 200,
     backgroundColor: 'white',
     borderRadius: 6,
+    marginBottom: 40,
   },
   
   header:{
@@ -64,7 +65,7 @@ export default {
   msgCont:{
     height:90,
     width: 350,
-    padding: 35,
+    padding: 30,
   },
 
   btnCont:{
@@ -78,13 +79,14 @@ export default {
     borderRadius: 100, 
     width: 30, 
     height: 30, 
-    backgroundColor: 'rgba(0, 0, 0, 0.1);', 
+    backgroundColor: 'rgba(0, 0, 0, 0.2);', 
     justifyContent:'center', 
     alignItems: 'center'
   },
 
   txtOKBtn:{
     color: '#fff',
+    fontWeight: '700'
   }
 
 };

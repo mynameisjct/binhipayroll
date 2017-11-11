@@ -30,6 +30,14 @@ import Logo from '../../components/BinhiLogo';
 import ErrorPrompt from '../../components/MessageBox/error';
 import SuccessPrompt from '../../components/MessageBox/success';
 
+let tmpUsername = "admin";
+let tmpPassword = "123";
+let tmpFName = "Pedro";
+let tmpMName = "Protacio";
+let tmpLName = "Duterte";
+let tmpCompany = ["Uniliver", "Ayala", "Nestle"];
+let maxAttemps = 3;
+
 export default class Login extends Component {
     constructor(props){
         super(props);
@@ -45,12 +53,12 @@ export default class Login extends Component {
             _transTime: '',
 
             //Login Credentials
-            _username: '',
-            _password: '',
+            _username: 'admin',
+            _password: '123',
 
             //FormButtons
             _errorForm: false,
-            _enableBtn: true,
+            _enableBtn: false,
             _btnTextColor: 'gray',
             
             //Response from DB
@@ -65,10 +73,11 @@ export default class Login extends Component {
 
             //forms
             _msgBoxType: '',
-            _msgBoxShow: true,
+            _msgBoxShow: false,
             _timeType: '',
             _transTime: '',
-            _strMsg: ''
+            _iPasswordAttemp: 0,
+            _prevUsername: ''
         };
 
         this.closeSuccessMsg = this.closeSuccessMsg.bind(this)
@@ -94,7 +103,7 @@ export default class Login extends Component {
 
     closeSuccessMsg = () => {
         this.setState({
-            _successForm: false
+            _msgBoxShow: false
         });
     }
 
@@ -176,10 +185,79 @@ export default class Login extends Component {
         );
     }
 
-    validateCredentials(){
+/*     validateCredentials(){
         this.setTransTime(
             () => {this.fetchDataFromDB();}
         );
+    } */
+
+    validateCredentials(){
+        this.setTransTime(
+            () => {this.tmpFetchDataFromDB();}
+        );
+    }
+
+    passwordErrorFlag(callback){
+        if (this.state._prevUsername == this.state._username){
+            this.setState(prevState => ({ _iPasswordAttemp: prevState._iPasswordAttemp + 1 }));
+        }
+        else {
+            this.setState({_iPasswordAttemp: 0} );
+        }
+        callback();
+    }
+    
+    tmpFetchDataFromDB(){
+        if(this.state._username == tmpUsername){
+            if(this.state._password == tmpPassword){
+                this.setState({
+                    _resMsg: 'Credentials are correct. This should proceed to Dash Board.',
+                    _msgBoxType: 'success',
+                });
+            }
+            else {
+                this.setState({
+                    _prevUsername: this.state._username
+                },
+                    () => {
+                        this.passwordErrorFlag(                
+                            () => {
+                                if(this.state._iPasswordAttemp >= maxAttemps){
+                                    this.setState({
+                                    _resMsg: 'Your account is temporarily locked due to maximum password attemp. Contact your employer or Binhi-Medfi.',
+                                    _msgBoxType: 'error-ok',
+                                    });
+                                }
+                                else if(this.state._iPasswordAttemp == maxAttemps-1) {
+                                    this.setState({
+                                        _resMsg: 'You have only one (1) password attempt left. Your account will be temporarily locked when maximum attemp is reached.',
+                                        _msgBoxType: 'warning',
+                                        });
+                                }
+                                else{
+                                    this.setState({
+                                        _resMsg: 'The password you’ve entered is incorrect.',
+                                        _msgBoxType: 'error-password',
+                                    });
+                                }
+                            }
+                        );
+        
+                    }
+                );
+            }
+        }
+
+        else{
+            this.setState({
+                _resMsg: 'The username you’ve entered doesn’t match any account.',
+                _msgBoxType: 'error-ok',
+            })
+        }
+        
+        this.setState({
+            _msgBoxShow: true
+        })
     }
 
     fetchDataFromDB(){
@@ -327,10 +405,10 @@ export default class Login extends Component {
                     </View>
                 </View>
                 <SuccessPrompt
-                    type='success'
-                    show={this.state._successForm}
+                    promptType={this.state._msgBoxType}
+                    show={this.state._msgBoxShow}
                     onClose={this.closeSuccessMsg}
-                    message={this.state._strMsg}
+                    message={this.state._resMsg}
                     navigate={'test'}
                 />
             </ScrollView>   

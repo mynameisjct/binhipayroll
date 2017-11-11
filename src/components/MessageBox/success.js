@@ -25,15 +25,43 @@ export default class ErrorPrompt extends Component{
     constructor(props){
         super(props);
         this.state = {
+            _errorType: '',
             _strTitle: '',
             _strHeaderColor: '',
-            _strIcon: ''
+            _strIcon: '',
+            _msgBoxShow: '',
         }
     }
 
     componentWillMount()
     {
-        switch (this.props.type.toUpperCase()){
+        this.setState({
+            _errorType: this.props.promptType,
+            _msgBoxShow: this.props.show
+        });
+
+        this.initFormProps();
+    }
+
+    shouldComponentUpdate(nextProps, nextState) {
+        return (this.state._msgBoxShow !== nextProps.show || 
+                    this.state._errorType !== nextProps.promptType)
+
+    }
+
+    componentWillUpdate()
+    {
+        this.setState({
+            _errorType: this.props.promptType,
+            _msgBoxShow: this.props.show
+        });
+
+        this.initFormProps();
+    }
+
+    initFormProps(){
+        let curType = this.props.promptType.toUpperCase();
+        switch (curType){
             case 'SUCCESS':
                 this.setState({
                     _strHeaderColor: '#2C5C36',
@@ -42,7 +70,15 @@ export default class ErrorPrompt extends Component{
                 });
                 break;
 
-            case 'ERROR':
+            case 'ERROR-OK':
+                this.setState({
+                    _strHeaderColor: '#D75450',
+                    _strTitle: 'Error',
+                    _strIcon: 'ios-close-circle-outline'
+                });
+                break;
+                
+            case 'ERROR-PASSWORD':
                 this.setState({
                     _strHeaderColor: '#D75450',
                     _strTitle: 'Error',
@@ -56,15 +92,22 @@ export default class ErrorPrompt extends Component{
                     _strIcon: 'ios-warning-outline'
                 });
                 break;
+            case 'YES-NO':
+                this.setState({
+                    _strHeaderColor: '#E68A00',
+                    _strTitle: 'Warning',
+                    _strIcon: 'ios-warning-outline'
+                });
                 
+            break;
             default: 
                 this.setState({
                     _strHeaderColor: '#FFF',
                     _strTitle: 'UNHANDLED',
+                    _strIcon: 'ios-warning-outline'
                 });
         }
     }
-
     themeColor = (promptType) => {
         return {
             backgroundColor: this.state._strHeaderColor
@@ -72,12 +115,12 @@ export default class ErrorPrompt extends Component{
     }
 
     renderButtons(){
-        switch (this.props.type.toUpperCase()){
+        switch (this.props.promptType.toUpperCase()){
             case 'SUCCESS':
                 return(
                     <View style={styles.btnCont}>
                         <TouchableOpacity 
-                            style={{ borderRadius: 100, width: 80, height: 40, backgroundColor: 'rgba(0, 0, 0, 0.3)', justifyContent:'center', alignItems: 'center'}}
+                            style={{ borderRadius: 100, width: 140, height: 40, backgroundColor: 'rgba(0, 0, 0, 0.3)', justifyContent:'center', alignItems: 'center'}}
                             activeOpacity={0.6}
                             onPress={() => this.props.onClose()}>
                             <View>
@@ -88,7 +131,22 @@ export default class ErrorPrompt extends Component{
                 );
                 break;
 
-            case 'ERROR':
+            case 'ERROR-OK':
+                return(
+                    <View style={styles.btnCont}>
+                        <TouchableOpacity 
+                            style={{ borderRadius: 100, width: 140, height: 40, backgroundColor: 'rgba(0, 0, 0, 0.3)', justifyContent:'center', alignItems: 'center'}}
+                            activeOpacity={0.6}
+                            onPress={() => this.props.onClose()}>
+                            <View>
+                                <Text style={styles.txtOKBtn}>OK</Text>
+                            </View>
+                        </TouchableOpacity>
+                    </View>
+                );
+                break;
+                
+            case 'ERROR-PASSWORD':
                 return(
                     <View style={styles.btnCont}>
                         <TouchableOpacity 
@@ -116,7 +174,7 @@ export default class ErrorPrompt extends Component{
                 return(
                     <View style={styles.btnCont}>
                         <TouchableOpacity 
-                            style={{ borderRadius: 100, width: 100, height: 40, backgroundColor: 'rgba(0, 0, 0, 0.3)', justifyContent:'center', alignItems: 'center'}}
+                            style={{ borderRadius: 100, width: 140, height: 40, backgroundColor: 'rgba(0, 0, 0, 0.3)', justifyContent:'center', alignItems: 'center'}}
                             activeOpacity={0.6}
                             onPress={() => this.props.onClose()}>
                             <View>
@@ -132,14 +190,14 @@ export default class ErrorPrompt extends Component{
     render(){
         return(
             <Modal 
-                animationType="slide"
+                animationType="fade"
                 transparent={true}
                 visible={this.props.show}
                 onRequestClose={() => {alert("Modal has been closed.")}}>
             
                 <View style={styles.container}>
                     <View style={styles.messageBox}>
-                        <View style={[styles.header, this.themeColor(this.props.type)]}>
+                        <View style={[styles.header, this.themeColor(this.state.promptType)]}>
                             <View style={styles.title}>
                                 <View>
                                     <Icon name={this.state._strIcon} size={30} color='#FFF'/>
@@ -160,7 +218,7 @@ export default class ErrorPrompt extends Component{
                         </View> 
 
                         <View style={styles.msgCont}>
-                            <Text>This is a message</Text>
+                            <Text>{this.props.message} </Text>
                         </View>
                         
                         {this.renderButtons()}
