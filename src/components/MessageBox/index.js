@@ -21,7 +21,7 @@ import {
 import styles from './styles';
 import Icon from 'react-native-vector-icons/Ionicons';
 
-export default class ErrorPrompt extends Component{
+export default class MsgBox extends Component{
     constructor(props){
         super(props);
         this.state = {
@@ -92,6 +92,13 @@ export default class ErrorPrompt extends Component{
                     _strIcon: 'ios-warning-outline'
                 });
                 break;
+            case 'WARNING-PASSWORD':
+                this.setState({
+                    _strHeaderColor: '#E68A00',
+                    _strTitle: 'Warning',
+                    _strIcon: 'ios-warning-outline'
+                });
+                break;
             case 'YES-NO':
                 this.setState({
                     _strHeaderColor: '#E68A00',
@@ -152,7 +159,7 @@ export default class ErrorPrompt extends Component{
                         <TouchableOpacity 
                             style={{ borderRadius: 100, width: 140, height: 40, backgroundColor: 'rgba(0, 0, 0, 0.3)', justifyContent:'center', alignItems: 'center'}}
                             activeOpacity={0.6}
-                            onPress={() => this.props.onClose()}>
+                            onPress={() => this.props.onForgotPassword()}>
                             <View>
                                 <Text style={styles.txtOKBtn}>Forgot Password</Text>
                             </View>
@@ -176,9 +183,58 @@ export default class ErrorPrompt extends Component{
                         <TouchableOpacity 
                             style={{ borderRadius: 100, width: 140, height: 40, backgroundColor: 'rgba(0, 0, 0, 0.3)', justifyContent:'center', alignItems: 'center'}}
                             activeOpacity={0.6}
+                            onPress={() => this.props.onWarningContinue()}>
+                            <View>
+                                <Text style={styles.txtOKBtn}>Continue</Text>
+                            </View>
+                        </TouchableOpacity>
+                    </View>
+                );
+                break;
+            case 'WARNING-PASSWORD':
+                return(
+                    <View style={styles.btnCont}>
+                        <TouchableOpacity 
+                            style={{ borderRadius: 100, width: 140, height: 40, backgroundColor: 'rgba(0, 0, 0, 0.3)', justifyContent:'center', alignItems: 'center'}}
+                            activeOpacity={0.6}
+                            onPress={() => this.props.onForgotPassword()}>
+                            <View>
+                                <Text style={styles.txtOKBtn}>Forgot Password</Text>
+                            </View>
+                        </TouchableOpacity>
+                        <View style={{width:10}}>
+                        </View>
+                        <TouchableOpacity 
+                            style={{ borderRadius: 100, width: 140, height: 40, backgroundColor: 'rgba(0, 0, 0, 0.3)', justifyContent:'center', alignItems: 'center'}}
+                            activeOpacity={0.6}
                             onPress={() => this.props.onClose()}>
                             <View>
                                 <Text style={styles.txtOKBtn}>Continue</Text>
+                            </View>
+                        </TouchableOpacity>
+                    </View>
+                );
+                break;
+            
+            case 'YES-NO':
+                return(
+                    <View style={styles.btnCont}>
+                        <TouchableOpacity 
+                            style={{ borderRadius: 100, width: 140, height: 40, backgroundColor: 'rgba(0, 0, 0, 0.3)', justifyContent:'center', alignItems: 'center'}}
+                            activeOpacity={0.6}
+                            onPress={() => this.props.onClose()}>
+                            <View>
+                                <Text style={styles.txtOKBtn}>NO</Text>
+                            </View>
+                        </TouchableOpacity>
+                        <View style={{width:10}}>
+                        </View>
+                        <TouchableOpacity 
+                            style={{ borderRadius: 100, width: 140, height: 40, backgroundColor: 'rgba(0, 0, 0, 0.3)', justifyContent:'center', alignItems: 'center'}}
+                            activeOpacity={0.6}
+                            onPress={() => this.props.onYes()}>
+                            <View>
+                                <Text style={styles.txtOKBtn}>YES</Text>
                             </View>
                         </TouchableOpacity>
                     </View>

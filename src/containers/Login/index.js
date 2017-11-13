@@ -27,18 +27,23 @@ import moment from "moment";
 import styles from './styles';
 import DigitalClock from '../../components/DigitalClock';
 import Logo from '../../components/BinhiLogo';
-import ErrorPrompt from '../../components/MessageBox/error';
-import SuccessPrompt from '../../components/MessageBox/success';
+import MsgBox from '../../components/MessageBox';
 
 let tmpUsername = "admin";
+let tmpUserGroup = "employee";
 let tmpPassword = "123";
 let tmpFName = "Pedro";
 let tmpMName = "Protacio";
 let tmpLName = "Duterte";
 let tmpCompany = ["Uniliver", "Ayala", "Nestle"];
-let maxAttemps = 3;
+let maxAttemps = 5;
+let tmpDefaultPassword = '123444';
 
 export default class Login extends Component {
+    static navigationOptions = {
+        header : null,
+    }
+
     constructor(props){
         super(props);
         this.state = {
@@ -58,7 +63,7 @@ export default class Login extends Component {
 
             //FormButtons
             _errorForm: false,
-            _enableBtn: false,
+            _disableBtn: true,
             _btnTextColor: 'gray',
             
             //Response from DB
@@ -74,13 +79,15 @@ export default class Login extends Component {
             //forms
             _msgBoxType: '',
             _msgBoxShow: false,
-            _timeType: '',
             _transTime: '',
-            _iPasswordAttemp: 0,
+            _iPasswordAttemp: 1,
             _prevUsername: ''
         };
 
-        this.closeSuccessMsg = this.closeSuccessMsg.bind(this)
+        this.closeMsgBox = this.closeMsgBox.bind(this);
+        this.forgotPassword = this.forgotPassword.bind(this);
+        this.changePassword = this.changePassword.bind(this);
+        this.msgBoxYesAction = this.msgBoxYesAction.bind(this);
     }
 
     //Initializations
@@ -98,13 +105,6 @@ export default class Login extends Component {
         this.timer = setInterval(() => { 
             this.getCurrentTime();
         }, 1000);
-    }
-
-
-    closeSuccessMsg = () => {
-        this.setState({
-            _msgBoxShow: false
-        });
     }
 
     //Get Current Time
@@ -152,29 +152,65 @@ export default class Login extends Component {
         }
 
         this.setState({
-            _enableBtn: _bFlag,
+            _disableBtn: _bFlag,
             _btnTextColor: _strBtnColor
         });
     }
 
     //Time-In
-    transTimeLog(strType){
+    tansLogin(strType){
         this.setTransTime(
-            () => {this.fetchDataFromDB();}
-        );
-
-        this.setState({
-            _timeType: strType,
-            _strMsg: this.state._resFName + ', ' + 
-                        'your ' + strType + ' today is ' + this.state._curTime + '.',
-        },
-            function() {
-                this.setState({_successForm: true})
-            }
+            () => {this.tmpFetchDataFromDB(strType);}
         );
     }
 
-
+    evaluateSuccessTrans(strType){
+        console.log('strType: ' + strType);
+        switch (strType.toUpperCase()){
+            case 'LOGIN':
+                if(this.state._password==tmpDefaultPassword){
+                    this.setState({
+                        _resMsg: 'Your current password is set as default. You need to change password before you can proceed.',
+                        _msgBoxType: 'warning'
+                     },
+                        () => this.setState({
+                            _msgBoxShow: true
+                        })
+                    );
+                }
+                else{
+                    this.props.navigation.navigate('EmprDashBoard');
+                }
+/*                 this.setState({
+                    _resMsg: 'Credentials are correct. This should proceed to Dash Board.',
+                },
+                    () => this.setState({
+                        _msgBoxShow: true
+                    })
+                ); */
+                break;
+            case 'TIMEIN':
+                this.setState({
+                    _resMsg: this.state._resFName + ', ' + 
+                                'your time-in today is ' + this.state._transTime + '.',
+                 },
+                    () => this.setState({
+                        _msgBoxShow: true
+                    })
+                );
+                break;
+            case 'TIMEOUT':
+                this.setState({
+                    _resMsg: this.state._resFName + ', ' + 
+                                'your time-out today is ' + this.state._transTime + '.',
+                },
+                    () => this.setState({
+                        _msgBoxShow: true
+                    })
+                );
+                break;
+        }
+    }
 
     setTransTime(callback) {
         this.setState({
@@ -185,39 +221,33 @@ export default class Login extends Component {
         );
     }
 
-/*     validateCredentials(){
-        this.setTransTime(
-            () => {this.fetchDataFromDB();}
-        );
-    } */
-
-    validateCredentials(){
-        this.setTransTime(
-            () => {this.tmpFetchDataFromDB();}
-        );
-    }
-
     passwordErrorFlag(callback){
         if (this.state._prevUsername == this.state._username){
             this.setState(prevState => ({ _iPasswordAttemp: prevState._iPasswordAttemp + 1 }));
         }
         else {
-            this.setState({_iPasswordAttemp: 0} );
+            this.setState({_iPasswordAttemp: 1} );
         }
         callback();
     }
     
-    tmpFetchDataFromDB(){
+    tmpFetchDataFromDB(strType){
         if(this.state._username == tmpUsername){
             if(this.state._password == tmpPassword){
                 this.setState({
-                    _resMsg: 'Credentials are correct. This should proceed to Dash Board.',
+                    _resFName: tmpFName,
                     _msgBoxType: 'success',
-                });
+                    _resSuccess: 1,
+                },
+                    () => {
+                        this.evaluateSuccessTrans(strType);
+                    } 
+                );
             }
             else {
                 this.setState({
-                    _prevUsername: this.state._username
+                    _prevUsername: this.state._username,
+                    _resSuccess: 0,
                 },
                     () => {
                         this.passwordErrorFlag(                
@@ -226,19 +256,31 @@ export default class Login extends Component {
                                     this.setState({
                                     _resMsg: 'Your account is temporarily locked due to maximum password attemp. Contact your employer or Binhi-Medfi.',
                                     _msgBoxType: 'error-ok',
-                                    });
+                                    },
+                                        () => this.setState({
+                                            _msgBoxShow: true
+                                        })
+                                    );
                                 }
                                 else if(this.state._iPasswordAttemp == maxAttemps-1) {
                                     this.setState({
                                         _resMsg: 'You have only one (1) password attempt left. Your account will be temporarily locked when maximum attemp is reached.',
-                                        _msgBoxType: 'warning',
-                                        });
+                                        _msgBoxType: 'warning-password',
+                                        },
+                                        () => this.setState({
+                                            _msgBoxShow: true
+                                        })
+                                    );
                                 }
                                 else{
                                     this.setState({
                                         _resMsg: 'The password you’ve entered is incorrect.',
                                         _msgBoxType: 'error-password',
-                                    });
+                                    },
+                                        () => this.setState({
+                                            _msgBoxShow: true
+                                        })
+                                    );
                                 }
                             }
                         );
@@ -252,12 +294,12 @@ export default class Login extends Component {
             this.setState({
                 _resMsg: 'The username you’ve entered doesn’t match any account.',
                 _msgBoxType: 'error-ok',
-            })
+            },
+                () => this.setState({
+                    _msgBoxShow: true
+                })
+            );
         }
-        
-        this.setState({
-            _msgBoxShow: true
-        })
     }
 
     fetchDataFromDB(){
@@ -304,6 +346,57 @@ export default class Login extends Component {
             }).catch((error)=> {
                 alert(error);
             });
+    }
+
+    closeMsgBox = () => {
+        this.setState({
+            _msgBoxShow: false
+        });
+    }
+
+    forgotPassword = () => {
+        this.setState({
+            _msgBoxShow: false
+        },
+            () => {
+                this.setState({
+                    _resMsg: 'Are you sure you want to reset your password?',
+                    _msgBoxType: 'yes-no'
+                },
+                    () => {
+                        this.setState({
+                            _msgBoxShow: true
+                        });
+                    }
+                );
+            }
+        );
+    }
+
+    changePassword = () => {
+        this.setState({
+            _msgBoxShow: false
+        });
+        this.props.navigation.navigate('ChangePassword', 
+        {username: this.state._username,
+            password: this.state._password});
+
+    }
+    
+    msgBoxYesAction = () => {
+        if(tmpUserGroup=='employer'){
+            this.setState({
+                _resMsg: 'A reset link was sent to your email. Please check your email.',
+                _msgBoxType: 'success'
+            });
+        }
+        else{
+            this.setState({
+                _resMsg: 'Successfully notified your employer to reset your password.',
+                _msgBoxType: 'success'
+            });
+        }
+
     }
 
     render(){
@@ -362,10 +455,10 @@ export default class Login extends Component {
                                 <View style={styles.timeCont}>
                                     <View style={[styles.btnTimeCont]}>
                                         <TouchableOpacity 
-                                            disabled={this.state._enableBtn}
+                                            disabled={this.state._disableBtn}
                                             style={styles.touchableTimeBtn}
                                             activeOpacity={0.6}
-                                            onPress={() => this.transTimeLog('timein')}>
+                                            onPress={() => this.tansLogin('timein')}>
                                             <Image
                                                 style={styles.imgCustomBtn} 
                                                 source={require('../../assets/img/log-in-button.png')}/>
@@ -376,10 +469,10 @@ export default class Login extends Component {
                                     </View>
                                     <View style={[styles.btnTimeCont]}>
                                         <TouchableOpacity 
-                                            disabled={this.state._enableBtn}
+                                            disabled={this.state._disableBtn}
                                             style={styles.touchableTimeBtn}
                                             activeOpacity={0.6}
-                                            onPress={() => this.transTimeLog('timeout')}>
+                                            onPress={() => this.tansLogin('timeout')}>
                                             <Image
                                                 style={styles.imgCustomBtn}  
                                                 source={require('../../assets/img/log-in-button.png')}/>
@@ -390,10 +483,10 @@ export default class Login extends Component {
 
                                 <View style={[styles.boxContLogin, styles.loginCont]}>
                                     <TouchableOpacity 
-                                        disabled={this.state._enableBtn}
+                                        disabled={this.state._disableBtn}
                                         style={styles.touchableLoginBtn}
                                         activeOpacity={0.6}
-                                        onPress={() => {this.validateCredentials()}}>
+                                        onPress={() => {this.tansLogin('login')}}>
                                         <Image 
                                             style={styles.imgCustomBtn} 
                                             source={require('../../assets/img/log-in-button.png')}/>
@@ -404,12 +497,14 @@ export default class Login extends Component {
                         </View>
                     </View>
                 </View>
-                <SuccessPrompt
+                <MsgBox
                     promptType={this.state._msgBoxType}
                     show={this.state._msgBoxShow}
-                    onClose={this.closeSuccessMsg}
+                    onClose={this.closeMsgBox}
+                    onForgotPassword={this.forgotPassword}
+                    onWarningContinue={this.changePassword}
                     message={this.state._resMsg}
-                    navigate={'test'}
+                    onYes={this.msgBoxYesAction}
                 />
             </ScrollView>   
         );
