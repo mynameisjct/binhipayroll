@@ -17,19 +17,34 @@ import EmpeDTR from './containers/DTR';
 import EmprDashBoard from './containers/DashBoard';
 import RootDrawer from './Drawer';
 import ChangePassword from './containers/ChangePassword';
-import Header1 from './containers/Headers/header1';
+import EmployeeInfo from './containers/EmployeeInfo/';
+
+const EmprDashBoardNav = StackNavigator({
+    EmprDashBoard: {screen: EmprDashBoard},
+});
+
+const EmpeDTRNav = StackNavigator({
+    EmpeDTR: {screen: EmpeDTR},
+});
+
+const EmployeeInfoNav = StackNavigator({
+    EmployeeInfo: {screen: EmployeeInfo},
+});
+
+const ChangePasswordNav = StackNavigator({
+    ChangePassword: {screen: ChangePassword},
+});
 
 const AppNavigator = StackNavigator(
     {
         RootDrawer: { screen: RootDrawer },
         Login: {screen: Login},
-        ChangePassword: {screen: ChangePassword},
-        Header1: {screen: Header1}
+        ChangePassword: {screen: ChangePasswordNav},
     },
 
     {
         initialRouteName: 'Login',
-        headerMode: 'screen',
+        headerMode: 'none',
     }
 );
 

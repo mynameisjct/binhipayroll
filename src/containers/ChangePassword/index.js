@@ -14,8 +14,6 @@ import styles from './styles'
 
 import MsgBox from '../../components/MessageBox/';
 
-let minPasswordLength = 6;
-
 export default class ChangePassword extends Component {
     constructor(props){
         super(props);
@@ -26,6 +24,7 @@ export default class ChangePassword extends Component {
             _msgBoxMsg: '',
             _msgBoxShow: false,
             _msgBoxType: '',
+            _minPasswordLen: '4'
         }
         this.onBackPress = this.onBackPress.bind(this);
     }
@@ -34,7 +33,7 @@ export default class ChangePassword extends Component {
         headerTitle : 
             <Header1 
                 navigate='Login'
-                title= 'Change Your Current Password'
+                title= 'CHANGE YOUR PASSWORD'
                 onBtnPress={this.onBackPress}
             />,
         headerLeft: null,
@@ -50,7 +49,19 @@ export default class ChangePassword extends Component {
         let {params} = this.props.navigation.state;
         if (this.state._newPassword !== this.state._confirmPassword){
             this.setState({
-                _msgBoxMsg: 'New password mismatch. Please confirm.',
+                _msgBoxMsg: 'Your password does not match match. Please try again.',
+                _msgBoxType: 'error-ok'
+            },
+                () => {
+                    this.setState({
+                        _msgBoxShow: true
+                    });
+                }
+            )
+        }
+        else if(this.state._newPassword.length < this.state._minPasswordLen){
+            this.setState({
+                _msgBoxMsg: 'Password must be at least 4 characters.',
                 _msgBoxType: 'error-ok'
             },
                 () => {
@@ -72,22 +83,9 @@ export default class ChangePassword extends Component {
                 }
             )
         }
-        else if(this.state._newPassword.length < minPasswordLength){
-            this.setState({
-                _msgBoxMsg: 'Password must be atleast 6 characters.',
-                _msgBoxType: 'error-ok'
-            },
-                () => {
-                    this.setState({
-                        _msgBoxShow: true
-                    });
-                }
-            )
-        }
-
         else {
             this.setState({
-                _msgBoxMsg: 'Your Password is successfully updadated. Login your account to confirm changes.',
+                _msgBoxMsg: 'Your Password is successfully updated. Login your account to confirm changes.',
                 _msgBoxType: 'success'
             },
                 () => {
@@ -110,10 +108,11 @@ export default class ChangePassword extends Component {
         return(
             <ScrollView style={styles.container}>
                 <View style={styles.logoCont}>
+                    <Text style={styles.txtTitleDesc}>You may now create your new password</Text>
                 </View> 
 
-                <View style={{alignContent: 'center', justifyContent: 'center', flex: 3, backgroundColor: 'transparent'}}>
-                    <View style={styles.formCont}>
+                <View style={styles.formCont}>
+                    <View style={styles.fieldsCont}>
                         {/* <View style={styles.oldCont}>
                             <Text style={styles.txtLabel}>'Current Password'} </Text>
                             <TextInput 
@@ -129,7 +128,7 @@ export default class ChangePassword extends Component {
                             />
                         </View> */}
                         <View style={styles.newCont}>
-                            <Text style={styles.txtLabel}>New Password</Text>
+                            <Text style={styles.txtLabel}>NEW PASSWORD</Text>
                             <TextInput 
                                 style={styles.textinputField}
                                 onChangeText={_curNewPW => {
@@ -137,7 +136,7 @@ export default class ChangePassword extends Component {
                                     }
                                 }
                                 value={this.state._newPassword}
-                                underlineColorAndroid='transparent'
+                                underlineColorAndroid='#D1D4D6'
                                 returnKeyType="done"
                                 secureTextEntry={true}
                             />
@@ -153,7 +152,7 @@ export default class ChangePassword extends Component {
                                 }
                                 value={this.state._confirmPassword}
                                 returnKeyType="done"
-                                underlineColorAndroid='transparent'
+                                underlineColorAndroid='#D1D4D6'
                                 secureTextEntry={true}
                             />
                         </View>
@@ -162,21 +161,23 @@ export default class ChangePassword extends Component {
 
                 <View style={styles.btnCont}>
                     <TouchableOpacity 
-                        style={{ borderRadius: 100, width: 190, height: 50, backgroundColor: 'rgba(0, 0, 0, 0.3)', justifyContent:'center', alignItems: 'center'}}
-                        activeOpacity={0.6}
-                        onPress={() => this.props.navigation.navigate('Login')}>
-                        <View>
-                            <Text style={styles.txtOKBtn}>Cancel</Text>
-                        </View>
-                    </TouchableOpacity>
-                    <View style={{width:15}}>
-                    </View>
-                    <TouchableOpacity 
-                        style={{ borderRadius: 100, width: 190, height: 50, backgroundColor: '#EEB843', justifyContent:'center', alignItems: 'center'}}
+                        style={styles.btnSave}
                         activeOpacity={0.6}
                         onPress={() => this.checkAndCommit()}>
                         <View>
-                            <Text style={styles.txtOKBtn}>Save</Text>
+                            <Text style={styles.txtBtnSave}>Save</Text>
+                        </View>
+                    </TouchableOpacity>
+
+                    <View style={{width:15}}>
+                    </View>
+                    
+                    <TouchableOpacity 
+                        style={styles.btnCancel}
+                        activeOpacity={0.6}
+                        onPress={() => this.props.navigation.navigate('Login')}>
+                        <View>
+                            <Text style={styles.txtBtnCancel}>Cancel</Text>
                         </View>
                     </TouchableOpacity>
                 </View>

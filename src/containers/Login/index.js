@@ -30,14 +30,14 @@ import Logo from '../../components/BinhiLogo';
 import MsgBox from '../../components/MessageBox';
 
 let tmpUsername = "admin";
-let tmpUserGroup = "employee";
+let tmpUserGroup = "employer";
 let tmpPassword = "123";
 let tmpFName = "Pedro";
 let tmpMName = "Protacio";
 let tmpLName = "Duterte";
 let tmpCompany = ["Uniliver", "Ayala", "Nestle"];
 let maxAttemps = 5;
-let tmpDefaultPassword = '123444';
+let tmpDefaultPassword = '1234';
 
 export default class Login extends Component {
     static navigationOptions = {
@@ -63,8 +63,8 @@ export default class Login extends Component {
 
             //FormButtons
             _errorForm: false,
-            _disableBtn: true,
-            _btnTextColor: 'gray',
+            _disableBtn: false,
+            _btnTextColor: 'white',
             
             //Response from DB
             _resSuccess: '',
@@ -113,7 +113,7 @@ export default class Login extends Component {
         this.setState({
             _curDate: moment().format("LL"),
             _curDateMDY:  moment().format("MM/DD/YYYY"),
-            _curTime: moment().format("LTS"),
+            _curTime: moment().format("hh:mm:ss A"),
             _curDay: this.getDayAbbrev(_curWeekday)
         });
     }
@@ -157,10 +157,15 @@ export default class Login extends Component {
         });
     }
 
-    //Time-In
-    tansLogin(strType){
+/*     tansLogin(strType){
         this.setTransTime(
             () => {this.tmpFetchDataFromDB(strType);}
+        );
+    } */
+
+    tansLogin(strType){
+        this.setTransTime(
+            () => {this.fetchDataFromDB(strType);}
         );
     }
 
@@ -320,8 +325,8 @@ export default class Login extends Component {
             .then((res)=>{
                     /* alert(res); */
                     this.setState({ 
-                        _resSuccess: res["successflag"],
-                        _resMsg: res["msg"],
+                        _resSuccess: res["flagno"],
+                        _resMsg: res["message"],
                         _resUserGroup: res["usergroup"],
                         _resFName: res["firstname"],
                         _resMName: res["middlename"],
@@ -334,14 +339,14 @@ export default class Login extends Component {
                         alert('Wrong PW')
                     }
                     else {
-                        alert('successFlag: ' + this.state._resSuccess + '\n' +
-                            'msg: ' + this.state._resMsg + '\n' +
+                        alert('flagno: ' + this.state._resSuccess + '\n' +
+                            'message: ' + this.state._resMsg + '\n' +
                             'userGroup: ' + this.state._resUserGroup + '\n' +
-                            'firstName: ' + res["firstname"] + '\n' +
+                            'firstname: ' + res["firstname"] + '\n' +
                             'middlename: ' + this.state._resMName + '\n' +
                             'lastname: ' + this.state._resLName + '\n' +
-                            'companyName: ' + this.state._resCompany + '\n' +
-                            'accessToken: ' + this.state._resAccessToken + '\n')
+                            'companyname: ' + this.state._resCompany + '\n' +
+                            'accesstoken: ' + this.state._resAccessToken + '\n')
                     }
             }).catch((error)=> {
                 alert(error);

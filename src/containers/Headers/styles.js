@@ -30,8 +30,9 @@ export default {
 
   headerTitle: {
     fontFamily: 'Helvetica-Bold',
-    fontSize: 20,
-    textAlign: 'center'
+    fontSize: 16,
+    textAlign: 'center',
+    fontWeight: '500'
   },
 
   headerLeft:{

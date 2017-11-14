@@ -10,24 +10,29 @@
 
 **************************************************************/
 import React, { Component } from 'react';
-import { DrawerNavigator, DrawerItems } from 'react-navigation';
+import { DrawerNavigator, DrawerItems, StackNavigator } from 'react-navigation';
 
 import EmpeDTR from './containers/DTR';
 import EmprDashBoard from './containers/DashBoard';
 import Sidebar from './containers/Sidebar';
 import EmployeeInfo from './containers/EmployeeInfo/';
 
+import {EmprDashBoardNav} from './AppNavigator';
+import EmpeDTRNav from './AppNavigator';
+import EmployeeInfoNav from './AppNavigator';
+
 const RootDrawer = DrawerNavigator(
   {
-    EmprDashBoard: {screen: EmprDashBoard},
-    EmpeDTR: {screen: EmpeDTR},
-    EmployeeInfo: {screen: EmployeeInfo},
+    EmprDashBoardStack: {
+      screen: StackNavigator({
+        EmprDashBoard: {screen: EmprDashBoard},
+      })},
   },
   {
     drawerWidth: 300,
-    drawerPosition: 'left',
+    drawerPosition: 'right',
     contentComponent: props =><Sidebar {...props} />,
-    drawerBackgroundColor: 'transparent'  
+    drawerBackgroundColor: 'transparent' ,
   }
 );
   
