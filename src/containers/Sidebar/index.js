@@ -26,8 +26,11 @@ export default class EmpeSidebarSidebar extends Component {
         super(props);
         this.state = {
             _activeCompany: 'BINHI-MeDFI',
-            _dblProfileIconSize: 55,
+            _dblProfileIconSize: 35,
+            _dblCompanyIconSize: 55,
             _dblContentIconSize: 25,
+            _dblFooterIconSize: 20,
+            _dblFooterIconLogoutSize: 18,
             _strIconName: {
                 company: 'md-home',
                 dashboard: 'md-apps',
@@ -41,9 +44,10 @@ export default class EmpeSidebarSidebar extends Component {
                 logout: 'md-power',
                 notification: 'md-notifications-outline'},
 
-            _strIconColor: '#505251',
+            _strIconColor: '#434646',
             _strIconNotificationColor: '#EA0202',
-            _profileName: 'Pedro Duterte'
+            _profileName: 'Pedro Duterte',
+            _profileDesc: 'My Profile'
         }
     }
 
@@ -57,7 +61,7 @@ export default class EmpeSidebarSidebar extends Component {
                         <View style={styles.mainContentDiv}>
                             <View style={styles.iconCont}>
                                 <Icon 
-                                    size={this.state._dblProfileIconSize} 
+                                    size={this.state._dblCompanyIconSize} 
                                     name={this.state._strIconName.company} 
                                     color={this.state._strIconColor}  />
                             </View>
@@ -91,6 +95,7 @@ export default class EmpeSidebarSidebar extends Component {
 
                     {/*************Dashbord*************/}
                     <TouchableNativeFeedback
+                        style={{backgroundColor: 'red'}}
                         onPress={this._onPressButton}
                         background={TouchableNativeFeedback.SelectableBackground()}>
                         <View style={[styles.contentStyle, styles.dashboardCont]}>
@@ -217,66 +222,121 @@ export default class EmpeSidebarSidebar extends Component {
                         </View>
                     </TouchableNativeFeedback>
                     
-                    {/*************Test - To be removed*************/}
+                    
+{/*                     <View style={[styles.contentStyle]}>
+                        <Text> Scroll Test. To be removed.</Text>
+                    </View>
+
                     <View style={[styles.contentStyle]}>
                         <Text> Scroll Test. To be removed.</Text>
                     </View>
-                    {/*************Test - To be removed*************/}
+                    
                     <View style={[styles.contentStyle]}>
                         <Text> Scroll Test. To be removed.</Text>
                     </View>
-                    {/*************Test - To be removed*************/}
+
                     <View style={[styles.contentStyle]}>
                         <Text> Scroll Test. To be removed.</Text>
                     </View>
-                    {/*************Test - To be removed*************/}
+                    
                     <View style={[styles.contentStyle]}>
                         <Text> Scroll Test. To be removed.</Text>
                     </View>
-                    {/*************Test - To be removed*************/}
+
                     <View style={[styles.contentStyle]}>
                         <Text> Scroll Test. To be removed.</Text>
-                    </View>
-                    {/*************Test - To be removed*************/}
-                    <View style={[styles.contentStyle]}>
-                        <Text> Scroll Test. To be removed.</Text>
-                    </View>
+                    </View> */}
+
                 </ScrollView>
+
+                {/******************Footer Layout******************/}
                 <View style={styles.footerCont}>
 
-                    {/******************Personal******************/}
-                    <View style={styles.profileCont}>
-                        <View style={styles.mainContentDiv}>
-                            <View style={styles.iconCont}>
-                                <Icon 
-                                    size={this.state._dblContentIconSize} 
-                                    name={this.state._strIconName.policies} 
-                                    color={this.state._strIconColor}  />
+                    <TouchableNativeFeedback
+                        onPress={this._onPressButton}
+                        background={TouchableNativeFeedback.SelectableBackground()}>
+                        <View style={styles.profileCont}>
+                            <View style={styles.mainContentDiv}>
+                                <View style={styles.iconCont}>
+                                    <Icon 
+                                        size={this.state._dblProfileIconSize} 
+                                        name={this.state._strIconName.profile} 
+                                        color={this.state._strIconColor}  />
+                                </View>
+                                <View style={styles.specialProfileLabelCont}>
+                                    <Text style={styles.txtContent}>
+                                        {this.state._profileName}
+                                    </Text>
+                                    <Text style={styles.txtProfileDesc}>
+                                        {this.state._profileDesc}
+                                    </Text>
+                                </View>
                             </View>
-                            <View style={styles.specialProfileLabelCont}>
-                                <Text style={styles.txtContent}>
-                                    {this.state._profileName}
-                                </Text>
-                                <Text style={styles.txtContent}>
-                                    {this.state._profileName}
-                                </Text>
+                            <View style={styles.miscContentDiv}>
+                                {/*Future use*/}
                             </View>
                         </View>
-                        <View style={styles.miscContentDiv}>
-                            {/*Future use*/}
-                        </View>
-                    </View>
+                    </TouchableNativeFeedback>
 
                     <View style={styles.bottomCont}>
-                        <View style={[styles.bottomContentStyle, styles.settingCont]}>
-                            <Text> Settings Here</Text>
-                        </View>
-                        <View style={[styles.bottomContentStyle,styles.syncCont]}>
-                            <Text> Sync Here</Text>
-                        </View>
-                        <View style={[styles.bottomContentStyle,styles.logoutCont]}>
-                            <Text> Logout Here</Text>
-                        </View>
+
+                        <TouchableNativeFeedback
+                            onPress={this._onPressButton}
+                            background={TouchableNativeFeedback.SelectableBackground()}>
+                            <View style={[styles.bottomContentStyle, styles.settingCont]}>
+                                <View style={styles.footerIconCont}>
+                                    <Icon 
+                                        style={styles.iconFooterCorrection}
+                                        size={this.state._dblFooterIconSize} 
+                                        name={this.state._strIconName.settings} 
+                                        color={this.state._strIconColor}  />
+                                </View>
+                                <View style={[styles.footerLabelCont, styles.txtFooterCorrection]}>
+                                    <Text style={styles.txtFooter}>
+                                        Settings
+                                    </Text>
+                                </View>
+                            </View>
+                        </TouchableNativeFeedback>
+
+                        <TouchableNativeFeedback
+                            onPress={this._onPressButton}
+                            background={TouchableNativeFeedback.SelectableBackground()}>
+                            <View style={[styles.bottomContentStyle,styles.syncCont]}>
+                                <View style={styles.footerIconCont}>
+                                    <Icon 
+                                        style={styles.iconFooterCorrection}
+                                        size={this.state._dblFooterIconSize} 
+                                        name={this.state._strIconName.sync} 
+                                        color={this.state._strIconColor}  />
+                                </View>
+                                <View style={[styles.footerLabelCont, styles.txtFooterCorrection]}>
+                                    <Text style={styles.txtFooter}>
+                                        Sync
+                                    </Text>
+                                </View>
+                            </View>
+                        </TouchableNativeFeedback>
+
+                        <TouchableNativeFeedback
+                            onPress={this._onPressButton}
+                            background={TouchableNativeFeedback.SelectableBackground()}>
+                            <View style={[styles.bottomContentStyle,styles.logoutCont]}>
+                                <View style={styles.footerIconCont}>
+                                    <Icon 
+                                        style={styles.specialIconFooterCorrection}
+                                        size={this.state._dblFooterIconLogoutSize} 
+                                        name={this.state._strIconName.logout} 
+                                        color={this.state._strIconColor}  />
+                                </View>
+                                <View style={[styles.footerLabelCont, styles.txtFooterCorrection]}>
+                                    <Text style={styles.txtFooter}>
+                                        Logout
+                                    </Text>
+                                </View>
+                            </View>
+                        </TouchableNativeFeedback>
+                        
                     </View>
                 </View>
             </View>

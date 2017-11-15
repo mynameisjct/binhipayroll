@@ -19,7 +19,8 @@ import {
     Image,
     TouchableOpacity,
     Modal,
-    TouchableHighlight
+    TouchableHighlight,
+    ActivityIndicator
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import moment from "moment";
@@ -28,6 +29,7 @@ import styles from './styles';
 import DigitalClock from '../../components/DigitalClock';
 import Logo from '../../components/BinhiLogo';
 import MsgBox from '../../components/MessageBox';
+import LoadingScreen from '../../components/LoadingScreen';
 
 let tmpUsername = "admin";
 let tmpUserGroup = "employer";
@@ -38,6 +40,13 @@ let tmpLName = "Duterte";
 let tmpCompany = ["Uniliver", "Ayala", "Nestle"];
 let maxAttemps = 5;
 let tmpDefaultPassword = '1234';
+
+let _accountLockedDuration = 30;
+let script_IP='http://192.168.1.8:8080/payroll/';
+let script_Login='logins.php';
+let script_TimeIn='timein.php';
+let script_TimeOut='timeout.php';
+let script_ForgotPassword='forgotpassword.php'
 
 export default class Login extends Component {
     static navigationOptions = {
@@ -59,7 +68,7 @@ export default class Login extends Component {
 
             //Login Credentials
             _username: 'admin',
-            _password: '123',
+            _password: 'Admin123',
 
             //FormButtons
             _errorForm: false,
@@ -81,7 +90,9 @@ export default class Login extends Component {
             _msgBoxShow: false,
             _transTime: '',
             _iPasswordAttemp: 1,
-            _prevUsername: ''
+            _prevUsername: '',
+            _accountLockedTimer: '0',
+            _showSplash: true
         };
 
         this.closeMsgBox = this.closeMsgBox.bind(this);
@@ -104,6 +115,7 @@ export default class Login extends Component {
     componentDidMount() {
         this.timer = setInterval(() => { 
             this.getCurrentTime();
+            this.accountLockedTimer();
         }, 1000);
     }
 
@@ -116,6 +128,12 @@ export default class Login extends Component {
             _curTime: moment().format("hh:mm:ss A"),
             _curDay: this.getDayAbbrev(_curWeekday)
         });
+    }
+
+    accountLockedTimer = () => {
+        if(this.state._accountLockedTimer > 0){
+            this.setState(prevState => ({ _accountLockedTimer: prevState._accountLockedTimer - 1 }));
+        }
     }
 
     //Get Day Abbreviations
@@ -157,18 +175,91 @@ export default class Login extends Component {
         });
     }
 
-/*     tansLogin(strType){
+
+
+/*     transLogin(strType){
+        this.setState({_showSplash: true});
         this.setTransTime(
-            () => {this.tmpFetchDataFromDB(strType);}
+            () => {
+                this.fetchDataFromDB(strType);
+            }
         );
     } */
 
-    tansLogin(strType){
+        transLogin(strType){
         this.setTransTime(
-            () => {this.fetchDataFromDB(strType);}
+            () => {this.tmpFetchDataFromDB(strType);}
         );
     }
 
+    evaluateTransaction = (strType) => {
+        if(this.state._resSuccess == 1){
+            switch(strType.toUpperCase()){
+                case 'LOGIN':
+                    this.props.navigation.navigate('EmprDashBoard');
+                    break;
+                case 'TIMEIN':
+                    this.setState({
+                        _msgBoxType: 'success'
+                    },
+                        () => this.setState({
+                            _msgBoxShow: true
+                        })
+                    );
+                    break;
+                case 'TIMEOUT':
+                    this.setState({
+                        _msgBoxType: 'success'
+                    },
+                        () => this.setState({
+                            _msgBoxShow: true
+                        })
+                    );
+                    break;
+            }
+        }
+
+        else if(this.state._resSuccess == 2){
+            this.setState({
+                _msgBoxType: 'error-tryagain'
+            },
+                () => this.setState({
+                    _msgBoxShow: true, 
+                })
+            );
+        }
+
+        else if(this.state._resSuccess == 3){
+            this.setState({
+                _msgBoxType: 'error-password'
+            },
+                () => this.setState({
+                    _msgBoxShow: true, 
+                })
+            );
+        }
+
+        else if(this.state._resSuccess == 5){
+            this.setState({
+                _msgBoxType: 'warning'
+            },
+                () => this.setState({
+                    _msgBoxShow: true, 
+                })
+            );
+        }
+
+        else{
+            this.setState({
+                _msgBoxType: 'error-ok'
+            },
+                () => this.setState({
+                    _msgBoxShow: true, 
+                })
+            );
+        }
+    }
+    
     evaluateSuccessTrans(strType){
         console.log('strType: ' + strType);
         switch (strType.toUpperCase()){
@@ -183,6 +274,7 @@ export default class Login extends Component {
                         })
                     );
                 }
+                
                 else{
                     this.props.navigation.navigate('EmprDashBoard');
                 }
@@ -222,7 +314,9 @@ export default class Login extends Component {
             _transDate: this.state._curDateMDY,
             _transTime: this.state._curTime
         },
-            () => {callback();}
+            () => {
+                callback();
+            },
         );
     }
 
@@ -307,50 +401,118 @@ export default class Login extends Component {
         }
     }
 
-    fetchDataFromDB(){
+    fetchDataFromDB(strType){
 /*         alert(this.state._transDate + '-------' + this.state._transTime); */
-        fetch('http://192.168.1.6:8080/payroll/logins.php',{
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                sysdate: this.state._transDate,
-                systime: this.state._transTime,
-                username: this.state._username,
-                password: this.state._password,
-            })
-        }).then((response)=> response.json())
-            .then((res)=>{
-                    /* alert(res); */
-                    this.setState({ 
-                        _resSuccess: res["flagno"],
-                        _resMsg: res["message"],
-                        _resUserGroup: res["usergroup"],
-                        _resFName: res["firstname"],
-                        _resMName: res["middlename"],
-                        _resLName: res["lastname"],
-                        _resCompany: res["companyname"],
-                        _resAccessToken: res["accesstoken"]                           
-                    });
-                    if (res=="Username or Password is not correct"){
-                        /* this.setState({_errorForm: true}) */
-                        alert('Wrong PW')
-                    }
-                    else {
-                        alert('flagno: ' + this.state._resSuccess + '\n' +
-                            'message: ' + this.state._resMsg + '\n' +
-                            'userGroup: ' + this.state._resUserGroup + '\n' +
-                            'firstname: ' + res["firstname"] + '\n' +
-                            'middlename: ' + this.state._resMName + '\n' +
-                            'lastname: ' + this.state._resLName + '\n' +
-                            'companyname: ' + this.state._resCompany + '\n' +
-                            'accesstoken: ' + this.state._resAccessToken + '\n')
-                    }
-            }).catch((error)=> {
-                alert(error);
+        if (strType.toUpperCase()=='LOGIN'){
+            fetch(script_IP + script_Login,{
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                },
+
+                body: JSON.stringify({
+                    sysdate: this.state._transDate,
+                    systime: this.state._transTime,
+                    username: this.state._username,
+                    password: this.state._password,
+                })
+                
+                
+            }).then((response)=> response.json())
+                .then((res)=>{
+                        /* alert(res); */
+                        this.setState({
+                            _resSuccess: res["flagno"],
+                            _resMsg: res["message"],
+                            _resUserGroup: res["usergroup"],
+                            _resFName: res["firstname"],
+                            _resMName: res["middlename"],
+                            _resLName: res["lastname"],
+                            _resCompany: res["companyname"],
+                            _resAccessToken: res["accesstoken"]                           
+                        },
+                            () => {
+                                console.log('*************************************')
+                                console.log('INPUTS: ')
+                                console.log('date: ' + this.state._transDate)
+                                console.log('time: ' + this.state._transTime)
+                                console.log('username: ' + this.state._username)
+                                console.log('password: ' + this.state._password)
+                                console.log('-----------------------------------------')
+                                console.log('OUTPUTS: ')
+                                console.log('_resSuccess: ' + this.state._resSuccess)
+                                console.log('_resMsg: ' + this.state._resMsg)
+                                console.log('_resUserGroup: ' + this.state._resUserGroup)
+                                console.log('_resFName: ' + this.state._resFName)
+                                console.log('_resMName: ' + this.state._resMName)
+                                console.log('_resLName: ' + this.state._resLName)
+                                console.log('_resCompany: ' + this.state._resCompany)
+                                console.log('_resAccessToken: ' + this.state._resAccessToken)
+                                this.evaluateTransaction(strType);
+                            }
+                        );
+                }).catch((error)=> {
+                    alert(error);
             });
+        }
+        else{
+            let curType = '';
+            if(strType.toUpperCase()=='TIMEIN'){
+                curType = script_TimeIn;
+            }
+            else{
+                curType = script_TimeOut;
+            }
+
+            fetch(script_IP + curType,{
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                },
+
+                body: JSON.stringify({
+                    sysdate: this.state._transDate,
+                    systime: this.state._transTime,
+                    transtype: strType.toLowerCase(),
+                    username: this.state._username,
+                    password: this.state._password,
+                })
+                
+                
+            }).then((response)=> response.json())
+                .then((res)=>{
+                        /* alert(res); */
+                        this.setState({
+                            _resSuccess: res["flagno"],
+                            _resMsg: res["message"],
+                            _resFName: res["firstname"],
+                            _resCompany: res["companyname"],                         
+                        },
+                            () => {
+                                console.log('*************************************')
+                                console.log('SCRIPT: ' + curType)
+                                console.log('INPUTS: ')
+                                console.log('date: ' + this.state._transDate)
+                                console.log('time: ' + this.state._transTime)
+                                console.log('transtype: ' + strType.toLowerCase())
+                                console.log('username: ' + this.state._username)
+                                console.log('password: ' + this.state._password)
+                                console.log('-----------------------------------------')
+                                console.log('OUTPUTS: ')
+                                console.log('_resSuccess: ' + this.state._resSuccess)
+                                console.log('_resMsg: ' + this.state._resMsg)
+                                console.log('_resFName: ' + this.state._resFName)
+                                console.log('_resCompany: ' + this.state._resCompany)
+                                this.evaluateTransaction(strType);
+                            }
+                        );
+                }).catch((error)=> {
+                    alert(error);
+            });
+        }
+        this.setState({_showSplash: false});
     }
 
     closeMsgBox = () => {
@@ -388,7 +550,7 @@ export default class Login extends Component {
 
     }
     
-    msgBoxYesAction = () => {
+/*     msgBoxYesAction = () => {
         if(tmpUserGroup=='employer'){
             this.setState({
                 _resMsg: 'A reset link was sent to your email. Please check your email.',
@@ -402,6 +564,62 @@ export default class Login extends Component {
             });
         }
 
+    } */
+    
+    msgBoxYesAction = () => {
+        this.pushForgotPassword();
+        
+
+    }
+
+    evaluateForgotPassword = () => {
+        if(this.state._resSuccess==1){
+            this.setState({
+                _msgBoxType: 'success'
+            });
+        }
+        else{
+            this.setState({
+                _msgBoxType: 'error-ok'
+            });
+        }
+    }
+
+    pushForgotPassword = () => {
+        fetch(script_IP + script_ForgotPassword,{
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+
+            body: JSON.stringify({
+                username: this.state._username,
+            })
+            
+            
+        }).then((response)=> response.json())
+            .then((res)=>{
+                    /* alert(res); */
+                    this.setState({
+                        _resSuccess: res["flagno"],
+                        _resMsg: res["message"],                     
+                    },
+                        () => {
+                            console.log('*************************************')
+                            console.log('SCRIPT: ' + script_IP + script_ForgotPassword)
+                            console.log('INPUTS: ')
+                            console.log('username: ' + this.state._username)
+                            console.log('-----------------------------------------')
+                            console.log('OUTPUTS: ')
+                            console.log('_resSuccess: ' + this.state._resSuccess)
+                            console.log('_resMsg: ' + this.state._resMsg)
+                            this.evaluateForgotPassword();
+                        }
+                    );
+            }).catch((error)=> {
+                alert(error);
+        });
     }
 
     render(){
@@ -463,7 +681,7 @@ export default class Login extends Component {
                                             disabled={this.state._disableBtn}
                                             style={styles.touchableTimeBtn}
                                             activeOpacity={0.6}
-                                            onPress={() => this.tansLogin('timein')}>
+                                            onPress={() => this.transLogin('timein')}>
                                             <Image
                                                 style={styles.imgCustomBtn} 
                                                 source={require('../../assets/img/log-in-button.png')}/>
@@ -477,7 +695,7 @@ export default class Login extends Component {
                                             disabled={this.state._disableBtn}
                                             style={styles.touchableTimeBtn}
                                             activeOpacity={0.6}
-                                            onPress={() => this.tansLogin('timeout')}>
+                                            onPress={() => this.transLogin('timeout')}>
                                             <Image
                                                 style={styles.imgCustomBtn}  
                                                 source={require('../../assets/img/log-in-button.png')}/>
@@ -491,7 +709,7 @@ export default class Login extends Component {
                                         disabled={this.state._disableBtn}
                                         style={styles.touchableLoginBtn}
                                         activeOpacity={0.6}
-                                        onPress={() => {this.tansLogin('login')}}>
+                                        onPress={() => {this.transLogin('login')}}>
                                         <Image 
                                             style={styles.imgCustomBtn} 
                                             source={require('../../assets/img/log-in-button.png')}/>
@@ -511,6 +729,7 @@ export default class Login extends Component {
                     message={this.state._resMsg}
                     onYes={this.msgBoxYesAction}
                 />
+                {/* <LoadingScreen show={this.state._showSplash}/> */}
             </ScrollView>   
         );
     }

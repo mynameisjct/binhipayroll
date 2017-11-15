@@ -70,6 +70,14 @@ export default class MsgBox extends Component{
                 });
                 break;
 
+            case 'ERROR-TRYAGAIN':
+                this.setState({
+                    _strHeaderColor: '#D75450',
+                    _strTitle: 'Error',
+                    _strIcon: 'ios-close-circle-outline'
+                });
+                break;
+            
             case 'ERROR-OK':
                 this.setState({
                     _strHeaderColor: '#D75450',
@@ -138,6 +146,21 @@ export default class MsgBox extends Component{
                 );
                 break;
 
+            case 'ERROR-TRYAGAIN':
+                return(
+                    <View style={styles.btnCont}>
+                        <TouchableOpacity 
+                            style={{ borderRadius: 100, width: 140, height: 40, backgroundColor: 'rgba(0, 0, 0, 0.3)', justifyContent:'center', alignItems: 'center'}}
+                            activeOpacity={0.6}
+                            onPress={() => this.props.onClose()}>
+                            <View>
+                                <Text style={styles.txtOKBtn}>Try again</Text>
+                            </View>
+                        </TouchableOpacity>
+                    </View>
+                );
+                break;
+            
             case 'ERROR-OK':
                 return(
                     <View style={styles.btnCont}>

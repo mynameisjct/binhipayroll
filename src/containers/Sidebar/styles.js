@@ -23,21 +23,27 @@ export default {
   scrollableCont:{
     flex: 1,
     backgroundColor: 'transparent'
+    
   },
 
   footerCont:{
-    flex: 0.3,
-    backgroundColor: 'transparent',
     maxHeight: 100,
-    minHeight: 100
+    minHeight: 100,
   },
 
   //Company Styles
   companyCont:{
     flexDirection: 'row',
     backgroundColor: '#EEB843',
-    height: 130,
+    height: 130, 
     borderBottomWidth: 1,
+    borderColor: '#B5B5B5',
+
+    shadowColor: '#000',
+    shadowOffset: { width: 2, height: 2 },
+    shadowOpacity: 0.8,
+    shadowRadius: 100,
+    elevation: 10,
   },
   
   companyPicker:{
@@ -71,40 +77,43 @@ export default {
   labelCont: {
     flex: 0.6,
     borderWidth: 0,
-    justifyContent: 'center'
+    justifyContent: 'center',
+    marginLeft: -10
   },
 
   specialProfileLabelCont: {
     flex: 0.6,
     flexDirection: 'column',
     borderWidth: 0,
-    justifyContent: 'center'
+    justifyContent: 'center',
+    marginLeft: -10
   },
 
   txtTitle: {
     fontFamily: 'Helvetica-Bold',
     fontSize: 18,
     fontWeight: '900',
-    color: '#212223'
+    color: '#434646'
   },
 
   txtContent: {
     fontFamily: 'Helvetica-Light',
     fontSize: 15,
     fontWeight: '300',
-    color: '#212223'
+    color: '#434646'
   },
 
   /********Company Related Contents Style*******/
   contentStyle:{
     height: 50,
     borderBottomWidth: 0,
-    borderColor: '#000'
+    borderColor: '#B5B5B5'
   },
 
   //Dashboard related styles
   dashboardCont:{
     flexDirection: 'row',
+    backgroundColor: 'rgba(0, 0, 0, 0.1);'
   },
 
   notificationCont:{
@@ -139,7 +148,9 @@ export default {
 
   profileCont:{
     flexDirection: 'row',
-    borderWidth: 1,
+    borderBottomWidth: 1,
+    borderTopWidth: 1,
+    borderColor: '#B5B5B5',
     minHeight: 70,
   },
 
@@ -150,17 +161,57 @@ export default {
 
   bottomContentStyle:{
     borderRightWidth: 1,
+    borderColor: '#B5B5B5'
   },
 
   settingCont:{
     flex: 0.3333,
+    flexDirection: 'row',
   },
 
   syncCont:{
+    flexDirection: 'row',
     flex: 0.3333,
   },
 
   logoutCont:{
+    flexDirection: 'row',
     flex: 0.3333,
-  }
+  },
+
+  //Profile Styles
+  txtProfileDesc: {
+    fontFamily: 'Helvetica-Light',
+    fontSize: 10,
+    fontWeight: '300',
+    color: '#434646'
+  },
+
+  footerIconCont:{
+    flex: 0.4,
+    alignItems: 'center',
+  },
+
+  footerLabelCont: {
+    flex: 0.6,
+  },
+
+  txtFooter: {
+    fontFamily: 'Helvetica-Light',
+    fontSize: 13,
+    fontWeight: '300',
+    color: '#434646',
+  },
+
+  iconFooterCorrection:{
+    marginTop: 4
+  },
+
+  specialIconFooterCorrection:{
+    marginTop: 6
+  },
+
+  txtFooterCorrection: {
+    marginTop: 4
+  },
 };

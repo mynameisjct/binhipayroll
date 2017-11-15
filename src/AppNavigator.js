@@ -19,18 +19,6 @@ import RootDrawer from './Drawer';
 import ChangePassword from './containers/ChangePassword';
 import EmployeeInfo from './containers/EmployeeInfo/';
 
-const EmprDashBoardNav = StackNavigator({
-    EmprDashBoard: {screen: EmprDashBoard},
-});
-
-const EmpeDTRNav = StackNavigator({
-    EmpeDTR: {screen: EmpeDTR},
-});
-
-const EmployeeInfoNav = StackNavigator({
-    EmployeeInfo: {screen: EmployeeInfo},
-});
-
 const ChangePasswordNav = StackNavigator({
     ChangePassword: {screen: ChangePassword},
 });

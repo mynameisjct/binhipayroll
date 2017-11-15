@@ -14,6 +14,9 @@ import styles from './styles'
 
 import MsgBox from '../../components/MessageBox/';
 
+let script_IP='http://192.168.1.8:8080/payroll/';
+let script_ForgotPassword='changepassword.php';
+
 export default class ChangePassword extends Component {
     constructor(props){
         super(props);
@@ -24,7 +27,8 @@ export default class ChangePassword extends Component {
             _msgBoxMsg: '',
             _msgBoxShow: false,
             _msgBoxType: '',
-            _minPasswordLen: '4'
+            _minPasswordLen: '4',
+            _resSuccess: '',
         }
         this.onBackPress = this.onBackPress.bind(this);
     }
@@ -45,7 +49,7 @@ export default class ChangePassword extends Component {
         this.props.navigation.navigate('EmprDashBoard');
     }
 
-    checkAndCommit = () =>{
+/*     checkAndCommit = () =>{
         let {params} = this.props.navigation.state;
         if (this.state._newPassword !== this.state._confirmPassword){
             this.setState({
@@ -96,8 +100,111 @@ export default class ChangePassword extends Component {
             )
             this.props.navigation.navigate('Login');
         }
+    } */
+
+    checkAndCommit = () =>{
+        let {params} = this.props.navigation.state;
+        if (this.state._newPassword !== this.state._confirmPassword){
+            this.setState({
+                _msgBoxMsg: 'Your password does not match match. Please try again.',
+                _msgBoxType: 'error-ok'
+            },
+                () => {
+                    this.setState({
+                        _msgBoxShow: true
+                    });
+                }
+            )
+        }
+        else if(this.state._newPassword.length < this.state._minPasswordLen){
+            this.setState({
+                _msgBoxMsg: 'Password must be at least 4 characters.',
+                _msgBoxType: 'error-ok'
+            },
+                () => {
+                    this.setState({
+                        _msgBoxShow: true
+                    });
+                }
+            )
+        }
+        else if(this.state._newPassword == params.password){
+            this.setState({
+                _msgBoxMsg: 'New password is invalid. It must not be the same with your current password.',
+                _msgBoxType: 'error-ok'
+            },
+                () => {
+                    this.setState({
+                        _msgBoxShow: true
+                    });
+                }
+            )
+        }
+        else {
+           this.pushNewPassword();
+        }
     }
 
+    responseNewPassword = () => {
+        if(this.state._resSuccess==1){
+            this.setState({
+                _msgBoxType: 'success',
+                _msgBoxShow: true
+            });
+        }
+        else{
+            this.setState({
+                _msgBoxType: 'error-tryagain',
+                _msgBoxShow: true
+            });
+        }
+        this.props.navigation.navigate('Login');
+
+    }
+
+    pushNewPassword = () => {
+        let {params} = this.props.navigation.state;
+
+        fetch(script_IP + script_ForgotPassword,{
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+        },
+
+        body: JSON.stringify({
+            sysdate: '',
+            systime: '',
+            username: params.username,
+            newpassword: this.state._newPassword
+        })
+        
+        
+        }).then((response)=> response.json())
+            .then((res)=>{
+                    /* alert(res); */
+                    this.setState({
+                        _resSuccess: res["flagno"],
+                        _msgBoxMsg: res["message"],                     
+                    },
+                        () => {
+                            console.log('*************************************')
+                            console.log('SCRIPT: ' + script_IP + script_ForgotPassword)
+                            console.log('INPUTS: ')
+                            console.log('username: ' + params.username)
+                            console.log('newpassword: ' + this.state._newPassword)
+                            console.log('-----------------------------------------')
+                            console.log('OUTPUTS: ')
+                            console.log('_resSuccess: ' + this.state._resSuccess)
+                            console.log('_resMsg: ' + this.state._msgBoxMsg)
+                            this.responseNewPassword();
+                        }
+                    );
+            }).catch((error)=> {
+                alert(error);
+        });
+    }
+    
     closeMsgBox = () => {
         this.setState({
             _msgBoxShow: false

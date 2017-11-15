@@ -17,16 +17,24 @@ import EmprDashBoard from './containers/DashBoard';
 import Sidebar from './containers/Sidebar';
 import EmployeeInfo from './containers/EmployeeInfo/';
 
-import {EmprDashBoardNav} from './AppNavigator';
-import EmpeDTRNav from './AppNavigator';
-import EmployeeInfoNav from './AppNavigator';
+//This is intended so that the sidebar will be full height on screen.
+//this is as of "react-navigation": "^1.0.0-beta.19"
+const EmprDashBoardNav = StackNavigator({
+  EmprDashBoard: {screen: EmprDashBoard},
+});
+
+const EmpeDTRNav = StackNavigator({
+  EmpeDTR: {screen: EmpeDTR},
+});
+
+const EmployeeInfoNav = StackNavigator({
+  EmployeeInfo: {screen: EmployeeInfo},
+});
 
 const RootDrawer = DrawerNavigator(
   {
     EmprDashBoardStack: {
-      screen: StackNavigator({
-        EmprDashBoard: {screen: EmprDashBoard},
-      })},
+      screen: EmprDashBoardNav},
   },
   {
     drawerWidth: 300,
