@@ -4,29 +4,25 @@ import {
     Text,
     Button
 } from 'react-native';
+import { TabNavigator } from 'react-navigation';
 import Icon from 'react-native-vector-icons/Ionicons';
+import Header2 from '../Headers/header2';
 
-export default class EmprDashBoard extends Component {
+export default class CompanyPolicies extends Component {
     static navigationOptions = {
         headerTitle : 
-            <View style={{flex: -1, width: 1000, justifyContent: 'center', alignItems: 'center'}}>
-                <Text 
-                    style={{fontFamily: 'Helvetica-Bold', fontSize: 20, fontWeight: '300', color: '#434646'}}>
-                    DASHBOARD
-                </Text>
-            </View>,
+            <Header2
+                title= 'COMPANY POLICIES'
+            />,
         headerLeft: null,
         headerStyle : 
             {backgroundColor: '#fff'},
     }
+
     render(){
         return(
             <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-                <Text>This will display Employer Dash Board</Text>
-{/*                 <Button
-                    onPress={() => this.props.navigation.navigate('DrawerToggle')}
-                    title="Open Drawer"
-                /> */}
+                <Text>This will display Policies</Text>
             </View>
         );
     }

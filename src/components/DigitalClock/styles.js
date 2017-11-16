@@ -17,7 +17,7 @@ export default {
   textDate:{
     color:'#434646',
     fontFamily:'helvetica',
-    fontSize:13,
+    fontSize: 13,
     fontWeight:'100',
     textAlign: 'center'
   },
@@ -25,7 +25,7 @@ export default {
   textTime:{
     color:'#434646',
     fontFamily:'helvetica',
-    fontSize:30,
+    fontSize:29,
     fontWeight:'bold',
     textAlign: 'center'
   },

@@ -31,15 +31,15 @@ import Logo from '../../components/BinhiLogo';
 import MsgBox from '../../components/MessageBox';
 import LoadingScreen from '../../components/LoadingScreen';
 
-let tmpUsername = "admin";
+let tmpUsername = "johndoe";
 let tmpUserGroup = "employer";
-let tmpPassword = "123";
+let tmpPassword = "1234";
 let tmpFName = "Pedro";
 let tmpMName = "Protacio";
 let tmpLName = "Duterte";
 let tmpCompany = ["Uniliver", "Ayala", "Nestle"];
 let maxAttemps = 5;
-let tmpDefaultPassword = '1234';
+let tmpDefaultPassword = '12345';
 
 let _accountLockedDuration = 30;
 let script_IP='http://192.168.1.8:8080/payroll/';
@@ -67,13 +67,13 @@ export default class Login extends Component {
             _transTime: '',
 
             //Login Credentials
-            _username: 'admin',
-            _password: 'Admin123',
+            _username: 'johndoe',
+            _password: '4321',
 
             //FormButtons
             _errorForm: false,
             _disableBtn: false,
-            _btnTextColor: 'white',
+            _btnTextColor: '#fff',
             
             //Response from DB
             _resSuccess: '',
@@ -177,20 +177,20 @@ export default class Login extends Component {
 
 
 
-/*     transLogin(strType){
+    transLogin(strType){
         this.setState({_showSplash: true});
         this.setTransTime(
             () => {
                 this.fetchDataFromDB(strType);
             }
         );
-    } */
+    }
 
-        transLogin(strType){
+/*         transLogin(strType){
         this.setTransTime(
             () => {this.tmpFetchDataFromDB(strType);}
         );
-    }
+    } */
 
     evaluateTransaction = (strType) => {
         if(this.state._resSuccess == 1){
@@ -672,6 +672,7 @@ export default class Login extends Component {
                                     onSubmitEditing={(event) => {this.refs._fieldPassword.focus();}}
                                     returnKeyType="done" 
                                     underlineColorAndroid='transparent'
+                                    secureTextEntry={true}
                                 />
                             </View>
                             <View style={styles.btnCont}>

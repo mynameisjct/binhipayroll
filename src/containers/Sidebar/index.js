@@ -21,6 +21,9 @@ import {
 import styles from './styles';
 import Icon from 'react-native-vector-icons/Ionicons';
 
+const btnActiveColor='red';
+const btnInactiveColor='yellow';
+
 export default class EmpeSidebarSidebar extends Component {
     constructor(props){
         super(props);
@@ -47,31 +50,138 @@ export default class EmpeSidebarSidebar extends Component {
             _strIconColor: '#434646',
             _strIconNotificationColor: '#EA0202',
             _profileName: 'Pedro Duterte',
-            _profileDesc: 'My Profile'
+            _profileDesc: 'My Profile',
+
+            //touchable colors
+            _btnColors: {
+                company: '',
+                dashboard: '',
+                policies: '',
+                employees: '',
+                transactions: '',
+                reports: '',
+                profile: '',
+                settings: '',
+                sync: '',
+                logout: ''},
+            
+            _dblFooterIconSize: 20,
+        }
+    }
+
+    _onPressButton = (targetPage) => {
+        var objBtnColor = this.state._btnColors;
+
+        Object.keys(objBtnColor).map(key => {
+            if (key.toUpperCase() == targetPage.toUpperCase()){
+                this.setState(prevState => ({
+                    _btnColors: {
+                        ...prevState._btnColors,
+                        key: btnActiveColor
+                    }
+                }),
+                    () => {
+                        console.log('************************************'),
+                        objBtnColor.key = 'test';
+                        console.log(key);
+                        console.log(objBtnColor[key]);
+                    },
+                )
+                
+            }
+            
+            else{
+                this.setState(prevState => ({
+                    _btnColors: {
+                        ...prevState._btnColors,
+                        key: btnInactiveColor
+                    }
+                }),
+                    () => {
+                        console.log('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'),
+                        objBtnColor.key = 'hello';
+                        console.log(key)
+                        console.log(objBtnColor[key])
+                    }
+                )
+            }
+        });
+/* 
+        test.forEach(function (item, key) {
+            if (key.toUpperCase() == curPage.toUpperCase()){
+                this.setState(prevState => ({
+                    _btnColors: {
+                        ...prevState.jasper,
+                        key: btnActiveColor
+                    }
+                }))
+                
+            } 
+            else{
+                this.setState(prevState => ({
+                    _btnColors: {
+                        ...prevState.jasper,
+                        key: btnInactiveColor
+                    }
+                }))
+            }
+        }); */
+
+        switch(targetPage.toUpperCase()){
+            case 'COMPANY':
+                this.props.navigation.navigate('CompanyProfile');
+                break
+            case 'DASHBOARD':
+                this.props.navigation.navigate('EmprDashBoard');
+                break
+            case 'POLICIES':
+                this.props.navigation.navigate('CompanyPolicies');
+                break
+            case 'EMPLOYEES':
+                this.props.navigation.navigate('EmployeeInfo');
+                break
+            case 'TRANSACTIONS':
+                this.props.navigation.navigate('Transactions');
+                break
+            case 'REPORTS':
+                this.props.navigation.navigate('Reports');
+                break
+            case 'PROFILE':
+                alert('TO DISCUSS UI REQUIREMENT');
+                break
+            case 'SETTINGS':
+                alert('TO DISCUSS UI REQUIREMENT');
+                break
+            case 'SYNC':
+                alert('TO DISCUSS UI REQUIREMENT');
+                break
+            case 'LOGOUT':
+                this.props.navigation.navigate('Login');
+                break
         }
     }
 
     render(){
         return(
             <View style={styles.container}>
-                <TouchableNativeFeedback
-                    onPress={this._onPressButton}
-                    background={TouchableNativeFeedback.SelectableBackground()}>
                     <View style={styles.companyCont}>
-                        <View style={styles.mainContentDiv}>
-                            <View style={styles.iconCont}>
-                                <Icon 
-                                    size={this.state._dblCompanyIconSize} 
-                                    name={this.state._strIconName.company} 
-                                    color={this.state._strIconColor}  />
+                        <TouchableNativeFeedback
+                            onPress={() => {this._onPressButton('company')}}
+                            background={TouchableNativeFeedback.SelectableBackground()}>
+                            <View style={styles.mainContentDiv}>
+                                <View style={styles.iconCont}>
+                                    <Icon 
+                                        size={this.state._dblCompanyIconSize} 
+                                        name={this.state._strIconName.company} 
+                                        color={this.state._strIconColor}  />
+                                </View>
+                                <View style={styles.labelCont}>
+                                    <Text style={styles.txtTitle}>
+                                        {this.state._activeCompany}
+                                    </Text>
+                                </View>
                             </View>
-                            <View style={styles.labelCont}>
-                                <Text style={styles.txtTitle}>
-                                    {this.state._activeCompany}
-                                </Text>
-                            </View>
-                        </View>
-                        
+                        </TouchableNativeFeedback>
 
                         <View style={styles.miscContentDiv}>
                             <View style={styles.companyPicker}>
@@ -89,14 +199,14 @@ export default class EmpeSidebarSidebar extends Component {
                             </View>
                         </View>
                     </View>
-                </TouchableNativeFeedback>
+                
 
                 <ScrollView style={styles.scrollableCont}>
 
                     {/*************Dashbord*************/}
                     <TouchableNativeFeedback
                         style={{backgroundColor: 'red'}}
-                        onPress={this._onPressButton}
+                        onPress={() => {this._onPressButton('dashboard')}}
                         background={TouchableNativeFeedback.SelectableBackground()}>
                         <View style={[styles.contentStyle, styles.dashboardCont]}>
                             <View style={styles.mainContentDiv}>
@@ -128,7 +238,7 @@ export default class EmpeSidebarSidebar extends Component {
 
                     {/*************Company Policies*************/}
                     <TouchableNativeFeedback
-                        onPress={this._onPressButton}
+                        onPress={() => {this._onPressButton('policies')}}
                         background={TouchableNativeFeedback.SelectableBackground()}>
                         <View style={[styles.contentStyle, styles.policiesCont]}>
                             <View style={styles.mainContentDiv}>
@@ -152,7 +262,7 @@ export default class EmpeSidebarSidebar extends Component {
 
                     {/*************My Employees*************/}
                     <TouchableNativeFeedback
-                        onPress={this._onPressButton}
+                        onPress={() => {this._onPressButton('employees')}}
                         background={TouchableNativeFeedback.SelectableBackground()}>
                         <View style={[styles.contentStyle, styles.employeesCont]}>
                             <View style={styles.mainContentDiv}>
@@ -176,7 +286,7 @@ export default class EmpeSidebarSidebar extends Component {
 
                     {/*************Transactions*************/}
                     <TouchableNativeFeedback
-                        onPress={this._onPressButton}
+                        onPress={() => {this._onPressButton('transactions')}}
                         background={TouchableNativeFeedback.SelectableBackground()}>
                         <View style={[styles.contentStyle, styles.transactionsCont]}>
                             <View style={styles.mainContentDiv}>
@@ -200,7 +310,7 @@ export default class EmpeSidebarSidebar extends Component {
 
                     {/*************Reports*************/}
                     <TouchableNativeFeedback
-                        onPress={this._onPressButton}
+                        onPress={() => {this._onPressButton('reports')}}
                         background={TouchableNativeFeedback.SelectableBackground()}>
                         <View style={[styles.contentStyle, styles.reportsCont]}>
                             <View style={styles.mainContentDiv}>
@@ -253,7 +363,7 @@ export default class EmpeSidebarSidebar extends Component {
                 <View style={styles.footerCont}>
 
                     <TouchableNativeFeedback
-                        onPress={this._onPressButton}
+                        onPress={() => {this._onPressButton('profile')}}
                         background={TouchableNativeFeedback.SelectableBackground()}>
                         <View style={styles.profileCont}>
                             <View style={styles.mainContentDiv}>
@@ -281,7 +391,7 @@ export default class EmpeSidebarSidebar extends Component {
                     <View style={styles.bottomCont}>
 
                         <TouchableNativeFeedback
-                            onPress={this._onPressButton}
+                            onPress={() => {this._onPressButton('settings')}}
                             background={TouchableNativeFeedback.SelectableBackground()}>
                             <View style={[styles.bottomContentStyle, styles.settingCont]}>
                                 <View style={styles.footerIconCont}>
@@ -300,7 +410,7 @@ export default class EmpeSidebarSidebar extends Component {
                         </TouchableNativeFeedback>
 
                         <TouchableNativeFeedback
-                            onPress={this._onPressButton}
+                            onPress={() => {this._onPressButton('sync')}}
                             background={TouchableNativeFeedback.SelectableBackground()}>
                             <View style={[styles.bottomContentStyle,styles.syncCont]}>
                                 <View style={styles.footerIconCont}>
@@ -319,7 +429,7 @@ export default class EmpeSidebarSidebar extends Component {
                         </TouchableNativeFeedback>
 
                         <TouchableNativeFeedback
-                            onPress={this._onPressButton}
+                            onPress={() => {this._onPressButton('logout')}}
                             background={TouchableNativeFeedback.SelectableBackground()}>
                             <View style={[styles.bottomContentStyle,styles.logoutCont]}>
                                 <View style={styles.footerIconCont}>

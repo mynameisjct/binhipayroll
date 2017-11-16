@@ -7,11 +7,11 @@ import {
 import Icon from 'react-native-vector-icons/Ionicons';
 import Header2 from '../Headers/header2';
 
-export default class EmployeeInfo extends Component {
+export default class Transactions extends Component {
     static navigationOptions = {
         headerTitle : 
             <Header2
-                title= 'MY EMPLOYEES'
+                title= 'TRANSACTIONS'
             />,
         headerLeft: null,
         headerStyle : 
@@ -21,7 +21,7 @@ export default class EmployeeInfo extends Component {
     render(){
         return(
             <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-                <Text>This will display MY EMPLOYEES</Text>
+                <Text>This will display TRANSACTIONS</Text>
             </View>
         );
     }
