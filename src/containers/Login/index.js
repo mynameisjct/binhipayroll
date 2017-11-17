@@ -42,7 +42,7 @@ let maxAttemps = 5;
 let tmpDefaultPassword = '12345';
 
 let _accountLockedDuration = 30;
-let script_IP='http://192.168.1.8:8080/payroll/';
+let script_IP='http://192.168.1.10:8080/payroll/';
 let script_Login='logins.php';
 let script_TimeIn='timein.php';
 let script_TimeOut='timeout.php';
@@ -67,8 +67,8 @@ export default class Login extends Component {
             _transTime: '',
 
             //Login Credentials
-            _username: 'johndoe',
-            _password: '4321',
+            _username: 'admin',
+            _password: 'Admin123',
 
             //FormButtons
             _errorForm: false,
@@ -79,10 +79,12 @@ export default class Login extends Component {
             _resSuccess: '',
             _resMsg: '',
             _resUserGroup: '',
-            _resFName: 'TEMP-NAME',
-            _resMName: '',
-            _resLName: '',
-            _resCompany: [],
+            _resFName: 'Pedro',
+            _resMName: 'Protacio',
+            _resLName: 'Duterte',
+            _resCompany: '',
+            _resBranch: '',
+            _resPosition: '',
             _resAccessToken: '',
 
             //forms
@@ -196,7 +198,15 @@ export default class Login extends Component {
         if(this.state._resSuccess == 1){
             switch(strType.toUpperCase()){
                 case 'LOGIN':
-                    this.props.navigation.navigate('EmprDashBoard');
+                    this.props.navigation.navigate('EmprDashBoard', 
+                        {
+                            username: this.state._username,
+                            password: this.state._password,
+                            company: this.state._resCompany,
+                            firstname: this.state._resFName,
+                            middlename: this.state._resMName,
+                            lastname: this.state._resLName
+                        });
                     break;
                 case 'TIMEIN':
                     this.setState({
@@ -276,7 +286,16 @@ export default class Login extends Component {
                 }
                 
                 else{
-                    this.props.navigation.navigate('EmprDashBoard');
+                    this.props.navigation.navigate('EmprDashBoard', 
+                    {
+                        username: 'ZZZZZZZZ',
+                        password: this.state._password,
+                        company: this.state._resCompany,
+                        firstname: 'test1',
+                        middlename: this.state._resMName,
+                        lastname: this.state._resLName
+                    });
+                    break;
                 }
 /*                 this.setState({
                     _resMsg: 'Credentials are correct. This should proceed to Dash Board.',
@@ -423,14 +442,16 @@ export default class Login extends Component {
                 .then((res)=>{
                         /* alert(res); */
                         this.setState({
-                            _resSuccess: res["flagno"],
-                            _resMsg: res["message"],
-                            _resUserGroup: res["usergroup"],
-                            _resFName: res["firstname"],
-                            _resMName: res["middlename"],
-                            _resLName: res["lastname"],
-                            _resCompany: res["companyname"],
-                            _resAccessToken: res["accesstoken"]                           
+                            _resSuccess: res.flagno,
+                            _resMsg: res.message,
+                            _resUserGroup: res.usergroup,
+                            _resFName: res.firstname,
+                            _resMName: res.middlename,
+                            _resLName: res.lastname,
+                            _resCompany: res.companyname,
+                            _resBranch: res.branch,
+                            _resPosition: res.position,
+                            _resAccessToken: res.accesstoken,                          
                         },
                             () => {
                                 console.log('*************************************')
@@ -447,7 +468,31 @@ export default class Login extends Component {
                                 console.log('_resFName: ' + this.state._resFName)
                                 console.log('_resMName: ' + this.state._resMName)
                                 console.log('_resLName: ' + this.state._resLName)
-                                console.log('_resCompany: ' + this.state._resCompany)
+                                /* console.log('_resCompany: ' + this.state._resCompany) */
+                                /* console.log('_resCompany: ' + typeof(this.state._resCompany)) */
+                                
+                                let oCompany = this.state._resCompany;
+                                Object.keys(oCompany).map(key => {
+                                    let tmpDefaultFlag ='' ;
+                                    if(oCompany[key].default == 1){
+                                        tmpDefaultFlag = '[DEFAULT]';
+                                    }
+                                    console.log(oCompany[key].name + ' ' + tmpDefaultFlag);
+                                    /* let tmpDefaultFlag ='' ;
+
+                                    if(oCompany['default'] == 0){
+                                        tmpDefaultFlag = '[DEFAULT]';
+                                    }
+                                    console.log('_resCompany: ' + oCompany['name'] + ' ' + tmpDefaultFlag); */
+                                });
+
+                                /* let arrCompany = this.state._resMName;
+                                arrCompany.forEach(function(element) {
+                                    console.log('i was in!')
+                                }, this); */
+
+                                console.log('_resBranch: ' + this.state._resBranch)
+                                console.log('_resPosition: ' + this.state._resPosition)
                                 console.log('_resAccessToken: ' + this.state._resAccessToken)
                                 this.evaluateTransaction(strType);
                             }

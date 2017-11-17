@@ -14,7 +14,7 @@ import styles from './styles'
 
 import MsgBox from '../../components/MessageBox/';
 
-let script_IP='http://192.168.1.8:8080/payroll/';
+let script_IP='http://192.168.1.10:8080/payroll/';
 let script_ForgotPassword='changepassword.php';
 
 export default class ChangePassword extends Component {

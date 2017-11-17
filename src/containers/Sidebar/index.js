@@ -18,6 +18,7 @@ import {
     TouchableNativeFeedback
 } from 'react-native';
 
+import { DrawerItems, SafeAreaView } from 'react-navigation';
 import styles from './styles';
 import Icon from 'react-native-vector-icons/Ionicons';
 
@@ -30,17 +31,17 @@ export default class EmpeSidebarSidebar extends Component {
         this.state = {
             _activeCompany: 'BINHI-MeDFI',
             _dblProfileIconSize: 35,
-            _dblCompanyIconSize: 55,
+            _dblCompanyIconSize: 50,
             _dblContentIconSize: 25,
             _dblFooterIconSize: 20,
             _dblFooterIconLogoutSize: 18,
             _strIconName: {
                 company: 'md-home',
                 dashboard: 'md-apps',
-                policies: 'md-list-box',
+                policies: 'ios-book',
                 employees: 'ios-people',
                 transactions: 'ios-card',
-                reports: 'ios-book',
+                reports: 'md-list-box',
                 profile: 'md-person',
                 settings: 'md-settings',
                 sync: 'md-sync',
@@ -161,44 +162,49 @@ export default class EmpeSidebarSidebar extends Component {
         }
     }
 
+    testProp = () => {
+        let {params} = this.props.navigation.state;
+        console.log('testProp: ' + params.username);
+    }
+
     render(){
         return(
-            <View style={styles.container}>
-                    <View style={styles.companyCont}>
-                        <TouchableNativeFeedback
-                            onPress={() => {this._onPressButton('company')}}
-                            background={TouchableNativeFeedback.SelectableBackground()}>
-                            <View style={styles.mainContentDiv}>
-                                <View style={styles.iconCont}>
-                                    <Icon 
-                                        size={this.state._dblCompanyIconSize} 
-                                        name={this.state._strIconName.company} 
-                                        color={this.state._strIconColor}  />
-                                </View>
-                                <View style={styles.labelCont}>
-                                    <Text style={styles.txtTitle}>
-                                        {this.state._activeCompany}
-                                    </Text>
-                                </View>
+            <SafeAreaView style={styles.container} forceInset={{ top: 'always', horizontal: 'never' }}>
+                <View style={styles.companyCont}>
+                    <TouchableNativeFeedback
+                        onPress={() => {this._onPressButton('company')}}
+                        background={TouchableNativeFeedback.SelectableBackground()}>
+                        <View style={styles.mainContentDiv}>
+                            <View style={styles.iconCont}>
+                                <Icon 
+                                    size={this.state._dblCompanyIconSize} 
+                                    name={this.state._strIconName.company} 
+                                    color={this.state._strIconColor}  />
                             </View>
-                        </TouchableNativeFeedback>
-
-                        <View style={styles.miscContentDiv}>
-                            <View style={styles.companyPicker}>
-                                <Picker
-                                    mode='dropdown'
-                                    selectedValue={this.state._activeCompany}
-                                    onValueChange={(itemValue, itemIndex) => this.setState({_activeCompany: itemValue})}>
-                                    <Picker.Item label="Argus Land" value="Argus Land" />
-                                    <Picker.Item label="BINHI-MeDFI" value="BINHI-MeDFI" />
-                                    <Picker.Item label="Credit Ventures Corporation" value="Credit Ventures Corporation" />
-                                    <Picker.Item label="JCA Realty" value="JCA Realty" />
-                                    <Picker.Item label="Mitsui Engineering and Shipbuilding Ltd" value="Mitsui Engineering and Shipbuilding Ltd" />
-                                    
-                                </Picker>
+                            <View style={styles.labelCont}>
+                                <Text style={styles.txtTitle}>
+                                    {this.state._activeCompany}
+                                </Text>
                             </View>
                         </View>
+                    </TouchableNativeFeedback>
+
+                    <View style={styles.miscContentDiv}>
+                        <View style={styles.companyPicker}>
+                            <Picker
+                                mode='dropdown'
+                                selectedValue={this.state._activeCompany}
+                                onValueChange={(itemValue, itemIndex) => this.setState({_activeCompany: itemValue})}>
+                                <Picker.Item label="Argus Land" value="Argus Land" />
+                                <Picker.Item label="BINHI-MeDFI" value="BINHI-MeDFI" />
+                                <Picker.Item label="Credit Ventures Corporation" value="Credit Ventures Corporation" />
+                                <Picker.Item label="JCA Realty" value="JCA Realty" />
+                                <Picker.Item label="Mitsui Engineering and Shipbuilding Ltd" value="Mitsui Engineering and Shipbuilding Ltd" />
+                                
+                            </Picker>
+                        </View>
                     </View>
+                </View>
                 
 
                 <ScrollView style={styles.scrollableCont}>
@@ -449,7 +455,7 @@ export default class EmpeSidebarSidebar extends Component {
                         
                     </View>
                 </View>
-            </View>
+            </SafeAreaView>
         );
     }
 }

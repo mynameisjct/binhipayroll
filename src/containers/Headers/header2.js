@@ -12,7 +12,7 @@ import styles from './styles';
 
 export default class Header2 extends Component {
     static navigationOptions = {
-        header : null,
+        /* header : null, */
     }
     render(){
         return(
