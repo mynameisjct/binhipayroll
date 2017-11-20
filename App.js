@@ -11,11 +11,21 @@
 **************************************************************/
 import React, { Component } from 'react';
 import AppNavigator from './src/AppNavigator';
+import configureStore from './src/store';
+import {Provider} from 'react-redux';
+
+const store = configureStore();
+
+store.subscribe(() => {
+  console.log("Store is updated!", store.getState());
+});
 
 export default class Main extends Component {
   render() {
     return (
-      <AppNavigator/>
+      <Provider store= {store}>
+        <AppNavigator/>
+      </Provider>
     );
   }
 }

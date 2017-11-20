@@ -19,15 +19,11 @@ import RootDrawer from './Drawer';
 import ChangePassword from './containers/ChangePassword';
 import EmployeeInfo from './containers/EmployeeInfo/';
 
-const ChangePasswordNav = StackNavigator({
-    ChangePassword: {screen: ChangePassword},
-});
-
 const AppNavigator = StackNavigator(
     {
         RootDrawer: { screen: RootDrawer },
         Login: {screen: Login},
-        ChangePassword: {screen: ChangePasswordNav},
+        ChangePassword: {screen: ChangePassword},
     },
 
     {

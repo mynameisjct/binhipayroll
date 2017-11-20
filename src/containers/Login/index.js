@@ -30,10 +30,13 @@ import DigitalClock from '../../components/DigitalClock';
 import Logo from '../../components/BinhiLogo';
 import MsgBox from '../../components/MessageBox';
 import LoadingScreen from '../../components/LoadingScreen';
+import { NavigationActions } from 'react-navigation'
+import { connect } from 'react-redux';
+import {SetLoginInfo} from '../../actions';
 
-let tmpUsername = "johndoe";
+let tmpUsername = "admin";
 let tmpUserGroup = "employer";
-let tmpPassword = "1234";
+let tmpPassword = "Admin123";
 let tmpFName = "Pedro";
 let tmpMName = "Protacio";
 let tmpLName = "Duterte";
@@ -48,7 +51,7 @@ let script_TimeIn='timein.php';
 let script_TimeOut='timeout.php';
 let script_ForgotPassword='forgotpassword.php'
 
-export default class Login extends Component {
+export class Login extends Component {
     static navigationOptions = {
         header : null,
     }
@@ -179,26 +182,39 @@ export default class Login extends Component {
 
 
 
-    transLogin(strType){
+/*     transLogin(strType){
         this.setState({_showSplash: true});
         this.setTransTime(
             () => {
                 this.fetchDataFromDB(strType);
             }
         );
-    }
+    } */
 
-/*         transLogin(strType){
+    transLogin(strType){
         this.setTransTime(
             () => {this.tmpFetchDataFromDB(strType);}
         );
-    } */
+    }
 
     evaluateTransaction = (strType) => {
         if(this.state._resSuccess == 1){
             switch(strType.toUpperCase()){
                 case 'LOGIN':
-                    this.props.navigation.navigate('EmprDashBoard', 
+                    this.props.dispatchStoreValues({
+                        _resSuccess: this.state._resSuccess,
+                        _resMsg: this.state._resSuccess,
+                        _resUserGroup: this.state._resUserGroup,
+                        _resFName: this.state._resFName,
+                        _resMName: this.state._resMName,
+                        _resLName: this.state._resLName,
+                        _resCompany: this.state._resCompany,
+                        _resBranch: this.state._resBranch,
+                        _resPosition: this.state._resPosition,
+                        _resAccessToken: this.state._resAccessToken,
+                    });
+
+/*                     this.props.navigation.navigate('EmprDashBoard', 
                         {
                             username: this.state._username,
                             password: this.state._password,
@@ -206,7 +222,7 @@ export default class Login extends Component {
                             firstname: this.state._resFName,
                             middlename: this.state._resMName,
                             lastname: this.state._resLName
-                        });
+                        }); */
                     break;
                 case 'TIMEIN':
                     this.setState({
@@ -286,7 +302,34 @@ export default class Login extends Component {
                 }
                 
                 else{
-                    this.props.navigation.navigate('EmprDashBoard', 
+                    //VNX_TEST
+                    this.props.dispatchStoreValues({
+
+                        resSuccess: this.state._resSuccess,
+                        resMsg: this.state._resMsg,
+                        resUserGroup: this.state._resUserGroup,
+                        resFName: this.state._resFName,
+                        resMName: this.state._resMName,
+                        resLName: this.state._resLName,
+                        resCompany: this.state._resCompany,
+                        resBranch: this.state._resBranch,
+                        resPosition: this.state._resPosition,
+                        resAccessToken: this.state._resAccessToken,
+                    });
+/*                     const navigateAction = NavigationActions.navigate({
+                          routeName: 'EmprDashBoard',
+                          params: {username: 'ZZZZZZZZ'},
+                          action: NavigationActions.navigate({ routeName: 'EmprDashBoard'})
+                        })
+                        this.props.navigation.dispatch(navigateAction) */
+                        
+/*                     let setParamsAction = NavigationActions.setParams({
+                        params: { title: 'Hello' },
+                        key: 'EmprDashBoard',
+                    })
+                    this.props.navigation.dispatch(setParamsAction);
+                    this.props.navigation.navigate('EmprDashBoard'); */
+/*                     this.props.navigation.navigate('EmprDashBoard',
                     {
                         username: 'ZZZZZZZZ',
                         password: this.state._password,
@@ -295,7 +338,7 @@ export default class Login extends Component {
                         middlename: this.state._resMName,
                         lastname: this.state._resLName
                     });
-                    break;
+                    break; */
                 }
 /*                 this.setState({
                     _resMsg: 'Credentials are correct. This should proceed to Dash Board.',
@@ -359,7 +402,7 @@ export default class Login extends Component {
                 },
                     () => {
                         this.evaluateSuccessTrans(strType);
-                    } 
+                    }
                 );
             }
             else {
@@ -468,23 +511,10 @@ export default class Login extends Component {
                                 console.log('_resFName: ' + this.state._resFName)
                                 console.log('_resMName: ' + this.state._resMName)
                                 console.log('_resLName: ' + this.state._resLName)
-                                /* console.log('_resCompany: ' + this.state._resCompany) */
-                                /* console.log('_resCompany: ' + typeof(this.state._resCompany)) */
+                                console.log('_resCompany: ' + this.state._resCompany)
+                                console.log('_resCompany: ' + typeof(this.state._resCompany))
                                 
-                                let oCompany = this.state._resCompany;
-                                Object.keys(oCompany).map(key => {
-                                    let tmpDefaultFlag ='' ;
-                                    if(oCompany[key].default == 1){
-                                        tmpDefaultFlag = '[DEFAULT]';
-                                    }
-                                    console.log(oCompany[key].name + ' ' + tmpDefaultFlag);
-                                    /* let tmpDefaultFlag ='' ;
 
-                                    if(oCompany['default'] == 0){
-                                        tmpDefaultFlag = '[DEFAULT]';
-                                    }
-                                    console.log('_resCompany: ' + oCompany['name'] + ' ' + tmpDefaultFlag); */
-                                });
 
                                 /* let arrCompany = this.state._resMName;
                                 arrCompany.forEach(function(element) {
@@ -667,6 +697,17 @@ export default class Login extends Component {
         });
     }
 
+
+    testFunc() {
+/*         let objTest = this.props.logininfo;
+/*         console.log('params.username: ' + params.username); */
+        /* console.log('VNXTEST1: ' + String(this.props.logininfo.resFName)); */
+/*         var obj = JSON.stringify(this.props.logininfo);
+        var stringify = JSON.parse(obj);
+        for (var i = 0; i < stringify.length; i++) {
+            console.log(stringify[i]['resFName']);
+        } */
+    }
     render(){
         return(
             <ScrollView>
@@ -679,7 +720,8 @@ export default class Login extends Component {
                                 day={this.state._curDay}/>
                         </View>
                         <View style={[styles.boxCont, styles.logoCont]}>
-                            <Logo/>
+                            {this.testFunc()}
+                            {/* <Logo/> */}
                         </View>
 
                         <View style={[styles.boxCont, styles.formCont, styles.boxContBottom]}>
@@ -780,3 +822,26 @@ export default class Login extends Component {
         );
     }
 }
+
+function mapStateToProps (state) {
+    return {
+        logininfo: state.loginReducer.logininfo
+    }
+}
+  
+function mapDispatchToProps (dispatch) {
+    
+    return {
+      dispatchStoreValues: (logininfo) => {
+        console.log('LOGIN.resFName: ' + logininfo.resFName);
+        /* dispatch(SetLoginInfo(logininfo)) */
+        dispatch(SetLoginInfo(logininfo))
+    }
+  }
+}
+  
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps,
+)(Login)
+  

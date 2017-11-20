@@ -22,10 +22,13 @@ import { DrawerItems, SafeAreaView } from 'react-navigation';
 import styles from './styles';
 import Icon from 'react-native-vector-icons/Ionicons';
 
+import { connect } from 'react-redux';
+import {SetLoginInfo} from '../../actions';
+
 const btnActiveColor='red';
 const btnInactiveColor='yellow';
 
-export default class EmpeSidebarSidebar extends Component {
+export class EmpeSidebarSidebar extends Component {
     constructor(props){
         super(props);
         this.state = {
@@ -163,13 +166,15 @@ export default class EmpeSidebarSidebar extends Component {
     }
 
     testProp = () => {
-        let {params} = this.props.navigation.state;
-        console.log('testProp: ' + params.username);
+        /* let params = this.props.navigation.state;
+        console.log('testProp: ' + params.title); */
+        console.log('XXXXX_TEST: ' + this.props._resFName)
     }
 
     render(){
         return(
             <SafeAreaView style={styles.container} forceInset={{ top: 'always', horizontal: 'never' }}>
+                {this.testProp()}
                 <View style={styles.companyCont}>
                     <TouchableNativeFeedback
                         onPress={() => {this._onPressButton('company')}}
@@ -460,3 +465,10 @@ export default class EmpeSidebarSidebar extends Component {
     }
 }
 
+/* function mapStateToProps(state){
+    return{
+      logininfo : state.logininfo
+    };
+  }
+export default connect(mapStateToProps, null)(EmpeSidebarSidebar);
+ */

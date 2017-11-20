@@ -75,9 +75,9 @@ export default class EmprDashBoard extends Component {
     } */
 
     testFunc = () => {
-        let {params} = this.props.navigation.state;
-        console.log('params.username: ' + params.username);
-/*         Object.keys(params).map(key => {
+        let params = this.props.navigation.state;
+/*         console.log('params.username: ' + params.username); */
+        Object.keys(params).map(key => {
             console.log('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX');
             console.log('KEY: ' + key);
             console.log('VALUE: ' + params[key]);
@@ -94,7 +94,7 @@ export default class EmprDashBoard extends Component {
                     
                 });
             }
-        }); */
+        });
     }
 
     _showDrawer = () => {

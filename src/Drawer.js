@@ -23,9 +23,9 @@ import CompanyProfile from './containers/CompanyProfile';
 
 //This is intended so that the sidebar will be full height on screen.
 //this is as of "react-navigation": "^1.0.0-beta.19"
-/* const EmprDashBoardNav = StackNavigator({
+const EmprDashBoardNav = StackNavigator({
   EmprDashBoard: {screen: EmprDashBoard},
-}); */
+});
 
 const CompanyPoliciesNav = StackNavigator({
   CompanyPolicies: {screen: CompanyPolicies},
@@ -49,10 +49,8 @@ const CompanyProfileNav = StackNavigator({
 
 const RootDrawer = DrawerNavigator(
   {
-    EmprDashBoard: {screen: EmprDashBoard},
-
-/*     EmprDashBoardStack: {
-      screen: EmprDashBoardNav}, */
+    EmprDashBoardStack: {
+      screen: EmprDashBoardNav},
 
     CompanyPoliciesStack: {
       screen: CompanyPoliciesNav},
