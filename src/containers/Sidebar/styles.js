@@ -91,7 +91,7 @@ export default {
 
   txtTitle: {
     fontFamily: 'Helvetica-Bold',
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: '900',
     color: '#434646'
   },
@@ -113,7 +113,6 @@ export default {
   //Dashboard related styles
   dashboardCont:{
     flexDirection: 'row',
-    backgroundColor: 'rgba(0, 0, 0, 0.1);'
   },
 
   notificationCont:{
@@ -124,7 +123,7 @@ export default {
 
   txtNotification: {
     fontFamily: 'Helvetica-Light',
-    fontSize: 12,
+    fontSize: 14,
     fontWeight: '500',
     color: '#EA0202',
     marginRight: 5,

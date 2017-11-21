@@ -74,29 +74,6 @@ export default class EmprDashBoard extends Component {
             {backgroundColor: '#fff'},
     } */
 
-    testFunc = () => {
-        let params = this.props.navigation.state;
-/*         console.log('params.username: ' + params.username); */
-        Object.keys(params).map(key => {
-            console.log('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX');
-            console.log('KEY: ' + key);
-            console.log('VALUE: ' + params[key]);
-            console.log('KEY-TYPE: ' + typeof(key));
-            console.log('VALUE-TYPE: ' + typeof(params[key]));
-            let objParams = params[key];
-            if(typeof(objParams) === 'object'){
-                console.log('---------------------------------------------------------');
-                Object.keys(objParams).map(subKey => {
-                    console.log('KEY: ' + subKey);
-                    console.log('VALUE: ' + params[subKey]);
-                    console.log('KEY-TYPE: ' + typeof(subKey));
-                    console.log('VALUE-TYPE: ' + typeof(params[subKey]));
-                    
-                });
-            }
-        });
-    }
-
     _showDrawer = () => {
         let {params} = this.props.navigation.state;
         this.props.navigation.navigate('DrawerToggle', {
@@ -109,7 +86,6 @@ export default class EmprDashBoard extends Component {
             <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
                 <Text>This will display Employer Dash Board</Text>
                 <Button title="SHOWDRAWER" onPress={() => this._showDrawer()}/>
-                {this.testFunc()}
             </View>
         );
     }

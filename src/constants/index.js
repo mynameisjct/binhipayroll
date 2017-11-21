@@ -1,7 +1,10 @@
 // constants.js
 
-const SET_LOGININFO = 'ADD_PERSON';
+const SET_LOGININFO = 'SET_LOGININFO';
+const SET_ACTIVECOMPANY = 'SET_ACTIVECOMPANY';
 
 export {
     SET_LOGININFO,
+    SET_ACTIVECOMPANY
 };
+

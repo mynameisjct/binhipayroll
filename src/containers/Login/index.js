@@ -33,19 +33,19 @@ import LoadingScreen from '../../components/LoadingScreen';
 import { NavigationActions } from 'react-navigation'
 import { connect } from 'react-redux';
 import {SetLoginInfo} from '../../actions';
+import apiConfig from '../../services/api/config';
 
 let tmpUsername = "admin";
 let tmpUserGroup = "employer";
 let tmpPassword = "Admin123";
-let tmpFName = "Pedro";
+let tmpFName = "Jovan";
 let tmpMName = "Protacio";
-let tmpLName = "Duterte";
+let tmpLName = "Oilixua";
 let tmpCompany = ["Uniliver", "Ayala", "Nestle"];
 let maxAttemps = 5;
 let tmpDefaultPassword = '12345';
 
 let _accountLockedDuration = 30;
-let script_IP='http://192.168.1.10:8080/payroll/';
 let script_Login='logins.php';
 let script_TimeIn='timein.php';
 let script_TimeOut='timeout.php';
@@ -70,8 +70,8 @@ export class Login extends Component {
             _transTime: '',
 
             //Login Credentials
-            _username: 'admin',
-            _password: 'Admin123',
+            _username: 'jovani',
+            _password: '12345',
 
             //FormButtons
             _errorForm: false,
@@ -82,9 +82,9 @@ export class Login extends Component {
             _resSuccess: '',
             _resMsg: '',
             _resUserGroup: '',
-            _resFName: 'Pedro',
-            _resMName: 'Protacio',
-            _resLName: 'Duterte',
+            _resFName: '',
+            _resMName: '',
+            _resLName: '',
             _resCompany: '',
             _resBranch: '',
             _resPosition: '',
@@ -182,39 +182,52 @@ export class Login extends Component {
 
 
 
-/*     transLogin(strType){
+    transLogin(strType){
         this.setState({_showSplash: true});
         this.setTransTime(
             () => {
                 this.fetchDataFromDB(strType);
             }
         );
-    } */
+    }
 
-    transLogin(strType){
+/*     transLogin(strType){
         this.setTransTime(
             () => {this.tmpFetchDataFromDB(strType);}
         );
-    }
+    } */
 
     evaluateTransaction = (strType) => {
         if(this.state._resSuccess == 1){
             switch(strType.toUpperCase()){
                 case 'LOGIN':
+
+                    //VNX_TEST
                     this.props.dispatchStoreValues({
-                        _resSuccess: this.state._resSuccess,
-                        _resMsg: this.state._resSuccess,
-                        _resUserGroup: this.state._resUserGroup,
-                        _resFName: this.state._resFName,
-                        _resMName: this.state._resMName,
-                        _resLName: this.state._resLName,
-                        _resCompany: this.state._resCompany,
-                        _resBranch: this.state._resBranch,
-                        _resPosition: this.state._resPosition,
-                        _resAccessToken: this.state._resAccessToken,
+                        resUsername: this.state._password,
+                        resSuccess: this.state._resSuccess,
+                        resMsg: this.state._resMsg,
+                        resUserGroup: this.state._resUserGroup,
+                        resFName: this.state._resFName,
+                        resMName: this.state._resMName,
+                        resLName: this.state._resLName,
+                        resCompany: this.state._resCompany,
+                        resBranch: this.state._resBranch,
+                        resPosition: this.state._resPosition,
+                        resAccessToken: this.state._resAccessToken,
                     });
 
-/*                     this.props.navigation.navigate('EmprDashBoard', 
+                    this.props.navigation.navigate('EmprDashBoard', 
+                        {
+                            username: this.state._username,
+                            company: this.state._resCompany,
+                            firstname: this.state._resFName,
+                            middlename: this.state._resMName,
+                            lastname: this.state._resLName
+                        });
+
+
+/*                     this.props.navigation.navigate('CompanyProfile', 
                         {
                             username: this.state._username,
                             password: this.state._password,
@@ -224,6 +237,7 @@ export class Login extends Component {
                             lastname: this.state._resLName
                         }); */
                     break;
+                    
                 case 'TIMEIN':
                     this.setState({
                         _msgBoxType: 'success'
@@ -302,9 +316,9 @@ export class Login extends Component {
                 }
                 
                 else{
-                    //VNX_TEST
+                                        //VNX_TEST
                     this.props.dispatchStoreValues({
-
+                        resUsername: this.state._password,
                         resSuccess: this.state._resSuccess,
                         resMsg: this.state._resMsg,
                         resUserGroup: this.state._resUserGroup,
@@ -316,29 +330,17 @@ export class Login extends Component {
                         resPosition: this.state._resPosition,
                         resAccessToken: this.state._resAccessToken,
                     });
-/*                     const navigateAction = NavigationActions.navigate({
-                          routeName: 'EmprDashBoard',
-                          params: {username: 'ZZZZZZZZ'},
-                          action: NavigationActions.navigate({ routeName: 'EmprDashBoard'})
-                        })
-                        this.props.navigation.dispatch(navigateAction) */
-                        
-/*                     let setParamsAction = NavigationActions.setParams({
-                        params: { title: 'Hello' },
-                        key: 'EmprDashBoard',
-                    })
-                    this.props.navigation.dispatch(setParamsAction);
-                    this.props.navigation.navigate('EmprDashBoard'); */
-/*                     this.props.navigation.navigate('EmprDashBoard',
-                    {
-                        username: 'ZZZZZZZZ',
-                        password: this.state._password,
-                        company: this.state._resCompany,
-                        firstname: 'test1',
-                        middlename: this.state._resMName,
-                        lastname: this.state._resLName
-                    });
-                    break; */
+
+                    this.props.navigation.navigate('EmprDashBoard', 
+                        {
+                            username: this.state._username,
+                            password: this.state._password,
+                            company: this.state._resCompany,
+                            firstname: this.state._resFName,
+                            middlename: this.state._resMName,
+                            lastname: this.state._resLName
+                        });
+                    break;
                 }
 /*                 this.setState({
                     _resMsg: 'Credentials are correct. This should proceed to Dash Board.',
@@ -397,6 +399,7 @@ export class Login extends Component {
             if(this.state._password == tmpPassword){
                 this.setState({
                     _resFName: tmpFName,
+                    _resLName: tmpLName,
                     _msgBoxType: 'success',
                     _resSuccess: 1,
                 },
@@ -466,7 +469,7 @@ export class Login extends Component {
     fetchDataFromDB(strType){
 /*         alert(this.state._transDate + '-------' + this.state._transTime); */
         if (strType.toUpperCase()=='LOGIN'){
-            fetch(script_IP + script_Login,{
+            fetch(apiConfig.url + script_Login,{
                 method: 'POST',
                 headers: {
                     'Accept': 'application/json',
@@ -511,16 +514,17 @@ export class Login extends Component {
                                 console.log('_resFName: ' + this.state._resFName)
                                 console.log('_resMName: ' + this.state._resMName)
                                 console.log('_resLName: ' + this.state._resLName)
-                                console.log('_resCompany: ' + this.state._resCompany)
-                                console.log('_resCompany: ' + typeof(this.state._resCompany))
+/*                                 console.log('_resCompany: ' + this.state._resCompany)
+                                console.log('_resCompany: ' + typeof(this.state._resCompany)) */
+                                if (this.state._resCompany !== undefined){
+                                    let arrCompany = this.state._resCompany;
+                                    let counter= 0
+                                    arrCompany.forEach(function(element) {
+                                        counter+=1;
+                                        console.log('Company' + counter + ': ' + element.name + ' ' + element.default )
+                                    }, this);
+                                }
                                 
-
-
-                                /* let arrCompany = this.state._resMName;
-                                arrCompany.forEach(function(element) {
-                                    console.log('i was in!')
-                                }, this); */
-
                                 console.log('_resBranch: ' + this.state._resBranch)
                                 console.log('_resPosition: ' + this.state._resPosition)
                                 console.log('_resAccessToken: ' + this.state._resAccessToken)
@@ -540,7 +544,7 @@ export class Login extends Component {
                 curType = script_TimeOut;
             }
 
-            fetch(script_IP + curType,{
+            fetch(apiConfig.url + curType,{
                 method: 'POST',
                 headers: {
                     'Accept': 'application/json',
@@ -661,7 +665,7 @@ export class Login extends Component {
     }
 
     pushForgotPassword = () => {
-        fetch(script_IP + script_ForgotPassword,{
+        fetch(apiConfig.url + script_ForgotPassword,{
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
@@ -682,7 +686,7 @@ export class Login extends Component {
                     },
                         () => {
                             console.log('*************************************')
-                            console.log('SCRIPT: ' + script_IP + script_ForgotPassword)
+                            console.log('SCRIPT: ' + apiConfig.url + script_ForgotPassword)
                             console.log('INPUTS: ')
                             console.log('username: ' + this.state._username)
                             console.log('-----------------------------------------')
@@ -697,17 +701,6 @@ export class Login extends Component {
         });
     }
 
-
-    testFunc() {
-/*         let objTest = this.props.logininfo;
-/*         console.log('params.username: ' + params.username); */
-        /* console.log('VNXTEST1: ' + String(this.props.logininfo.resFName)); */
-/*         var obj = JSON.stringify(this.props.logininfo);
-        var stringify = JSON.parse(obj);
-        for (var i = 0; i < stringify.length; i++) {
-            console.log(stringify[i]['resFName']);
-        } */
-    }
     render(){
         return(
             <ScrollView>
@@ -715,13 +708,12 @@ export class Login extends Component {
                     <View style={styles.mainCont}>
                         <View style={[styles.boxCont, styles.boxContTopEdge, styles.headerCont]}>
                             <DigitalClock 
-                                time   ={this.state._curTime} 
-                                date={this.state._curDate} 
+                                time   ={this.state._curTime}
+                                date={this.state._curDate}
                                 day={this.state._curDay}/>
                         </View>
                         <View style={[styles.boxCont, styles.logoCont]}>
-                            {this.testFunc()}
-                            {/* <Logo/> */}
+                            <Logo/>
                         </View>
 
                         <View style={[styles.boxCont, styles.formCont, styles.boxContBottom]}>
@@ -833,8 +825,6 @@ function mapDispatchToProps (dispatch) {
     
     return {
       dispatchStoreValues: (logininfo) => {
-        console.log('LOGIN.resFName: ' + logininfo.resFName);
-        /* dispatch(SetLoginInfo(logininfo)) */
         dispatch(SetLoginInfo(logininfo))
     }
   }

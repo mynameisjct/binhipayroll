@@ -11,10 +11,9 @@ import {
 
 import Header1 from '../Headers/header1';
 import styles from './styles'
-
 import MsgBox from '../../components/MessageBox/';
+import apiConfig from '../../services/api/config';
 
-let script_IP='http://192.168.1.10:8080/payroll/';
 let script_ForgotPassword='changepassword.php';
 
 export default class ChangePassword extends Component {
@@ -165,7 +164,7 @@ export default class ChangePassword extends Component {
     pushNewPassword = () => {
         let {params} = this.props.navigation.state;
 
-        fetch(script_IP + script_ForgotPassword,{
+        fetch(apiConfig.url + script_ForgotPassword,{
         method: 'POST',
         headers: {
             'Accept': 'application/json',
@@ -189,7 +188,7 @@ export default class ChangePassword extends Component {
                     },
                         () => {
                             console.log('*************************************')
-                            console.log('SCRIPT: ' + script_IP + script_ForgotPassword)
+                            console.log('SCRIPT: ' + apiConfig.url + script_ForgotPassword)
                             console.log('INPUTS: ')
                             console.log('username: ' + params.username)
                             console.log('newpassword: ' + this.state._newPassword)

@@ -137,10 +137,6 @@ export default {
     marginTop: 5,
   },
 
-
-
-
-    
     //Buttons Style
     touchableTimeBtn:{
       alignItems: 'center', 
