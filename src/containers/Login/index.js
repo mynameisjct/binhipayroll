@@ -217,17 +217,17 @@ export class Login extends Component {
                         resAccessToken: this.state._resAccessToken,
                     });
 
-                    this.props.navigation.navigate('EmprDashBoard', 
+/*                     this.props.navigation.navigate('EmprDashBoard', 
                         {
                             username: this.state._username,
                             company: this.state._resCompany,
                             firstname: this.state._resFName,
                             middlename: this.state._resMName,
                             lastname: this.state._resLName
-                        });
+                        }); */
 
 
-/*                     this.props.navigation.navigate('CompanyProfile', 
+                    this.props.navigation.navigate('CompanyProfile', 
                         {
                             username: this.state._username,
                             password: this.state._password,
@@ -235,7 +235,7 @@ export class Login extends Component {
                             firstname: this.state._resFName,
                             middlename: this.state._resMName,
                             lastname: this.state._resLName
-                        }); */
+                        });
                     break;
                     
                 case 'TIMEIN':

@@ -16,50 +16,57 @@ export default {
 
   //Parent Styles
   container: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
     backgroundColor: '#fff',
-    height: 55,
-    shadowColor: '#000',
-    shadowOffset: { width: 2, height: 2 },
-    shadowOpacity: 0.4,
-    shadowRadius: 1,
-    elevation: 3,
-  },
-
-  headerCenter: {
     flex: 1,
-    alignItems: 'center'
+    flexDirection: 'column',
   },
 
-  headerTitle: {
-    fontFamily: 'Helvetica-Bold',
-    fontSize: 16,
-    textAlign: 'center',
-    fontWeight: '500'
+  formCont: {
+    marginLeft: 30,
+    marginRight: 30,
+    marginTop: 20,
+    flexDirection: 'column',
+    flex: 1,
+    backgroundColor: 'transparent'
   },
 
-  headerLeft:{
-    width: 60,
+  nameCont: {
     backgroundColor: 'transparent',
-    justifyContent: 'center',
-    alignItems: 'center'
   },
 
-  headerRight:{
-    width: 80,
+  addressCont: {
     backgroundColor: 'transparent',
-    justifyContent: 'center',
-    alignItems: 'center'
   },
 
-  txtBtn: {
+  contactCont: {
+    backgroundColor: 'transparent',
+  },
+
+  emailAddressCont: {
+    backgroundColor: 'transparent',
+  },
+
+  txtLabel:{
     fontFamily: 'Helvetica-Light',
-    fontSize: 16,
-    fontWeight: '200',
-    textAlign: 'center',
-    color: '#EEB843',
+    fontSize: 15,
+    color: '#838383',
+    marginLeft: 5
+  },
+
+  txtBtnLabel:{
+    fontFamily: 'Helvetica-Light',
+    fontSize: 13,
+    color: '#434646',
+    marginLeft: 5,
+    marginBottom: 20,
+    textDecorationLine: 'underline'
+  },
+
+
+  defaultProp: {
+    minHeight: 75,
+
   }
-  
-};
+
+
+}

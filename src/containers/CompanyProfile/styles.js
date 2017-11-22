@@ -40,7 +40,7 @@ export default {
   companyIds: {
     flex: 1,
     backgroundColor: 'transparent',
-    minHeight: 100,
+    minHeight: 50,
   },
 
   titleContentCont: {
@@ -91,32 +91,32 @@ export default {
     marginLeft: 25,
     marginRight: 25,
     borderBottomWidth: 0.7,
-    borderColor: '#D1D4D6'
+    borderColor: '#D1D4D6',
   },
 
   branchForm:{
     marginTop: 5,
     flexDirection: 'column',
-    backgroundColor: '#fff'
+    backgroundColor: '#fff',
   },
 
   cardHeaderCont:{
-    minHeight: 50,
-    flexDirection: 'row'
+    minHeight: 30,
+    flexDirection: 'row',
   },
 
   cardTitle:{
     flex: 0.7,
-    paddingTop: 20,
+    paddingTop: 10,
+    paddingBottom: 0,
     paddingLeft: 30,
   },
 
-  cardAddBtn:{
+  btnAdd:{
     flex: 0.3,
-    maxWidth: 80,
+    maxWidth: 60,
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 20,
   },
 
   txtHeader:{
@@ -127,7 +127,7 @@ export default {
 
   branchList:{
     flexDirection: 'row',
-    minHeight: 80,
+    minHeight: 50,
   },
 
   companyIdList:{
@@ -144,31 +144,16 @@ export default {
 
   branchInfoCont: {
     flex: 0.7,
-    justifyContent: 'center',
+    flexDirection: 'column'
   },
 
   fixedGap: {
-    height: 20
+    height: 10
   },
 
-  fixedGapContent: {
-    height: 7
-  },
-
-  contentGap:{
-    height: 1,
-    flexDirection: 'row',
-  },
-
-  lineMargin:{
-    width: 40,
-  },
-
-  lineFlex: {
-    flex: 0.7,
-    justifyContent: 'center',
-    borderBottomWidth: 0.7,
-    borderColor: '#D1D4D6'
+  bottomGap: {
+    height: 20,
+    backgroundColor: 'transparent'
   },
 
   txtInfoTitle: {
@@ -182,6 +167,19 @@ export default {
     fontSize: 12,
     fontFamily: 'Helvetica-Light',
     color: '#434646'
+  },
+
+  contactsFlex: {
+    flexDirection: 'row'
+  },
+
+  branchInfoCard: {
+    paddingBottom: 10,
+    paddingTop: 10,
+  },
+
+  borderGap: {
+    marginRight: 30
   }
 
 };

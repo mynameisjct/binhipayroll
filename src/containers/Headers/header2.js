@@ -11,12 +11,10 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import styles from './styles';
 
 export default class Header2 extends Component {
-    static navigationOptions = {
-        /* header : null, */
-    }
     render(){
         return(
             <View style={styles.container}>
+
                 <View style={styles.headerLeft}>
                 </View>
                 
