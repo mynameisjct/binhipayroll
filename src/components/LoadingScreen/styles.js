@@ -15,12 +15,28 @@ const { StyleSheet } = React;
 export default {
   container:{
     flex:1,
-    backgroundColor: 'rgba(0, 0, 0, 0.9);',
-    alignItems: 'center',
-    justifyContent: 'center'
+    backgroundColor: 'rgba(255, 255, 255,1);',
+    position: 'absolute',
+    top: 0,
+    bottom: 0,
+    right: 0,
+    left: 0,
   },
 
   txtMsg:{
-      color: '#fff'
-  }
+      color: '#000',
+  },
+  
+  logoCont: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+
+/*   messageCont:{
+    flex: 0.5,
+    marginTop: 100,
+    alignItems: 'center',
+  } */
+
 };

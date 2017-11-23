@@ -10,8 +10,18 @@ import Icon from 'react-native-vector-icons/Ionicons';
 
 import styles from './styles';
 
-export default class Header2 extends Component {
+//Redux
+import { connect } from 'react-redux';
+import {
+    SetLoginInfo, 
+    SetActiveCompany,
+    SetRouteHistory
+} from '../../actions';
+
+
+export class Header2 extends Component {
     render(){
+        const navigation = this.props.logininfo.navigation;
         return(
             <View style={styles.container}>
 
@@ -24,7 +34,7 @@ export default class Header2 extends Component {
 
                 <View style={styles.headerRight}>
                     <TouchableOpacity
-                        onPress={() => {this.props.onBtnPress()}}>
+                        onPress={() => {navigation.navigate('DrawerToggle')}}>
                         <Icon name='md-menu' style={{color: '#EEB843', fontSize: 35}} />
                     </TouchableOpacity>
                 </View>
@@ -32,3 +42,14 @@ export default class Header2 extends Component {
         );
     }
 }
+
+function mapStateToProps (state) {
+    return {
+        logininfo: state.loginReducer.logininfo,
+        activecompany: state.activeCompanyReducer.activecompany
+    }
+}
+
+export default connect(
+    mapStateToProps,
+)(Header2)

@@ -30,7 +30,7 @@ import DigitalClock from '../../components/DigitalClock';
 import Logo from '../../components/BinhiLogo';
 import MsgBox from '../../components/MessageBox';
 import LoadingScreen from '../../components/LoadingScreen';
-import { NavigationActions } from 'react-navigation'
+import { NavigationActions } from 'react-navigation';
 import { connect } from 'react-redux';
 import {SetLoginInfo} from '../../actions';
 import apiConfig from '../../services/api/config';
@@ -49,7 +49,7 @@ let _accountLockedDuration = 30;
 let script_Login='logins.php';
 let script_TimeIn='timein.php';
 let script_TimeOut='timeout.php';
-let script_ForgotPassword='forgotpassword.php'
+let script_ForgotPassword='forgotpassword.php';
 
 export class Login extends Component {
     static navigationOptions = {
@@ -97,7 +97,7 @@ export class Login extends Component {
             _iPasswordAttemp: 1,
             _prevUsername: '',
             _accountLockedTimer: '0',
-            _showSplash: true
+            _showSplash: false
         };
 
         this.closeMsgBox = this.closeMsgBox.bind(this);
@@ -182,11 +182,14 @@ export class Login extends Component {
 
 
 
-    transLogin(strType){
-        this.setState({_showSplash: true});
-        this.setTransTime(
+    transLogin = (strType) => {
+        this.setState({_showSplash: true},
             () => {
-                this.fetchDataFromDB(strType);
+                this.setTransTime(
+                    () => {
+                        this.fetchDataFromDB(strType);
+                    }
+                )
             }
         );
     }
@@ -204,6 +207,7 @@ export class Login extends Component {
 
                     //VNX_TEST
                     this.props.dispatchStoreValues({
+                        navigation: this.props.navigation,
                         resUsername: this.state._password,
                         resSuccess: this.state._resSuccess,
                         resMsg: this.state._resMsg,
@@ -215,7 +219,7 @@ export class Login extends Component {
                         resBranch: this.state._resBranch,
                         resPosition: this.state._resPosition,
                         resAccessToken: this.state._resAccessToken,
-                    });
+                    });      
 
 /*                     this.props.navigation.navigate('EmprDashBoard', 
                         {
@@ -469,6 +473,7 @@ export class Login extends Component {
     fetchDataFromDB(strType){
 /*         alert(this.state._transDate + '-------' + this.state._transTime); */
         if (strType.toUpperCase()=='LOGIN'){
+            
             fetch(apiConfig.url + script_Login,{
                 method: 'POST',
                 headers: {
@@ -529,10 +534,12 @@ export class Login extends Component {
                                 console.log('_resPosition: ' + this.state._resPosition)
                                 console.log('_resAccessToken: ' + this.state._resAccessToken)
                                 this.evaluateTransaction(strType);
+                                this.setState({_showSplash: false});
                             }
                         );
                 }).catch((error)=> {
                     alert(error);
+                    this.setState({_showSplash: false});
             });
         }
         else{
@@ -585,13 +592,14 @@ export class Login extends Component {
                                 console.log('_resFName: ' + this.state._resFName)
                                 console.log('_resCompany: ' + this.state._resCompany)
                                 this.evaluateTransaction(strType);
+                                this.setState({_showSplash: false});
                             }
                         );
                 }).catch((error)=> {
                     alert(error);
+                    this.setState({_showSplash: false});
             });
         }
-        this.setState({_showSplash: false});
     }
 
     closeMsgBox = () => {
@@ -809,7 +817,7 @@ export class Login extends Component {
                     message={this.state._resMsg}
                     onYes={this.msgBoxYesAction}
                 />
-                {/* <LoadingScreen show={this.state._showSplash}/> */}
+                <LoadingScreen show = {this.state._showSplash}/>
             </ScrollView>   
         );
     }

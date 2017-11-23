@@ -21,9 +21,11 @@ import {
 
 import styles from './styles';
 import Icon from 'react-native-vector-icons/Ionicons';
+import Logo, {AnimatedLogo} from '../BinhiLogo';
 
 export default class LoadingScreen extends Component{
     render(){
+        console.log('LoadingScreen : ' + this.props.show)
         return(
             <Modal 
                 animationType="fade"
@@ -33,15 +35,17 @@ export default class LoadingScreen extends Component{
             
                 <View style={styles.container}>
                     <View style={styles.logoCont}>
+                        <AnimatedLogo/>
                     </View>
-                    <View style={styles.messageCont}>
-                        <Text style={styles.txtMsg}> Please wait. Connecting to server...</Text>
-                    </View>
-                    <ActivityIndicator
-                        animating = {true}
+{/*                     <View style={styles.messageCont}>
+                        <Text style={styles.txtMsg}> Connecting... Please wait.</Text>
+                        <ActivityIndicator
+                        animating = {this.props.show}
                         color = '#EEB843'
                         size = "large"
                         style = {styles.activityIndicator}/>
+                    </View> */}
+
                 </View>
             </Modal>
 

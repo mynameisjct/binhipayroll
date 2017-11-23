@@ -16,7 +16,9 @@ import ActionButton from 'react-native-action-button';
 import { connect } from 'react-redux';
 import {
     SetLoginInfo, 
-    SetActiveCompany
+    SetActiveCompany,
+    SetRouteHistory,
+    SetActiveBranch
 } from '../../actions';
 
 export class CompanyProfile extends Component {
@@ -30,6 +32,15 @@ export class CompanyProfile extends Component {
     constructor(props){
         super(props);
         this.state = {
+            _branches: [],
+            _owners: [],
+            _companyId: [],
+            _mainAddress: ''
+        }
+    }
+
+    componentDidMount(){
+        this.setState({
             _branches: [
                 {
                     name: 'Branch1',
@@ -98,7 +109,7 @@ export class CompanyProfile extends Component {
             ],
 
             _mainAddress: 'Sample Address, Cagayan de Oro City'
-        }
+        })
     }
 
     _onPressButton = () =>{
@@ -194,7 +205,7 @@ export class CompanyProfile extends Component {
                     <View style={styles.cardHeaderCont}>
                         <View style={styles.cardTitle}>
                             <Text style={styles.txtHeader}>
-                                BRANCHES
+                                {strTitle}
                             </Text>
                         </View>
                     </View>
@@ -235,7 +246,17 @@ export class CompanyProfile extends Component {
     _navigateOnClick = (curActionType) => {
         let strActionType = curActionType.toUpperCase();
         if (strActionType == 'NEW_BRANCH'){
-            
+            this.props.dispatchNextHeader({
+                name: 'BranchForm',
+                title: 'ADD NEW BRANCH',
+            });
+            this.props.dispatchActiveBranch({
+                name: '',
+                address: '',
+                contact: '',
+                email: '',
+            })
+            this.props.navigation.navigate('BranchForm');
         }
         else{
             alert('Button is pressed. Navigation Address to be identified.');
@@ -245,9 +266,24 @@ export class CompanyProfile extends Component {
     _navigateToForm = (curActionType, oInfo) => {
         switch(curActionType){
             case 'BRANCH':
+                this.props.dispatchNextHeader({
+                    name: 'BranchForm',
+                    title: 'MODIFY BRANCH',
+                });
+                this.props.dispatchActiveBranch({
+                    name: oInfo.name,
+                    address: oInfo.address,
+                    contact: oInfo.contact,
+                    email: oInfo.email,
+                })
                 this.props.navigation.navigate('BranchForm');
                 break;
+
             case 'COMPANYID':
+                this.props.dispatchNextHeader({
+                    name: 'BranchForm',
+                    title: 'MODIFY BRANCH',
+                });
                 this.props.navigation.navigate('CompanyIdForm', {
                     info: oInfo
                 });
@@ -258,7 +294,6 @@ export class CompanyProfile extends Component {
         }
     }
 
-    CompanyIdForm
     render(){
         let objActiveCompany = Object.assign({}, this.props.activecompany);
         return(
@@ -288,7 +323,7 @@ export class CompanyProfile extends Component {
                 </ScrollView>
 
                 <ActionButton offsetX={40} buttonColor="rgba(1, 111, 0, 0.8)">
-                    <ActionButton.Item buttonColor='#EEB843' title="Add New Branch" onPress={() => {this._navigateToForm('BRANCH')}}>
+                    <ActionButton.Item buttonColor='#EEB843' title="Add New Branch" onPress={() => {this._navigateOnClick('NEW_BRANCH')}}>
                         <Icon name="md-home" color='#fff' size={30} style={styles.actionButtonIcon} />
                     </ActionButton.Item>
                 </ActionButton>
@@ -305,6 +340,18 @@ function mapStateToProps (state) {
     }
 }
 
+function mapDispatchToProps (dispatch) {
+    return {
+        dispatchNextHeader: (routehistory) => {
+            dispatch(SetRouteHistory(routehistory))
+        },
+        dispatchActiveBranch: (activebranch) => {
+            dispatch(SetActiveBranch(activebranch))
+        }
+    }
+}
+  
 export default connect(
     mapStateToProps,
+    mapDispatchToProps,
 )(CompanyProfile)

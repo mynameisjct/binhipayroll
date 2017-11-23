@@ -53,9 +53,7 @@ export default class EmprDashBoard extends Component {
 
     static navigationOptions = {
         headerTitle : 
-            <Header2
-                title= 'DASHBOARD'
-            />,
+            <Header2 title= 'DASHBOARD'/>,
         headerLeft: null,
         headerStyle : 
             {backgroundColor: '#fff'},
@@ -74,18 +72,10 @@ export default class EmprDashBoard extends Component {
             {backgroundColor: '#fff'},
     } */
 
-    _showDrawer = () => {
-        let {params} = this.props.navigation.state;
-        this.props.navigation.navigate('DrawerToggle', {
-            username: params.username
-        });
-    }
-
     render(){
         return(
             <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
                 <Text>This will display Employer Dash Board</Text>
-                <Button title="SHOWDRAWER" onPress={() => this._showDrawer()}/>
             </View>
         );
     }
