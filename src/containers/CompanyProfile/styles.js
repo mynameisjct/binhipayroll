@@ -28,7 +28,6 @@ export default {
   branchesCont: {
     flex: 1,
     backgroundColor: 'transparent',
-    minHeight: 100,
   },
 
   ownersCont: {

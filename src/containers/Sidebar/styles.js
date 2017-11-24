@@ -125,7 +125,6 @@ export default {
     fontFamily: 'Helvetica-Light',
     fontSize: 14,
     fontWeight: '500',
-    color: '#EA0202',
     marginRight: 5,
   },
 

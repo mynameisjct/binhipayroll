@@ -16,16 +16,72 @@ import {
     Button,
     Modal,
     TouchableOpacity,
-    ActivityIndicator
+    ActivityIndicator,
+    Animated,
+    Easing
 } from 'react-native';
 
 import styles from './styles';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Logo, {AnimatedLogo} from '../BinhiLogo';
 
+const dMinOpacity = 0.2;
+const dMaxOpacity = 1;
+
+class FadeInView extends React.Component {
+    state = {
+      fadeAnim: new Animated.Value(dMaxOpacity),  // Initial value for opacity: 0
+    }
+  
+    _textAnimate = () => {
+        if(!this.props.show){
+            return;
+        }
+
+        Animated.timing(
+            this.state.fadeAnim,
+            {
+                toValue: dMinOpacity,                         
+                duration: 3000, 
+                delay: 1000,
+            }
+        ).start(() => {
+            Animated.timing(  
+                this.state.fadeAnim,            
+                {
+                toValue: dMaxOpacity,                    
+                duration: 3000,          
+                }
+            ).start(() => {
+                this._textAnimate();
+                });
+        });    
+    }
+    
+    componentDidMount() {
+        this._textAnimate();
+    }
+  
+    render() {
+      let { fadeAnim } = this.state;
+  
+      return (
+        <Animated.View                 // Special animatable View
+          style={{
+            ...this.props.style,
+            opacity: fadeAnim,         // Bind opacity to animated value
+          }}
+        >
+          {this.props.children}
+        </Animated.View>
+      );
+    }
+  }
+
+
+
 export default class LoadingScreen extends Component{
     render(){
-        console.log('LoadingScreen : ' + this.props.show)
         return(
             <Modal 
                 animationType="fade"
@@ -34,17 +90,17 @@ export default class LoadingScreen extends Component{
                 onRequestClose={() => {alert("Modal has been closed.")}}>
             
                 <View style={styles.container}>
-                    <View style={styles.logoCont}>
-                        <AnimatedLogo/>
-                    </View>
-{/*                     <View style={styles.messageCont}>
-                        <Text style={styles.txtMsg}> Connecting... Please wait.</Text>
+                    <FadeInView show={this.props.show} style={styles.logoCont}>
+                        <Logo/>
+                    </FadeInView>
+                    <View style={styles.messageCont}>
+                        <Text style={styles.txtMsg}> Connecting...</Text>
                         <ActivityIndicator
                         animating = {this.props.show}
                         color = '#EEB843'
                         size = "large"
                         style = {styles.activityIndicator}/>
-                    </View> */}
+                    </View>
 
                 </View>
             </Modal>

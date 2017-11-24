@@ -15,20 +15,17 @@ import {
     Text,
     ScrollView,
     Picker,
-    TouchableNativeFeedback
+    TouchableNativeFeedback,
+    ActivityIndicator
 } from 'react-native';
-
 import { DrawerItems, SafeAreaView } from 'react-navigation';
-import styles from './styles';
 import Icon from 'react-native-vector-icons/Ionicons';
-
 import { connect } from 'react-redux';
 import {SetLoginInfo, SetActiveCompany} from '../../actions';
-
+import styles from './styles';
 import apiConfig from '../../services/api/config';
 
 const script_Notification = 'forms/empnotifications.php';
-
 const btnActiveColor='rgba(0, 0, 0, 0.1);';
 const btnInactiveColor='transparent';
 
@@ -61,7 +58,7 @@ export class EmpeSidebarSidebar extends Component {
             _strIconNotificationColor: '#EA0202',
             _profileName: 'Pedro Duterte',
             _profileDesc: 'My Profile',
-
+                
             //touchable colors
             _btnColors: {
                 company: btnInactiveColor,
@@ -79,24 +76,27 @@ export class EmpeSidebarSidebar extends Component {
             _dblFooterIconSize: 20,
 
             _notificationCount: 0,
+            _isNotificationLoading: true
         }
     }
 
-    componentWillMount()
-    {
+    componentWillMount(){
         let objActiveUser = Object.assign({}, this.props.logininfo);
+        let objActiveCompany = Object.assign({}, this.props.activecompany);
         this.setState(
             {
-                _activeUser: objActiveUser
+                _activeUser: objActiveUser,
+                _activeCompany: objActiveCompany.name
             },
-                () => {
-                    this.initPicker();
-                }
         )
         
     }
 
-    initPicker(){
+    componentDidMount(){
+        this.getNotificationsCount();
+    }
+
+/*     initPicker(){
         this.state._activeUser.resCompany.forEach(function(element) {
             if(element.default == 1){
                 this.setState(
@@ -112,15 +112,75 @@ export class EmpeSidebarSidebar extends Component {
                 );
             }
         }, this);
-    }
+    } */
 
     getNotificationsCount(){
-        this.fetchNotificationFromDB();
+        this.setState({
+            _isNotificationLoading: true
+        },
+            () => {
+                this.fetchNotificationFromDB();
+            }
+        )
+        
     }
 
-    getNotificationColor(){
+    _getNotificationColor = (strType) => {
+        switch(strType.toUpperCase()){
+            case 'TEXT':
+                if(this.state._notificationCount > 0){
+                    return({
+                        color: '#EA0202',
+                    })
+                } else{
+                    return({
+                        color: '#434646'
+                    })
+                }
+                break;
+
+            case 'ICON':
+                if(this.state._notificationCount > 0){
+                    return '#EA0202';
+                }else{
+                    return '#434646';
+                }
+                break;
+
+            default:
+                break
+        }
+        
     }
 
+    _notificationChild = () => {
+        if(!this.state._isNotificationLoading){
+            return(
+                <View style={styles.notificationCont}>
+                    <Text style={[styles.txtNotification, this._getNotificationColor('TEXT')]}>
+                        {this.state._notificationCount}
+                    </Text>
+                    <Icon 
+                        size={this.state._dblNotificationIconSize} 
+                        name={this.state._strIconName.notification} 
+                        color={this._getNotificationColor('ICON')}  />
+                </View>
+            )
+        }
+        else{
+            return(
+                <View style={styles.notificationCont}>         
+                    <ActivityIndicator
+                    animating = {!this.state._componentMounted}
+                    color = '#EEB843'
+                    size = "small"
+                    style = {styles.activityIndicator}/>
+                </View>
+            )
+        }
+        
+    }
+            
     fetchNotificationFromDB = () => {
         console.log('*************************************')
         console.log('apiConfig.url + script_Notification: ' + apiConfig.url + script_Notification);
@@ -152,10 +212,16 @@ export class EmpeSidebarSidebar extends Component {
                             console.log('_resSuccess: ' + this.state._resSuccess)
                             console.log('_resMsg: ' + this.state._resMsg)
                             console.log('_notificationCount: ' + this.state._notificationCount)
+                            this.setState({
+                                _isNotificationLoading: false
+                            });
                         }
                     );
             }).catch((error)=> {
                 alert(error);
+                this.setState({
+                    _isNotificationLoading: false
+                })
         });
     }
     _onPressButton = (targetPage) => {
@@ -217,15 +283,15 @@ export class EmpeSidebarSidebar extends Component {
     setPickerValue = (item) => {
         this.setState({
             _activeCompany: item
-        },
-            () => {
-                this.getNotificationsCount();
-                this.props.dispatchStoreValues({
-                    name: this.state._activeCompany
-                });
-            }
-        )
-        
+        })
+        this._dispathActiveCompanyProps(item);
+    }
+
+    _dispathActiveCompanyProps = (item) => {
+        this.props.dispatchStoreValues({
+            name: item
+        })
+        this.getNotificationsCount();
     }
 
     render(){
@@ -291,15 +357,7 @@ export class EmpeSidebarSidebar extends Component {
                                 </View>
                             </View>
                             <View style={styles.miscContentDiv}>
-                                <View style={styles.notificationCont}>
-                                    <Text style={styles.txtNotification}>
-                                        {this.state._notificationCount}
-                                    </Text>
-                                    <Icon 
-                                        size={this.state._dblNotificationIconSize} 
-                                        name={this.state._strIconName.notification} 
-                                        color={this.state._strIconNotificationColor}  />
-                                </View>
+                                {this._notificationChild()}
                             </View>
                         </View>
                     </TouchableNativeFeedback>
@@ -524,7 +582,8 @@ export class EmpeSidebarSidebar extends Component {
 
 function mapStateToProps (state) {
     return {
-        logininfo: state.loginReducer.logininfo
+        logininfo: state.loginReducer.logininfo,
+        activecompany: state.activeCompanyReducer.activecompany
     }
 }
 

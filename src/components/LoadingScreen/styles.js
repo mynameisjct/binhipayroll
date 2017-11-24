@@ -28,15 +28,16 @@ export default {
   },
   
   logoCont: {
-    flex: 1,
+    flex: 0.6,
     justifyContent: 'center',
     alignItems: 'center',
   },
 
-/*   messageCont:{
-    flex: 0.5,
+  messageCont:{
+    flex: 0.4,
     marginTop: 100,
+    justifyContent: 'flex-start',
     alignItems: 'center',
-  } */
+  }
 
 };

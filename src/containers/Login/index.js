@@ -32,7 +32,7 @@ import MsgBox from '../../components/MessageBox';
 import LoadingScreen from '../../components/LoadingScreen';
 import { NavigationActions } from 'react-navigation';
 import { connect } from 'react-redux';
-import {SetLoginInfo} from '../../actions';
+import {SetLoginInfo, SetActiveCompany} from '../../actions';
 import apiConfig from '../../services/api/config';
 
 let tmpUsername = "admin";
@@ -89,6 +89,8 @@ export class Login extends Component {
             _resBranch: '',
             _resPosition: '',
             _resAccessToken: '',
+
+            _resDefaultCompany: '',
 
             //forms
             _msgBoxType: '',
@@ -221,6 +223,10 @@ export class Login extends Component {
                         resAccessToken: this.state._resAccessToken,
                     });      
 
+                    this.props.dispatchActiveCompany({
+                        name: this.state._resDefaultCompany
+                    });
+
 /*                     this.props.navigation.navigate('EmprDashBoard', 
                         {
                             username: this.state._username,
@@ -228,7 +234,7 @@ export class Login extends Component {
                             firstname: this.state._resFName,
                             middlename: this.state._resMName,
                             lastname: this.state._resLName
-                        }); */
+                    }); */
 
 
                     this.props.navigation.navigate('CompanyProfile', 
@@ -320,7 +326,7 @@ export class Login extends Component {
                 }
                 
                 else{
-                                        //VNX_TEST
+                    //VNX_TEST
                     this.props.dispatchStoreValues({
                         resUsername: this.state._password,
                         resSuccess: this.state._resSuccess,
@@ -527,16 +533,28 @@ export class Login extends Component {
                                     arrCompany.forEach(function(element) {
                                         counter+=1;
                                         console.log('Company' + counter + ': ' + element.name + ' ' + element.default )
+                                    
+                                        if(element.default == 1){
+                                            this.setState({
+                                                _resDefaultCompany: element.name
+                                            }, 
+                                                () => {
+                                                    console.log('_resDefaultCompany: ' + this.state._resDefaultCompany)
+                                                }
+                                            )
+                                        }
+                                    
                                     }, this);
                                 }
-                                
                                 console.log('_resBranch: ' + this.state._resBranch)
                                 console.log('_resPosition: ' + this.state._resPosition)
                                 console.log('_resAccessToken: ' + this.state._resAccessToken)
-                                this.evaluateTransaction(strType);
-                                this.setState({_showSplash: false});
                             }
                         );
+                }).then((res)=>{
+                    this.evaluateTransaction(strType);
+                    this.setState({_showSplash: false});
+
                 }).catch((error)=> {
                     alert(error);
                     this.setState({_showSplash: false});
@@ -832,9 +850,12 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
     
     return {
-      dispatchStoreValues: (logininfo) => {
-        dispatch(SetLoginInfo(logininfo))
-    }
+        dispatchStoreValues: (logininfo) => {
+            dispatch(SetLoginInfo(logininfo))
+        },
+        dispatchActiveCompany: (activecompany) => {
+            dispatch(SetActiveCompany(activecompany))
+        }
   }
 }
   

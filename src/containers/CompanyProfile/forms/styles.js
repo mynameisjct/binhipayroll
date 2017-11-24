@@ -59,7 +59,8 @@ export default {
     color: '#434646',
     marginLeft: 5,
     marginBottom: 20,
-    textDecorationLine: 'underline'
+    textDecorationLine: 'underline',
+    alignSelf: 'flex-end',
   },
 
 
