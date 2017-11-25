@@ -34,7 +34,9 @@ export class EmpeSidebarSidebar extends Component {
         super(props);
         this.state = {
             _activeUser: {},
-            _activeCompany: '',
+            _activeCompany: { 
+                name: '',
+                id: ''},
             _dblProfileIconSize: 35,
             _dblCompanyIconSize: 50,
             _dblContentIconSize: 25,
@@ -83,10 +85,14 @@ export class EmpeSidebarSidebar extends Component {
     componentWillMount(){
         let objActiveUser = Object.assign({}, this.props.logininfo);
         let objActiveCompany = Object.assign({}, this.props.activecompany);
+        let activeCompany = Object.assign({}, ...this.state._activeCompany);
+        activeCompany.name = objActiveCompany.name;
+        activeCompany.id = objActiveCompany.id;
+
         this.setState(
             {
                 _activeUser: objActiveUser,
-                _activeCompany: objActiveCompany.name
+                _activeCompany: activeCompany
             },
         )
         
@@ -192,7 +198,7 @@ export class EmpeSidebarSidebar extends Component {
             },
 
             body: JSON.stringify({
-                companyname: this.state._activeCompany
+                companyname: this.state._activeCompany.name
             })
             
         }).then((response)=> response.json())
@@ -206,7 +212,7 @@ export class EmpeSidebarSidebar extends Component {
                         () => {
                             console.log('*************************************')
                             console.log('INPUTS: ')
-                            console.log('companyname: ' + this.state._activeCompany)
+                            console.log('companyname: ' + this.state._activeCompany.name)
                             console.log('-----------------------------------------')
                             console.log('OUTPUTS: ')
                             console.log('_resSuccess: ' + this.state._resSuccess)
@@ -280,16 +286,20 @@ export class EmpeSidebarSidebar extends Component {
         return(this.state._activeUser.resFName + ' ' + this.state._activeUser.resLName);
     }
 
-    setPickerValue = (item) => {
+    setPickerValue = (name, index) => {
+        let activeCompany = Object.assign({},...this.state._activeCompany);
+        activeCompany.name = name;
+        activeCompany.id = index;
         this.setState({
-            _activeCompany: item
+            _activeCompany: activeCompany
         })
-        this._dispathActiveCompanyProps(item);
+        this._dispathActiveCompanyProps(name, index);
     }
 
-    _dispathActiveCompanyProps = (item) => {
+    _dispathActiveCompanyProps = (name, index) => {
         this.props.dispatchStoreValues({
-            name: item
+            name: name,
+            id: index
         })
         this.getNotificationsCount();
     }
@@ -310,7 +320,7 @@ export class EmpeSidebarSidebar extends Component {
                             </View>
                             <View style={styles.labelCont}>
                                 <Text style={styles.txtTitle}>
-                                    {this.state._activeCompany}
+                                    {this.state._activeCompany.name}
                                 </Text>
                             </View>
                         </View>
@@ -320,12 +330,12 @@ export class EmpeSidebarSidebar extends Component {
                         <View style={styles.companyPicker}>
                             <Picker
                                 mode='dropdown'
-                                selectedValue={this.state._activeCompany}
-                                onValueChange={(itemValue, itemIndex) => {this.setPickerValue(itemValue)}}>
+                                selectedValue={this.state._activeCompany.name}
+                                onValueChange={(itemValue, itemIndex) => {this.setPickerValue(itemValue, itemIndex)}}>
                                 
                                 {
                                     this.state._activeUser.resCompany.map((company, index) => (
-                                        <Picker.Item key={index} label={company.name} value={company.name} />
+                                        <Picker.Item key={company.id} label={company.name} value={company.name} />
                                     ))
                                 }
                                 

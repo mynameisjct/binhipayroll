@@ -59,7 +59,6 @@ export default {
     fontSize: 16,
     fontWeight: '200',
     textAlign: 'center',
-    color: '#EEB843',
   }
   
 };

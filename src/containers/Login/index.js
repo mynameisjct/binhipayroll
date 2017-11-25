@@ -90,7 +90,8 @@ export class Login extends Component {
             _resPosition: '',
             _resAccessToken: '',
 
-            _resDefaultCompany: '',
+            _resDefaultCompanyName: '',
+            _resDefaultCompanyId: '',
 
             //forms
             _msgBoxType: '',
@@ -224,7 +225,8 @@ export class Login extends Component {
                     });      
 
                     this.props.dispatchActiveCompany({
-                        name: this.state._resDefaultCompany
+                        name: this.state._resDefaultCompanyName,
+                        id: this.state._resDefaultCompanyId
                     });
 
 /*                     this.props.navigation.navigate('EmprDashBoard', 
@@ -497,7 +499,7 @@ export class Login extends Component {
                 
             }).then((response)=> response.json())
                 .then((res)=>{
-                        /* alert(res); */
+                        console.log('JSON.stringify(res): ' + JSON.stringify(res))
                         this.setState({
                             _resSuccess: res.flagno,
                             _resMsg: res.message,
@@ -536,7 +538,8 @@ export class Login extends Component {
                                     
                                         if(element.default == 1){
                                             this.setState({
-                                                _resDefaultCompany: element.name
+                                                _resDefaultCompanyName: element.name,
+                                                _resDefaultCompanyId: element.id
                                             }, 
                                                 () => {
                                                     console.log('_resDefaultCompany: ' + this.state._resDefaultCompany)

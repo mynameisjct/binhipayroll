@@ -25,8 +25,8 @@ export default {
       },
     
     imgLogo:{
-    width:140,
+    width:120,
     height:60,
-    marginLeft: 10
+    marginLeft: 0
     },
 };

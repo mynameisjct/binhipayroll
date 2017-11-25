@@ -9,9 +9,16 @@ import {
 import Icon from 'react-native-vector-icons/Ionicons';
 import Header3 from '../../Headers/header3';
 import styles from '../forms/styles';
+import apiConfig, {endPoints} from '../../../services/api/config';
+import MsgBox from '../../../components/MessageBox';
 
 //Redux
 import { connect } from 'react-redux';
+import {
+    SetActiveBranch,
+    SetDataActionTrigger
+} from '../../../actions';
+
 
 export class BranchForm extends Component {
     constructor(props){
@@ -20,11 +27,111 @@ export class BranchForm extends Component {
             _branchName: '',
             _address: '',
             _contact: [''],
-            _emailAddress: ''
+            _emailAddress: '',
+
+            _msgBoxType: 'SUCCESS',
+            _msgBoxShow: false,
+            _resMsg: 'Successfully created new branch, BINHI-MeDFI'
         }
+        this.closeMsgBox = this.closeMsgBox.bind(this);
+    }
+
+    //setting header
+    static navigationOptions = {
+        header:
+            <Header3/>
     }
 
     componentDidMount(){
+        this._initFormValues();
+    }
+
+    componentWillReceiveProps(nextProps){
+        let objNextProps = Object.assign({}, nextProps.dataactiontrigger)
+        if(objNextProps.saveTrigger){
+            this._saveAndDispatch();
+        }
+    }
+    
+    _saveAndDispatch = () => {
+        
+        if(this.state._branchName != ''){
+            this.props.dispatchDataActionTrigger({saveTrigger: false});
+            this._saveDataToDB();
+        }
+    }
+
+    closeMsgBox = () => {
+        this.setState({
+            _msgBoxShow: false,
+        })
+    }
+
+    _saveDataToDB = () => {
+        console.log('this.state._branchName: ' + this.state._branchName);
+/*         console.log('this.state._branchName: ' + this.state._branchName);
+        console.log('this.state._address: ' + this.state._address);
+        console.log('this.state._contact: ' + this.state._contact);
+        console.log('this.state._emailAddress: ' + this.state._emailAddress);
+
+        let activecompany = Object.assign({}, this.props.activecompany);
+        let logininfo = Object.assign({}, this.props.logininfo)
+        let _data = [
+            {
+                name: 'branchname',
+                value: this.state._branchName
+            },
+            {
+                name: 'address',
+                value: this.state._address
+            },
+            {
+                name: 'contact',
+                value: this.state._contact
+            },
+            {
+                name: 'emailaddress',
+                value: this.state._emailAddress
+            },  
+        ];
+        let _objdata = [{
+            oid: '',
+            data: _data
+        }]
+
+        fetch(apiConfig.url + endPoints.newBranch,{
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+
+            body: JSON.stringify({
+                companyname: activecompany.name,
+                infotype: 'branch',
+                transtype: 'insert',
+                username: logininfo.username,
+                compid: activecompany.id,
+                objdata: _objdata
+            })
+            
+        }).then((response)=> response.json())
+            .then((res)=>{
+                console.log('ADD BRANCH: ' + JSON.stringify({res}));
+                this.setState({
+                    _resSuccess: res.flagno,
+                    _resMsg: res.message,
+                });
+                
+            }).catch((error)=> {
+                alert(error);
+        }); */
+        this.setState({
+            _msgBoxShow: true
+        })
+    }
+    
+    _initFormValues = () => {
         let activebranch = Object.assign({}, this.props.activebranch);
         this.setState({
             _branchName: activebranch.name,
@@ -37,12 +144,6 @@ export class BranchForm extends Component {
                 _contact: activebranch.contact
             })
         }
-    }
-
-    //setting header
-    static navigationOptions = {
-        header:
-            <Header3/>
     }
 
     _displayContacts = () => {
@@ -178,6 +279,12 @@ export class BranchForm extends Component {
                         </View>
                     </View>
                 </ScrollView>
+                <MsgBox
+                    promptType={this.state._msgBoxType}
+                    show={this.state._msgBoxShow}
+                    onClose={this.closeMsgBox}
+                    message={this.state._resMsg}
+                />
             </View>
         );
     }
@@ -188,10 +295,26 @@ function mapStateToProps (state) {
         logininfo: state.loginReducer.logininfo,
         activecompany: state.activeCompanyReducer.activecompany,
         routehistory: state.routeHistoryReducer.routehistory,
-        activebranch: state.activeBranchReducer.activebranch
+        activebranch: state.activeBranchReducer.activebranch,
+        dataactiontrigger: state.dataActionTriggerReducer.dataactiontrigger
+    }
+}
+
+function mapDispatchToProps (dispatch) {
+    return {
+        dispatchNextHeader: (routehistory) => {
+            dispatch(SetRouteHistory(routehistory))
+        },
+        dispatchActiveBranch: (activebranch) => {
+            dispatch(SetActiveBranch(activebranch))
+        },
+        dispatchDataActionTrigger: (dataactiontrigger) => {
+            dispatch(SetDataActionTrigger(dataactiontrigger))
+        }
     }
 }
 
 export default connect(
-    mapStateToProps,
+    mapStateToProps, 
+    mapDispatchToProps
 )(BranchForm)

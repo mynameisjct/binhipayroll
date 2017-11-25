@@ -1,7 +1,8 @@
 import { 
     SET_LOGININFO, 
-    SET_ACTIVECOMPANY ,
-    SET_ROUTEHISTORY
+    SET_ACTIVECOMPANY,
+    SET_ROUTEHISTORY,
+    SET_DATAACTIONTRIGGER,
 } from '../constants';
 
 export function SetLoginInfo(logininfo) {
@@ -29,6 +30,13 @@ export function SetActiveBranch(activebranch) {
     return {
         type: 'SET_ACTIVEBRANCH',
         activebranch
+    };
+}
+
+export function SetDataActionTrigger(dataactiontrigger) {
+    return {
+        type: 'SET_DATAACTIONTRIGGER',
+        dataactiontrigger
     };
 }
 

@@ -1,7 +1,8 @@
 import { SET_ACTIVECOMPANY } from '../constants';
 
 const initialState = {
-    name: ''
+    name: '',
+    id: ''
 };
 
 

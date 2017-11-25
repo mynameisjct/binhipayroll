@@ -87,14 +87,14 @@ export default {
   },
 
   defaultContMargin:{
-    marginLeft: 25,
-    marginRight: 25,
+    marginLeft: 15,
+    marginRight: 15,
     borderBottomWidth: 0.7,
     borderColor: '#D1D4D6',
   },
 
   branchForm:{
-    marginTop: 5,
+    marginTop: 6,
     flexDirection: 'column',
     backgroundColor: '#fff',
   },

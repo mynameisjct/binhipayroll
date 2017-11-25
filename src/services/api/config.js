@@ -4,5 +4,6 @@ export default {
 };
 
 export const endPoints = {
-	companyProfile: 'forms/getcompanyprofile.php'
+	companyProfile: 'forms/getcompanyprofile.php',
+	newBranch: 'forms/companyprofile.php'
 };

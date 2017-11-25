@@ -25,7 +25,7 @@ import styles from './styles';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Logo, {AnimatedLogo} from '../BinhiLogo';
 
-const dMinOpacity = 0.2;
+const dMinOpacity = 0.1;
 const dMaxOpacity = 1;
 
 class FadeInView extends React.Component {
@@ -42,15 +42,15 @@ class FadeInView extends React.Component {
             this.state.fadeAnim,
             {
                 toValue: dMinOpacity,                         
-                duration: 3000, 
-                delay: 1000,
+                duration: 1000, 
+                delay: 2000,
             }
         ).start(() => {
             Animated.timing(  
                 this.state.fadeAnim,            
                 {
                 toValue: dMaxOpacity,                    
-                duration: 3000,          
+                duration: 1000,       
                 }
             ).start(() => {
                 this._textAnimate();

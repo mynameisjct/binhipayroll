@@ -102,13 +102,14 @@ export class CompanyProfile extends Component {
                     alert(error);
             });
     } */
-
-    _fetchDataFromDB = () => {
-        console.log("_fetchDataFromDB: ");
-        console.log("this.state._activeCompany: " + this.state._activeCompany);
+    
         /* let element = 'title'; */
         /* let infoType = ['title', 'branch', 'owner', 'companyid']; */
-        let infoType = ['owner'];
+/*     _fetchDataFromDB = () => {
+        console.log("_fetchDataFromDB: ");
+        console.log("this.state._activeCompany: " + this.state._activeCompany);
+
+        let infoType = ['branch'];
 
         infoType.map((element, index) => {
             fetch(apiConfig.url + endPoints.companyProfile,{
@@ -165,7 +166,7 @@ export class CompanyProfile extends Component {
 
                                 case 'companyid':
                                     this.setState({
-                                        _owners: res.companyid,
+                                        _companyId: res.companyid,
                                         _companyIdMounted: true,
                                     });
                                     break;
@@ -177,9 +178,9 @@ export class CompanyProfile extends Component {
                     alert(error);
             });
         })
-    }
+    } */
 
-/*     _fetchDataFromDB = () => {
+    _fetchDataFromDB = () => {
         setTimeout(() => {
             this.setState({
                 _branches: [
@@ -250,10 +251,13 @@ export class CompanyProfile extends Component {
                 ],
     
                 _mainAddress: 'Sample Address, Cagayan de Oro City',
-                _componentMounted: true
+                _ownerMounted: true,
+                _titleMounted: true,
+                _branchMounted: true,
+                _companyIdMounted: true
             })
-        }, 1000)
-    } */
+        }, 500)
+    }
 
     _setTopBorder = (index) => {
         if (index>0){
@@ -480,7 +484,7 @@ export class CompanyProfile extends Component {
                     </View>
                 </ScrollView>
 
-                <ActionButton offsetX={40} buttonColor="rgba(1, 111, 0, 0.8)">
+                <ActionButton buttonColor="rgba(1, 111, 0, 0.8)">
                     <ActionButton.Item buttonColor='#EEB843' title="Add New Branch" onPress={() => {this._navigateOnClick('NEW_BRANCH')}}>
                         <Icon name="md-home" color='#fff' size={30} style={styles.actionButtonIcon} />
                     </ActionButton.Item>
