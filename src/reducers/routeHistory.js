@@ -3,6 +3,7 @@ import { SET_ROUTEHISTORY } from '../constants';
 const initialState = {
     name: '',
     title: '',
+    mode: ''
 };
 
 

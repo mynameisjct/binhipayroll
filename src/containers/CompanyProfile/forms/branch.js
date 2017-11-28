@@ -28,10 +28,11 @@ export class BranchForm extends Component {
             _address: '',
             _contact: [''],
             _emailAddress: '',
+            _modifiedDataArr: [''],
 
             _msgBoxType: 'SUCCESS',
             _msgBoxShow: false,
-            _resMsg: 'Successfully created new branch, BINHI-MeDFI'
+            _resMsg: '',
         }
         this.closeMsgBox = this.closeMsgBox.bind(this);
     }
@@ -54,10 +55,10 @@ export class BranchForm extends Component {
     }
     
     _saveAndDispatch = () => {
-        
         if(this.state._branchName != ''){
-            this.props.dispatchDataActionTrigger({saveTrigger: false});
-            this._saveDataToDB();
+            if(!this.state._modifiedDataArr==[""]){
+                this._saveDataToDB();
+            }
         }
     }
 
@@ -67,38 +68,58 @@ export class BranchForm extends Component {
         })
     }
 
-    _saveDataToDB = () => {
-        console.log('this.state._branchName: ' + this.state._branchName);
-/*         console.log('this.state._branchName: ' + this.state._branchName);
-        console.log('this.state._address: ' + this.state._address);
-        console.log('this.state._contact: ' + this.state._contact);
-        console.log('this.state._emailAddress: ' + this.state._emailAddress);
+    _generateJSONString = () => {
+        var objRoute = Object.assign({}, this.props.routehistory);
+        var activecompany = Object.assign({}, this.props.activecompany);
+        var logininfo = Object.assign({}, this.props.logininfo)
+        var activebranch = Object.assign({}, this.props.activebranch);
 
-        let activecompany = Object.assign({}, this.props.activecompany);
-        let logininfo = Object.assign({}, this.props.logininfo)
-        let _data = [
-            {
-                name: 'branchname',
-                value: this.state._branchName
-            },
-            {
-                name: 'address',
-                value: this.state._address
-            },
-            {
-                name: 'contact',
-                value: this.state._contact
-            },
-            {
-                name: 'emailaddress',
-                value: this.state._emailAddress
-            },  
-        ];
-        let _objdata = [{
-            oid: '',
+        var _data = [];
+        if(objRoute.mode.toUpperCase()=='UPDATE'){
+            _data  = this.state._modifiedDataArr;
+        }
+
+        else{
+            var _data = [
+                {
+                    name: 'branchname',
+                    value: this.state._branchName
+                },
+                {
+                    name: 'address',
+                    value: this.state._address
+                },
+                {
+                    name: 'contact',
+                    value: this.state._contact
+                },
+                {
+                    name: 'emailaddress',
+                    value: this.state._emailAddress
+                },  
+            ];
+        }
+
+        var _objdata = [{
+            oid: activebranch.id,
             data: _data
         }]
+        
+        return(
+            JSON.stringify({
+                companyname: activecompany.name,
+                infotype: 'branch',
+                transtype: objRoute.mode,
+                username: logininfo.username,
+                compid: activecompany.id,
+                objdata: _objdata
+            })
+        )
+    }
 
+    _saveDataToDB = () => {
+        console.log("this._generateJSONString(): " + this._generateJSONString());
+        var objRoute = Object.assign({}, this.props.routehistory);
         fetch(apiConfig.url + endPoints.newBranch,{
             method: 'POST',
             headers: {
@@ -106,14 +127,7 @@ export class BranchForm extends Component {
                 'Content-Type': 'application/json',
             },
 
-            body: JSON.stringify({
-                companyname: activecompany.name,
-                infotype: 'branch',
-                transtype: 'insert',
-                username: logininfo.username,
-                compid: activecompany.id,
-                objdata: _objdata
-            })
+            body: this._generateJSONString()
             
         }).then((response)=> response.json())
             .then((res)=>{
@@ -121,14 +135,25 @@ export class BranchForm extends Component {
                 this.setState({
                     _resSuccess: res.flagno,
                     _resMsg: res.message,
-                });
+                },
+                    () => {
+                        if(this.state._resSuccess == 1){
+                            this.setState({
+                                _resMsg: 'Successfully created new branch, ' + this.state._branchName,
+                                _msgBoxShow: true
+                            },
+                                () => {
+                                    this.props.dispatchDataActionTrigger({saveTrigger: false});
+                                }
+                            )
+                        }
+                    }
+                );
                 
             }).catch((error)=> {
                 alert(error);
-        }); */
-        this.setState({
-            _msgBoxShow: true
-        })
+                this.props.dispatchDataActionTrigger({saveTrigger: false});
+        });
     }
     
     _initFormValues = () => {
@@ -190,7 +215,11 @@ export class BranchForm extends Component {
                 newArray.splice(index, 1);
                 this.setState({
                     _contact: newArray 
-                });
+                },
+                    () => {
+                        this._compareInputsAndTrigger();
+                    }
+                );
             }
         }
     }
@@ -202,7 +231,7 @@ export class BranchForm extends Component {
             _contact: newArray 
         },
             () => {
-                console.log('this.state._contact: ' + this.state._contact)
+                this._compareInputsAndTrigger();
             }
         );
     }
@@ -216,8 +245,94 @@ export class BranchForm extends Component {
             newArray.push('');
             this.setState({
                 _contact: newArray 
+            },
+            () => {
+                this._compareInputsAndTrigger();
             });
         }
+    }
+
+    _updateBranchName = (strBranchName) => {
+        this.setState({
+            _branchName: strBranchName
+        },
+            () => {
+                this._compareInputsAndTrigger();
+            }
+        )
+    }
+
+    _compareInputsAndTrigger = () => {
+        console.log('=====20171128_TEST');
+        var activebranch = Object.assign({}, this.props.activebranch);
+        var objRoute = Object.assign({}, this.props.routehistory);
+        var _disabledSave = true;
+        console.log("BEFORE UPDATE: " + this.state._modifiedDataArr);
+
+        console.log('objRoute.mode : ' + objRoute.mode);
+        if (!this._isStringEmpty(this.state._branchName)){
+            if(objRoute.mode.toUpperCase() == 'UPDATE'){
+                console.log('================================================');
+                var _objChanged = [];
+                let _curContact = this.state._contact;
+                let _prevContact = activebranch.contact;
+
+                if(activebranch.name != this.state._branchName){
+                    _objChanged.push({
+                        name: 'branchname',
+                        value: this.state._branchName
+                    })
+                }
+                if(activebranch.address != this.state._address){
+                    _objChanged.push({
+                        name: 'address',
+                        value: this.state._address
+                    })
+                }
+                if((JSON.stringify(_prevContact.sort())) != (JSON.stringify(_curContact.sort()))){
+                    _objChanged.push({
+                        name: 'contact',
+                        value: this.state._contact
+                    })
+                }
+
+                if(activebranch.email != this.state._emailAddress){
+                    _objChanged.push({
+                        name: 'emailaddress',
+                        value: this.state._emailAddress
+                    })
+                }
+                
+                
+                if(_objChanged.length > 0){  
+                    console.log("_objChanged.length : " + _objChanged.length);
+                    _disabledSave = false
+                    this.setState({ 
+                        _modifiedDataArr: _objChanged
+                    },
+                        () => {
+                            console.log('this.state._modifiedDataArr :' + JSON.stringify(this.state._modifiedDataArr))
+                        }
+                    );
+                }
+                
+            }
+            else{
+                _disabledSave = false
+            }
+
+        }
+
+        console.log('_disabledSav: ' + _disabledSave);
+        this.props.dispatchDataActionTrigger({disabledSave: _disabledSave});
+    }
+    
+
+    _isStringEmpty = (strToCheck) => {
+        if(!strToCheck || !strToCheck.trim().length){
+            return true;
+        }
+        return false;
     }
 
     render(){
@@ -232,7 +347,7 @@ export class BranchForm extends Component {
                             <TextInput 
                                 style={styles.textinputField}
                                 onChangeText={inputTxt => {
-                                    this.setState({_branchName: inputTxt});
+                                    this._updateBranchName(inputTxt);
                                     }
                                 }
                                 value={this.state._branchName}
@@ -247,7 +362,13 @@ export class BranchForm extends Component {
                             <TextInput 
                                 style={styles.textinputField}
                                 onChangeText={inputTxt => {
-                                    this.setState({_address: inputTxt});
+                                    this.setState({
+                                        _address: inputTxt},
+
+                                        () => {
+                                            this._compareInputsAndTrigger();
+                                        }
+                                    );
                                     }
                                 }
                                 value={this.state._address}
@@ -261,14 +382,16 @@ export class BranchForm extends Component {
                             <Text style={styles.txtLabel}>CONTACT NUMBERS</Text>
                             {this._displayContacts()}
                             <Text onPress={() => {this._addNewContact()}} style={styles.txtBtnLabel}>Add New</Text>
-                            
                         </View>
                         <View style={[styles.emailAddressCont, styles.defaultProp]}>
                             <Text style={styles.txtLabel}>EMAIL ADDRESS</Text>
                             <TextInput 
                                 style={styles.textinputField}
                                 onChangeText={inputTxt => {
-                                    this.setState({_emailAddress: inputTxt});
+                                    this.setState({_emailAddress: inputTxt},
+                                        () => {
+                                            this._compareInputsAndTrigger();
+                                        });
                                     }
                                 }
                                 value={this.state._emailAddress}

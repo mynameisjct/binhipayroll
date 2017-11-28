@@ -10,7 +10,8 @@ const rootReducer= combineReducers({
     activeCompanyReducer,
     routeHistoryReducer,
     activeBranchReducer,
-    dataActionTriggerReducer
+    dataActionTriggerReducer,
+/*     activeCompanyIdReducer */
 });
 
 export default rootReducer;

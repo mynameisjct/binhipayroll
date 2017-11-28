@@ -21,6 +21,21 @@ import {
 } from '../../actions';
 
 export class Header3 extends Component {
+    constructor(props){
+        super(props);
+        this.state = {
+            _disableSaveBtn: true,
+        }
+    }
+
+    componentWillReceiveProps(nextProps){
+        let objNextProps = Object.assign({}, nextProps.dataactiontrigger)
+        if(this.state._disableSaveBtn !== objNextProps.disabledSave){
+            this.setState({
+                _disableSaveBtn: objNextProps.disabledSave
+            })
+        }
+    }
 
     _onSave = () => {
         this.props.dispatchDataActionTrigger({
@@ -29,17 +44,13 @@ export class Header3 extends Component {
     }
     
     _enableSaveBtn = () => {
-        let dataactiontrigger = Object.assign({}, this.props.dataactiontrigger);
-        if(dataactiontrigger.enableSave){
+        if(this.state._disableSaveBtn){
             return({
-                /* color: '#EEB843' */
-                color: 'red'
+                color: '#D1D4D6' 
             })
         }
         else{
             return({
-                /* color: 'rgba(230, 141, 0, 0.5);' */
-                /* color: 'blue' */
                 color: '#EEB843'
             })
         }
@@ -65,6 +76,7 @@ export class Header3 extends Component {
                 </View>
 
                 <TouchableNativeFeedback
+                    disabled={this.state._disableSaveBtn}
                     onPress={() => {this._onSave()}}
                     background={TouchableNativeFeedback.SelectableBackground()}>
                     <View style={styles.headerRight}>

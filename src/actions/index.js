@@ -40,6 +40,13 @@ export function SetDataActionTrigger(dataactiontrigger) {
     };
 }
 
+export function SetActiveCompanyId(activecompanyid){
+    return {
+        type: 'SET_ACTIVECOMPANYID',
+        activecompanyid
+    }
+}
+
 export function itemsFetchData(url) {
     return (dispatch) => {
         dispatch(itemsIsLoading(true));

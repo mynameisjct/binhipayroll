@@ -105,11 +105,11 @@ export class CompanyProfile extends Component {
     
         /* let element = 'title'; */
         /* let infoType = ['title', 'branch', 'owner', 'companyid']; */
-/*     _fetchDataFromDB = () => {
+    _fetchDataFromDB = () => {
         console.log("_fetchDataFromDB: ");
         console.log("this.state._activeCompany: " + this.state._activeCompany);
 
-        let infoType = ['branch'];
+        let infoType = ['title', 'branch', 'owner', 'companyid'];
 
         infoType.map((element, index) => {
             fetch(apiConfig.url + endPoints.companyProfile,{
@@ -126,7 +126,7 @@ export class CompanyProfile extends Component {
                 
             }).then((response)=> response.json())
                 .then((res)=>{
-                    console.log('res: ' + JSON.stringify({res}));
+                    /* console.log('res: ' + JSON.stringify({res})); */
                     this.setState({
                         _resSuccess: res.flagno,
                         _resMsg: res.message,
@@ -178,9 +178,9 @@ export class CompanyProfile extends Component {
                     alert(error);
             });
         })
-    } */
+    }
 
-    _fetchDataFromDB = () => {
+/*     _fetchDataFromDB = () => {
         setTimeout(() => {
             this.setState({
                 _branches: [
@@ -257,7 +257,7 @@ export class CompanyProfile extends Component {
                 _companyIdMounted: true
             })
         }, 500)
-    }
+    } */
 
     _setTopBorder = (index) => {
         if (index>0){
@@ -353,7 +353,7 @@ export class CompanyProfile extends Component {
                     <View style={styles.cardHeaderCont}>
                         <View style={styles.cardTitle}>
                             <Text style={styles.txtHeader}>
-                                {strTitle}
+                                {strTitle.toUpperCase()}
                             </Text>
                         </View>
                     </View>
@@ -412,8 +412,10 @@ export class CompanyProfile extends Component {
             this.props.dispatchNextHeader({
                 name: 'BranchForm',
                 title: 'ADD NEW BRANCH',
+                mode: 'insert'
             });
             this.props.dispatchActiveBranch({
+                id: '',
                 name: '',
                 address: '',
                 contact: '',
@@ -432,13 +434,15 @@ export class CompanyProfile extends Component {
                 this.props.dispatchNextHeader({
                     name: 'BranchForm',
                     title: 'MODIFY BRANCH',
+                    mode: 'update'
                 });
                 this.props.dispatchActiveBranch({
+                    id: oInfo.id,
                     name: oInfo.name,
                     address: oInfo.address,
                     contact: oInfo.contact,
                     email: oInfo.email,
-                })
+                });
                 this.props.navigation.navigate('BranchForm');
                 break;
 
@@ -452,7 +456,7 @@ export class CompanyProfile extends Component {
                 });
                 break;
             default:
-                alert('UNHANDLED CASE. CHECK CODE');
+                /* alert('UNHANDLED CASE. CHECK CODE'); */
                 break;
         }
     }

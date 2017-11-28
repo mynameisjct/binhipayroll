@@ -1,6 +1,7 @@
 import { SET_ACTIVEBRANCH } from '../constants';
 
 const initialState = {
+    id: '',
     name: '',
     address: '',
     contact: [''],

@@ -499,7 +499,7 @@ export class Login extends Component {
                 
             }).then((response)=> response.json())
                 .then((res)=>{
-                        console.log('JSON.stringify(res): ' + JSON.stringify(res))
+                        /* console.log('JSON.stringify(res): ' + JSON.stringify(res)) */
                         this.setState({
                             _resSuccess: res.flagno,
                             _resMsg: res.message,

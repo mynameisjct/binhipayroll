@@ -2,7 +2,7 @@ import { SET_DATAACTIONTRIGGER } from '../constants';
 
 const initialState = {
     saveTrigger: false,
-    enableSave: false
+    disabledSave: true
 };
 
 

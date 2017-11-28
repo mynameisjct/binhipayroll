@@ -48,6 +48,7 @@ export default {
   },
 
   headerRight:{
+    height: '100%',
     width: 80,
     backgroundColor: 'transparent',
     justifyContent: 'center',
@@ -60,5 +61,4 @@ export default {
     fontWeight: '200',
     textAlign: 'center',
   }
-  
 };
