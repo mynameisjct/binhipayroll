@@ -207,7 +207,6 @@ export class Login extends Component {
         if(this.state._resSuccess == 1){
             switch(strType.toUpperCase()){
                 case 'LOGIN':
-
                     //VNX_TEST
                     this.props.dispatchStoreValues({
                         navigation: this.props.navigation,
@@ -229,17 +228,17 @@ export class Login extends Component {
                         id: this.state._resDefaultCompanyId
                     });
 
-/*                     this.props.navigation.navigate('EmprDashBoard', 
+                    this.props.navigation.navigate('EmprDashBoard', 
                         {
                             username: this.state._username,
                             company: this.state._resCompany,
                             firstname: this.state._resFName,
                             middlename: this.state._resMName,
                             lastname: this.state._resLName
-                    }); */
+                    });
 
 
-                    this.props.navigation.navigate('CompanyProfile', 
+/*                     this.props.navigation.navigate('CompanyProfile', 
                         {
                             username: this.state._username,
                             password: this.state._password,
@@ -248,8 +247,11 @@ export class Login extends Component {
                             middlename: this.state._resMName,
                             lastname: this.state._resLName
                         });
+                    break; */
+
+                    /* this.props.navigation.navigate('CompanyPolicies') */
                     break;
-                    
+
                 case 'TIMEIN':
                     this.setState({
                         _msgBoxType: 'success'
@@ -312,7 +314,7 @@ export class Login extends Component {
         }
     }
     
-    evaluateSuccessTrans(strType){
+/*     evaluateSuccessTrans(strType){
         console.log('strType: ' + strType);
         switch (strType.toUpperCase()){
             case 'LOGIN':
@@ -354,13 +356,13 @@ export class Login extends Component {
                         });
                     break;
                 }
-/*                 this.setState({
+                this.setState({
                     _resMsg: 'Credentials are correct. This should proceed to Dash Board.',
                 },
                     () => this.setState({
                         _msgBoxShow: true
                     })
-                ); */
+                );
                 break;
             case 'TIMEIN':
                 this.setState({
@@ -383,7 +385,7 @@ export class Login extends Component {
                 );
                 break;
         }
-    }
+    } */
 
     setTransTime(callback) {
         this.setState({
@@ -513,7 +515,7 @@ export class Login extends Component {
                             _resAccessToken: res.accesstoken,                          
                         },
                             () => {
-                                console.log('*************************************')
+/*                                 console.log('*************************************')
                                 console.log('INPUTS: ')
                                 console.log('date: ' + this.state._transDate)
                                 console.log('time: ' + this.state._transTime)
@@ -526,32 +528,27 @@ export class Login extends Component {
                                 console.log('_resUserGroup: ' + this.state._resUserGroup)
                                 console.log('_resFName: ' + this.state._resFName)
                                 console.log('_resMName: ' + this.state._resMName)
-                                console.log('_resLName: ' + this.state._resLName)
-/*                                 console.log('_resCompany: ' + this.state._resCompany)
-                                console.log('_resCompany: ' + typeof(this.state._resCompany)) */
+                                console.log('_resLName: ' + this.state._resLName) */
+
                                 if (this.state._resCompany !== undefined){
                                     let arrCompany = this.state._resCompany;
                                     let counter= 0
                                     arrCompany.forEach(function(element) {
                                         counter+=1;
-                                        console.log('Company' + counter + ': ' + element.name + ' ' + element.default )
+                                        /* console.log('Company' + counter + ': ' + element.name + ' ' + element.default ) */
                                     
                                         if(element.default == 1){
                                             this.setState({
                                                 _resDefaultCompanyName: element.name,
                                                 _resDefaultCompanyId: element.id
-                                            }, 
-                                                () => {
-                                                    console.log('_resDefaultCompany: ' + this.state._resDefaultCompany)
-                                                }
-                                            )
+                                            })
                                         }
                                     
                                     }, this);
                                 }
-                                console.log('_resBranch: ' + this.state._resBranch)
+/*                                 console.log('_resBranch: ' + this.state._resBranch)
                                 console.log('_resPosition: ' + this.state._resPosition)
-                                console.log('_resAccessToken: ' + this.state._resAccessToken)
+                                console.log('_resAccessToken: ' + this.state._resAccessToken) */
                             }
                         );
                 }).then((res)=>{
@@ -598,7 +595,7 @@ export class Login extends Component {
                             _resCompany: res["companyname"],                         
                         },
                             () => {
-                                console.log('*************************************')
+/*                                 console.log('*************************************')
                                 console.log('SCRIPT: ' + curType)
                                 console.log('INPUTS: ')
                                 console.log('date: ' + this.state._transDate)
@@ -611,7 +608,7 @@ export class Login extends Component {
                                 console.log('_resSuccess: ' + this.state._resSuccess)
                                 console.log('_resMsg: ' + this.state._resMsg)
                                 console.log('_resFName: ' + this.state._resFName)
-                                console.log('_resCompany: ' + this.state._resCompany)
+                                console.log('_resCompany: ' + this.state._resCompany) */
                                 this.evaluateTransaction(strType);
                                 this.setState({_showSplash: false});
                             }
@@ -714,14 +711,14 @@ export class Login extends Component {
                         _resMsg: res["message"],                     
                     },
                         () => {
-                            console.log('*************************************')
+/*                             console.log('*************************************')
                             console.log('SCRIPT: ' + apiConfig.url + script_ForgotPassword)
                             console.log('INPUTS: ')
                             console.log('username: ' + this.state._username)
                             console.log('-----------------------------------------')
                             console.log('OUTPUTS: ')
                             console.log('_resSuccess: ' + this.state._resSuccess)
-                            console.log('_resMsg: ' + this.state._resMsg)
+                            console.log('_resMsg: ' + this.state._resMsg) */
                             this.evaluateForgotPassword();
                         }
                     );

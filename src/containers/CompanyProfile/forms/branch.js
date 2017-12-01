@@ -4,7 +4,8 @@ import {
     Text,
     TextInput,
     ScrollView,
-    TouchableOpacity
+    TouchableOpacity,
+    Keyboard
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Header3 from '../../Headers/header3';
@@ -24,13 +25,14 @@ export class BranchForm extends Component {
     constructor(props){
         super(props);
         this.state = {
+            _branchId: '',
             _branchName: '',
             _address: '',
             _contact: [''],
             _emailAddress: '',
-            _modifiedDataArr: [''],
-
-            _msgBoxType: 'SUCCESS',
+            _modifiedDataArr: null,
+            _transType: '',
+            _msgBoxType: '',
             _msgBoxShow: false,
             _resMsg: '',
         }
@@ -44,21 +46,34 @@ export class BranchForm extends Component {
     }
 
     componentDidMount(){
+        console.log('componentDidMount')
         this._initFormValues();
+    }
+
+    componentWillUnmount(){
+        this._clearData();
     }
 
     componentWillReceiveProps(nextProps){
         let objNextProps = Object.assign({}, nextProps.dataactiontrigger)
-        if(objNextProps.saveTrigger){
+        if(!objNextProps.disabledsave && objNextProps.saveTrigger){
+            console.log('CURRENT__this.state._transType: ' + this.state._transType);
+            console.log('CURRENT__this.state._modifiedDataArr: ' + this.state._modifiedDataArr);
+            console.log('CURRENT__TYPE: ' + typeof(this.state._modifiedDataArr));
+            console.log('CURRENT__VALUE: ' + JSON.stringify(this.state._modifiedDataArr));
+            console.log('this.state._modifiedDataArr ' + this.state._modifiedDataArr ? true : false);
+            if(this.state._transType.toUpperCase() == 'UPDATE'){
+                if(!this.state._modifiedDataArr){
+                    return;
+                }
+            }
             this._saveAndDispatch();
         }
     }
     
     _saveAndDispatch = () => {
         if(this.state._branchName != ''){
-            if(!this.state._modifiedDataArr==[""]){
-                this._saveDataToDB();
-            }
+            this._saveDataToDB();
         }
     }
 
@@ -69,13 +84,11 @@ export class BranchForm extends Component {
     }
 
     _generateJSONString = () => {
-        var objRoute = Object.assign({}, this.props.routehistory);
         var activecompany = Object.assign({}, this.props.activecompany);
         var logininfo = Object.assign({}, this.props.logininfo)
-        var activebranch = Object.assign({}, this.props.activebranch);
 
         var _data = [];
-        if(objRoute.mode.toUpperCase()=='UPDATE'){
+        if(this.state._transType=='UPDATE'){
             _data  = this.state._modifiedDataArr;
         }
 
@@ -101,15 +114,15 @@ export class BranchForm extends Component {
         }
 
         var _objdata = [{
-            oid: activebranch.id,
+            oid: this.state._branchId,
             data: _data
         }]
         
         return(
             JSON.stringify({
-                companyname: activecompany.name,
+                companyname: this.state._branchName,
                 infotype: 'branch',
-                transtype: objRoute.mode,
+                transtype: this.state._transType,
                 username: logininfo.username,
                 compid: activecompany.id,
                 objdata: _objdata
@@ -118,8 +131,8 @@ export class BranchForm extends Component {
     }
 
     _saveDataToDB = () => {
-        console.log("this._generateJSONString(): " + this._generateJSONString());
-        var objRoute = Object.assign({}, this.props.routehistory);
+        console.log('********this._generateJSONString(): ' + this._generateJSONString())
+        console.log('********_modifiedDataArr: ' + JSON.stringify(this.state._modifiedDataArr));
         fetch(apiConfig.url + endPoints.newBranch,{
             method: 'POST',
             headers: {
@@ -137,31 +150,60 @@ export class BranchForm extends Component {
                     _resMsg: res.message,
                 },
                     () => {
-                        if(this.state._resSuccess == 1){
-                            this.setState({
-                                _resMsg: 'Successfully created new branch, ' + this.state._branchName,
-                                _msgBoxShow: true
-                            },
-                                () => {
-                                    this.props.dispatchDataActionTrigger({saveTrigger: false});
-                                }
-                            )
+                        let bFlag = true;
+                        let strMsgType = '';
+
+                        switch(this.state._resSuccess){
+                            case '0':
+                                strMsgType = 'ERROR-OK';
+                                break;
+                            case '1':
+                                strMsgType =  'SUCCESS';
+                                break;
+                            case '2':
+                                strMsgType =  'WARNING';
+                                break;
+                            default:
+                                bFlag = false;
+                                strMsgType = '';
                         }
+
+                        this.setState({
+                            _msgBoxType: strMsgType,
+                            _msgBoxShow: bFlag,
+                            _modifiedDataArr: null,
+                            _transType: 'UPDATE'
+                        },
+                            () => {
+                                this.props.dispatchDataActionTrigger({disabledSave: true});
+                                this.props.dispatchActiveBranch({
+                                    id: res.id,
+                                    name: this.state._branchName,
+                                    address: this.state._address,
+                                    contact: this.state._contact,
+                                    email: this.state._emailAddress
+                                });
+                            }
+                        )
                     }
                 );
                 
             }).catch((error)=> {
                 alert(error);
-                this.props.dispatchDataActionTrigger({saveTrigger: false});
+                this.props.dispatchDataActionTrigger({disabledSave: true});
         });
     }
     
     _initFormValues = () => {
         let activebranch = Object.assign({}, this.props.activebranch);
+        var objRoute = Object.assign({}, this.props.routehistory);
+
         this.setState({
+            _branchId: activebranch.id,
             _branchName: activebranch.name,
             _address: activebranch.address,
-            _emailAddress: activebranch.email
+            _emailAddress: activebranch.email,
+            _transType: objRoute.mode,
         })
 
         if(activebranch.contact){
@@ -169,6 +211,21 @@ export class BranchForm extends Component {
                 _contact: activebranch.contact
             })
         }
+    }
+
+    _keyboardDidShow() {
+
+    }
+    
+    _keyboardDidHide() {
+
+    }
+
+    _clearData = () => {
+        Keyboard.dismiss();
+        this.setState({
+            _msgBoxShow: false
+        })
     }
 
     _displayContacts = () => {
@@ -263,16 +320,11 @@ export class BranchForm extends Component {
     }
 
     _compareInputsAndTrigger = () => {
-        console.log('=====20171128_TEST');
         var activebranch = Object.assign({}, this.props.activebranch);
-        var objRoute = Object.assign({}, this.props.routehistory);
         var _disabledSave = true;
-        console.log("BEFORE UPDATE: " + this.state._modifiedDataArr);
 
-        console.log('objRoute.mode : ' + objRoute.mode);
         if (!this._isStringEmpty(this.state._branchName)){
-            if(objRoute.mode.toUpperCase() == 'UPDATE'){
-                console.log('================================================');
+            if(this.state._transType.toUpperCase() == 'UPDATE'){
                 var _objChanged = [];
                 let _curContact = this.state._contact;
                 let _prevContact = activebranch.contact;
@@ -303,17 +355,11 @@ export class BranchForm extends Component {
                     })
                 }
                 
-                
                 if(_objChanged.length > 0){  
-                    console.log("_objChanged.length : " + _objChanged.length);
                     _disabledSave = false
                     this.setState({ 
                         _modifiedDataArr: _objChanged
-                    },
-                        () => {
-                            console.log('this.state._modifiedDataArr :' + JSON.stringify(this.state._modifiedDataArr))
-                        }
-                    );
+                    });
                 }
                 
             }
@@ -336,8 +382,6 @@ export class BranchForm extends Component {
     }
 
     render(){
-        let objRoute = Object.assign({}, this.props.routehistory);
-        
         return(
             <View style={styles.container}>
                 <ScrollView>

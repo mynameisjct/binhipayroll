@@ -188,8 +188,6 @@ export class EmpeSidebarSidebar extends Component {
     }
             
     fetchNotificationFromDB = () => {
-        console.log('*************************************')
-        console.log('apiConfig.url + script_Notification: ' + apiConfig.url + script_Notification);
         fetch(apiConfig.url + script_Notification,{
             method: 'POST',
             headers: {
@@ -210,14 +208,14 @@ export class EmpeSidebarSidebar extends Component {
                         _notificationCount: res.notificationcount,                       
                     },
                         () => {
-                            console.log('*************************************')
+/*                             console.log('*************************************')
                             console.log('INPUTS: ')
                             console.log('companyname: ' + this.state._activeCompany.name)
                             console.log('-----------------------------------------')
                             console.log('OUTPUTS: ')
                             console.log('_resSuccess: ' + this.state._resSuccess)
                             console.log('_resMsg: ' + this.state._resMsg)
-                            console.log('_notificationCount: ' + this.state._notificationCount)
+                            console.log('_notificationCount: ' + this.state._notificationCount) */
                             this.setState({
                                 _isNotificationLoading: false
                             });
@@ -231,7 +229,6 @@ export class EmpeSidebarSidebar extends Component {
         });
     }
     _onPressButton = (targetPage) => {
-        console.log('THIS IS A FUCKING TEST')
         let objBtnColor = Object.assign({}, this.state._btnColors);
 
         Object.keys(objBtnColor).map(key => {

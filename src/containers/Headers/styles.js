@@ -37,7 +37,8 @@ export default {
     fontFamily: 'Helvetica-Bold',
     fontSize: 16,
     textAlign: 'center',
-    fontWeight: '500'
+    fontWeight: '500',
+    color: '#434646'
   },
 
   headerLeft:{

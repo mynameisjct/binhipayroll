@@ -50,17 +50,14 @@ export class CompanyProfile extends Component {
     }
 
     componentWillMount(){
-        console.log('-----component WILL mount');
         this._initCompanyInfo(this.props);
     }
 
     componentDidMount(){
-        console.log('-----component DID mount');
         this._fetchDataFromDB();
     }
 
     componentWillReceiveProps(nextProps){
-        console.log('-----component componentWillReceiveProps');
         let objActiveCompany = Object.assign({}, nextProps.activecompany);
         if (this.state._activeCompany !== objActiveCompany.name){
             this._initCompanyInfo(nextProps, {});
@@ -69,7 +66,6 @@ export class CompanyProfile extends Component {
     }
 
     _initCompanyInfo = (oProps) => {
-        console.log('-----_initCompanyInfo');
         let objActiveCompany = Object.assign({}, oProps.activecompany);
         this.setState({
             _activeCompany: objActiveCompany.name,
@@ -106,9 +102,6 @@ export class CompanyProfile extends Component {
         /* let element = 'title'; */
         /* let infoType = ['title', 'branch', 'owner', 'companyid']; */
     _fetchDataFromDB = () => {
-        console.log("_fetchDataFromDB: ");
-        console.log("this.state._activeCompany: " + this.state._activeCompany);
-
         let infoType = ['title', 'branch', 'owner', 'companyid'];
 
         infoType.map((element, index) => {
