@@ -90,7 +90,7 @@ export default class CompanyPolicies extends Component {
 
     static navigationOptions = {
         header : 
-            <Header2 title= 'COMPANY PROFILE'/>
+            <Header2 title= 'COMPANY POLICIES'/>
     }
     
     _setActiveChild = (oComponent, index) => {

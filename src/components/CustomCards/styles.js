@@ -35,7 +35,8 @@ export default {
     },
 
     contentCont: {
-        backgroundColor: 'yellow',
+        backgroundColor: 'transparent',
+        borderBottomWidth: 1,
     },
 
     detailsCont: {

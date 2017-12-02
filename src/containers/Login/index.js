@@ -228,14 +228,14 @@ export class Login extends Component {
                         id: this.state._resDefaultCompanyId
                     });
 
-                    this.props.navigation.navigate('EmprDashBoard', 
+/*                     this.props.navigation.navigate('EmprDashBoard', 
                         {
                             username: this.state._username,
                             company: this.state._resCompany,
                             firstname: this.state._resFName,
                             middlename: this.state._resMName,
                             lastname: this.state._resLName
-                    });
+                    }); */
 
 
 /*                     this.props.navigation.navigate('CompanyProfile', 
@@ -249,7 +249,7 @@ export class Login extends Component {
                         });
                     break; */
 
-                    /* this.props.navigation.navigate('CompanyPolicies') */
+                    this.props.navigation.navigate('CompanyPolicies')
                     break;
 
                 case 'TIMEIN':
@@ -481,7 +481,8 @@ export class Login extends Component {
     }
 
     fetchDataFromDB(strType){
-/*         alert(this.state._transDate + '-------' + this.state._transTime); */
+        console.log('---------------------------------');
+        console.log('START: ' + this.state._curTime);
         if (strType.toUpperCase()=='LOGIN'){
             
             fetch(apiConfig.url + script_Login,{
@@ -501,6 +502,7 @@ export class Login extends Component {
                 
             }).then((response)=> response.json())
                 .then((res)=>{
+                        console.log('END: ' + this.state._curTime);
                         /* console.log('JSON.stringify(res): ' + JSON.stringify(res)) */
                         this.setState({
                             _resSuccess: res.flagno,
