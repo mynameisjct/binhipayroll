@@ -22,11 +22,36 @@ import styles from './styles';
 //1. title
 
 export default class CustomCard extends Component{
+
     render(){
+        let oTitle = null;
+        if(this.props.oType.toUpperCase()=='SWITCH'){
+            oTitle =  
+                <View style={styles.textCont}>
+                    <View style={{flex: 0.5, flexDirection: 'column'}}>
+                        <View style={{flex:0.65, justifyContent: 'flex-end'}}>
+                            <Text style={styles.txtTitle}>{this.props.title}</Text>
+                        </View>
+                        <View style={{flex: 0.35, justifyContent: 'flex-start'}}>
+                            <Text style={styles.txtDescription}>{this.props.description}</Text>
+                        </View>
+                    </View>
+                    <View style={{flex:0.5, justifyContent: 'center', alignItems: 'flex-end', paddingRight: 50}}>
+                        {this.props.oSwitch}
+                    </View>
+                </View>
+        }
+        else{
+            oTitle =  
+                <View style={styles.textCont}>
+                    <Text style={styles.txtTitle}>{this.props.title}</Text>
+                </View>
+        }
+
         return(
             <View style={styles.container}>
                 <View style={styles.titleCont}>
-                    <Text style={styles.txtTitle}>{this.props.title}</Text>
+                    {oTitle}
                 </View>
                 <View style={styles.contentCont}>
                     <View style={styles.detailsCont}>

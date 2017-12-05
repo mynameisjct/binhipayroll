@@ -21,5 +21,3 @@ export default function activeBranchReducer(state = initialState, action) {
             break;
     }
 }
-
-

@@ -8,6 +8,10 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import styles from './styles'
 
 export default class Overtime extends Component{
+    componentDidMount(){
+        console.log('DIABLO');
+    }
+    
     render(){
         return(
             <View style={styles.container}>

@@ -1,9 +1,13 @@
 import {combineReducers} from 'redux';
-import loginReducer from './loginReducer.js';
-import activeCompanyReducer from './activeCompany.js';
-import routeHistoryReducer from './routeHistory.js';
-import activeBranchReducer from './activeBranch.js';
-import dataActionTriggerReducer  from './dataActionTrigger.js';
+import loginReducer from './loginReducer';
+import activeCompanyReducer from './activeCompany';
+import routeHistoryReducer from './routeHistory';
+import activeBranchReducer from './activeBranch';
+import dataActionTriggerReducer  from './dataActionTrigger';
+import {fetchHasErrored, fetchIsLoading}  from './fetchData';
+
+//Company Policy
+import GetWorkShift from '../containers/CompanyPolicies/reducers';
 
 const rootReducer= combineReducers({
     loginReducer,
@@ -11,7 +15,9 @@ const rootReducer= combineReducers({
     routeHistoryReducer,
     activeBranchReducer,
     dataActionTriggerReducer,
-/*     activeCompanyIdReducer */
+    GetWorkShift,
+    fetchHasErrored,
+    fetchIsLoading
 });
 
 export default rootReducer;

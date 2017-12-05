@@ -69,7 +69,11 @@ export class CompanyProfile extends Component {
         let objActiveCompany = Object.assign({}, oProps.activecompany);
         this.setState({
             _activeCompany: objActiveCompany.name,
-            _componentMounted: false
+            _componentMounted: false,
+            _titleMounted: false,
+            _branchMounted: false,
+            _ownerMounted: false,
+            _companyIdMounted: false,
         })
     }
 
@@ -119,6 +123,8 @@ export class CompanyProfile extends Component {
                 
             }).then((response)=> response.json())
                 .then((res)=>{
+                    console.log('=========================');
+                    console.log('ELEMENT: ' + element)
                     /* console.log('res: ' + JSON.stringify({res})); */
                     this.setState({
                         _resSuccess: res.flagno,
@@ -486,7 +492,6 @@ export class CompanyProfile extends Component {
                         <Icon name="md-home" color='#fff' size={30} style={styles.actionButtonIcon} />
                     </ActionButton.Item>
                 </ActionButton>
-                
             </View>
         );
     }

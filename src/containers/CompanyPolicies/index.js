@@ -10,8 +10,10 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import Header2 from '../Headers/header2';
 import styles from './styles';
+import apiConfig, {endPoints} from '../../services/api/config';
 
 import WorkShift from './Children/workshift';
+import Breaktime from './Children/breaktime';
 import Payroll from './Children/payroll';
 import Tax from './Children/tax';
 import Tardiness from './Children/tardiness';
@@ -21,20 +23,30 @@ import Leaves from './Children/leaves';
 import Benefits from './Children/benefits';
 import Bonus from './Children/bonus';
 
+//Redux
+import { connect } from 'react-redux';
+import {SetLoginInfo,SetActiveCompany, FetchDataFromDB} from '../../actions';
+
 const btnActive = 'rgba(0, 0, 0, 0.2);'
 const btnInactive = 'transparent';
 
-export default class CompanyPolicies extends Component {
+export class CompanyPolicies extends Component {
     constructor(props){
         super(props);
         this.state = {
-            _activeChild: <WorkShift/>,
+            _activeChild: <WorkShift triggerRefresh={this._getWorkSchedule}/>,
             _policyList: [
                 {
                     name: 'Work Shift',
-                    childComponent: <WorkShift/>,
+                    childComponent: <WorkShift triggerRefresh={this._getWorkSchedule}/>,
                     iconName: 'timetable',
                     btnColor: btnActive
+                },
+                {
+                    name: 'Break Time',
+                    childComponent: <Breaktime/>,
+                    iconName: 'timer',
+                    btnColor: btnInactive
                 },
                 {
                     name: 'Payroll',
@@ -86,13 +98,35 @@ export default class CompanyPolicies extends Component {
                 },
             ]
         }
+        
+        this._getWorkSchedule = this._getWorkSchedule.bind(this);
     }
 
     static navigationOptions = {
         header : 
             <Header2 title= 'COMPANY POLICIES'/>
     }
-    
+
+    componentDidMount = () => {
+        this._getWorkSchedule(false);
+    }
+
+    _getWorkSchedule = (bForceUpdate) => {
+        if(!this.props.workShift || bForceUpdate){
+            let objLoginInfo = Object.assign({}, this.props.logininfo)
+            let objActiveCompany = Object.assign({}, this.props.activecompany)
+            this.props.dispatchFetchDataFromDB({
+                url: apiConfig.url + endPoints.workShift,
+                strType: 'GET_WORKSHIFT',
+                input: {
+                    companyid: objActiveCompany.id,
+                    username: objLoginInfo.resUsername,
+                    transtype: 'get'
+                }
+            });
+        }
+    }
+
     _setActiveChild = (oComponent, index) => {
         this.setState({
             _activeChild: oComponent,
@@ -107,7 +141,6 @@ export default class CompanyPolicies extends Component {
     _setBtnColor = (index) => {
         let objNew = [...this.state._policyList];
         objNew.map((btnInfo, curIndex) => {
-            console.log('curIndex : ' + curIndex);
             if(index==curIndex){
                 objNew[curIndex].btnColor = btnActive;
             }
@@ -156,3 +189,27 @@ export default class CompanyPolicies extends Component {
         );
     }
 }
+
+function mapStateToProps (state) {
+    return {
+        logininfo: state.loginReducer.logininfo,
+        activecompany: state.activeCompanyReducer.activecompany,
+        fetchHasErrored: state.fetchHasErrored,
+        fetchIsLoading: state.fetchIsLoading,
+        workShift: state.GetWorkShift
+    }
+}
+
+function mapDispatchToProps (dispatch) {
+    
+    return {
+        dispatchFetchDataFromDB: (objData) => {
+            dispatch(FetchDataFromDB(objData))
+        }
+    }
+}
+
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(CompanyPolicies)

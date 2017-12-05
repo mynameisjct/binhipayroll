@@ -30,13 +30,23 @@ export default {
     txtTitle: {
         fontFamily: 'Helvitica-Light',
         fontSize: 16,
-        paddingLeft: 25,
         color: '#434646'
+    },
+
+    txtDescription: {
+        fontFamily: 'Helvitica-Light',
+        fontSize: 10,
+        color: '#505251'
+    },
+
+    textCont: {
+        paddingLeft: 25,
+        flexDirection: 'row'
     },
 
     contentCont: {
         backgroundColor: 'transparent',
-        borderBottomWidth: 1,
+        borderBottomWidth: 0,
     },
 
     detailsCont: {

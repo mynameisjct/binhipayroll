@@ -39,8 +39,6 @@ export default {
     rightCont: {
         flex: 1,
         backgroundColor: '#fff',
-        justifyContent: 'center',
-        alignItems: 'center'
     },
 
     btnCont: {

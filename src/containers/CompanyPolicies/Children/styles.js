@@ -15,7 +15,8 @@ const { StyleSheet } = React;
 export default {
     container: {
         flex:1,
-        flexDirection: 'row',
+        flexDirection: 'column',
+        backgroundColor: 'transparent',
     },
 
     tableCont: {
@@ -127,7 +128,19 @@ export default {
         textDecorationLine: 'underline',
         fontFamily: 'Helvitica-Light',
         fontSize: 13,
-        marginTop: 10,
+    },
+
+    defaultTimeRow: {
+        flex: 1,
+        flexDirection: 'row',
+        marginTop: 8
+    },
+
+    defaultTimeLeft: {
+        width: 80
+    },
+
+    defaultTimeRight: {
     }
     
 

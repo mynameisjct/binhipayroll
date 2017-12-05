@@ -1,16 +1,13 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import {
     View,
     Text,
     ScrollView,
     CheckBox,
-    TimePickerAndroid,
-    Switch,
-    RefreshControl
+    TimePickerAndroid
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import moment from "moment";
-import _ from 'lodash';
 
 import styles from './styles'
 import CustomCard from '../../../components/CustomCards';
@@ -18,23 +15,27 @@ import MessageBox from '../../../components/MessageBox';
 import SavePrompt from '../../../components/SavePrompt';
 import apiConfig, {endPoints} from '../../../services/api/config';
 
-//Redux
+/* //Redux
 import { connect } from 'react-redux';
-import {SetLoginInfo,SetActiveCompany, FetchDataFromDB, SetDataActionTrigger} from '../../../actions';
+import {
+    SetLoginInfo, 
+    SetActiveCompany,
+} from '../../../actions'; */
 
 const title_WorkShift = 'Set the Company’s Default Work Shift';
 const category = ['', 'DAY OFF', 'TIME-IN', 'TIME-OUT'];
 const description_DefaultTime = 'The same Time-in and Time-out';
+let testNum = 0;
 
-export class WorkShift extends Component {
+export default class WorkShift extends Component {
     constructor(props){
         super(props);
         this.state = {
-            _curTimePolicy: null,
+            _isLoaded: false,
             _dailyPolicy: {
                 sunday: {
                     header: 'S',
-                    dayoff: false,
+                    dayoff: true,
                     timein: '08:00 AM',
                     timeout: '05:30 PM',
                 },
@@ -82,65 +83,119 @@ export class WorkShift extends Component {
                 timeout: '00:00 PM'
             },
 
+            _ORIGdailyPolicy: {
+                sunday: {
+                    header: 'S',
+                    dayoff: true,
+                    timein: '08:00 AM',
+                    timeout: '05:30 PM',
+                },
+                monday: {
+                    header: 'M',
+                    dayoff: false,
+                    timein: '08:00 AM',
+                    timeout: '05:30 PM',
+                },
+                tuesday: {
+                    header: 'T',
+                    dayoff: false,
+                    timein: '08:00 AM',
+                    timeout: '05:30 PM',
+                },
+                wednesday: {
+                    header: 'W',
+                    dayoff: false,
+                    timein: '08:00 AM',
+                    timeout: '05:30 PM',
+                },
+                thursday: {
+                    header: 'T',
+                    dayoff: false,
+                    timein: '08:00 AM',
+                    timeout: '05:30 PM',
+                },
+                friday: {
+                    header: 'F',
+                    dayoff: false,
+                    timein: '08:00 AM',
+                    timeout: '05:30 PM',
+                },
+                saturday: {
+                    header: 'S',
+                    dayoff: false,
+                    timein: '08:00 AM',
+                    timeout: '05:30 PM',
+                },
+            },
+
+            _ORIGdefaultSetting:{
+                enabled: false,
+                timein: '00:00 PM',
+                timeout: '00:00 PM'
+            },
+
+
             _msgBoxShow: false,
             _msgBoxType: '',
             _resMsg: '',
-            _changeDetected: false,
+            _changeDetected: false
 
-            _refreshing: false
-
+/*             _dailyPolicy: {
+                sunday: {
+                    header: 'S',
+                    dayoff: true,
+                    timein: '8:00 AM',
+                    timeout: '5:30 PM',
+                },
+                monday: {
+                    header: 'M',
+                    dayoff: false,
+                    timein: '',
+                    timeout: '',
+                },
+                tuesday: {
+                    header: 'T',
+                    dayoff: false,
+                    timein: '',
+                    timeout: '',
+                },
+                wednesday: {
+                    header: 'W',
+                    dayoff: false,
+                    timein: '',
+                    timeout: '',
+                },
+                thursday: {
+                    header: 'T',
+                    dayoff: false,
+                    timein: '',
+                    timeout: '',
+                },
+                friday: {
+                    header: 'F',
+                    dayoff: false,
+                    timein: '',
+                    timeout: '',
+                },
+                saturday: {
+                    header: 'S',
+                    dayoff: false,
+                    timein: '',
+                    timeout: '',
+                },
+            } */
         }
-
         this._continueActionOnWarning = this._continueActionOnWarning.bind(this);
         this._closeMsgBox = this._closeMsgBox.bind(this);
     }
 
-    componentDidMount(){
-        this._initValues();
-    }
-
-    componentWillReceiveProps(nextProps) {
-        if(JSON.stringify(this.state._curTimePolicy) !== JSON.stringify(nextProps.workshift))
-        {
-            this._initValues();
-        }
-    }
-
-    _initValues = () => {
-        let oWorkShift = Object.assign({}, this.props.workshift);
-        let oWorkShiftDay = Object.assign({}, oWorkShift.day);
-        let oWorkShiftDefaultSetting = Object.assign({}, oWorkShift.defaultsetting);
-
-        let oDailyPolicy = Object.assign({}, this.state._dailyPolicy);
-        let oDefaultSetting = Object.assign({}, this.state._defaultSetting);
-
-        //Init Daily Time Setting
-        Object.keys(oWorkShiftDay).map(function (storeDay) {
-            let oStoreDay = Object.assign({},oWorkShiftDay[storeDay]);
-
-            Object.keys(oDailyPolicy).map(function (tempDay) {
-                if (storeDay==tempDay){
-                    oDailyPolicy[storeDay].timein = oStoreDay.timein;
-                    oDailyPolicy[storeDay].timeout = oStoreDay.timeout;
-                    oDailyPolicy[storeDay].dayoff = oStoreDay.dayoff;
-                }
-            })
-        });
-
-        //Init Default Setting
-        oDefaultSetting.enabled = oWorkShiftDefaultSetting.enabled;
-        oDefaultSetting.timein = oWorkShiftDefaultSetting.timein;
-        oDefaultSetting.timeout = oWorkShiftDefaultSetting.timeout;
-
-        this.setState({
-            _dailyPolicy: oDailyPolicy,
-            _defaultSetting: oDefaultSetting
-        },
-            () => {
-                console.log('this.state._dailyPolicy: ' + JSON.stringify(this.state._dailyPolicy));
-                console.log('this.state._defaultSetting: ' + JSON.stringify(this.state._defaultSetting));
-            }
-        )
+    componentDidMount = () => {
+        
+        testNum++;
+        console.log('testNum' + testNum)
+/*         this.setState({
+            _isLoaded: true
+        }) */
     }
 
     _setBottomBorder = (index) => {
@@ -161,9 +216,7 @@ export class WorkShift extends Component {
         })
         this.setState({
             _dailyPolicy: objPolicy
-        },
-            () => {this._detectChanges()}
-        )
+        })
     }
 
     _activateDefaultTime = (value) => {
@@ -174,9 +227,7 @@ export class WorkShift extends Component {
                 _msgBoxShow: true,
                 _msgBoxType: 'WARNING',
             },
-                () => {
-                    this._triggerDefaultTime(false);
-                }
+                () => {this._triggerDefaultTime(false)}
             )
         }
         else{
@@ -255,9 +306,7 @@ export class WorkShift extends Component {
             })
             this.setState({
                 _dailyPolicy: objPolicy
-            },
-                () => {this._detectChanges()}
-            )
+            })
         }
     }
 
@@ -273,16 +322,13 @@ export class WorkShift extends Component {
         })
         this.setState({
             _dailyPolicy: objPolicy
-        },
-            () => {this._detectChanges()}
-        )
+        })
     }
 
     _overrideAllTime = () => {
         this._triggerDefaultTime(true);
         this._setAllTime('timein', this.state._defaultSetting.timein);
         this._setAllTime('timeout', this.state._defaultSetting.timeout);
-        this._detectChanges();
     }
 
     _continueActionOnWarning = () => {
@@ -298,82 +344,50 @@ export class WorkShift extends Component {
     }
 
     _detectChanges = () => {
-        let bChangeFlag = false;
-
-        let oWorkShift = Object.assign({}, this.props.workshift);
-        let oWorkShiftDay = Object.assign({}, oWorkShift.day);
-        let oWorkShiftDefaultSetting = Object.assign({}, oWorkShift.defaultsetting);
-
-        let oDailyPolicy = Object.assign({}, this.state._dailyPolicy);
-        let oDefaultSetting = Object.assign({}, this.state._defaultSetting);
-
-        //Init Daily Time Setting
-        Object.keys(oWorkShiftDay).map(function (storeDay) {
-            let oStoreDay = Object.assign({},oWorkShiftDay[storeDay]);
-
-            Object.keys(oDailyPolicy).map(function (tempDay) {
-                if (storeDay==tempDay){
-                    if(oDailyPolicy[storeDay].timein != oStoreDay.timein ||
-                        oDailyPolicy[storeDay].timeout != oStoreDay.timeout ||
-                        oDailyPolicy[storeDay].dayoff != oStoreDay.dayoff){
-                            bChangeFlag = true;
-                        }
-                }
-            })
-        });
-
-        //Init Default Setting
-        if(oDefaultSetting.enabled != oWorkShiftDefaultSetting.enabled ||
-            oDefaultSetting.timein != oWorkShiftDefaultSetting.timein ||
-            oDefaultSetting.timeout != oWorkShiftDefaultSetting.timeout ){
-
-            bChangeFlag = true;
-        }
-
-        this.setState({
-            _changeDetected: bChangeFlag
-        },
-            () => {
-                if(this.state._changeDetected){
-/*                     this.props.dispatchDataActionTrigger({
-                        disabledSave: false
-                    }) */
-                }
-            }
-        );
     }
 
+/*     _fetchFromDB = () => {
+        let objLoginInfo = Object.assign({}, this.props.logininfo)
+        let objActiveCompany = Object.assign({}, this.props.activecompany)
+        console.log('SCRIPT: ' + apiConfig.url + endPoints.workShift)
+        console.log('INPUT: ' + JSON.stringify({
+            companyid: objActiveCompany.id,
+            username: objLoginInfo.resUsername,
+            transtype: 'get'}))
+
+        fetch(apiConfig.url + endPoints.workShift,{
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+
+            body: JSON.stringify({
+                companyid: objActiveCompany.id,
+                username: objLoginInfo.resUsername,
+                transtype: 'get'
+            })
+            
+        }).then((response)=> response.json())
+            .then((res)=>{
+                console.log('OUTPUT: ' + res)
+        }).catch((error)=> {
+                alert(error);
+        });
+    }
+ */
     render(){
         const oDailyPolicy = this.state._dailyPolicy;
         let iBorderCounter = -1;
 
-/*         if(this.props.fetchHasErrored){
-            return (
-                <View>
-                    <Text>ERROR WHILE LOADING</Text>
-                </View>
-            );
-        }
-        else if(this.props.fetchIsLoading){
-            return (
-                <View>
-                    <Text>LOADING...</Text>
-                </View>
-            );
+/*         if(!this.state._isLoaded){
+            return null;
         }
         else{ */
             return(
                 <View style={styles.container}>
-                    {/* <SavePrompt/> */}
-                    <ScrollView
-                        refreshControl={
-                            <RefreshControl
-                                refreshing={this.state._refreshing}
-                                onRefresh={() => this.props.triggerRefresh(true)}
-                            />
-                        }
-                    >
-                        <CustomCard title={title_WorkShift} oType='Text'>
+                    <ScrollView>
+                        <CustomCard title={title_WorkShift}>
                             <View style={styles.tableCont}>
                                 <View style={styles.categoryCont}>
                                     {
@@ -467,8 +481,8 @@ export class WorkShift extends Component {
                                 }
                             </View>
                         </CustomCard>
-                        
                     </ScrollView>
+                    <SavePrompt/>
                     <MessageBox
                         promptType={this.state._msgBoxType}
                         show={this.state._msgBoxShow}
@@ -478,34 +492,17 @@ export class WorkShift extends Component {
                     />
                 </View>
             );
-        
+/*         } */
     }
 }
-
+/* 
 function mapStateToProps (state) {
     return {
         logininfo: state.loginReducer.logininfo,
-        activecompany: state.activeCompanyReducer.activecompany,
-        fetchHasErrored: state.fetchHasErrored,
-        fetchIsLoading: state.fetchIsLoading,
-        workshift: state.GetWorkShift,
-        dataactiontrigger: state.dataActionTriggerReducer.dataactiontrigger
-    }
-}
-
-function mapDispatchToProps (dispatch) {
-    
-    return {
-        dispatchFetchDataFromDB: (objData) => {
-            dispatch(FetchDataFromDB(objData))
-        },
-        dispatchDataActionTrigger: (dataactiontrigger) => {
-            dispatch(SetDataActionTrigger(dataactiontrigger))
-        }
+        activecompany: state.activeCompanyReducer.activecompany
     }
 }
 
 export default connect(
     mapStateToProps,
-    mapDispatchToProps
-)(WorkShift)
+)(WorkShift) */

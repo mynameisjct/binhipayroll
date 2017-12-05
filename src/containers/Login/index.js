@@ -499,7 +499,6 @@ export class Login extends Component {
                     password: this.state._password,
                 })
                 
-                
             }).then((response)=> response.json())
                 .then((res)=>{
                         console.log('END: ' + this.state._curTime);
@@ -562,6 +561,7 @@ export class Login extends Component {
                     this.setState({_showSplash: false});
             });
         }
+        
         else{
             let curType = '';
             if(strType.toUpperCase()=='TIMEIN'){

@@ -206,6 +206,16 @@ export default class MsgBox extends Component{
                         <TouchableOpacity 
                             style={{ borderRadius: 100, width: 140, height: 40, backgroundColor: 'rgba(0, 0, 0, 0.3)', justifyContent:'center', alignItems: 'center'}}
                             activeOpacity={0.6}
+                            onPress={() => this.props.onClose()}>
+                            <View>
+                                <Text style={styles.txtOKBtn}>Cancel</Text>
+                            </View>
+                        </TouchableOpacity>
+                        <View style={{width:10}}>
+                        </View>
+                        <TouchableOpacity 
+                            style={{ borderRadius: 100, width: 140, height: 40, backgroundColor: 'rgba(0, 0, 0, 0.3)', justifyContent:'center', alignItems: 'center'}}
+                            activeOpacity={0.6}
                             onPress={() => this.props.onWarningContinue()}>
                             <View>
                                 <Text style={styles.txtOKBtn}>Continue</Text>

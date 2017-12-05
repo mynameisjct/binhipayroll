@@ -49,22 +49,22 @@ const CompanyProfileNav = StackNavigator({
 
 const RootDrawer = DrawerNavigator(
   {
-    EmprDashBoardStack: {
+    EmprDashBoard: {
       screen: EmprDashBoardNav},
 
-    CompanyPoliciesStack: {
+    CompanyPolicies: {
       screen: CompanyPoliciesNav},
       
-    EmployeeInfoStack: {
+    EmployeeInfo: {
       screen: EmployeeInfoNav},
   
-    TransactionsStack: {
+    Transactions: {
       screen: TransactionsNav},
     
-    ReportsStack: {
+      Reports: {
       screen: ReportsNav},
     
-    CompanyProfileStack: {
+    CompanyProfile: {
       screen: CompanyProfileNav},
 
   },
