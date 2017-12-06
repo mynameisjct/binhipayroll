@@ -4,10 +4,13 @@ import activeCompanyReducer from './activeCompany';
 import routeHistoryReducer from './routeHistory';
 import activeBranchReducer from './activeBranch';
 import dataActionTriggerReducer  from './dataActionTrigger';
-import {fetchHasErrored, fetchIsLoading}  from './fetchData';
 
 //Company Policy
-import GetWorkShift from '../containers/CompanyPolicies/reducers';
+import GetWorkShift, {
+    UpdateWorkShift, 
+    WorkShiftHasErrored, 
+    WorkShiftIsLoading
+} from '../containers/CompanyPolicies/reducers';
 
 const rootReducer= combineReducers({
     loginReducer,
@@ -15,9 +18,10 @@ const rootReducer= combineReducers({
     routeHistoryReducer,
     activeBranchReducer,
     dataActionTriggerReducer,
+    WorkShiftHasErrored,
+    WorkShiftIsLoading,
     GetWorkShift,
-    fetchHasErrored,
-    fetchIsLoading
+    UpdateWorkShift
 });
 
 export default rootReducer;

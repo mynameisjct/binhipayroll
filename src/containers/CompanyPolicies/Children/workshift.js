@@ -17,10 +17,17 @@ import CustomCard from '../../../components/CustomCards';
 import MessageBox from '../../../components/MessageBox';
 import SavePrompt from '../../../components/SavePrompt';
 import apiConfig, {endPoints} from '../../../services/api/config';
+import {PromptError, PromptLoading} from '../../../components/ScreenLoadStatus';
 
 //Redux
 import { connect } from 'react-redux';
-import {SetLoginInfo,SetActiveCompany, FetchDataFromDB, SetDataActionTrigger} from '../../../actions';
+import {SetLoginInfo,
+    SetActiveCompany, 
+    FetchDataFromDB, 
+    SetDataActionTrigger
+} from '../../../actions';
+
+import {UpdateWorkShift} from '../../../actions/companyPolicies';
 
 const title_WorkShift = 'Set the Company’s Default Work Shift';
 const category = ['', 'DAY OFF', 'TIME-IN', 'TIME-OUT'];
@@ -93,6 +100,8 @@ export class WorkShift extends Component {
 
         this._continueActionOnWarning = this._continueActionOnWarning.bind(this);
         this._closeMsgBox = this._closeMsgBox.bind(this);
+        this._saveAction = this._saveAction.bind(this);
+        this._undoAction = this._undoAction.bind(this);
     }
 
     componentDidMount(){
@@ -100,23 +109,81 @@ export class WorkShift extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        if(JSON.stringify(this.state._curTimePolicy) !== JSON.stringify(nextProps.workshift))
-        {
+        if(JSON.stringify(this.state._curTimePolicy) !== 
+            JSON.stringify(nextProps.workshift)){
             this._initValues();
+        }
+
+        let oRes = {...nextProps.updateresponse};
+        if(oRes.flagno!= -1 && oRes!=null){
+            let oResponse = {...nextProps.updateresponse};
+            let strMsgType = '';
+            switch(oResponse.flagno){
+                case '0':
+                    strMsgType='error'
+                    break;
+                case '1':
+                    strMsgType='success'
+                    break;
+                case '2':
+                    strMsgType='warning'
+            }
+            
+            this.setState({
+                _msgBoxType: strMsgType,
+                _msgBoxShow: true,
+                _resMsg: oRes.message
+            },
+                () => {
+                    this.props.dispatchResetResponse({
+                        flagno: -1
+                    })
+                }
+            )
         }
     }
 
-    _initValues = () => {
-        let oWorkShift = Object.assign({}, this.props.workshift);
-        let oWorkShiftDay = Object.assign({}, oWorkShift.day);
-        let oWorkShiftDefaultSetting = Object.assign({}, oWorkShift.defaultsetting);
+    _updateStore = () => {
+        let oWorkShift = {...this.props.workshift};
+        let oWorkShiftDay = {...oWorkShift.day};
+        let oWorkShiftDefaultSetting = {...oWorkShift.defaultsetting};
 
-        let oDailyPolicy = Object.assign({}, this.state._dailyPolicy);
-        let oDefaultSetting = Object.assign({}, this.state._defaultSetting);
+        let oDailyPolicy = {...this.state._dailyPolicy};
+        let oDefaultSetting = {...this.state._defaultSetting};
+
+        //Init Daily Time Setting
+        Object.keys(oDailyPolicy).map(function (stateDay) {
+            let oStateDay = {...oDailyPolicy[stateDay]};
+
+            Object.keys(oWorkShiftDay).map(function (tempDay) {
+                if (oStateDay==tempDay){
+                    oWorkShift['day'].oStateDay.dayoff = oDailyPolicy.oStateDay.dayoff;
+                    oWorkShift['day'].oStateDay.timein = oDailyPolicy.oStateDay.timein;
+                    oWorkShift['day'].oStateDay.timeout = oDailyPolicy.oStateDay.timeout;
+                }
+            })
+        });
+
+        //Init Default Setting
+        oWorkShift['defaultsetting'].enabled = oDefaultSetting.enabled;
+        oWorkShift['defaultsetting'].timein = oDefaultSetting.timein;
+        oWorkShift['defaultsetting'].timeout = oDefaultSetting.timeout;
+
+        console.log('SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS');
+        console.log('oWorkShift: ' + JSON.stringify(oWorkShift));
+    }
+
+    _initValues = () => {
+        let oWorkShift = {...this.props.workshift};
+        let oWorkShiftDay = {...oWorkShift.day};
+        let oWorkShiftDefaultSetting = {...oWorkShift.defaultsetting};
+
+        let oDailyPolicy = {...this.state._dailyPolicy};
+        let oDefaultSetting = {...this.state._defaultSetting};
 
         //Init Daily Time Setting
         Object.keys(oWorkShiftDay).map(function (storeDay) {
-            let oStoreDay = Object.assign({},oWorkShiftDay[storeDay]);
+            let oStoreDay = {...oWorkShiftDay[storeDay]};
 
             Object.keys(oDailyPolicy).map(function (tempDay) {
                 if (storeDay==tempDay){
@@ -134,13 +201,35 @@ export class WorkShift extends Component {
 
         this.setState({
             _dailyPolicy: oDailyPolicy,
-            _defaultSetting: oDefaultSetting
+            _defaultSetting: oDefaultSetting,
+            _curTimePolicy: oWorkShift
         },
             () => {
-                console.log('this.state._dailyPolicy: ' + JSON.stringify(this.state._dailyPolicy));
-                console.log('this.state._defaultSetting: ' + JSON.stringify(this.state._defaultSetting));
+                this._detectChanges();
             }
         )
+    }
+
+    _saveAction = () => {
+        let objLoginInfo = Object.assign({}, this.props.logininfo)
+        let objActiveCompany = Object.assign({}, this.props.activecompany)
+        this.props.dispatchFetchDataFromDB({
+            strModule: 'WORKSHIFT',
+            url: apiConfig.url + endPoints.workShift,
+            strType: 'WORKSHIFT_UPDATE',
+            input: {
+                transtype: 'UPDATE',
+                companyid: objActiveCompany.id,
+                username: objLoginInfo.resUsername,
+                defaultsetting: this.state._defaultSetting,
+                day: this.state._dailyPolicy,
+            }
+        });
+        this.props.triggerRefresh(true)
+    }
+
+    _undoAction = () => {
+        this._initValues();
     }
 
     _setBottomBorder = (index) => {
@@ -193,7 +282,14 @@ export class WorkShift extends Component {
         })
         this.setState({
             _defaultSetting: objDefaultSetting
-        })
+        },
+            () => {
+                /* console.log('5555555555555555555555555555555555555555555555555555');
+                console.log('this.state._defaultSetting = '+ JSON.stringify(this.state._defaultSetting)); */
+                this._detectChanges();
+            }
+        )
+        
     }
     
 
@@ -282,7 +378,6 @@ export class WorkShift extends Component {
         this._triggerDefaultTime(true);
         this._setAllTime('timein', this.state._defaultSetting.timein);
         this._setAllTime('timeout', this.state._defaultSetting.timeout);
-        this._detectChanges();
     }
 
     _continueActionOnWarning = () => {
@@ -300,16 +395,16 @@ export class WorkShift extends Component {
     _detectChanges = () => {
         let bChangeFlag = false;
 
-        let oWorkShift = Object.assign({}, this.props.workshift);
-        let oWorkShiftDay = Object.assign({}, oWorkShift.day);
-        let oWorkShiftDefaultSetting = Object.assign({}, oWorkShift.defaultsetting);
+        let oWorkShift = {...this.props.workshift};
+        let oWorkShiftDay = {...oWorkShift.day};
+        let oWorkShiftDefaultSetting = {...oWorkShift.defaultsetting};
 
-        let oDailyPolicy = Object.assign({}, this.state._dailyPolicy);
-        let oDefaultSetting = Object.assign({}, this.state._defaultSetting);
+        let oDailyPolicy = {...this.state._dailyPolicy};
+        let oDefaultSetting = {...this.state._defaultSetting};
 
         //Init Daily Time Setting
         Object.keys(oWorkShiftDay).map(function (storeDay) {
-            let oStoreDay = Object.assign({},oWorkShiftDay[storeDay]);
+            let oStoreDay = {...oWorkShiftDay[storeDay]};
 
             Object.keys(oDailyPolicy).map(function (tempDay) {
                 if (storeDay==tempDay){
@@ -334,37 +429,38 @@ export class WorkShift extends Component {
             _changeDetected: bChangeFlag
         },
             () => {
-                if(this.state._changeDetected){
-/*                     this.props.dispatchDataActionTrigger({
-                        disabledSave: false
-                    }) */
-                }
+                let objTest = {...this.props.workshift};
             }
-        );
+        )
     }
 
     render(){
         const oDailyPolicy = this.state._dailyPolicy;
         let iBorderCounter = -1;
 
-/*         if(this.props.fetchHasErrored){
+        if(this.props.workShifthasErrored){
             return (
-                <View>
-                    <Text>ERROR WHILE LOADING</Text>
-                </View>
+                <ScrollView
+                    refreshControl={
+                        <RefreshControl
+                            refreshing={this.state._refreshing}
+                            onRefresh={() => this.props.triggerRefresh(true)}
+                        />
+                        }
+                >
+                    <PromptError title='An error has occured. Pull down to refresh.'/>
+                </ScrollView>
             );
         }
-        else if(this.props.fetchIsLoading){
+        else if(this.props.workShiftLoading){
             return (
-                <View>
-                    <Text>LOADING...</Text>
-                </View>
+                <PromptLoading title='Loading...'/>
             );
         }
-        else{ */
+        else{
             return(
                 <View style={styles.container}>
-                    {/* <SavePrompt/> */}
+                    {this.state._changeDetected ? <SavePrompt undoAction={this._undoAction} saveAction={this._saveAction}/> : null}
                     <ScrollView
                         refreshControl={
                             <RefreshControl
@@ -444,7 +540,7 @@ export class WorkShift extends Component {
                                     />
                                     <Text style={styles.txtDefaultTimeMsg}>{description_DefaultTime}</Text>
                                 </View>
-                                { !this.state._defaultSetting.enabled ? null :
+                                {!this.state._defaultSetting.enabled ? null :
                                     <View style={styles.defaultTimePlaceholder}>
                                         <View style={styles.defaultTimeRow}>
                                             <View style={styles.defaultTimeLeft}>
@@ -478,7 +574,7 @@ export class WorkShift extends Component {
                     />
                 </View>
             );
-        
+        }
     }
 }
 
@@ -486,10 +582,11 @@ function mapStateToProps (state) {
     return {
         logininfo: state.loginReducer.logininfo,
         activecompany: state.activeCompanyReducer.activecompany,
-        fetchHasErrored: state.fetchHasErrored,
-        fetchIsLoading: state.fetchIsLoading,
+        workShifthasErrored: state.WorkShiftHasErrored,
+        workShiftLoading: state.WorkShiftIsLoading,
         workshift: state.GetWorkShift,
-        dataactiontrigger: state.dataActionTriggerReducer.dataactiontrigger
+        dataactiontrigger: state.dataActionTriggerReducer.dataactiontrigger,
+        updateresponse: state.UpdateWorkShift
     }
 }
 
@@ -499,9 +596,10 @@ function mapDispatchToProps (dispatch) {
         dispatchFetchDataFromDB: (objData) => {
             dispatch(FetchDataFromDB(objData))
         },
-        dispatchDataActionTrigger: (dataactiontrigger) => {
-            dispatch(SetDataActionTrigger(dataactiontrigger))
-        }
+        dispatchResetResponse: (response) => {
+            dispatch(UpdateWorkShift(response))
+        },
+
     }
 }
 

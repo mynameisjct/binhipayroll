@@ -6,10 +6,16 @@ import {
     SET_ACTIVEBRANCH,
     FETCH_HAS_ERRORED,
     FETCH_IS_LOADING,
+    UPDATE_WORKSHIFT
 
 } from '../constants';
 
-import {GetWorkShift} from './companyPolicies';
+import {
+    GetWorkShift, 
+    UpdateWorkShift, 
+    WorkShiftIsLoading,
+    WorkShiftHasErrored
+} from './companyPolicies';
 
 export function SetLoginInfo(logininfo) {
     return {
@@ -46,29 +52,22 @@ export function SetDataActionTrigger(dataactiontrigger) {
     };
 }
 
-//Database fetching
-export function FetchHasErrored(bool) {
-    return {
-        type: FETCH_HAS_ERRORED,
-        hasErrored: bool
-    };
-}
-
-export function FetchIsLoading(bool) {
-    return {
-        type: FETCH_IS_LOADING,
-        isLoading: bool
-    };
-}
-
 export function FetchDataFromDB(objData) {
-    console.log('VNXTEST1====================================')
+/*     console.log('VNXTEST1====================================')
     console.log('objData.url: ' + objData.url);
     console.log('objData.strType: ' + objData.strType);
-
+    console.log('INPUT: ' + JSON.stringify(objData.input)); */
     return (dispatch) => {
-        dispatch(FetchIsLoading(true));
-        console.log('ENTERED DISPATCH FUNCTION');
+        switch(objData.strModule.toUpperCase()){
+            case ('WORKSHIFT'):
+                dispatch(WorkShiftIsLoading(true));
+                dispatch(WorkShiftHasErrored(false));
+                break;
+            default: 
+                break;
+        };
+        
+/*         console.log('ENTERED DISPATCH FUNCTION'); */
 
         fetch(objData.url,{
             method: 'POST',
@@ -80,22 +79,40 @@ export function FetchDataFromDB(objData) {
             body: JSON.stringify(
                 objData.input
             )
-
+            
         }).then((response) => response.json())
         .then((res) => {
+/*             console.log('OUTPUT: ' + JSON.stringify(res)); */
             switch(objData.strType.toUpperCase()){
-                case 'GET_WORKSHIFT':
+                case 'WORKSHIFT_GET':
                     dispatch(GetWorkShift(res))
                     break;
 
+                case 'WORKSHIFT_UPDATE':
+                    dispatch(UpdateWorkShift(res))
                 default: 
                     break;
             };
-            dispatch(FetchIsLoading(false));
+
+            switch(objData.strModule.toUpperCase()){
+                case ('WORKSHIFT'):
+                    dispatch(WorkShiftIsLoading(false));
+                    break;
+                default: 
+                    break;
+            };
         })
         .catch((error) => {
-            dispatch(FetchHasErrored(true));
-            console.log("TEST ERROR: " + error);
+            console.log('error: ' + error)
+            switch(objData.strModule.toUpperCase()){
+                case ('WORKSHIFT'):
+                    dispatch(WorkShiftHasErrored(true));
+                    break;
+                default: 
+                    break;
+            };
+            
+            
         })
     }
 

@@ -27,26 +27,26 @@ import Bonus from './Children/bonus';
 import { connect } from 'react-redux';
 import {SetLoginInfo,SetActiveCompany, FetchDataFromDB} from '../../actions';
 
-const btnActive = 'rgba(0, 0, 0, 0.2);'
+const btnActive = 'rgba(0, 0, 0, 0.1);'
 const btnInactive = 'transparent';
 
 export class CompanyPolicies extends Component {
     constructor(props){
         super(props);
         this.state = {
-            _activeChild: <WorkShift triggerRefresh={this._getWorkSchedule}/>,
+            _activeChild: <Breaktime/>,
             _policyList: [
                 {
                     name: 'Work Shift',
                     childComponent: <WorkShift triggerRefresh={this._getWorkSchedule}/>,
                     iconName: 'timetable',
-                    btnColor: btnActive
+                    btnColor: btnInactive
                 },
                 {
                     name: 'Break Time',
                     childComponent: <Breaktime/>,
                     iconName: 'timer',
-                    btnColor: btnInactive
+                    btnColor: btnActive
                 },
                 {
                     name: 'Payroll',
@@ -117,7 +117,8 @@ export class CompanyPolicies extends Component {
             let objActiveCompany = Object.assign({}, this.props.activecompany)
             this.props.dispatchFetchDataFromDB({
                 url: apiConfig.url + endPoints.workShift,
-                strType: 'GET_WORKSHIFT',
+                strModule: 'WORKSHIFT',
+                strType: 'WORKSHIFT_GET',
                 input: {
                     companyid: objActiveCompany.id,
                     username: objLoginInfo.resUsername,

@@ -42,7 +42,7 @@ export default {
     },
 
     btnCont: {
-        height: 50,
+        height: 60,
         flexDirection: 'row',
     },
 

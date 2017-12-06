@@ -26,7 +26,7 @@ export default class SavePrompt extends Component {
             <View style={styles.container}>
                 <TouchableNativeFeedback
                     disabled={false}
-                    onPress={() => {}}
+                    onPress={() => this.props.undoAction()}
                     background={TouchableNativeFeedback.SelectableBackground()}>
 
                     <View style={styles.btnContLeft}>
@@ -38,7 +38,7 @@ export default class SavePrompt extends Component {
 
                 <TouchableNativeFeedback
                     disabled={false}
-                    onPress={() => {}}
+                    onPress={() => {this.props.saveAction()}}
                     background={TouchableNativeFeedback.SelectableBackground()}>
 
                     <View style={styles.btnContRight}>

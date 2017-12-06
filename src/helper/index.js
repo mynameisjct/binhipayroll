@@ -1,16 +1,11 @@
-export default class Helper{
+export function isStringEmpty(strValue) {
+    return !strValue
+}
 
-    //String Checking
-    
-	isStringEmpty = (strValue) => {
+export function isStringOnlySpace(strValue){
+    return !strValue.trim().length
+}
 
-    }
-
-    isStringContainsOnlySpace = (strValue) => {
-
-    }
-
-    isStringEmptyOrOnlyWhiteSpace = (strValue) => {
-        
-    }
-};
+export function isStringEmptyOrSpace(strValue){
+    return (isStringEmpty(strValue) || isStringOnlySpace(strValue));
+}

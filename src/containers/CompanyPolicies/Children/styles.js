@@ -36,14 +36,6 @@ export default {
         flexDirection: 'column',
         backgroundColor: 'transparent',
     },
-/* 
-    extensionCont: {
-        flex: 0.1,
-        minWidth: 0,
-        maxWidth: 50,
-        flexDirection: 'column',
-        backgroundColor: 'transparent',
-    }, */
 
     categoryPlaceholder: {
         height: 40, 
@@ -81,21 +73,23 @@ export default {
     },
 
     txtVerticalHeader: {
-        fontFamily: 'Helvitica-Bold',
+        fontFamily: 'Helvetica-Bold',
         fontSize: 14,
         fontWeight: '100',
         marginLeft: 20,
+        color: '#434646'
     },
 
     txtHorizontalHeader: {
-        fontFamily: 'Helvitica-Bold',
+        fontFamily: 'Helvetica-Bold',
         fontSize: 14,
-        fontWeight: '100'
+        fontWeight: '100',
+        color: '#434646'
     },
 
     txtContent: {
         textDecorationLine: 'underline',
-        fontFamily: 'Helvitica-Light',
+        fontFamily: 'Helvetica-Light',
         fontSize: 13
     },
 
@@ -120,13 +114,13 @@ export default {
     },
 
     txtDefaultTimeMsg:{
-        fontFamily: 'Helvitica-Light',
+        fontFamily: 'Helvetica-Light',
         fontSize: 13
     },
 
     txtDefaultTime:{
         textDecorationLine: 'underline',
-        fontFamily: 'Helvitica-Light',
+        fontFamily: 'Helvetica-Light',
         fontSize: 13,
     },
 
@@ -141,7 +135,63 @@ export default {
     },
 
     defaultTimeRight: {
-    }
+    },
     
+    // BreakTime
+    containerPlaceholder: {
+        flex:1,
+        flexDirection: 'column',
+        backgroundColor: 'transparent',
+    },
+
+    breakCont: {
+        flex: 1,
+        flexDirection: 'column'
+    },
+
+    breakTimeDetailsCont: {
+        flex: 1,
+        flexDirection: 'row',
+        minHeight: 50,
+        backgroundColor: 'transparent'
+    },
+
+    breakNameCont: {
+        flex: 0.2,
+        minWidth: 180,
+        maxWidth: 180,
+        backgroundColor: 'transparent',
+        justifyContent: 'center',
+        alignItems: 'flex-end',
+    },
+
+    breakDetailsCont: {
+        flex: 0.2,
+        minWidth: 120,
+        backgroundColor: 'transparent',
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+
+    breakHeaderBorder: {
+        borderBottomWidth: 1,
+        borderColor: '#D1D4D6'
+    },
+
+    txtDefault: {
+        fontFamily: 'Helvetica-Light',
+        fontSize: 14,
+        color: '#434646'
+    },
+
+    txtBreakName: {
+        fontFamily: 'Helvetica-Bold',
+        fontSize: 14,
+        fontWeight: '100',
+        paddingRight: 20,
+        paddingLeft: 20,
+        color: '#434646'
+    },
+
 
 }

@@ -19,8 +19,8 @@ export default {
     },
 
     titleCont: {
-        backgroundColor: 'rgba(0, 0, 0, 0.2);',
-        height: 50,
+        backgroundColor: '#D1D4D6',
+        height: 60,
         justifyContent: 'center',
         borderTopWidth: 0.7,
         borderBottomWidth: 0.7,

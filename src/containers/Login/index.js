@@ -210,7 +210,7 @@ export class Login extends Component {
                     //VNX_TEST
                     this.props.dispatchStoreValues({
                         navigation: this.props.navigation,
-                        resUsername: this.state._password,
+                        resUsername: this.state._username,
                         resSuccess: this.state._resSuccess,
                         resMsg: this.state._resMsg,
                         resUserGroup: this.state._resUserGroup,
