@@ -90,7 +90,7 @@ export default {
     txtContent: {
         textDecorationLine: 'underline',
         fontFamily: 'Helvetica-Light',
-        fontSize: 13
+        fontSize: 15
     },
 
     defaultTimeMargin: {
@@ -115,19 +115,19 @@ export default {
 
     txtDefaultTimeMsg:{
         fontFamily: 'Helvetica-Light',
-        fontSize: 13
+        fontSize: 15
     },
 
     txtDefaultTime:{
         textDecorationLine: 'underline',
         fontFamily: 'Helvetica-Light',
-        fontSize: 13,
+        fontSize: 15,
     },
 
     defaultTimeRow: {
         flex: 1,
         flexDirection: 'row',
-        marginTop: 8
+        marginTop: 10
     },
 
     defaultTimeLeft: {
@@ -137,7 +137,7 @@ export default {
     defaultTimeRight: {
     },
     
-    // BreakTime
+    //******************BreakTime**************//
     containerPlaceholder: {
         flex:1,
         flexDirection: 'column',
@@ -180,7 +180,7 @@ export default {
 
     txtDefault: {
         fontFamily: 'Helvetica-Light',
-        fontSize: 14,
+        fontSize: 16,
         color: '#434646'
     },
 
@@ -193,5 +193,100 @@ export default {
         color: '#434646'
     },
 
+    //******************Payroll**************//
+    contentCont: {
+        flexDirection: 'row',
+        minHeight: 100,
+        backgroundColor: 'transparent',
+        alignItems: 'center',
+        paddingLeft: 20,
+    },
 
+    subContentCont: {
+        flexDirection: 'column',
+        minHeight: 50,
+        backgroundColor: 'transparent',
+        justifyContent: 'center',
+        paddingLeft: 20,
+        paddingTop: 20
+    },
+
+    customBottomBorder:{
+        borderBottomWidth: 0.7,
+        borderColor: '#D1D4D6',
+        paddingBottom: 20,
+    },
+
+    titleCont: {
+        backgroundColor: 'transparent',
+        width: 150,
+        justifyContent: 'center'
+    },
+
+    propCont: {
+        backgroundColor: 'transparent',
+        height: 40,
+        width: 200,
+        borderWidth: 0.7,
+        borderRadius: 5,
+        borderColor: '#434646',
+        justifyContent: 'center'
+
+    },
+
+    propContChild: {
+        backgroundColor: 'transparent',
+        height: 40,
+        width: 120,
+        borderWidth: 0.7,
+        borderRadius: 5,
+        borderColor: '#434646',
+        justifyContent: 'center'
+
+    },
+
+    propContTxt: {
+        backgroundColor: 'transparent',
+        height: 40,
+        width: 120,
+        paddingLeft: 15,
+        alignItems: 'flex-start',
+        justifyContent: 'center',
+        backgroundColor: 'transparent'
+    },
+
+    
+    
+    txtPropTitle: {
+        fontFamily: 'Helvetica-Bold',
+        color: '#434646',
+        fontSize: 16,
+        fontWeight: '500'
+    },
+
+    pickerStyle: {
+        color: '#212223'
+        /* backgroundColor: 'green' */
+    },
+
+    txtDefault: {
+        fontFamily: 'Helvetica-Light',
+        fontSize: 15,
+        color: '#434646'
+    },
+
+    adjustChildProp: {
+        marginLeft: -20,
+    },
+
+    payrollChildProp: {
+        flexDirection: 'row',
+        paddingTop: 2,
+        paddingLeft: 40,
+        backgroundColor: 'transparent'
+    }
+    
+
+    
+    
 }

@@ -18,7 +18,7 @@ export default {
         shadowOpacity: 0.4,
         shadowRadius: 1,
         elevation: 3,
-  },
+    },
 
     formCont: {
         marginLeft: 30,

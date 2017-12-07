@@ -557,8 +557,8 @@ export class Login extends Component {
                     this.setState({_showSplash: false});
 
                 }).catch((error)=> {
-                    alert(error);
-                    this.setState({_showSplash: false});
+                    this._showConnectionError();
+                    
             });
         }
         
@@ -727,6 +727,15 @@ export class Login extends Component {
             }).catch((error)=> {
                 alert(error);
         });
+    }
+
+    _showConnectionError = () => {
+        this.setState({_showSplash: false});
+        this.setState({
+            _msgBoxShow: true,
+            _msgBoxType: 'error-ok',
+            _resMsg: 'Unable establish connection to server. Please contact BINHI-MeDFI.'
+        })
     }
 
     render(){

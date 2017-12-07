@@ -63,7 +63,7 @@ export default {
   },
 
   msgCont:{
-    height:90,
+    minHeight:90,
     width: 350,
     padding: 30,
   },

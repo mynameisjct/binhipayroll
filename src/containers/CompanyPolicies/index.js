@@ -12,16 +12,16 @@ import Header2 from '../Headers/header2';
 import styles from './styles';
 import apiConfig, {endPoints} from '../../services/api/config';
 
-import WorkShift from './Children/workshift';
-import Breaktime from './Children/breaktime';
-import Payroll from './Children/payroll';
-import Tax from './Children/tax';
-import Tardiness from './Children/tardiness';
-import Undertime from './Children/undertime';
-import Overtime from './Children/overtime';
-import Leaves from './Children/leaves';
-import Benefits from './Children/benefits';
-import Bonus from './Children/bonus';
+import WorkShift from './Rules/workshift';
+import Breaktime from './Rules/breaktime';
+import Payroll from './Rules/payroll';
+import Tax from './Rules/tax';
+import Tardiness from './Rules/tardiness';
+import Undertime from './Rules/undertime';
+import Overtime from './Rules/overtime';
+import Leaves from './Rules/leaves';
+import Benefits from './Rules/benefits';
+import Bonus from './Rules/bonus';
 
 //Redux
 import { connect } from 'react-redux';
@@ -34,7 +34,7 @@ export class CompanyPolicies extends Component {
     constructor(props){
         super(props);
         this.state = {
-            _activeChild: <Breaktime/>,
+            _activeChild: <Payroll/>,
             _policyList: [
                 {
                     name: 'Work Shift',
@@ -46,13 +46,13 @@ export class CompanyPolicies extends Component {
                     name: 'Break Time',
                     childComponent: <Breaktime/>,
                     iconName: 'timer',
-                    btnColor: btnActive
+                    btnColor: btnInactive
                 },
                 {
                     name: 'Payroll',
                     childComponent: <Payroll/>,
                     iconName: 'cash',
-                    btnColor: btnInactive
+                    btnColor: btnActive
                 },
                 {
                     name: 'Withholding Tax',
@@ -109,6 +109,8 @@ export class CompanyPolicies extends Component {
 
     componentDidMount = () => {
         this._getWorkSchedule(false);
+        this._getBreakTime(true);
+        this._getPayroll(true);
     }
 
     _getWorkSchedule = (bForceUpdate) => {
@@ -119,6 +121,40 @@ export class CompanyPolicies extends Component {
                 url: apiConfig.url + endPoints.workShift,
                 strModule: 'WORKSHIFT',
                 strType: 'WORKSHIFT_GET',
+                input: {
+                    companyid: objActiveCompany.id,
+                    username: objLoginInfo.resUsername,
+                    transtype: 'get'
+                }
+            });
+        }
+    }
+
+    _getBreakTime = (bForceUpdate) => {
+        if(bForceUpdate){
+            let objLoginInfo = Object.assign({}, this.props.logininfo)
+            let objActiveCompany = Object.assign({}, this.props.activecompany)
+            this.props.dispatchFetchDataFromDB({
+                url: apiConfig.url + endPoints.breakTime,
+                strModule: 'BREAKTIME',
+                strType: 'BREAKTIME_GET',
+                input: {
+                    companyid: objActiveCompany.id,
+                    username: objLoginInfo.resUsername,
+                    transtype: 'get'
+                }
+            });
+        }
+    }
+
+    _getPayroll = (bForceUpdate) => {
+        if(bForceUpdate){
+            let objLoginInfo = Object.assign({}, this.props.logininfo)
+            let objActiveCompany = Object.assign({}, this.props.activecompany)
+            this.props.dispatchFetchDataFromDB({
+                url: apiConfig.url + endPoints.payrollPolicy,
+                strModule: 'PAYROLL',
+                strType: 'PAYROLL_GET',
                 input: {
                     companyid: objActiveCompany.id,
                     username: objLoginInfo.resUsername,

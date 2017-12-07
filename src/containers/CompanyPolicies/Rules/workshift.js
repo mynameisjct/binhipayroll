@@ -105,13 +105,15 @@ export class WorkShift extends Component {
     }
 
     componentDidMount(){
-        this._initValues();
+        this._initValues(this.props.workshift);
     }
 
     componentWillReceiveProps(nextProps) {
         if(JSON.stringify(this.state._curTimePolicy) !== 
             JSON.stringify(nextProps.workshift)){
-            this._initValues();
+            console.log('YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY');
+            console.log('I ENTERED componentWillReceiveProps');
+            this._initValues(nextProps.workshift);
         }
 
         let oRes = {...nextProps.updateresponse};
@@ -120,13 +122,15 @@ export class WorkShift extends Component {
             let strMsgType = '';
             switch(oResponse.flagno){
                 case '0':
-                    strMsgType='error'
+                    strMsgType='error';
                     break;
                 case '1':
-                    strMsgType='success'
+                    this.props.triggerRefresh(true);
+                    strMsgType='success';
                     break;
                 case '2':
                     strMsgType='warning'
+                    break;
             }
             
             this.setState({
@@ -143,7 +147,7 @@ export class WorkShift extends Component {
         }
     }
 
-    _updateStore = () => {
+/*     _updateStore = (curProps) => {
         let oWorkShift = {...this.props.workshift};
         let oWorkShiftDay = {...oWorkShift.day};
         let oWorkShiftDefaultSetting = {...oWorkShift.defaultsetting};
@@ -171,15 +175,18 @@ export class WorkShift extends Component {
 
         console.log('SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS');
         console.log('oWorkShift: ' + JSON.stringify(oWorkShift));
-    }
+    } */
 
-    _initValues = () => {
-        let oWorkShift = {...this.props.workshift};
+    _initValues = (curWorkShiftProps) => {
+        let oCurProps = curWorkShiftProps;
+        let oWorkShift = {...oCurProps};
         let oWorkShiftDay = {...oWorkShift.day};
         let oWorkShiftDefaultSetting = {...oWorkShift.defaultsetting};
 
         let oDailyPolicy = {...this.state._dailyPolicy};
         let oDefaultSetting = {...this.state._defaultSetting};
+
+        let oCurtimePolicy = {...this.state._curTimePolicy};
 
         //Init Daily Time Setting
         Object.keys(oWorkShiftDay).map(function (storeDay) {
@@ -199,13 +206,18 @@ export class WorkShift extends Component {
         oDefaultSetting.timein = oWorkShiftDefaultSetting.timein;
         oDefaultSetting.timeout = oWorkShiftDefaultSetting.timeout;
 
+        oCurtimePolicy = oWorkShift;
         this.setState({
             _dailyPolicy: oDailyPolicy,
             _defaultSetting: oDefaultSetting,
-            _curTimePolicy: oWorkShift
+            _curTimePolicy: oCurtimePolicy
         },
             () => {
                 this._detectChanges();
+                console.log('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX');
+                console.log('_dailyPolicy: ' + JSON.stringify(oWorkShift));
+                console.log('_dailyPolicy: ' + JSON.stringify(this.state._dailyPolicy));
+                console.log('_curTimePolicy: ' + JSON.stringify(this.state._curTimePolicy));
             }
         )
     }
@@ -225,11 +237,10 @@ export class WorkShift extends Component {
                 day: this.state._dailyPolicy,
             }
         });
-        this.props.triggerRefresh(true)
     }
 
     _undoAction = () => {
-        this._initValues();
+        this._initValues(this.props.workshift);
     }
 
     _setBottomBorder = (index) => {
@@ -505,7 +516,8 @@ export class WorkShift extends Component {
                                                             }} 
                                                             style={styles.txtContent}>
                                                             
-                                                            {oDailyPolicy[key].timein}
+                                                            {oDailyPolicy[key].timein ? oDailyPolicy[key].timein.toUpperCase() : null}
+
                                                         </Text>
                                                         
                                                     </View>
@@ -520,7 +532,7 @@ export class WorkShift extends Component {
                                                         }}
                                                         style={styles.txtContent}>
                                                         
-                                                        {oDailyPolicy[key].timeout}
+                                                        {oDailyPolicy[key].timeout ? oDailyPolicy[key].timeout.toUpperCase() : null}
 
                                                     </Text>
 
@@ -538,7 +550,9 @@ export class WorkShift extends Component {
                                         onValueChange={ (value) => {this._activateDefaultTime(value)}} 
                                         value={this.state._defaultSetting.enabled}
                                     />
-                                    <Text style={styles.txtDefaultTimeMsg}>{description_DefaultTime}</Text>
+                                    <Text style={styles.txtDefaultTimeMsg}>
+                                        {description_DefaultTime}
+                                    </Text>
                                 </View>
                                 {!this.state._defaultSetting.enabled ? null :
                                     <View style={styles.defaultTimePlaceholder}>
@@ -547,7 +561,13 @@ export class WorkShift extends Component {
                                                 <Text style={styles.txtDefaultTimeMsg}>TIME-IN</Text>
                                             </View>
                                             <View style={styles.defaultTimeRight}>
-                                                <Text onPress={() => this._showTimePicker('default', 'timein')} style={styles.txtDefaultTime}>{this.state._defaultSetting.timein}</Text>
+                                                <Text 
+                                                    onPress={() => this._showTimePicker('default', 'timein')} 
+                                                    style={styles.txtContent}>
+                                                    
+                                                    {this.state._defaultSetting.timein ? this.state._defaultSetting.timein.toUpperCase() : null}
+
+                                                </Text>
                                             </View>
                                         </View>
                                         <View style={styles.defaultTimeRow}>
@@ -555,7 +575,13 @@ export class WorkShift extends Component {
                                                 <Text style={styles.txtDefaultTimeMsg}>TIME-OUT</Text>
                                             </View>
                                             <View style={styles.defaultTimeRight}>
-                                                <Text onPress={() => this._showTimePicker('default', 'timeout')} style={styles.txtDefaultTime}>{this.state._defaultSetting.timeout}</Text>
+                                                <Text 
+                                                    onPress={() => this._showTimePicker('default', 'timeout')} 
+                                                    style={styles.txtContent}>
+                                                    
+                                                    {this.state._defaultSetting.timeout ? this.state._defaultSetting.timeout.toUpperCase() : null}
+                                                    
+                                                </Text>
                                             </View>
                                         </View>
                                             

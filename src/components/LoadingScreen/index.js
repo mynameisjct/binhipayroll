@@ -45,6 +45,7 @@ class FadeInView extends React.Component {
                 duration: 1000, 
                 delay: 2000,
             }
+
         ).start(() => {
             Animated.timing(  
                 this.state.fadeAnim,            
@@ -52,9 +53,10 @@ class FadeInView extends React.Component {
                 toValue: dMaxOpacity,                    
                 duration: 1000,       
                 }
+
             ).start(() => {
                 this._textAnimate();
-                });
+            });
         });    
     }
     

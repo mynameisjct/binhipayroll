@@ -14,6 +14,7 @@ import Icon2 from 'react-native-vector-icons/MaterialCommunityIcons';
 import styles from './styles'
 import CustomCard from '../../../components/CustomCards';
 import FormBreakTime from '../Forms/formBreakTime';
+import MessageBox from '../../../components/MessageBox';
 
 const title_BreakTime = 'Break Time';
 const description_BreakTime = 'Allow break time';
@@ -49,16 +50,25 @@ export default class Breaktime extends Component{
                     duration: '0hr 15min',
                 }
             ],
-        _activeData: {
-            id: '',
-            name: '',
-            timestart: '',
-            timeend: ''
-        },
+            
+            _activeData: {
+                id: '',
+                name: '',
+                timestart: '',
+                timeend: ''
+            },
 
-            _showForm: false
+            _activeDeleteIndex: '',
+             _showForm: false,
+
+            //MessageBox
+            _msgBoxShow: false,
+            _msgBoxType: '',
+            _resMsg: '',
+            
         }
         this._onFormClose = this._onFormClose.bind(this);
+        this._onWarningContinue = this._onWarningContinue.bind(this);
     }
 
     _onFormClose = () => {
@@ -94,11 +104,29 @@ export default class Breaktime extends Component{
     }
 
     _deleteBreakTime = (oBreakTime, index) => {
+        this.setState({
+            _msgBoxShow: true,
+            _msgBoxType: 'warning',
+            _resMsg: 'This action will permanently delete ' + 
+                oBreakTime.name.toUpperCase() + '. Press continue to proceed.',
+            _activeDeleteIndex: index
+        });
+    }
+    
+    _onWarningContinue = () => {
         let oData = [...this.state._data];
-        oData.splice(index,1);
+        oData.splice(this.state._activeDeleteIndex,1);
 
         this.setState({
-            _data: oData
+            _data: oData,
+        });
+
+        this._closeMsgBox();
+    }
+
+    _closeMsgBox = () => {
+        this.setState({
+            _msgBoxShow: false
         });
     }
 
@@ -200,6 +228,15 @@ export default class Breaktime extends Component{
                     title={'MODIFY BREAK TIME'}
                     show={this.state._showForm}
                     onFormClose={this._onFormClose}/>
+
+                <MessageBox
+                    promptType={this.state._msgBoxType}
+                    show={this.state._msgBoxShow}
+                    onClose={this._closeMsgBox}
+                    onWarningContinue={this._onWarningContinue}
+                    message={this.state._resMsg}
+                />
+                
             </View>
         );
     }

@@ -72,7 +72,7 @@ export default {
 
     txtLabel:{
         fontFamily: 'Helvetica-Light',
-        fontSize: 15,
+        fontSize: 16,
         color: '#434646'
       },
 

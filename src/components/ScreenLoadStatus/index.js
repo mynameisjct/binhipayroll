@@ -45,7 +45,6 @@ export class PromptError extends Component{
             <View style={styles.errorCont}>
                 <Text style={styles.txtMsgError}>{this.props.title}</Text>
             </View>
-
         );
     }
 }

@@ -53,10 +53,10 @@ export function SetDataActionTrigger(dataactiontrigger) {
 }
 
 export function FetchDataFromDB(objData) {
-/*     console.log('VNXTEST1====================================')
+    console.log('VNXTEST1====================================')
     console.log('objData.url: ' + objData.url);
     console.log('objData.strType: ' + objData.strType);
-    console.log('INPUT: ' + JSON.stringify(objData.input)); */
+    console.log('INPUT: ' + JSON.stringify(objData.input));
     return (dispatch) => {
         switch(objData.strModule.toUpperCase()){
             case ('WORKSHIFT'):
@@ -82,14 +82,20 @@ export function FetchDataFromDB(objData) {
             
         }).then((response) => response.json())
         .then((res) => {
-/*             console.log('OUTPUT: ' + JSON.stringify(res)); */
+            console.log('OUTPUT: ' + JSON.stringify(res));
             switch(objData.strType.toUpperCase()){
                 case 'WORKSHIFT_GET':
                     dispatch(GetWorkShift(res))
                     break;
-
+                
                 case 'WORKSHIFT_UPDATE':
                     dispatch(UpdateWorkShift(res))
+                    break;
+                
+                //BreakTime
+                case 'BREAKTIME_GET':
+                    break;  
+
                 default: 
                     break;
             };

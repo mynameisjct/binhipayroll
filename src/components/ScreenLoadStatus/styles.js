@@ -23,17 +23,18 @@ export default {
     txtMsg: {
         color: '#434646',
         fontFamily: 'Helvetica-Light',
-        fontSize: 14,
+        fontSize: 18,
         marginBottom: 10,
     },
 
     txtMsgError: {
         color: '#D75450',
         fontFamily: 'Helvetica-Light',
-        fontSize: 14,
+        fontSize: 20,
     },
 
     errorCont: {
+        flex: 1,
         backgroundColor: '#fff',
         justifyContent: 'center',
         alignItems: 'center',

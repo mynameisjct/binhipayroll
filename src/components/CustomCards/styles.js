@@ -29,13 +29,13 @@ export default {
 
     txtTitle: {
         fontFamily: 'Helvitica-Light',
-        fontSize: 16,
+        fontSize: 18,
         color: '#434646'
     },
 
     txtDescription: {
         fontFamily: 'Helvitica-Light',
-        fontSize: 10,
+        fontSize: 12,
         color: '#505251'
     },
 
