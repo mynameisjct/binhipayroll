@@ -6,7 +6,8 @@ import {
     CheckBox,
     TimePickerAndroid,
     Switch,
-    RefreshControl
+    RefreshControl,
+    Picker
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import moment from "moment";
@@ -37,6 +38,7 @@ export class WorkShift extends Component {
     constructor(props){
         super(props);
         this.state = {
+            _language: '',
             _curTimePolicy: null,
             _dailyPolicy: {
                 sunday: {
@@ -147,36 +149,6 @@ export class WorkShift extends Component {
         }
     }
 
-/*     _updateStore = (curProps) => {
-        let oWorkShift = {...this.props.workshift};
-        let oWorkShiftDay = {...oWorkShift.day};
-        let oWorkShiftDefaultSetting = {...oWorkShift.defaultsetting};
-
-        let oDailyPolicy = {...this.state._dailyPolicy};
-        let oDefaultSetting = {...this.state._defaultSetting};
-
-        //Init Daily Time Setting
-        Object.keys(oDailyPolicy).map(function (stateDay) {
-            let oStateDay = {...oDailyPolicy[stateDay]};
-
-            Object.keys(oWorkShiftDay).map(function (tempDay) {
-                if (oStateDay==tempDay){
-                    oWorkShift['day'].oStateDay.dayoff = oDailyPolicy.oStateDay.dayoff;
-                    oWorkShift['day'].oStateDay.timein = oDailyPolicy.oStateDay.timein;
-                    oWorkShift['day'].oStateDay.timeout = oDailyPolicy.oStateDay.timeout;
-                }
-            })
-        });
-
-        //Init Default Setting
-        oWorkShift['defaultsetting'].enabled = oDefaultSetting.enabled;
-        oWorkShift['defaultsetting'].timein = oDefaultSetting.timein;
-        oWorkShift['defaultsetting'].timeout = oDefaultSetting.timeout;
-
-        console.log('SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS');
-        console.log('oWorkShift: ' + JSON.stringify(oWorkShift));
-    } */
-
     _initValues = (curWorkShiftProps) => {
         let oCurProps = curWorkShiftProps;
         let oWorkShift = {...oCurProps};
@@ -214,10 +186,6 @@ export class WorkShift extends Component {
         },
             () => {
                 this._detectChanges();
-                console.log('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX');
-                console.log('_dailyPolicy: ' + JSON.stringify(oWorkShift));
-                console.log('_dailyPolicy: ' + JSON.stringify(this.state._dailyPolicy));
-                console.log('_curTimePolicy: ' + JSON.stringify(this.state._curTimePolicy));
             }
         )
     }
@@ -295,8 +263,6 @@ export class WorkShift extends Component {
             _defaultSetting: objDefaultSetting
         },
             () => {
-                /* console.log('5555555555555555555555555555555555555555555555555555');
-                console.log('this.state._defaultSetting = '+ JSON.stringify(this.state._defaultSetting)); */
                 this._detectChanges();
             }
         )
@@ -316,7 +282,7 @@ export class WorkShift extends Component {
             const {action, hour, minute} =await TimePickerAndroid.open({
                 hour: defaultTime,
                 minute: 0,
-                is24Hour: false, // Will display '2 PM',
+                is24Hour: false,
                 mode: 'spinner'
             });
 
@@ -468,6 +434,7 @@ export class WorkShift extends Component {
                 <PromptLoading title='Loading...'/>
             );
         }
+
         else{
             return(
                 <View style={styles.container}>
@@ -480,7 +447,23 @@ export class WorkShift extends Component {
                             />
                         }
                     >
-                        <CustomCard title={title_WorkShift} oType='Text'>
+                        <CustomCard 
+                            title={title_WorkShift} 
+                            oType='PICKER'
+                            oPicker={
+                                <View style={[styles.propContChild, styles.adjustChildProp]}>
+                                    <Picker
+                                        mode='dropdown'
+                                        style={styles.pickerStyle}
+                                        selectedValue={this.state.language}
+                                        onValueChange={(itemValue, itemIndex) => this.setState({language: itemValue})}>
+                                        <Picker.Item label="Java" value="java" />
+                                        <Picker.Item label="JavaScript" value="js" />
+                                    </Picker>
+                                </View>
+                            }
+                        >
+
                             <View style={styles.tableCont}>
                                 <View style={styles.categoryCont}>
                                     {
@@ -544,6 +527,7 @@ export class WorkShift extends Component {
                                     
                                 </View>
                             </View>
+                            
                             <View style={styles.defaultTimeCont}>
                                 <View style={styles.defaultTimeCheckbox}>
                                     <CheckBox

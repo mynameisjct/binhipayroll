@@ -15,12 +15,12 @@ const title_Payroll = 'Set Payroll Rules and Schedule';
 export default class Payroll extends Component{
     constructor(props){
         super(props);
+
         this.state = {
             _payrolldata: {
                 flagno: "1",
                 message: "Success!",
                 paytype:{
-                        label: "Payroll Type",
                         value: "Semi-Monthly",
                         options: ["Semi-Monthly","Monthly","Weekly"]
                 },
@@ -79,6 +79,13 @@ export default class Payroll extends Component{
         }
     }
     
+    componentDidMount(){
+        this._initFormValues();
+    }
+
+    _initFormValues = () => {
+    }
+
     _setActivePaytype = (value) => {
         let oData = {...this.state._payrolldata};
         oData.paytype.value = value;
@@ -131,87 +138,6 @@ export default class Payroll extends Component{
     }
 
     render(){
-        const semimonthlyView = 
-            <View style={styles.payrollSchedCont}>
-                <View style={styles.payrollChildProp}>
-                    <View style={styles.titleCont}>
-                        <Text style={styles.txtDefault}>First Pay Day </Text>
-                    </View>
-                    <View style={[styles.propContChild, styles.adjustChildProp]}>
-                        <Picker
-                            mode='dropdown'
-                            style={styles.pickerStyle}
-                            selectedValue={this.state._payrolldata.data.semimonthly.firstpayday.value}
-                            onValueChange={(itemValue, itemIndex) => {this._setFirstPayDay(itemValue)}}>
-                            {
-                                this.state._payrolldata.data.semimonthly.firstpayday.options.map((paytype, index) => (
-                                    <Picker.Item key={index} label={paytype} value={paytype} />
-                                ))
-                            }
-                        </Picker>
-                    </View>
-                </View>
-
-                <View style={styles.payrollChildProp}>
-
-                    <View style={styles.titleCont}>
-                        <Text style={styles.txtDefault}>Second Pay Day</Text>
-                    </View>
-                    <View style={[styles.propContTxt, styles.adjustChildProp]}>
-                        <Text style={styles.txtDefault}>
-                            {this.state._payrolldata.data.semimonthly.secondpayday.value}
-                        </Text>
-                    </View>
-
-                </View>
-                
-                <View style={styles.payrollChildProp}>
-                    <View style={styles.titleCont}>
-                        <Text style={styles.txtDefault}>Cut-off</Text>
-                    </View>
-                    <View style={[styles.propContChild, styles.adjustChildProp]}>
-                        <Picker
-                            mode='dropdown'
-                            style={styles.pickerStyle}
-                            selectedValue={this.state._payrolldata.data.semimonthly.cutoff.value}
-                            onValueChange={(itemValue, itemIndex) => {this._setCutOff(itemValue)}}>
-                            {
-                                this.state._payrolldata.data.semimonthly.cutoff.options.map((paytype, index) => (
-                                    <Picker.Item key={index} label={paytype} value={paytype} />
-                                ))
-                            }
-                        </Picker>
-                    </View>
-                </View>
-
-                <View style={styles.payrollChildProp}>
-
-                    <View style={styles.titleCont}>
-                        <Text style={styles.txtDefault}>First Period</Text>
-                    </View>
-                    <View style={[styles.propContTxt, styles.adjustChildProp]}>
-                        <Text style={styles.txtDefault}>
-                            {this.state._payrolldata.data.semimonthly.firstperiod.value}
-                        </Text>
-                    </View>
-
-                </View>
-
-                <View style={styles.payrollChildProp}>
-
-                    <View style={styles.titleCont}>
-                        <Text style={styles.txtDefault}>Second Period</Text>
-                    </View>
-                    <View style={[styles.propContTxt, styles.adjustChildProp]}>
-                        <Text style={styles.txtDefault}>
-                            {this.state._payrolldata.data.semimonthly.secondperiod.value}
-                        </Text>
-                    </View>
-
-                </View>
-
-            </View>
-
         const monthlyView = 
         <View style={styles.payrollSchedCont}>
             <View style={styles.payrollChildProp}>
@@ -299,12 +225,12 @@ export default class Payroll extends Component{
                     <CustomCard title={title_Payroll} oType='Text'>
                         <View style={[styles.contentCont, styles.customBottomBorder]}>
                             <View style={styles.titleCont}>
+
                                 <Text style={styles.txtPropTitle}>Payroll Type </Text>
                             </View>
                             <View style={styles.propCont}>
                                 <Picker
                                     mode='dropdown'
-                                    style={styles.pickerStyle}
                                     selectedValue={this.state._payrolldata.paytype.value}
                                     onValueChange={(itemValue, itemIndex) => {this._setActivePaytype(itemValue)}}>
                                     {
@@ -321,23 +247,86 @@ export default class Payroll extends Component{
                             </View>
                         </View>
                         
-                        {this.state._payrolldata.paytype.value.toUpperCase() == 
-                            'SEMI-MONTHLY' ? 
-                            semimonthlyView :
-                            null
-                        }
 
-                        {this.state._payrolldata.paytype.value.toUpperCase() == 
-                            'MONTHLY' ? 
-                            monthlyView :
-                            null
-                        }
+                        <View style={styles.payrollSchedCont}>
+                            <View style={styles.payrollChildProp}>
+                                <View style={styles.titleCont}>
+                                    <Text style={styles.txtDefault}>First Pay Day </Text>
+                                </View>
+                                <View style={[styles.propContChild, styles.adjustChildProp]}>
+                                    <Picker
+                                        mode='dropdown'
+                                        style={styles.pickerStyle}
+                                        selectedValue={this.state._payrolldata.data.semimonthly.firstpayday.value}
+                                        onValueChange={(itemValue, itemIndex) => {this._setFirstPayDay(itemValue)}}>
+                                        {
+                                            this.state._payrolldata.data.semimonthly.firstpayday.options.map((paytype, index) => (
+                                                <Picker.Item key={index} label={paytype} value={paytype} />
+                                            ))
+                                        }
+                                    </Picker>
+                                </View>
+                            </View>
 
-                        {this.state._payrolldata.paytype.value.toUpperCase() == 
-                            'WEEKLY' ? 
-                            weekylyView :
-                            null
-                        }
+                            <View style={styles.payrollChildProp}>
+
+                                <View style={styles.titleCont}>
+                                    <Text style={styles.txtDefault}>Second Pay Day</Text>
+                                </View>
+                                <View style={[styles.propContTxt, styles.adjustChildProp]}>
+                                    <Text style={styles.txtDefault}>
+                                        {this.state._payrolldata.data.semimonthly.secondpayday.value}
+                                    </Text>
+                                </View>
+
+                            </View>
+                            
+                            <View style={styles.payrollChildProp}>
+                                <View style={styles.titleCont}>
+                                    <Text style={styles.txtDefault}>Cut-off</Text>
+                                </View>
+                                <View style={[styles.propContChild, styles.adjustChildProp]}>
+                                    <Picker
+                                        mode='dropdown'
+                                        style={styles.pickerStyle}
+                                        selectedValue={this.state._payrolldata.data.semimonthly.cutoff.value}
+                                        onValueChange={(itemValue, itemIndex) => {this._setCutOff(itemValue)}}>
+                                        {
+                                            this.state._payrolldata.data.semimonthly.cutoff.options.map((paytype, index) => (
+                                                <Picker.Item key={index} label={paytype} value={paytype} />
+                                            ))
+                                        }
+                                    </Picker>
+                                </View>
+                            </View>
+
+                            <View style={styles.payrollChildProp}>
+
+                                <View style={styles.titleCont}>
+                                    <Text style={styles.txtDefault}>First Period</Text>
+                                </View>
+                                <View style={[styles.propContTxt, styles.adjustChildProp]}>
+                                    <Text style={styles.txtDefault}>
+                                        {this.state._payrolldata.data.semimonthly.firstperiod.value}
+                                    </Text>
+                                </View>
+
+                            </View>
+
+                            <View style={styles.payrollChildProp}>
+
+                                <View style={styles.titleCont}>
+                                    <Text style={styles.txtDefault}>Second Period</Text>
+                                </View>
+                                <View style={[styles.propContTxt, styles.adjustChildProp]}>
+                                    <Text style={styles.txtDefault}>
+                                        {this.state._payrolldata.data.semimonthly.secondperiod.value}
+                                    </Text>
+                                </View>
+
+                            </View>
+
+                        </View>
                             
 
                     </CustomCard>

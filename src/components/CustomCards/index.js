@@ -41,6 +41,19 @@ export default class CustomCard extends Component{
                     </View>
                 </View>
         }
+        else if(this.props.oType.toUpperCase()=='PICKER'){
+            oTitle =  
+                <View style={styles.textCont}>
+                    <View style={{flex: 0.5, flexDirection: 'column'}}>
+                        <View>
+                            <Text style={styles.txtTitle}>{this.props.title}</Text>
+                        </View>
+                    </View>
+                    <View style={{backgroundColor: 'red', flex:0.5, justifyContent: 'center', alignItems: 'flex-end', paddingRight: 50}}>
+                        {this.props.oPicker}
+                    </View>
+                </View>
+        }
         else{
             oTitle =  
                 <View style={styles.textCont}>
