@@ -7,11 +7,15 @@ import {
     TimePickerAndroid,
     Switch,
     RefreshControl,
-    Picker
+    Picker,
+    TouchableNativeFeedback,
+    TouchableOpacity
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import Icon2 from 'react-native-vector-icons/MaterialCommunityIcons';
 import moment from "moment";
 import _ from 'lodash';
+import ActionButton from 'react-native-action-button';
 
 import styles from './styles'
 import CustomCard from '../../../components/CustomCards';
@@ -34,10 +38,40 @@ const title_WorkShift = 'Work Shift Schedule';
 const category = ['', 'DAY OFF', 'TIME-IN', 'TIME-OUT'];
 const description_DefaultTime = 'The same Time-in and Time-out';
 
+const title_BreakTime = 'Break Time';
+const description_BreakTime = 'Allow break time';
+const color_SwitchOn='#838383';
+const color_SwitchOff='#D1D4D6';
+const color_SwitchThumb='#EEB843';
+
 export class WorkShift extends Component {
     constructor(props){
         super(props);
         this.state = {
+            _data: [
+                {
+                    id: '0001',
+                    name: 'MORNING BREAK',
+                    timestart: '10:00 AM',
+                    timeend: '10:15 AM',
+                    duration: '0hr 15min',
+                },
+                {
+                    id: '0001',
+                    name: 'LUNCH BREAK',
+                    timestart: '12:00 PM',
+                    timeend: '01:30 PM',
+                    duration: '1hr 30min',
+                },
+                {
+                    id: '0001',
+                    name: 'AFTERNOON BREAK',
+                    timestart: '03:00 PM',
+                    timeend: '03:15 PM',
+                    duration: '0hr 15min',
+                }
+            ],
+
             _language: '',
             _curTimePolicy: null,
             _dailyPolicy: {
@@ -94,6 +128,7 @@ export class WorkShift extends Component {
             _msgBoxShow: false,
             _msgBoxType: '',
             _resMsg: '',
+            
             _changeDetected: false,
 
             _refreshing: false
@@ -295,23 +330,6 @@ export class WorkShift extends Component {
             }
     }
 
-    _showDatePicker = async() => {
-        try {
-            const {action, year, month, day} = await DatePickerAndroid.open({
-                date: new Date(
-                    moment().format("YYYY"), 
-                    moment().format("MM"), 
-                    moment().format("DD")
-                )
-            });
-            if (action !== DatePickerAndroid.dismissedAction) {
-              // Selected year, month (0-11), day
-            }
-          } catch ({code, message}) {
-            console.warn('Cannot open date picker', message);
-          }
-    }
-
     _setTime = (strKey, strType, hour, minute) => {
         let strTime = moment(hour +':' + minute, 'hh:mm').format('hh:mm A');
 
@@ -429,6 +447,82 @@ export class WorkShift extends Component {
     }
 
     render(){
+        const actionButton = 
+            <ActionButton 
+                buttonColor="#EEB843"
+                spacing={10}
+            >
+                <ActionButton.Item buttonColor='#26A65B' title="ADD NEW WORK SHIFT" onPress={() => {}}>
+                    <Icon2 name="bell-plus" color='#fff' size={22} style={styles.actionButtonIcon} />
+                </ActionButton.Item>
+                <ActionButton.Item buttonColor='#4183D7' title="MODIFY CURRENT WORK SHIFT" onPress={() => {}}>
+                    <Icon2 name="table-edit" color='#fff' size={22} style={styles.actionButtonIcon} />
+                </ActionButton.Item>
+                
+                <ActionButton.Item buttonColor='#D75450' title="DELETE CURRENT WORK SHIFT" onPress={() => {}}>
+                    <Icon2 name="delete-empty" color='#fff' size={22} style={styles.actionButtonIcon} />
+                </ActionButton.Item>
+            </ActionButton>
+
+        const breakTimeDetails = 
+            <View style={styles.containerPlaceholder}>
+                <ScrollView horizontal={true}>
+                    <View style={styles.breakCont}>
+                        <View style={[styles.breakTimeDetailsCont, styles.breakHeaderBorder]}>
+                            <View style={styles.breakNameCont}>
+                                <Text style={styles.txtBreakName}>NAME</Text>
+                            </View>
+                            <View style={styles.breakDetailsCont}>
+                                <Text style={styles.txtDefault}>TIME START</Text>
+                            </View>
+                            <View style={styles.breakDetailsCont}>
+                                <Text style={styles.txtDefault}>TIME END</Text>
+                            </View>
+                            <View style={styles.breakDetailsCont}>
+                                <Text style={styles.txtDefault}>DURATION</Text>
+                            </View>
+{/*                             <View style={styles.breakDetailsCont}>
+                                <Text style={styles.txtDefault}>REMOVE</Text>
+                            </View> */}
+                        </View>
+
+                        {
+                            this.state._data.map((oBreakTime, index) => (
+                                <TouchableNativeFeedback
+                                    key={index}
+                                    onPress={() => {
+                                        this._openUpdateForm(oBreakTime)
+                                    }}
+                                    background={TouchableNativeFeedback.SelectableBackground()}>
+                                    <View style={styles.breakTimeDetailsCont}>
+                                        <View style={styles.breakNameCont}>
+                                            <Text style={styles.txtBreakName}>{oBreakTime.name}</Text>
+                                        </View>
+                                        <View style={styles.breakDetailsCont}>
+                                            <Text style={styles.txtDefaultTime}>{oBreakTime.timestart}</Text>
+                                        </View>
+                                        <View style={styles.breakDetailsCont}>
+                                            <Text style={styles.txtDefaultTime}>{oBreakTime.timeend}</Text>
+                                        </View>
+                                        <View style={styles.breakDetailsCont}>
+                                            <Text style={styles.txtDefault}>{oBreakTime.duration}</Text>
+                                        </View>
+{/*                                         <View style={styles.breakDetailsCont}>
+                                            <TouchableOpacity
+                                                activeOpacity={0.7}
+                                                onPress={() => {this._deleteBreakTime(oBreakTime, index)}}
+                                                >
+                                                <Icon size={30} name='md-close-circle' color='#EEB843' />
+                                            </TouchableOpacity>
+                                        </View> */}
+                                    </View>
+                                </TouchableNativeFeedback>
+                            ))
+                        }
+                    </View>
+                </ScrollView>
+            </View>
+
         const oDailyPolicy = this.state._dailyPolicy;
         let iBorderCounter = -1;
 
@@ -474,11 +568,10 @@ export class WorkShift extends Component {
                                         style={styles.effectiveDatePickerStyle}
                                         selectedValue={this.state.language}
                                         onValueChange={(itemValue, itemIndex) => this.setState({language: itemValue})}>
-                                        <Picker.Item label="(WED) FEB 10, 2017 - (MON) MAY 05, 2017" value="02-10-2017 to 05-05-2017"/>
-                                        <Picker.Item label="(WED) FEB 10, 2017 - (MON) MAY 05, 2017" value="02-10-2017 to 05-05-2017"/>
-                                        <Picker.Item label="(WED) FEB 10, 2017 - (MON) MAY 05, 2017" value="02-10-2017 to 05-05-2017"/>
-                                        <Picker.Item label="(WED) FEB 10, 2017 - (MON) MAY 05, 2017" value="02-10-2017 to 05-05-2017"/>
-                                        <Picker.Item label="(MON) MAY 06, 2017 - UNTIL CHANGED" value="05-06-2017 to UNTIL CHANGED" />
+                                        <Picker.Item label="Day Shift 1" value="0001"/>
+                                        <Picker.Item label="Day Shift 2" value="0002"/>
+                                        <Picker.Item label="Afternoon Shift" value="0003"/>
+                                        <Picker.Item label="Night Shift" value="0004" />
                                     </Picker>
                                 </View>
                             }
@@ -548,7 +641,7 @@ export class WorkShift extends Component {
                                 </View>
                             </View>
                             
-                            <View style={styles.defaultTimeCont}>
+                            {/* <View style={styles.defaultTimeCont}>
                                 <View style={styles.defaultTimeCheckbox}>
                                     <CheckBox
                                         onValueChange={ (value) => {this._activateDefaultTime(value)}} 
@@ -591,8 +684,8 @@ export class WorkShift extends Component {
                                             
                                     </View>
                                 }
-                            </View>
-                            <View style={styles.childPropGroupCont}>
+                            </View> */}
+{/*                             <View style={styles.childPropGroupCont}>
                                 <View style={styles.childGroupTitleCont}>
                                     <Text style={styles.txtChildGroupTitle}>
                                         Work Shift Effectivity
@@ -628,7 +721,27 @@ export class WorkShift extends Component {
                                         </View>
                                     </View>
                                 </View>
-                            </View>
+                            </View> */}
+                        </CustomCard>
+
+                        <CustomCard 
+                            title={title_BreakTime} 
+                            headerBackground={'transparent'}
+                            description={description_BreakTime} 
+                            oType='Switch'
+                            oSwitch={
+                                <Switch
+                                    onValueChange={ (value) => this.setState({_isBreaktimeEnabled: value})} 
+                                    onTintColor={color_SwitchOn}
+                                    thumbTintColor={color_SwitchThumb}
+                                    tintColor={color_SwitchOff}
+                                    value={ this.state._isBreaktimeEnabled } 
+                                />
+                            }
+                        >
+                            {
+                                this.state._isBreaktimeEnabled ? breakTimeDetails : null
+                            }      
                         </CustomCard>
                         
                     </ScrollView>
@@ -639,6 +752,7 @@ export class WorkShift extends Component {
                         onWarningContinue={this._continueActionOnWarning}
                         message={this.state._resMsg}
                     />
+                    {actionButton}
                 </View>
             );
         }

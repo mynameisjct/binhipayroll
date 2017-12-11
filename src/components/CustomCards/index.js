@@ -22,7 +22,21 @@ import styles from './styles';
 //1. title
 
 export default class CustomCard extends Component{
+    _getTitleBgColor = () => {
+        try{
+            if(this.props.headerBackground){
+                return ({
+                    backgroundColor: this.props.headerBackground
+                })
+            }
 
+            return;
+        }
+        catch(exception){
+            return;
+        }
+    }
+    
     render(){
         let oTitle = null;
         if(this.props.oType.toUpperCase()=='SWITCH'){
@@ -61,7 +75,7 @@ export default class CustomCard extends Component{
 
         return(
             <View style={styles.container}>
-                <View style={styles.titleCont}>
+                <View style={[styles.titleCont, this._getTitleBgColor()]}>
                     {oTitle}
                 </View>
                 <View style={styles.contentCont}>

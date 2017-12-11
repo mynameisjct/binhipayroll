@@ -90,7 +90,8 @@ export default {
     txtContent: {
         textDecorationLine: 'underline',
         fontFamily: 'Helvetica-Light',
-        fontSize: 15
+        fontSize: 14,
+        color: '#434646'
     },
 
     defaultTimeMargin: {
@@ -154,7 +155,7 @@ export default {
     breakTimeDetailsCont: {
         flex: 1,
         flexDirection: 'row',
-        minHeight: 50,
+        minHeight: 40,
         backgroundColor: 'transparent'
     },
 
@@ -164,7 +165,7 @@ export default {
         maxWidth: 180,
         backgroundColor: 'transparent',
         justifyContent: 'center',
-        alignItems: 'flex-end',
+        alignItems: 'flex-start',
     },
 
     breakDetailsCont: {
@@ -178,12 +179,6 @@ export default {
     breakHeaderBorder: {
         borderBottomWidth: 1,
         borderColor: '#D1D4D6'
-    },
-
-    txtDefault: {
-        fontFamily: 'Helvetica-Light',
-        fontSize: 16,
-        color: '#434646'
     },
 
     txtBreakName: {
@@ -250,7 +245,7 @@ export default {
     effectivityOptionCont: {
         backgroundColor: 'transparent',
         height: 35,
-        width: 350,
+        width: 200,
         borderWidth: 0.7,
         borderRadius: 5,
         borderColor: '#434646',
@@ -286,7 +281,7 @@ export default {
 
     txtDefault: {
         fontFamily: 'Helvetica-Light',
-        fontSize: 15,
+        fontSize: 14,
         color: '#434646'
     },
 
@@ -308,7 +303,7 @@ export default {
     },
 
     childGroupTitleCont: {
-        paddingTop: 30
+        /* paddingTop: 30 */
     },
 
     txtChildGroupTitle: {
@@ -326,14 +321,14 @@ export default {
 
     childPropCont: {
         paddingTop: 10,
-        height: 40,
+        height: 50,
         backgroundColor: 'transparent',
         flexDirection: 'row'
     },
 
     childPropNameCont: {
         justifyContent: 'center',
-        width: 140,
+        width: 200,
         backgroundColor: 'transparent'
     },
 

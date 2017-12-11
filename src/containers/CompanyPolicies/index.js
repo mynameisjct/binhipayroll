@@ -25,9 +25,9 @@ import Bonus from './Rules/bonus';
 
 //Redux
 import { connect } from 'react-redux';
-import {SetLoginInfo,SetActiveCompany, FetchDataFromDB} from '../../actions';
+import {SetLoginInfo, SetActiveCompany, FetchDataFromDB} from '../../actions';
 
-const btnActive = 'rgba(0, 0, 0, 0.1);'
+const btnActive = 'rgba(255, 255, 255, 0.3);'
 const btnInactive = 'transparent';
 
 export class CompanyPolicies extends Component {
@@ -41,12 +41,6 @@ export class CompanyPolicies extends Component {
                     childComponent: <WorkShift triggerRefresh={this._getWorkSchedule}/>,
                     iconName: 'timetable',
                     btnColor: btnActive
-                },
-                {
-                    name: 'Break Time',
-                    childComponent: <Breaktime/>,
-                    iconName: 'timer',
-                    btnColor: btnInactive
                 },
                 {
                     name: 'Payroll',
@@ -108,9 +102,9 @@ export class CompanyPolicies extends Component {
     }
 
     componentDidMount = () => {
-        this._getWorkSchedule(false);
+/*         this._getWorkSchedule(false);
         this._getBreakTime(true);
-        this._getPayroll(true);
+        this._getPayroll(true); */
     }
 
     _getWorkSchedule = (bForceUpdate) => {

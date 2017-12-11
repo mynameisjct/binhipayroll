@@ -21,9 +21,9 @@ export default {
     leftCont: {
         flex: 1,
         maxWidth: 200,
-        backgroundColor: '#fff',
+        backgroundColor: '#505251',
         borderRightWidth: 2,
-        borderColor: '#D1D4D6'
+        borderColor: '#22313F'
     },
 
     scrollableCont: {
@@ -73,7 +73,7 @@ export default {
     txtLabel:{
         fontFamily: 'Helvetica-Light',
         fontSize: 16,
-        color: '#434646'
+        color: '#fff'
       },
 
 }

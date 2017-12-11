@@ -15,15 +15,16 @@ const { StyleSheet } = React;
 export default {
     container:{
         flex:1,
-        flexDirection: 'column'
+        flexDirection: 'column',
+        paddingBottom: 5
     },
 
     titleCont: {
         backgroundColor: '#D1D4D6',
         height: 60,
         justifyContent: 'center',
-        borderTopWidth: 0.7,
-        borderBottomWidth: 0.7,
+        borderTopWidth: 2,
+        borderBottomWidth: 2,
         borderColor: '#D1D4D6'
     },
 

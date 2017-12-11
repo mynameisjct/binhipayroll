@@ -1,0 +1,201 @@
+{
+    "flagno": "1",
+    "message": "Success!",
+    "transtype": "fetch",
+    "schedule": [
+        {
+            "id": "0001",
+            "defaultactive": true,
+            "description": "Shift A",
+                
+            "defaultSetting": {
+                "enabled":"0",
+                "timein":"07:30 AM",
+                "timeout":"05:30 PM"
+            },
+            "day": {
+                "sunday": {
+                    "header": "S",
+                    "dayoff": "1",
+                    "timein": "00:00 AM",
+                    "timeout": "00:00 AM"
+                },
+                "monday": {
+                    "header": "M",
+                    "dayoff": "0",
+                    "timein": "00:00 AM",
+                    "timeout": "00:00 AM"
+                },
+                "tuesday": {
+                    "header": "T",
+                    "dayoff": "0",
+                    "timein":  "00:00 AM",
+                    "timeout":  "00:00 AM"
+                },
+                "wednesday": {
+                    "header": "W",
+                    "dayoff": "0",
+                    "timein":  "00:00 AM",
+                    "timeout":  "00:00 AM"
+                },
+                "thursday": {
+                    "header": "T",
+                    "dayoff": "0",
+                    "timein":  "00:00 AM",
+                    "timeout":  "00:00 AM"
+                },
+                "friday": {
+                    "header": "F",
+                    "dayoff": "0",
+                    "timein":  "00:00 AM",
+                    "timeout":  "00:00 AM"
+                },
+                "saturday": {
+                    "header": "S",
+                    "dayoff": "0",
+                    "timein":  "00:00 AM",
+                    "timeout":  "00:00 AM"
+                }
+            }
+        },
+
+        {
+            "id": "0002",
+            "defaultactive": true,
+            "description": "Shift B",
+                
+            "defaultSetting": {
+                "enabled":"0",
+                "timein":"07:30 AM",
+                "timeout":"05:30 PM"
+            },
+            "day": {
+                "sunday": {
+                    "header": "S",
+                    "dayoff": "1",
+                    "timein": "10:00 AM",
+                    "timeout": "00:00 AM"
+                },
+                "monday": {
+                    "header": "M",
+                    "dayoff": "0",
+                    "timein": "10:00 AM",
+                    "timeout": "00:00 AM"
+                },
+                "tuesday": {
+                    "header": "T",
+                    "dayoff": "0",
+                    "timein":  "10:00 AM",
+                    "timeout":  "00:00 AM"
+                },
+                "wednesday": {
+                    "header": "W",
+                    "dayoff": "0",
+                    "timein":  "10:00 AM",
+                    "timeout":  "00:00 AM"
+                },
+                "thursday": {
+                    "header": "T",
+                    "dayoff": "0",
+                    "timein":  "10:00 AM",
+                    "timeout":  "00:00 AM"
+                },
+                "friday": {
+                    "header": "F",
+                    "dayoff": "0",
+                    "timein":  "10:00 AM",
+                    "timeout":  "00:00 AM"
+                },
+                "saturday": {
+                    "header": "S",
+                    "dayoff": "0",
+                    "timein":  "10:00 AM",
+                    "timeout":  "00:00 AM"
+                }
+            }
+        },
+
+        {
+            "id": "0003",
+            "defaultactive": true,
+            "description": "Shift B",
+                
+            "defaultSetting": {
+                "enabled":"0",
+                "timein":"07:30 AM",
+                "timeout":"05:30 PM"
+            },
+
+            "day": {
+                "sunday": {
+                    "header": "S",
+                    "dayoff": "1",
+                    "timein": "10:00 AM",
+                    "timeout": "00:00 AM"
+                },
+                "monday": {
+                    "header": "M",
+                    "dayoff": "0",
+                    "timein": "10:00 AM",
+                    "timeout": "00:00 AM"
+                },
+                "tuesday": {
+                    "header": "T",
+                    "dayoff": "0",
+                    "timein":  "10:00 AM",
+                    "timeout":  "00:00 AM"
+                },
+                "wednesday": {
+                    "header": "W",
+                    "dayoff": "0",
+                    "timein":  "10:00 AM",
+                    "timeout":  "00:00 AM"
+                },
+                "thursday": {
+                    "header": "T",
+                    "dayoff": "0",
+                    "timein":  "10:00 AM",
+                    "timeout":  "00:00 AM"
+                },
+                "friday": {
+                    "header": "F",
+                    "dayoff": "0",
+                    "timein":  "10:00 AM",
+                    "timeout":  "00:00 AM"
+                },
+                "saturday": {
+                    "header": "S",
+                    "dayoff": "0",
+                    "timein":  "10:00 AM",
+                    "timeout":  "00:00 AM"
+                }
+            }
+        }
+    ],
+
+    "breaktime": [
+        {
+            "id": "0011",
+            "name": "AM Break",
+            "timestart": "10:00 PM",
+            "timeend": "10:15 PM",
+            "duration": "0hr 15min"
+        },
+
+        {
+            "id": "0012",
+            "name": "Lunch Break",
+            "timestart": "12:00 PM",
+            "timeend": "01:30 PM",
+            "duration": "1hr 30min"
+        },
+
+        {
+            "id": "0013",
+            "name": "PM Break",
+            "timestart": "03:00 PM",
+            "timeend": "03:15 PM",
+            "duration": "0hr 15min"
+        }
+    ]
+}
