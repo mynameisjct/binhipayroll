@@ -34,13 +34,13 @@ export class CompanyPolicies extends Component {
     constructor(props){
         super(props);
         this.state = {
-            _activeChild: <Payroll/>,
+            _activeChild: <WorkShift triggerRefresh={this._getWorkSchedule}/>,
             _policyList: [
                 {
                     name: 'Work Shift',
                     childComponent: <WorkShift triggerRefresh={this._getWorkSchedule}/>,
                     iconName: 'timetable',
-                    btnColor: btnInactive
+                    btnColor: btnActive
                 },
                 {
                     name: 'Break Time',
@@ -52,7 +52,7 @@ export class CompanyPolicies extends Component {
                     name: 'Payroll',
                     childComponent: <Payroll/>,
                     iconName: 'cash',
-                    btnColor: btnActive
+                    btnColor: btnInactive
                 },
                 {
                     name: 'Withholding Tax',

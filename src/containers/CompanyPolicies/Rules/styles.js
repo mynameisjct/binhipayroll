@@ -58,7 +58,7 @@ export default {
 
     dailyCont: {
         flexDirection: 'column',
-        width: 76.4,
+        width: 85,
         justifyContent: 'center',
         alignItems: 'center'
     },
@@ -115,13 +115,15 @@ export default {
 
     txtDefaultTimeMsg:{
         fontFamily: 'Helvetica-Light',
-        fontSize: 15
+        fontSize: 15,
+        color: '#434646'
     },
 
     txtDefaultTime:{
         textDecorationLine: 'underline',
         fontFamily: 'Helvetica-Light',
-        fontSize: 15,
+        fontSize: 14,
+        color: '#434646'
     },
 
     defaultTimeRow: {
@@ -245,6 +247,17 @@ export default {
 
     },
 
+    effectivityOptionCont: {
+        backgroundColor: 'transparent',
+        height: 35,
+        width: 350,
+        borderWidth: 0.7,
+        borderRadius: 5,
+        borderColor: '#434646',
+        justifyContent: 'center',
+        backgroundColor: '#fff'
+    },
+
     propContTxt: {
         backgroundColor: 'transparent',
         height: 40,
@@ -255,8 +268,6 @@ export default {
         backgroundColor: 'transparent'
     },
 
-    
-    
     txtPropTitle: {
         fontFamily: 'Helvetica-Bold',
         color: '#434646',
@@ -267,6 +278,10 @@ export default {
     pickerStyle: {
         color: '#212223'
         /* backgroundColor: 'green' */
+    },
+
+    effectiveDatePickerStyle: {
+        color: '#212223',
     },
 
     txtDefault: {
@@ -284,6 +299,64 @@ export default {
         paddingTop: 2,
         paddingLeft: 40,
         backgroundColor: 'transparent'
+    },
+
+    childPropGroupCont: {
+        backgroundColor: 'transparent',
+        minHeight: 150,
+        flexDirection: 'column'
+    },
+
+    childGroupTitleCont: {
+        paddingTop: 30
+    },
+
+    txtChildGroupTitle: {
+        fontFamily: 'Helvetica-Bold',
+        fontSize: 15,
+        fontWeight: '500',
+        color: '#434646'
+    },
+
+    childContentCont: {
+        paddingTop: 5,
+        paddingLeft: 25,
+        flexDirection: 'column'
+    },
+
+    childPropCont: {
+        paddingTop: 10,
+        height: 40,
+        backgroundColor: 'transparent',
+        flexDirection: 'row'
+    },
+
+    childPropNameCont: {
+        justifyContent: 'center',
+        width: 140,
+        backgroundColor: 'transparent'
+    },
+
+    childPropValueCont: {
+        justifyContent: 'center',
+        width: '100%',
+        backgroundColor: 'transparent'
+    },
+
+    txtChildStyle: {
+        fontFamily: 'Helvetica-Light',
+        fontSize: 14,
+        color: '#434646'
+    },
+
+    datePickerCont: {
+        flex: 1,
+        width: 160,
+        borderRadius: 5,
+        borderWidth: 0.7,
+        borderColor: '#505251',
+        justifyContent: 'center',
+        alignItems: 'center'
     }
     
 

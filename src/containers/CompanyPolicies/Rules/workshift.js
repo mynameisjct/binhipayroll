@@ -30,7 +30,7 @@ import {SetLoginInfo,
 
 import {UpdateWorkShift} from '../../../actions/companyPolicies';
 
-const title_WorkShift = 'Set the Company’s Default Work Shift';
+const title_WorkShift = 'Work Shift Schedule';
 const category = ['', 'DAY OFF', 'TIME-IN', 'TIME-OUT'];
 const description_DefaultTime = 'The same Time-in and Time-out';
 
@@ -295,6 +295,23 @@ export class WorkShift extends Component {
             }
     }
 
+    _showDatePicker = async() => {
+        try {
+            const {action, year, month, day} = await DatePickerAndroid.open({
+                date: new Date(
+                    moment().format("YYYY"), 
+                    moment().format("MM"), 
+                    moment().format("DD")
+                )
+            });
+            if (action !== DatePickerAndroid.dismissedAction) {
+              // Selected year, month (0-11), day
+            }
+          } catch ({code, message}) {
+            console.warn('Cannot open date picker', message);
+          }
+    }
+
     _setTime = (strKey, strType, hour, minute) => {
         let strTime = moment(hour +':' + minute, 'hh:mm').format('hh:mm A');
 
@@ -448,17 +465,20 @@ export class WorkShift extends Component {
                         }
                     >
                         <CustomCard 
-                            title={title_WorkShift} 
+                            title={title_WorkShift}
                             oType='PICKER'
                             oPicker={
-                                <View style={[styles.propContChild, styles.adjustChildProp]}>
+                                <View style={styles.effectivityOptionCont}>
                                     <Picker
                                         mode='dropdown'
-                                        style={styles.pickerStyle}
+                                        style={styles.effectiveDatePickerStyle}
                                         selectedValue={this.state.language}
                                         onValueChange={(itemValue, itemIndex) => this.setState({language: itemValue})}>
-                                        <Picker.Item label="Java" value="java" />
-                                        <Picker.Item label="JavaScript" value="js" />
+                                        <Picker.Item label="(WED) FEB 10, 2017 - (MON) MAY 05, 2017" value="02-10-2017 to 05-05-2017"/>
+                                        <Picker.Item label="(WED) FEB 10, 2017 - (MON) MAY 05, 2017" value="02-10-2017 to 05-05-2017"/>
+                                        <Picker.Item label="(WED) FEB 10, 2017 - (MON) MAY 05, 2017" value="02-10-2017 to 05-05-2017"/>
+                                        <Picker.Item label="(WED) FEB 10, 2017 - (MON) MAY 05, 2017" value="02-10-2017 to 05-05-2017"/>
+                                        <Picker.Item label="(MON) MAY 06, 2017 - UNTIL CHANGED" value="05-06-2017 to UNTIL CHANGED" />
                                     </Picker>
                                 </View>
                             }
@@ -571,6 +591,43 @@ export class WorkShift extends Component {
                                             
                                     </View>
                                 }
+                            </View>
+                            <View style={styles.childPropGroupCont}>
+                                <View style={styles.childGroupTitleCont}>
+                                    <Text style={styles.txtChildGroupTitle}>
+                                        Work Shift Effectivity
+                                    </Text>
+                                </View>
+                                <View style={styles.childContentCont}>
+                                    <View style={styles.childPropCont}>
+                                        <View style={styles.childPropNameCont}>
+                                            <Text style={styles.txtChildStyle}>
+                                            VALID FROM
+                                            </Text>
+                                        </View>
+                                        <View style={styles.childPropValueCont}>
+                                            <View style={styles.datePickerCont}>
+                                                <Text numberOfLines={1} style={styles.txtChildStyle}>
+                                                    (WED) FEB 10, 2017
+                                                </Text>
+                                            </View>
+                                        </View>
+                                    </View>
+                                    <View style={styles.childPropCont}>
+                                        <View style={styles.childPropNameCont}>
+                                            <Text style={styles.txtChildStyle}>
+                                            VALID UNTIL
+                                            </Text>
+                                        </View>
+                                        <View style={styles.childPropValueCont}>
+                                            <View style={styles.datePickerCont}>
+                                                <Text numberOfLines={1} style={styles.txtChildStyle}>
+                                                    UNTIL CHANGED
+                                                </Text>
+                                            </View>
+                                        </View>
+                                    </View>
+                                </View>
                             </View>
                         </CustomCard>
                         
