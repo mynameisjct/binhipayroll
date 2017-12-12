@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux';
-import { reducer as usersReducer } from './workshift/reducer';
+import { reducer as workshiftReducer } from './workshift/reducer';
 
 export const reducer = combineReducers({
-	users: usersReducer,
+	workshift: workshiftReducer,
 });

@@ -20,6 +20,7 @@ store.subscribe(() => {
   console.log("Store is updated!", store.getState());
 });
 
+
 export default class Main extends Component {
   render() {
     return (

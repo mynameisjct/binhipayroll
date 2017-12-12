@@ -8,12 +8,13 @@ import {
 import { TabNavigator } from 'react-navigation';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
+//Chil Views and Properties
 import Header2 from '../Headers/header2';
 import styles from './styles';
 import apiConfig, {endPoints} from '../../services/api/config';
 
-import WorkShift from './Rules/workshift';
-import Breaktime from './Rules/breaktime';
+//Child Containers
+import WorkShift from './Rules/workshift';;
 import Payroll from './Rules/payroll';
 import Tax from './Rules/tax';
 import Tardiness from './Rules/tardiness';
@@ -23,10 +24,16 @@ import Leaves from './Rules/leaves';
 import Benefits from './Rules/benefits';
 import Bonus from './Rules/bonus';
 
+//API
+import * as workshiftAPI from './data/workshift/api';
+
 //Redux
 import { connect } from 'react-redux';
-import {SetLoginInfo, SetActiveCompany, FetchDataFromDB} from '../../actions';
+import { bindActionCreators } from 'redux';
+import {SetLoginInfo, SetActiveCompany} from '../../actions';
+import * as workshiftActions from './data/workshift/actions';
 
+//Constants
 const btnActive = 'rgba(255, 255, 255, 0.3);'
 const btnInactive = 'transparent';
 
@@ -102,12 +109,50 @@ export class CompanyPolicies extends Component {
     }
 
     componentDidMount = () => {
+        this._getWorkSchedule(false);
 /*         this._getWorkSchedule(false);
         this._getBreakTime(true);
         this._getPayroll(true); */
     }
 
     _getWorkSchedule = (bForceUpdate) => {
+        let objLoginInfo = Object.assign({}, this.props.logininfo);
+        let objActiveCompany = Object.assign({}, this.props.activecompany);
+        this.props.actions.workshift.get({
+            companyid: objActiveCompany.id,
+            username: objLoginInfo.resUsername,
+            transtype: 'get',
+            accesstoken: '',
+            clientid: '',
+        })
+        .then((res) => {
+			console.log('IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIISUCCESS!');
+		})
+		.catch((exception) => {
+			// Displays only the first error message
+			console.log('ERRRRRRRRRRRRRRRRRRRRRRRRRRRRROOOOOOOOORRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR!');
+		});
+    }
+/*     _getWorkSchedule = (bForceUpdate) => {
+        let objLoginInfo = Object.assign({}, this.props.logininfo);
+        let objActiveCompany = Object.assign({}, this.props.activecompany);
+        workshiftAPI.get({
+            companyid: objActiveCompany.id,
+            username: objLoginInfo.resUsername,
+            transtype: 'get',
+            accesstoken: '',
+            clientid: '',
+        })
+ 		.then((res) => {
+			console.log('IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIISUCCESS!');
+		})
+		.catch((exception) => {
+			// Displays only the first error message
+			console.log('ERRRRRRRRRRRRRRRRRRRRRRRRRRRRROOOOOOOOORRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR!');
+		});
+    } */
+
+/*     _getWorkSchedule = (bForceUpdate) => {
         if(!this.props.workShift || bForceUpdate){
             let objLoginInfo = Object.assign({}, this.props.logininfo)
             let objActiveCompany = Object.assign({}, this.props.activecompany)
@@ -121,8 +166,7 @@ export class CompanyPolicies extends Component {
                     transtype: 'get'
                 }
             });
-        }
-    }
+        } */
 
     _getBreakTime = (bForceUpdate) => {
         if(bForceUpdate){
@@ -232,11 +276,10 @@ function mapStateToProps (state) {
 }
 
 function mapDispatchToProps (dispatch) {
-    
     return {
-        dispatchFetchDataFromDB: (objData) => {
-            dispatch(FetchDataFromDB(objData))
-        }
+        actions: {
+            workshift: bindActionCreators(workshiftActions, dispatch),
+        },
     }
 }
 

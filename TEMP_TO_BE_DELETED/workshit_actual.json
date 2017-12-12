@@ -1,0 +1,45 @@
+"flagno":0,
+"message":"Default time in is empty",
+"transtype":"fetch",
+"schedule":[
+    {
+        "description":"Shift A",
+        "day":{
+            "sunday":{
+                "dayoff":true,
+                "timein":"9:00 am",
+                "timeout":"6:00 am"
+            },
+            "monday":{
+                "dayoff":false,
+                "timein":"9:00 am",
+                "timeout":"6:00 am"
+            },
+            "tuesday":{
+                "dayoff":false,
+                "timein":"9:00 am",
+                "timeout":"6:00 am"
+            },
+            "wednesday":{
+                "dayoff":false,
+                "timein":"9:00 am",
+                "timeout":"6:00 am"
+            },
+            "thursday":{
+                "dayoff":false,
+                "timein":"9:00 am",
+                "timeout":"6:00 am"
+            },
+            "friday":{
+                "dayoff":false,
+                "timein":"9:00 am",
+                "timeout":"6:00 am"
+            },"saturday":{
+                "dayoff":false,
+                "timein":"9:00 am",
+                "timeout":"6:00 am"}
+            }
+    }
+],
+
+"breaktime":[{"id":"","name":"","timestart":"","timeend":"","duration":""}]}

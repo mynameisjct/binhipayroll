@@ -31,6 +31,7 @@ import {SetLoginInfo,
     FetchDataFromDB, 
     SetDataActionTrigger
 } from '../../../actions';
+import * as workShiftSelector from '../data/workshift/selector';
 
 import {UpdateWorkShift} from '../../../actions/companyPolicies';
 
@@ -48,6 +49,7 @@ export class WorkShift extends Component {
     constructor(props){
         super(props);
         this.state = {
+            _disabledMode: false,
             _data: [
                 {
                     id: '0001',
@@ -72,8 +74,20 @@ export class WorkShift extends Component {
                 }
             ],
 
-            _language: '',
-            _curTimePolicy: null,
+            _activeType: '',
+            _curWorkShiftObj: {
+                schedule: [
+                    {
+                        id: '',
+                        description: ''
+                    }
+                ], 
+                breaktime: [
+                    {
+                        id: '',
+                        description: ''
+                    }
+                ]},
             _dailyPolicy: {
                 sunday: {
                     header: 'S',
@@ -132,7 +146,6 @@ export class WorkShift extends Component {
             _changeDetected: false,
 
             _refreshing: false
-
         }
 
         this._continueActionOnWarning = this._continueActionOnWarning.bind(this);
@@ -142,15 +155,16 @@ export class WorkShift extends Component {
     }
 
     componentDidMount(){
-        this._initValues(this.props.workshift);
+       /*  this._initValues(this.props.workshift); */
+       this._initValues(null);
     }
 
     componentWillReceiveProps(nextProps) {
-        if(JSON.stringify(this.state._curTimePolicy) !== 
-            JSON.stringify(nextProps.workshift)){
+        if(JSON.stringify(this.state._curWorkShiftObj) !== 
+            JSON.stringify(nextProps.companyworkshift)){
             console.log('YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY');
             console.log('I ENTERED componentWillReceiveProps');
-            this._initValues(nextProps.workshift);
+            this._initValues(nextProps.companyworkshift);
         }
 
         let oRes = {...nextProps.updateresponse};
@@ -184,7 +198,17 @@ export class WorkShift extends Component {
         }
     }
 
-    _initValues = (curWorkShiftProps) => {
+    _initValues = (companyworkshift) => {
+        this.setState({
+            _curWorkShiftObj: workShiftSelector.getWorkShiftObject()
+        },
+            () => {
+                console.log('_curWorkShiftObj : ' + JSON.stringify(this.state._curWorkShiftObj));
+            }
+        )
+    }
+
+/*     _initValues = (curWorkShiftProps) => {
         let oCurProps = curWorkShiftProps;
         let oWorkShift = {...oCurProps};
         let oWorkShiftDay = {...oWorkShift.day};
@@ -223,7 +247,7 @@ export class WorkShift extends Component {
                 this._detectChanges();
             }
         )
-    }
+    } */
 
     _saveAction = () => {
         let objLoginInfo = Object.assign({}, this.props.logininfo)
@@ -306,28 +330,31 @@ export class WorkShift extends Component {
     
 
     _showTimePicker = async(strKey, strType) => {
-        let defaultTime = '';
-        if(strType == 'timeout'){
-            defaultTime = 17
-        }
-        else{
-            defaultTime = 8
-        }
-        try {
-            const {action, hour, minute} =await TimePickerAndroid.open({
-                hour: defaultTime,
-                minute: 0,
-                is24Hour: false,
-                mode: 'spinner'
-            });
-
-            if (action !== TimePickerAndroid.dismissedAction) {
-               this._setTime(strKey, strType, hour, minute);
+        if(!this.state._disabledMode){
+            let defaultTime = '';
+            if(strType == 'timeout'){
+                defaultTime = 17
             }
+            else{
+                defaultTime = 8
+            }
+            try {
+                const {action, hour, minute} =await TimePickerAndroid.open({
+                    hour: defaultTime,
+                    minute: 0,
+                    is24Hour: false,
+                    mode: 'spinner'
+                });
+
+                if (action !== TimePickerAndroid.dismissedAction) {
+                this._setTime(strKey, strType, hour, minute);
+                }
+            } 
             
-            } catch ({code, message}) {
+            catch ({code, message}) {
                 console.warn('Cannot open time picker', message);
             }
+        }
     }
 
     _setTime = (strKey, strType, hour, minute) => {
@@ -446,6 +473,14 @@ export class WorkShift extends Component {
         )
     }
 
+    _deleteActiveWorkShift = () => {
+        this.setState({
+            _resMsg: 'Successfully deleted "Shift A" !',
+            _msgBoxShow: true,
+            _msgBoxType: 'SUCCESS'
+        })
+    }
+
     render(){
         const actionButton = 
             <ActionButton 
@@ -459,7 +494,7 @@ export class WorkShift extends Component {
                     <Icon2 name="table-edit" color='#fff' size={22} style={styles.actionButtonIcon} />
                 </ActionButton.Item>
                 
-                <ActionButton.Item buttonColor='#D75450' title="DELETE CURRENT WORK SHIFT" onPress={() => {}}>
+                <ActionButton.Item buttonColor='#D75450' title="DELETE CURRENT WORK SHIFT" onPress={() => {this._deleteActiveWorkShift()}}>
                     <Icon2 name="delete-empty" color='#fff' size={22} style={styles.actionButtonIcon} />
                 </ActionButton.Item>
             </ActionButton>
@@ -481,9 +516,9 @@ export class WorkShift extends Component {
                             <View style={styles.breakDetailsCont}>
                                 <Text style={styles.txtDefault}>DURATION</Text>
                             </View>
-{/*                             <View style={styles.breakDetailsCont}>
+                            <View style={styles.breakDetailsCont}>
                                 <Text style={styles.txtDefault}>REMOVE</Text>
-                            </View> */}
+                            </View>
                         </View>
 
                         {
@@ -507,14 +542,14 @@ export class WorkShift extends Component {
                                         <View style={styles.breakDetailsCont}>
                                             <Text style={styles.txtDefault}>{oBreakTime.duration}</Text>
                                         </View>
-{/*                                         <View style={styles.breakDetailsCont}>
+                                        <View style={styles.breakDetailsCont}>
                                             <TouchableOpacity
                                                 activeOpacity={0.7}
                                                 onPress={() => {this._deleteBreakTime(oBreakTime, index)}}
                                                 >
                                                 <Icon size={30} name='md-close-circle' color='#EEB843' />
                                             </TouchableOpacity>
-                                        </View> */}
+                                        </View>
                                     </View>
                                 </TouchableNativeFeedback>
                             ))
@@ -540,7 +575,7 @@ export class WorkShift extends Component {
                 </ScrollView>
             );
         }
-        else if(this.props.workShiftLoading){
+        else if(this.props.workShiftLoading || this.props.companyworkshift == null){
             return (
                 <PromptLoading title='Loading...'/>
             );
@@ -556,22 +591,25 @@ export class WorkShift extends Component {
                                 refreshing={this.state._refreshing}
                                 onRefresh={() => this.props.triggerRefresh(true)}
                             />
-                        }
-                    >
+                        }>
                         <CustomCard 
-                            title={title_WorkShift}
+                            /* title={title_WorkShift} */
+                            title = 'Add New Work Shift'
                             oType='PICKER'
                             oPicker={
                                 <View style={styles.effectivityOptionCont}>
                                     <Picker
                                         mode='dropdown'
                                         style={styles.effectiveDatePickerStyle}
-                                        selectedValue={this.state.language}
-                                        onValueChange={(itemValue, itemIndex) => this.setState({language: itemValue})}>
-                                        <Picker.Item label="Day Shift 1" value="0001"/>
-                                        <Picker.Item label="Day Shift 2" value="0002"/>
-                                        <Picker.Item label="Afternoon Shift" value="0003"/>
-                                        <Picker.Item label="Night Shift" value="0004" />
+                                        selectedValue={this.state._activeType}
+                                        onValueChange={(itemValue, itemIndex) => this.setState({_activeType: itemIndex})}>
+                                        {
+                                            this.state._curWorkShiftObj.schedule ? 
+                                            this.state._curWorkShiftObj.schedule.map((oSchedule, index) => (
+                                                <Picker.Item key={index} label={oSchedule.description} value={oSchedule.id}/>
+                                            ))
+                                            : null
+                                        }
                                     </Picker>
                                 </View>
                             }
@@ -591,6 +629,7 @@ export class WorkShift extends Component {
                                 <View style={styles.detailsCont}>
                                     <ScrollView horizontal={true}>
                                         {
+                                            
                                             Object.keys(oDailyPolicy).map(key => (
                                                 <View key={key} style={styles.dailyCont}>
                                                     <View style={[styles.dailyPlaceholder, this._setBottomBorder(0)]}>
@@ -598,12 +637,14 @@ export class WorkShift extends Component {
                                                     </View>
                                                     <View style={styles.dailyPlaceholder}>
                                                         <CheckBox
+                                                            disabled={this.state._disabledMode}
                                                             onValueChange={ (value) => {this._setDayOff(key, value)}} 
                                                             value={oDailyPolicy[key].dayoff}
                                                         />
                                                     </View>
                                                     <View style={styles.dailyPlaceholder}>
                                                         <Text 
+
                                                             disabled={oDailyPolicy[key].dayoff} 
                                                             onPress={() => {
                                                                 !this.state._defaultSetting.enabled ? 
@@ -634,14 +675,14 @@ export class WorkShift extends Component {
 
                                                     </View>
                                                 </View>
-                                            ))
+                                            )) 
                                         }
                                     </ScrollView>
                                     
                                 </View>
                             </View>
                             
-                            {/* <View style={styles.defaultTimeCont}>
+                            <View style={styles.defaultTimeCont}>
                                 <View style={styles.defaultTimeCheckbox}>
                                     <CheckBox
                                         onValueChange={ (value) => {this._activateDefaultTime(value)}} 
@@ -684,7 +725,7 @@ export class WorkShift extends Component {
                                             
                                     </View>
                                 }
-                            </View> */}
+                            </View>
 {/*                             <View style={styles.childPropGroupCont}>
                                 <View style={styles.childGroupTitleCont}>
                                     <Text style={styles.txtChildGroupTitle}>
@@ -731,6 +772,7 @@ export class WorkShift extends Component {
                             oType='Switch'
                             oSwitch={
                                 <Switch
+                                    disabled={this.state._disabledMode}
                                     onValueChange={ (value) => this.setState({_isBreaktimeEnabled: value})} 
                                     onTintColor={color_SwitchOn}
                                     thumbTintColor={color_SwitchThumb}
@@ -763,11 +805,7 @@ function mapStateToProps (state) {
     return {
         logininfo: state.loginReducer.logininfo,
         activecompany: state.activeCompanyReducer.activecompany,
-        workShifthasErrored: state.WorkShiftHasErrored,
-        workShiftLoading: state.WorkShiftIsLoading,
-        workshift: state.GetWorkShift,
-        dataactiontrigger: state.dataActionTriggerReducer.dataactiontrigger,
-        updateresponse: state.UpdateWorkShift
+        companyworkshift: state.companyPoliciesReducer.workshift
     }
 }
 
