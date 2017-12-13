@@ -35,7 +35,7 @@ export default {
 
   headerTitle: {
     fontFamily: 'Helvetica-Bold',
-    fontSize: 16,
+    fontSize: 18,
     textAlign: 'center',
     fontWeight: '500',
     color: '#434646'

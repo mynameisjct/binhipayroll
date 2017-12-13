@@ -44,12 +44,17 @@ const description_BreakTime = 'Allow break time';
 const color_SwitchOn='#838383';
 const color_SwitchOff='#D1D4D6';
 const color_SwitchThumb='#EEB843';
+const status_loading = [2, 'Loading...'];
+const status_success = [1, ''];
 
 export class WorkShift extends Component {
     constructor(props){
         super(props);
         this.state = {
-            _disabledMode: false,
+            _status: status_loading,
+            _disabledMode: true,
+            _activeSchedule: null,
+
             _data: [
                 {
                     id: '0001',
@@ -74,7 +79,7 @@ export class WorkShift extends Component {
                 }
             ],
 
-            _activeType: '',
+            _activeType: '50',
             _curWorkShiftObj: {
                 schedule: [
                     {
@@ -155,57 +160,34 @@ export class WorkShift extends Component {
     }
 
     componentDidMount(){
-       /*  this._initValues(this.props.workshift); */
-       this._initValues(null);
+        if(this.props.status[0]==1){
+            this._initValues();
+        }
+
+        this.setState({
+            _status: [...this.props.status]
+        });
     }
 
     componentWillReceiveProps(nextProps) {
-        if(JSON.stringify(this.state._curWorkShiftObj) !== 
-            JSON.stringify(nextProps.companyworkshift)){
-            console.log('YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY');
-            console.log('I ENTERED componentWillReceiveProps');
-            this._initValues(nextProps.companyworkshift);
-        }
-
-        let oRes = {...nextProps.updateresponse};
-        if(oRes.flagno!= -1 && oRes!=null){
-            let oResponse = {...nextProps.updateresponse};
-            let strMsgType = '';
-            switch(oResponse.flagno){
-                case '0':
-                    strMsgType='error';
-                    break;
-                case '1':
-                    this.props.triggerRefresh(true);
-                    strMsgType='success';
-                    break;
-                case '2':
-                    strMsgType='warning'
-                    break;
+        if(this.state._status[0] != nextProps.status[0]){
+            if(nextProps.status[0]==1){
+                this._initValues();
             }
-            
+
             this.setState({
-                _msgBoxType: strMsgType,
-                _msgBoxShow: true,
-                _resMsg: oRes.message
-            },
-                () => {
-                    this.props.dispatchResetResponse({
-                        flagno: -1
-                    })
-                }
-            )
+                _status: nextProps.status
+            })
         }
     }
 
-    _initValues = (companyworkshift) => {
+    _initValues = (companyWorkShift) => {
         this.setState({
-            _curWorkShiftObj: workShiftSelector.getWorkShiftObject()
-        },
-            () => {
-                console.log('_curWorkShiftObj : ' + JSON.stringify(this.state._curWorkShiftObj));
-            }
-        )
+            _curWorkShiftObj: workShiftSelector.getWorkShiftObject(),
+            _activeSchedule: workShiftSelector.getDefaultActiveType()
+        });
+/*         console.log('workShiftSelector.getDefaultActiveType(): ' + JSON.stringify());
+        console.log('workShiftSelector.getWorkShifTypes(): ' + JSON.stringify(workShiftSelector.getWorkShifTypes())); */
     }
 
 /*     _initValues = (curWorkShiftProps) => {
@@ -481,7 +463,21 @@ export class WorkShift extends Component {
         })
     }
 
+    _setActiveWorkShiftType = (itemValue) => {
+        console.log('itemValue: ' + itemValue);
+        this.setState({
+            _activeType: itemValue,
+            _activeSchedule: workShiftSelector.getScheduleFromTypeID(itemValue)
+        })
+    }
+
     render(){
+        //Loading View Status
+        let pStatus = [...this.state._status];
+        let pProgress = pStatus[0];
+        let pMessage = pStatus[1];
+
+        //Floating Actions Buttons for A/D Work Shift Type
         const actionButton = 
             <ActionButton 
                 buttonColor="#EEB843"
@@ -499,6 +495,7 @@ export class WorkShift extends Component {
                 </ActionButton.Item>
             </ActionButton>
 
+        //Break Time Details
         const breakTimeDetails = 
             <View style={styles.containerPlaceholder}>
                 <ScrollView horizontal={true}>
@@ -558,10 +555,10 @@ export class WorkShift extends Component {
                 </ScrollView>
             </View>
 
-        const oDailyPolicy = this.state._dailyPolicy;
+        //
         let iBorderCounter = -1;
 
-        if(this.props.workShifthasErrored){
+        if(pProgress==0){
             return (
                 <ScrollView
                     refreshControl={
@@ -571,20 +568,20 @@ export class WorkShift extends Component {
                         />
                         }
                 >
-                    <PromptError title='An error has occured. Pull down to refresh.'/>
+                    <PromptError title={pMessage}/>
                 </ScrollView>
             );
         }
-        else if(this.props.workShiftLoading || this.props.companyworkshift == null){
+        else if(pProgress==2){
             return (
-                <PromptLoading title='Loading...'/>
+                <PromptLoading title={pMessage}/>
             );
         }
 
         else{
+            const oDailyPolicy = {...this.state._activeSchedule.day};
             return(
                 <View style={styles.container}>
-                    {this.state._changeDetected ? <SavePrompt undoAction={this._undoAction} saveAction={this._saveAction}/> : null}
                     <ScrollView
                         refreshControl={
                             <RefreshControl
@@ -593,8 +590,7 @@ export class WorkShift extends Component {
                             />
                         }>
                         <CustomCard 
-                            /* title={title_WorkShift} */
-                            title = 'Add New Work Shift'
+                            title={title_WorkShift}
                             oType='PICKER'
                             oPicker={
                                 <View style={styles.effectivityOptionCont}>
@@ -602,13 +598,11 @@ export class WorkShift extends Component {
                                         mode='dropdown'
                                         style={styles.effectiveDatePickerStyle}
                                         selectedValue={this.state._activeType}
-                                        onValueChange={(itemValue, itemIndex) => this.setState({_activeType: itemIndex})}>
+                                        onValueChange={(itemValue, itemIndex) => {this._setActiveWorkShiftType(itemValue)}}>
                                         {
-                                            this.state._curWorkShiftObj.schedule ? 
                                             this.state._curWorkShiftObj.schedule.map((oSchedule, index) => (
                                                 <Picker.Item key={index} label={oSchedule.description} value={oSchedule.id}/>
                                             ))
-                                            : null
                                         }
                                     </Picker>
                                 </View>
@@ -633,7 +627,8 @@ export class WorkShift extends Component {
                                             Object.keys(oDailyPolicy).map(key => (
                                                 <View key={key} style={styles.dailyCont}>
                                                     <View style={[styles.dailyPlaceholder, this._setBottomBorder(0)]}>
-                                                        <Text style={styles.txtHorizontalHeader}>{oDailyPolicy[key].header}</Text>
+                                                        {/* <Text style={styles.txtHorizontalHeader}>{oDailyPolicy[key].header}</Text> */}
+                                                        <Text style={styles.txtHorizontalHeader}>OG-BE</Text>
                                                     </View>
                                                     <View style={styles.dailyPlaceholder}>
                                                         <CheckBox
@@ -682,50 +677,55 @@ export class WorkShift extends Component {
                                 </View>
                             </View>
                             
-                            <View style={styles.defaultTimeCont}>
-                                <View style={styles.defaultTimeCheckbox}>
-                                    <CheckBox
-                                        onValueChange={ (value) => {this._activateDefaultTime(value)}} 
-                                        value={this.state._defaultSetting.enabled}
-                                    />
-                                    <Text style={styles.txtDefaultTimeMsg}>
-                                        {description_DefaultTime}
-                                    </Text>
-                                </View>
-                                {!this.state._defaultSetting.enabled ? null :
-                                    <View style={styles.defaultTimePlaceholder}>
-                                        <View style={styles.defaultTimeRow}>
-                                            <View style={styles.defaultTimeLeft}>
-                                                <Text style={styles.txtDefaultTimeMsg}>TIME-IN</Text>
-                                            </View>
-                                            <View style={styles.defaultTimeRight}>
-                                                <Text 
-                                                    onPress={() => this._showTimePicker('default', 'timein')} 
-                                                    style={styles.txtContent}>
-                                                    
-                                                    {this.state._defaultSetting.timein ? this.state._defaultSetting.timein.toUpperCase() : null}
+                            { 
+                                !this.state._disabledMode ?
+                                    <View style={styles.defaultTimeCont}>
+                                        <View style={styles.defaultTimeCheckbox}>
+                                            <CheckBox
+                                                onValueChange={ (value) => {this._activateDefaultTime(value)}} 
+                                                value={this.state._defaultSetting.enabled}
+                                            />
+                                            <Text style={styles.txtDefaultTimeMsg}>
+                                                {description_DefaultTime}
+                                            </Text>
+                                        </View>
+                                            <View style={styles.defaultTimePlaceholder}>
+                                                <View style={styles.defaultTimeRow}>
+                                                    <View style={styles.defaultTimeLeft}>
+                                                        <Text style={styles.txtDefaultTimeMsg}>TIME-IN</Text>
+                                                    </View>
+                                                    <View style={styles.defaultTimeRight}>
+                                                        <Text 
+                                                            onPress={() => this._showTimePicker('default', 'timein')} 
+                                                            style={styles.txtContent}>
+                                                            
+                                                            {this.state._defaultSetting.timein ? this.state._defaultSetting.timein.toUpperCase() : null}
 
-                                                </Text>
-                                            </View>
-                                        </View>
-                                        <View style={styles.defaultTimeRow}>
-                                            <View style={styles.defaultTimeLeft}>
-                                                <Text style={styles.txtDefaultTimeMsg}>TIME-OUT</Text>
-                                            </View>
-                                            <View style={styles.defaultTimeRight}>
-                                                <Text 
-                                                    onPress={() => this._showTimePicker('default', 'timeout')} 
-                                                    style={styles.txtContent}>
+                                                        </Text>
+                                                    </View>
+                                                </View>
+                                                <View style={styles.defaultTimeRow}>
+                                                    <View style={styles.defaultTimeLeft}>
+                                                        <Text style={styles.txtDefaultTimeMsg}>TIME-OUT</Text>
+                                                    </View>
+                                                    <View style={styles.defaultTimeRight}>
+                                                        <Text 
+                                                            onPress={() => this._showTimePicker('default', 'timeout')} 
+                                                            style={styles.txtContent}>
+                                                            
+                                                            {this.state._defaultSetting.timeout ? this.state._defaultSetting.timeout.toUpperCase() : null}
+                                                            
+                                                        </Text>
+                                                    </View>
+                                                </View>
                                                     
-                                                    {this.state._defaultSetting.timeout ? this.state._defaultSetting.timeout.toUpperCase() : null}
-                                                    
-                                                </Text>
                                             </View>
-                                        </View>
-                                            
+                                        
                                     </View>
-                                }
-                            </View>
+                                : null
+                            }
+
+
 {/*                             <View style={styles.childPropGroupCont}>
                                 <View style={styles.childGroupTitleCont}>
                                     <Text style={styles.txtChildGroupTitle}>
@@ -805,7 +805,7 @@ function mapStateToProps (state) {
     return {
         logininfo: state.loginReducer.logininfo,
         activecompany: state.activeCompanyReducer.activecompany,
-        companyworkshift: state.companyPoliciesReducer.workshift
+        companyWorkShift: state.companyPoliciesReducer.workshift
     }
 }
 

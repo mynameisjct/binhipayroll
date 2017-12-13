@@ -39,6 +39,7 @@ export const get = payload =>
 			dispatch(update(res));
 		});
 
+
 /* export const WorkShiftHasErrored = () => ({
 	type: WORKSHIFT_HAS_ERRORED,
 	hasErrored: bool
@@ -50,4 +51,4 @@ export const WorkShiftIsLoading(bool) {
         isLoading: bool
     };
 }
- */
+*/

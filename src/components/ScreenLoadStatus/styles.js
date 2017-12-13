@@ -30,7 +30,9 @@ export default {
     txtMsgError: {
         color: '#D75450',
         fontFamily: 'Helvetica-Light',
-        fontSize: 20,
+        fontSize: 16,
+        textAlign: 'center',
+        fontStyle: 'italic'
     },
 
     errorCont: {

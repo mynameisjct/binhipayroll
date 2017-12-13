@@ -7,6 +7,7 @@
             "id": "0001",
             "defaultactive": true,
             "description": "Shift A",
+            "enabledbreaktime": true,
                 
             "defaultSetting": {
                 "enabled":"0",
@@ -56,14 +57,43 @@
                     "timein":  "00:00 AM",
                     "timeout":  "00:00 AM"
                 }
-            }
+            },
+
+                    
+            "breaktime": [
+                {
+                    "id": "0011",
+                    "name": "AM Break",
+                    "timestart": "10:00 PM",
+                    "timeend": "10:15 PM",
+                    "duration": "0hr 15min"
+                },
+
+                {
+                    "id": "0012",
+                    "name": "Lunch Break",
+                    "timestart": "12:00 PM",
+                    "timeend": "01:30 PM",
+                    "duration": "1hr 30min"
+                },
+
+                {
+                    "id": "0013",
+                    "name": "PM Break",
+                    "timestart": "03:00 PM",
+                    "timeend": "03:15 PM",
+                    "duration": "0hr 15min"
+                }
+            ]
+            
         },
 
         {
             "id": "0002",
             "defaultactive": true,
             "description": "Shift B",
-                
+            "enabledbreaktime": false,
+
             "defaultSetting": {
                 "enabled":"0",
                 "timein":"07:30 AM",
@@ -119,7 +149,8 @@
             "id": "0003",
             "defaultactive": true,
             "description": "Shift B",
-                
+            "enabledbreaktime": true,
+            
             "defaultSetting": {
                 "enabled":"0",
                 "timein":"07:30 AM",
@@ -170,32 +201,6 @@
                     "timeout":  "00:00 AM"
                 }
             }
-        }
-    ],
-
-    "breaktime": [
-        {
-            "id": "0011",
-            "name": "AM Break",
-            "timestart": "10:00 PM",
-            "timeend": "10:15 PM",
-            "duration": "0hr 15min"
-        },
-
-        {
-            "id": "0012",
-            "name": "Lunch Break",
-            "timestart": "12:00 PM",
-            "timeend": "01:30 PM",
-            "duration": "1hr 30min"
-        },
-
-        {
-            "id": "0013",
-            "name": "PM Break",
-            "timestart": "03:00 PM",
-            "timeend": "03:15 PM",
-            "duration": "0hr 15min"
         }
     ]
 }
