@@ -42,7 +42,8 @@ export default {
 
     textCont: {
         paddingLeft: 25,
-        flexDirection: 'row'
+        flexDirection: 'row',
+        flex: 1,
     },
 
     contentCont: {

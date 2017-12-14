@@ -9,7 +9,10 @@ import {
     RefreshControl,
     Picker,
     TouchableNativeFeedback,
-    TouchableOpacity
+    TouchableOpacity,
+    Alert,
+    ActivityIndicator,
+    TextInput
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Icon2 from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -22,20 +25,17 @@ import CustomCard from '../../../components/CustomCards';
 import MessageBox from '../../../components/MessageBox';
 import SavePrompt from '../../../components/SavePrompt';
 import apiConfig, {endPoints} from '../../../services/api/config';
-import {PromptError, PromptLoading} from '../../../components/ScreenLoadStatus';
+import * as PromptScreen from '../../../components/ScreenLoadStatus';
+import FormBreakTime from '../Forms/formBreakTime';
+//api
+import * as workshiftApi from '../data/workshift/api';
 
 //Redux
 import { connect } from 'react-redux';
-import {SetLoginInfo,
-    SetActiveCompany, 
-    FetchDataFromDB, 
-    SetDataActionTrigger
-} from '../../../actions';
 import * as workShiftSelector from '../data/workshift/selector';
-
 import {UpdateWorkShift} from '../../../actions/companyPolicies';
 
-const title_WorkShift = 'Work Shift Schedule';
+
 const category = ['', 'DAY OFF', 'TIME-IN', 'TIME-OUT'];
 const description_DefaultTime = 'The same Time-in and Time-out';
 
@@ -46,117 +46,101 @@ const color_SwitchOff='#D1D4D6';
 const color_SwitchThumb='#EEB843';
 const status_loading = [2, 'Loading...'];
 const status_success = [1, ''];
+const save_loading_message = 'Saving new Work Shift. Please wait...';
 
 export class WorkShift extends Component {
     constructor(props){
         super(props);
         this.state = {
+            _loadedStatus: '',
+            _bNoWorkShift: false,
             _status: status_loading,
             _disabledMode: true,
             _activeSchedule: null,
-
-            _data: [
-                {
-                    id: '0001',
-                    name: 'MORNING BREAK',
-                    timestart: '10:00 AM',
-                    timeend: '10:15 AM',
-                    duration: '0hr 15min',
-                },
-                {
-                    id: '0001',
-                    name: 'LUNCH BREAK',
-                    timestart: '12:00 PM',
-                    timeend: '01:30 PM',
-                    duration: '1hr 30min',
-                },
-                {
-                    id: '0001',
-                    name: 'AFTERNOON BREAK',
-                    timestart: '03:00 PM',
-                    timeend: '03:15 PM',
-                    duration: '0hr 15min',
-                }
-            ],
-
-            _activeType: '50',
-            _curWorkShiftObj: {
-                schedule: [
-                    {
-                        id: '',
-                        description: ''
-                    }
-                ], 
-                breaktime: [
-                    {
-                        id: '',
-                        description: ''
-                    }
-                ]},
-            _dailyPolicy: {
-                sunday: {
-                    header: 'S',
-                    dayoff: false,
-                    timein: '08:00 AM',
-                    timeout: '05:30 PM',
-                },
-                monday: {
-                    header: 'M',
-                    dayoff: false,
-                    timein: '08:00 AM',
-                    timeout: '05:30 PM',
-                },
-                tuesday: {
-                    header: 'T',
-                    dayoff: false,
-                    timein: '08:00 AM',
-                    timeout: '05:30 PM',
-                },
-                wednesday: {
-                    header: 'W',
-                    dayoff: false,
-                    timein: '08:00 AM',
-                    timeout: '05:30 PM',
-                },
-                thursday: {
-                    header: 'T',
-                    dayoff: false,
-                    timein: '08:00 AM',
-                    timeout: '05:30 PM',
-                },
-                friday: {
-                    header: 'F',
-                    dayoff: false,
-                    timein: '08:00 AM',
-                    timeout: '05:30 PM',
-                },
-                saturday: {
-                    header: 'S',
-                    dayoff: false,
-                    timein: '08:00 AM',
-                    timeout: '05:30 PM',
-                },
+            _activeType: '',
+            _curWorkShiftObj: {},
+            _isBreaktimeEnabled: true,
+            _showBreakTimeForm: false,
+            _activeBreakTime: {
+                id: '', 
+                name: '',
+                timestart: '',
+                timeend: '',
             },
-
-            _defaultSetting:{
-                enabled: false,
-                timein: '00:00 PM',
-                timeout: '00:00 PM'
+            _defaultSchedule: {
+                id: '',
+                description: '',
+                defaultactive: true,
+                defaultsetting: { 
+                    enabled: false, 
+                    timein: '00:00 AM', 
+                    timeout: '00:00 AM' 
+                },
+                day:
+                    { 
+                        sunday:{ 
+                            dayoff: true,
+                            header: 'S',
+                            timein: '01:00 am',
+                            timeout: '12:00 Pm' 
+                        },
+                        monday:{ 
+                            dayoff: false,
+                            header: 'M',
+                            timein: '9:00 am',
+                            timeout: '6:00 am' 
+                        },
+                        tuesday:{ 
+                            dayoff: false,
+                            header: 'T',
+                            timein: '9:00 am',
+                            timeout: '6:00 am' 
+                        },
+                        wednesday:{ 
+                            dayoff: false,
+                            header: 'W',
+                            timein: '9:00 am',
+                            timeout: '6:00 am' 
+                        },
+                        thursday:{ 
+                            dayoff: false,
+                            header: 'T',
+                            timein: '9:00 am',
+                            timeout: '6:00 am' 
+                        },
+                        friday:{ 
+                            dayoff: false,
+                            header: 'F',
+                            timein: '9:00 am',
+                            timeout: '6:00 am'
+                        },
+                        saturday:{ 
+                            dayoff: false,
+                            header: 'S',
+                            timein: '9:00 am',
+                            timeout: '6:00 am' 
+                        } 
+                    },
+                enablebreaktime: false,
+                breaktime: [],
             },
-
+            
+            //Custom MessageBox
             _msgBoxShow: false,
             _msgBoxType: '',
             _resMsg: '',
-            
-            _changeDetected: false,
+
+            //Screen Overlay Message
+            _promptMsg: '',
+            _promptShow: false,
 
             _refreshing: false
         }
 
         this._continueActionOnWarning = this._continueActionOnWarning.bind(this);
         this._closeMsgBox = this._closeMsgBox.bind(this);
-        this._saveAction = this._saveAction.bind(this);
-        this._undoAction = this._undoAction.bind(this);
+        this._onBreakTimeFormClose = this._onBreakTimeFormClose.bind(this);
+        this._onBreakTimeUpdate = this._onBreakTimeUpdate.bind(this);
     }
 
     componentDidMount(){
@@ -182,74 +166,27 @@ export class WorkShift extends Component {
     }
 
     _initValues = (companyWorkShift) => {
+        let bNoWorkShift = false;
+        let oWorkShift = {...workShiftSelector.getWorkShiftObject()};
+        let oDefaultScheule = {...workShiftSelector.getDefaultActiveSchedule()};
+        let oActiveType = oDefaultScheule.id;
+        if(Object.keys(oDefaultScheule).length === 0){
+            oDefaultScheule = JSON.parse(JSON.stringify(this.state._defaultSchedule))
+            bNoWorkShift = true;
+        }
         this.setState({
-            _curWorkShiftObj: workShiftSelector.getWorkShiftObject(),
-            _activeSchedule: workShiftSelector.getDefaultActiveType()
-        });
-/*         console.log('workShiftSelector.getDefaultActiveType(): ' + JSON.stringify());
-        console.log('workShiftSelector.getWorkShifTypes(): ' + JSON.stringify(workShiftSelector.getWorkShifTypes())); */
-    }
-
-/*     _initValues = (curWorkShiftProps) => {
-        let oCurProps = curWorkShiftProps;
-        let oWorkShift = {...oCurProps};
-        let oWorkShiftDay = {...oWorkShift.day};
-        let oWorkShiftDefaultSetting = {...oWorkShift.defaultsetting};
-
-        let oDailyPolicy = {...this.state._dailyPolicy};
-        let oDefaultSetting = {...this.state._defaultSetting};
-
-        let oCurtimePolicy = {...this.state._curTimePolicy};
-
-        //Init Daily Time Setting
-        Object.keys(oWorkShiftDay).map(function (storeDay) {
-            let oStoreDay = {...oWorkShiftDay[storeDay]};
-
-            Object.keys(oDailyPolicy).map(function (tempDay) {
-                if (storeDay==tempDay){
-                    oDailyPolicy[storeDay].timein = oStoreDay.timein;
-                    oDailyPolicy[storeDay].timeout = oStoreDay.timeout;
-                    oDailyPolicy[storeDay].dayoff = oStoreDay.dayoff;
-                }
-            })
-        });
-
-        //Init Default Setting
-        oDefaultSetting.enabled = oWorkShiftDefaultSetting.enabled;
-        oDefaultSetting.timein = oWorkShiftDefaultSetting.timein;
-        oDefaultSetting.timeout = oWorkShiftDefaultSetting.timeout;
-
-        oCurtimePolicy = oWorkShift;
-        this.setState({
-            _dailyPolicy: oDailyPolicy,
-            _defaultSetting: oDefaultSetting,
-            _curTimePolicy: oCurtimePolicy
+            _curWorkShiftObj: oWorkShift,
+            _activeSchedule: oDefaultScheule,
+            _activeType: oActiveType,
+            _bNoWorkShift: bNoWorkShift,
+            _disabledMode: !bNoWorkShift
         },
             () => {
-                this._detectChanges();
+                /* console.log('_curWorkShiftObj: ' + JSON.stringify(this.state._curWorkShiftObj));
+                console.log('_activeSchedule: ' + JSON.stringify(this.state._activeSchedule));
+                console.log('_activeType: ' + JSON.stringify(this.state._activeType)); */
             }
-        )
-    } */
-
-    _saveAction = () => {
-        let objLoginInfo = Object.assign({}, this.props.logininfo)
-        let objActiveCompany = Object.assign({}, this.props.activecompany)
-        this.props.dispatchFetchDataFromDB({
-            strModule: 'WORKSHIFT',
-            url: apiConfig.url + endPoints.workShift,
-            strType: 'WORKSHIFT_UPDATE',
-            input: {
-                transtype: 'UPDATE',
-                companyid: objActiveCompany.id,
-                username: objLoginInfo.resUsername,
-                defaultsetting: this.state._defaultSetting,
-                day: this.state._dailyPolicy,
-            }
-        });
-    }
-
-    _undoAction = () => {
-        this._initValues(this.props.workshift);
+        ); 
     }
 
     _setBottomBorder = (index) => {
@@ -262,17 +199,17 @@ export class WorkShift extends Component {
     }
 
     _setDayOff = (strkey, value) => {
-        let objPolicy = {...this.state._dailyPolicy};
-        Object.keys(objPolicy).map(function (key) {
+        let activeSchedule = {...this.state._activeSchedule};
+        let oDay = {...activeSchedule.day}
+        Object.keys(oDay).map(function (key) {
             if(key==strkey){
-                objPolicy[key].dayoff = value;
+                oDay[key].dayoff = value;
             }
         })
+
         this.setState({
-            _dailyPolicy: objPolicy
-        },
-            () => {this._detectChanges()}
-        )
+            _activeSchedule: activeSchedule
+        });
     }
 
     _activateDefaultTime = (value) => {
@@ -294,22 +231,22 @@ export class WorkShift extends Component {
     }
 
     _triggerDefaultTime = (value) => {
-        let objDefaultSetting = {...this.state._defaultSetting};
-        Object.keys(objDefaultSetting).map(function (key) {
+        
+        let activeSchedule = {...this.state._activeSchedule};
+        let oDefaultSetting = {...activeSchedule.defaultsetting};
+        Object.keys(oDefaultSetting).map(function (key) {
             if(key=='enabled'){
-                objDefaultSetting[key] = value;
+                oDefaultSetting[key] = value;
             }
         })
+
+        activeSchedule.defaultsetting = oDefaultSetting;
+
         this.setState({
-            _defaultSetting: objDefaultSetting
-        },
-            () => {
-                this._detectChanges();
-            }
-        )
+            _activeSchedule: activeSchedule
+        })
         
     }
-    
 
     _showTimePicker = async(strKey, strType) => {
         if(!this.state._disabledMode){
@@ -341,17 +278,20 @@ export class WorkShift extends Component {
 
     _setTime = (strKey, strType, hour, minute) => {
         let strTime = moment(hour +':' + minute, 'hh:mm').format('hh:mm A');
+        let oActiveSchedule = {...this.state._activeSchedule};
 
         if(strKey=='default'){
-            let objDefaultSetting = {...this.state._defaultSetting};
-            Object.keys(objDefaultSetting).map(function (key) {
+            let oDefaultSetting = {...oActiveSchedule.defaultsetting};
+            Object.keys(oDefaultSetting).map(function (key) {
                 if(key==strType){
-                    
-                    objDefaultSetting[key] = strTime;
+                    oDefaultSetting[key] = strTime;
                 }
-            })
+            }); 
+
+            oActiveSchedule.defaultsetting = oDefaultSetting;
+
             this.setState({
-                _defaultSetting: objDefaultSetting
+                _activeSchedule: oActiveSchedule
             },
                 () => {
                     this._setAllTime(strType, strTime);
@@ -359,46 +299,57 @@ export class WorkShift extends Component {
             )
         }
         else{
-            let objPolicy = {...this.state._dailyPolicy};
-            Object.keys(objPolicy).map(function (key) {
+            let oDay = {...oActiveSchedule.day};
+            Object.keys(oDay).map(function (key) {
                 if(key==strKey){
                     if(strType=='timein'){
-                        objPolicy[key].timein = strTime;
+                        oDay[key].timein = strTime;
                     }
                     else if(strType=='timeout'){
-                        objPolicy[key].timeout = strTime;
+                        oDay[key].timeout = strTime;
                     }
                 }
             })
+
+            oActiveSchedule.day = oDay;
+            
             this.setState({
-                _dailyPolicy: objPolicy
-            },
-                () => {this._detectChanges()}
-            )
+                _activeSchedule: oActiveSchedule
+            })
         }
     }
 
     _setAllTime = (strType, strTime) => {
-        let objPolicy = {...this.state._dailyPolicy};
-        Object.keys(objPolicy).map(function (key) {
+        let activeSchedule = {...this.state._activeSchedule};
+        let oDay = {...activeSchedule.day};
+        Object.keys(oDay).map(function (key) {
             if(strType=='timein'){
-                objPolicy[key].timein = strTime;
+                oDay[key].timein = strTime;
             }
             else if(strType=='timeout'){
-                objPolicy[key].timeout = strTime;
+                oDay[key].timeout = strTime;
             }
         })
+
+        activeSchedule.day = oDay;
+
         this.setState({
-            _dailyPolicy: objPolicy
-        },
-            () => {this._detectChanges()}
-        )
+            _activeSchedule: activeSchedule
+        })
     }
 
     _overrideAllTime = () => {
+        this._setAllTime('timein', this.state._activeSchedule.defaultsetting.timein);
+        this._setAllTime('timeout', this.state._activeSchedule.defaultsetting.timeout);
         this._triggerDefaultTime(true);
-        this._setAllTime('timein', this.state._defaultSetting.timein);
-        this._setAllTime('timeout', this.state._defaultSetting.timeout);
+    }
+
+    _enableBreakTime = (value) => {
+        let oActiveSchedule = {...this.state._activeSchedule};
+        oActiveSchedule.enablebreaktime = value;
+        this.setState({
+            _activeSchedule: oActiveSchedule
+        })
     }
 
     _continueActionOnWarning = () => {
@@ -413,150 +364,187 @@ export class WorkShift extends Component {
         });
     }
 
-    _detectChanges = () => {
-        let bChangeFlag = false;
-
-        let oWorkShift = {...this.props.workshift};
-        let oWorkShiftDay = {...oWorkShift.day};
-        let oWorkShiftDefaultSetting = {...oWorkShift.defaultsetting};
-
-        let oDailyPolicy = {...this.state._dailyPolicy};
-        let oDefaultSetting = {...this.state._defaultSetting};
-
-        //Init Daily Time Setting
-        Object.keys(oWorkShiftDay).map(function (storeDay) {
-            let oStoreDay = {...oWorkShiftDay[storeDay]};
-
-            Object.keys(oDailyPolicy).map(function (tempDay) {
-                if (storeDay==tempDay){
-                    if(oDailyPolicy[storeDay].timein != oStoreDay.timein ||
-                        oDailyPolicy[storeDay].timeout != oStoreDay.timeout ||
-                        oDailyPolicy[storeDay].dayoff != oStoreDay.dayoff){
-                            bChangeFlag = true;
-                        }
-                }
-            })
-        });
-
-        //Init Default Setting
-        if(oDefaultSetting.enabled != oWorkShiftDefaultSetting.enabled ||
-            oDefaultSetting.timein != oWorkShiftDefaultSetting.timein ||
-            oDefaultSetting.timeout != oWorkShiftDefaultSetting.timeout ){
-
-            bChangeFlag = true;
-        }
-
-        this.setState({
-            _changeDetected: bChangeFlag
-        },
-            () => {
-                let objTest = {...this.props.workshift};
-            }
-        )
-    }
-
-    _deleteActiveWorkShift = () => {
-        this.setState({
-            _resMsg: 'Successfully deleted "Shift A" !',
-            _msgBoxShow: true,
-            _msgBoxType: 'SUCCESS'
-        })
-    }
-
     _setActiveWorkShiftType = (itemValue) => {
-        console.log('itemValue: ' + itemValue);
         this.setState({
             _activeType: itemValue,
             _activeSchedule: workShiftSelector.getScheduleFromTypeID(itemValue)
         })
     }
 
+    _addNewWorkShift = () => {
+        let oDefaultSetting = workShiftSelector.getDefaultSchedule();
+        this.setState({
+            _disabledMode: false,
+            _activeSchedule: JSON.parse(JSON.stringify(this.state._defaultSchedule))
+        })
+    }
+
+    _cancelEdit = () => {
+        this._initValues();
+        this.setState({
+            _disabledMode: true
+        })
+    }
+
+    _saveWorkShift = () => {
+        this.setState({
+            _promptMsg: save_loading_message,
+            _promptShow: true
+        })
+        const oInput = {
+            companyid: this.props.activecompany.id,
+            username: this.props.logininfo.resUsername,
+            transtype: 'insert',
+            accesstoken: '',
+            clientid: '',
+            schedule: this.state._activeSchedule
+        };
+
+        workshiftApi.create(oInput)
+        .then((response) => response.json())
+        .then((res) => {
+            console.log('oInput:' + JSON.stringify(oInput));
+            console.log('res: ' + JSON.stringify(res));
+            this.setState({
+                _promptShow: false
+            });
+            if(res.flagno==0){
+                this.setState({
+                    _msgBoxShow: true,
+                    _msgBoxType: 'error-ok',
+                    _resMsg: res.message
+                });
+            }
+            else if(res.flagno==1){
+                this.setState({
+                    _msgBoxShow: true,
+                    _msgBoxType: 'success',
+                    _resMsg: res.message,
+                    _bNoWorkShift: false
+                },
+                    this.props.triggerRefresh(true)
+                )
+            }
+        })
+        .catch((exception) => {
+            console.log('exception:' + exception);
+            this.setState({
+                _promptShow: false
+            })
+        });
+    }
+
+    _deleteActiveWorkShift = () => {
+        this.setState({
+            _promptMsg: 'Deleting workshift ' + this.state._activeSchedule.description + '. Please wait...',
+            _promptShow: true
+        });
+
+        const oInput = {
+            companyid: this.props.activecompany.id,
+            username: this.props.logininfo.resUsername,
+            transtype: 'delete',
+            accesstoken: '',
+            clientid: '',
+            schedid: this.state._activeSchedule.id
+        };
+        console.log('oInput:' + JSON.stringify(oInput));
+
+        workshiftApi.remove(oInput)
+        .then((response) => response.json())
+        .then((res) => {
+            console.log('res: ' + JSON.stringify(res));
+            this.setState({
+                _promptShow: false
+            });
+            if(res.flagno==0){
+                this.setState({
+                    _msgBoxShow: true,
+                    _msgBoxType: 'error-ok',
+                    _resMsg: res.message
+                });
+            }else if(res.flagno==1){
+                this.setState({
+                    _msgBoxShow: true,
+                    _msgBoxType: 'success',
+                    _resMsg: res.message
+                },
+                    this.props.triggerRefresh(true)
+                )
+            }
+            
+            
+        })
+        .catch((exception) => {
+            console.log('exception:' + exception);
+            this.setState({
+                _promptShow: false
+            })
+            this.setState({
+                _msgBoxShow: true,
+                _msgBoxType: 'error-ok',
+                _resMsg: JSON.stringify(exception)
+            });
+        });
+    }
+
+    _openAddBreakTimeForm = () => {
+        let oActiveBreakTime = {...this.state._activeBreakTime};
+        oActiveBreakTime.id = '';
+        oActiveBreakTime.name = '';
+        oActiveBreakTime.timestart = '00:00 AM';
+        oActiveBreakTime.timeend = '00:00 AM';
+
+        this.setState({
+            _activeBreakTime: oActiveBreakTime,
+            _showBreakTimeForm: true
+        })
+    }
+
+    _onBreakTimeFormClose = () => {
+        this.setState({
+            _showBreakTimeForm: false
+        })
+    }
+    
+    _onBreakTimeUpdate = (oActiveBreakTime) => {
+        this._onBreakTimeFormClose();
+        let oActiveSchedule = {...this.state._activeSchedule};
+        let oBreakTime = [...oActiveSchedule.breaktime];
+        if(oActiveBreakTime.id==''){
+            oBreakTime.push(oActiveBreakTime)
+        }
+        else{
+            
+        }
+        
+        oActiveSchedule.breaktime = oBreakTime;
+
+        this.setState({
+            _activeSchedule: oActiveSchedule
+        },
+            
+        )
+    }
+
+    _setScheduleName = (value) => {
+        let oActiveSchedule = {...this.state._activeSchedule};
+        oActiveSchedule.description = value;
+
+        this.setState({
+            _activeSchedule: oActiveSchedule
+        })
+    }
+
+    _deleteBreakTime = () => {
+
+    }
+ 
     render(){
         //Loading View Status
         let pStatus = [...this.state._status];
         let pProgress = pStatus[0];
         let pMessage = pStatus[1];
-
-        //Floating Actions Buttons for A/D Work Shift Type
-        const actionButton = 
-            <ActionButton 
-                buttonColor="#EEB843"
-                spacing={10}
-            >
-                <ActionButton.Item buttonColor='#26A65B' title="ADD NEW WORK SHIFT" onPress={() => {}}>
-                    <Icon2 name="bell-plus" color='#fff' size={22} style={styles.actionButtonIcon} />
-                </ActionButton.Item>
-                <ActionButton.Item buttonColor='#4183D7' title="MODIFY CURRENT WORK SHIFT" onPress={() => {}}>
-                    <Icon2 name="table-edit" color='#fff' size={22} style={styles.actionButtonIcon} />
-                </ActionButton.Item>
-                
-                <ActionButton.Item buttonColor='#D75450' title="DELETE CURRENT WORK SHIFT" onPress={() => {this._deleteActiveWorkShift()}}>
-                    <Icon2 name="delete-empty" color='#fff' size={22} style={styles.actionButtonIcon} />
-                </ActionButton.Item>
-            </ActionButton>
-
-        //Break Time Details
-        const breakTimeDetails = 
-            <View style={styles.containerPlaceholder}>
-                <ScrollView horizontal={true}>
-                    <View style={styles.breakCont}>
-                        <View style={[styles.breakTimeDetailsCont, styles.breakHeaderBorder]}>
-                            <View style={styles.breakNameCont}>
-                                <Text style={styles.txtBreakName}>NAME</Text>
-                            </View>
-                            <View style={styles.breakDetailsCont}>
-                                <Text style={styles.txtDefault}>TIME START</Text>
-                            </View>
-                            <View style={styles.breakDetailsCont}>
-                                <Text style={styles.txtDefault}>TIME END</Text>
-                            </View>
-                            <View style={styles.breakDetailsCont}>
-                                <Text style={styles.txtDefault}>DURATION</Text>
-                            </View>
-                            <View style={styles.breakDetailsCont}>
-                                <Text style={styles.txtDefault}>REMOVE</Text>
-                            </View>
-                        </View>
-
-                        {
-                            this.state._data.map((oBreakTime, index) => (
-                                <TouchableNativeFeedback
-                                    key={index}
-                                    onPress={() => {
-                                        this._openUpdateForm(oBreakTime)
-                                    }}
-                                    background={TouchableNativeFeedback.SelectableBackground()}>
-                                    <View style={styles.breakTimeDetailsCont}>
-                                        <View style={styles.breakNameCont}>
-                                            <Text style={styles.txtBreakName}>{oBreakTime.name}</Text>
-                                        </View>
-                                        <View style={styles.breakDetailsCont}>
-                                            <Text style={styles.txtDefaultTime}>{oBreakTime.timestart}</Text>
-                                        </View>
-                                        <View style={styles.breakDetailsCont}>
-                                            <Text style={styles.txtDefaultTime}>{oBreakTime.timeend}</Text>
-                                        </View>
-                                        <View style={styles.breakDetailsCont}>
-                                            <Text style={styles.txtDefault}>{oBreakTime.duration}</Text>
-                                        </View>
-                                        <View style={styles.breakDetailsCont}>
-                                            <TouchableOpacity
-                                                activeOpacity={0.7}
-                                                onPress={() => {this._deleteBreakTime(oBreakTime, index)}}
-                                                >
-                                                <Icon size={30} name='md-close-circle' color='#EEB843' />
-                                            </TouchableOpacity>
-                                        </View>
-                                    </View>
-                                </TouchableNativeFeedback>
-                            ))
-                        }
-                    </View>
-                </ScrollView>
-            </View>
-
-        //
-        let iBorderCounter = -1;
 
         if(pProgress==0){
             return (
@@ -568,20 +556,188 @@ export class WorkShift extends Component {
                         />
                         }
                 >
-                    <PromptError title={pMessage}/>
+                    <PromptScreen.PromptError title={pMessage}/>
                 </ScrollView>
             );
         }
         else if(pProgress==2){
             return (
-                <PromptLoading title={pMessage}/>
+                <PromptScreen.PromptLoading title={pMessage}/>
             );
         }
 
         else{
-            const oDailyPolicy = {...this.state._activeSchedule.day};
+            let oDailyPolicy = {...this.state._activeSchedule.day};
+            let oRightOption;
+            let oRightOptionType;
+            let strTitle;
+            console.log('_activeType: ' + this.state._activeType);
+            if(this.state._disabledMode){
+                oRightOption = (
+                    <View style={styles.effectivityOptionCont}>
+                        <Picker
+                            mode='dropdown'
+                            style={styles.effectiveDatePickerStyle}
+                            selectedValue={this.state._activeType}
+                            onValueChange={(itemValue, itemIndex) => {this._setActiveWorkShiftType(itemValue)}}>
+                            {
+                                this.state._curWorkShiftObj.schedule.map((oSchedule, index) => (
+                                    <Picker.Item key={index} label={oSchedule.description} value={oSchedule.id}/>
+                                ))
+                            }
+                        </Picker>
+                    </View>
+                );
+                oRightOptionType = 'PICKER';
+                strTitle = 'Work Shift Schedule';
+            }
+            else{
+                oRightOption = (
+                    <View style={styles.btnRightCont}>
+                        {!this.state._bNoWorkShift ?
+                            <TouchableOpacity 
+                                disabled={false}
+                                style={styles.btnCancel}
+                                activeOpacity={0.6}
+                                onPress={() => {this._cancelEdit()}}>
+                                <Text style={styles.txtBtn}>CANCEL</Text>
+                            </TouchableOpacity>
+                            : null
+                        }
+                        <View style={{width: 10}}></View>
+                        <TouchableOpacity 
+                            disabled={this.state._disableBtn}
+                            style={styles.btnSave}
+                            activeOpacity={0.6}
+                            onPress={() => {this._saveWorkShift()}}>
+                            <Text style={styles.txtBtn}>SAVE</Text>
+                        </TouchableOpacity>
+                    </View>
+                );
+                oRightOptionType = 'BUTTON';
+                strTitle = 'Add New WorkShift';
+            }
+
+            //Floating Actions Buttons for A/D Work Shift Type
+            const actionButton = 
+                <ActionButton 
+                    buttonColor="#EEB843"
+                    spacing={10}
+                >
+                    <ActionButton.Item buttonColor='#26A65B' title="ADD NEW WORK SHIFT" onPress={() => {this._addNewWorkShift()}}>
+                        <Icon2 name="bell-plus" color='#fff' size={22} style={styles.actionButtonIcon} />
+                    </ActionButton.Item>
+    {/*                 <ActionButton.Item buttonColor='#4183D7' title="MODIFY CURRENT WORK SHIFT" onPress={() => {}}>
+                        <Icon2 name="table-edit" color='#fff' size={22} style={styles.actionButtonIcon} />
+                    </ActionButton.Item> */}
+                    
+                    <ActionButton.Item buttonColor='#D75450' title="DELETE CURRENT WORK SHIFT" onPress={() => {this._deleteActiveWorkShift()}}>
+                        <Icon2 name="delete-empty" color='#fff' size={22} style={styles.actionButtonIcon} />
+                    </ActionButton.Item>
+                </ActionButton>
+
+            //Break Time Details
+            const breakTimeDetails =
+                <View style={styles.containerPlaceholder}>
+                    <ScrollView horizontal={true}>
+                        <View style={styles.breakCont}>
+                            <View style={[styles.breakTimeDetailsCont, styles.breakHeaderBorder]}>
+                                <View style={styles.breakNameCont}>
+                                    <Text style={styles.txtBreakName}>NAME</Text>
+                                </View>
+                                <View style={styles.breakDetailsCont}>
+                                    <Text style={styles.txtDefault}>TIME START</Text>
+                                </View>
+                                <View style={styles.breakDetailsCont}>
+                                    <Text style={styles.txtDefault}>TIME END</Text>
+                                </View>
+                                <View style={styles.breakDetailsCont}>
+                                    <Text style={styles.txtDefault}>DURATION</Text>
+                                </View>
+                                { 
+                                    !this.state._disabledMode ?
+                                        <View style={styles.breakDetailsCont}>
+                                            <Text style={styles.txtDefault}>REMOVE</Text>
+                                        </View>
+                                    :null
+                                }
+                                    
+                            </View>
+                            
+                            {
+                                this.state._activeSchedule.breaktime.map((oBreakTime, index) => (
+                                    <TouchableNativeFeedback
+                                        key={index}
+                                        onPress={() => {
+                                            this._openUpdateForm(oBreakTime)
+                                        }}
+                                        background={TouchableNativeFeedback.SelectableBackground()}>
+                                        <View style={styles.breakTimeDetailsCont}>
+                                            <View style={styles.breakNameCont}>
+                                                <Text style={styles.txtBreakName}>{oBreakTime.name}</Text>
+                                            </View>
+                                            <View style={styles.breakDetailsCont}>
+                                                <Text style={styles.txtDefaultTime}>{oBreakTime.timestart}</Text>
+                                            </View>
+                                            <View style={styles.breakDetailsCont}>
+                                                <Text style={styles.txtDefaultTime}>{oBreakTime.timeend}</Text>
+                                            </View>
+                                            <View style={styles.breakDetailsCont}>
+                                                <Text style={styles.txtDefault}>{oBreakTime.duration}</Text>
+                                            </View>
+                                            { 
+                                                !this.state._disabledMode ?
+                                                    <View style={styles.breakDetailsCont}>
+                                                        <TouchableOpacity
+                                                            activeOpacity={0.7}
+                                                            onPress={() => {this._deleteBreakTime(oBreakTime, index)}}
+                                                            >
+                                                            <Icon size={30} name='md-close-circle' color='#EEB843' />
+                                                        </TouchableOpacity>
+                                                    </View>
+                                                : null
+                                            }
+                                        </View>
+                                    </TouchableNativeFeedback>
+                                ))
+                            }
+                            { 
+                                !this.state._disabledMode ?
+                                    <View style={styles.breakTimeDetailsCont}>
+                                        <View style={styles.breakNameCont}>
+                                            <TouchableOpacity
+                                                style={{paddingLeft: 30, paddingTop: 10}}
+                                                activeOpacity={0.7}
+                                                onPress={() => {this._openAddBreakTimeForm()}}
+                                                >
+                                                <Icon size={30} name='md-add' color='#EEB843' />
+                                            </TouchableOpacity>
+                                        </View>
+                                    </View>
+                                : null
+                            }
+
+                        </View>
+                    </ScrollView>
+                </View>
+
             return(
                 <View style={styles.container}>
+                    { this.state._promptShow ?
+                        <PromptScreen.PromptGeneric show= {this.state._promptShow} title={this.state._promptMsg}/>
+                        : null
+                    }
+
+                    { !this.state._disabledMode ?
+                        <FormBreakTime 
+                            data={this.state._activeBreakTime}
+                            title={'ADD A BREAK TIME'}
+                            show={this.state._showBreakTimeForm}
+                            onFormClose={this._onBreakTimeFormClose}
+                            onDone={this._onBreakTimeUpdate}/>
+                        : null
+                    }
+
                     <ScrollView
                         refreshControl={
                             <RefreshControl
@@ -590,24 +746,36 @@ export class WorkShift extends Component {
                             />
                         }>
                         <CustomCard 
-                            title={title_WorkShift}
-                            oType='PICKER'
-                            oPicker={
-                                <View style={styles.effectivityOptionCont}>
-                                    <Picker
-                                        mode='dropdown'
-                                        style={styles.effectiveDatePickerStyle}
-                                        selectedValue={this.state._activeType}
-                                        onValueChange={(itemValue, itemIndex) => {this._setActiveWorkShiftType(itemValue)}}>
-                                        {
-                                            this.state._curWorkShiftObj.schedule.map((oSchedule, index) => (
-                                                <Picker.Item key={index} label={oSchedule.description} value={oSchedule.id}/>
-                                            ))
-                                        }
-                                    </Picker>
-                                </View>
-                            }
+                            title={strTitle}
+                            oType={oRightOptionType}
+                            rightHeader={oRightOption}
                         >
+                            {
+                                !this.state._disabledMode ? 
+                                    <View style={[styles.childPropCont, {paddingTop: -20, paddingBottom: 20, borderColor: '#D1D4D6', borderBottomWidth: 0.7}]}>
+                                        <View style={styles.childPropNameCont}>
+                                            <Text style={[styles.txtChildStyle, {paddingLeft: 20,}]}>
+                                                Work Shift Name
+                                            </Text>
+                                        </View>
+                                        <View style={styles.childPropValueCont}>
+                                            <View style={styles.datePickerCont}>
+                                                <TextInput 
+                                                    placeholder='Shift Name'
+                                                    style={{width: '90%', height: '100%'}}
+                                                    onChangeText={_curUsername => {this._setScheduleName(_curUsername)}}
+                                                    value={this.state._activeSchedule.description}
+                                                    returnKeyType="done"
+                                                    underlineColorAndroid='transparent'
+                                                />
+                                                {/* <Text numberOfLines={1} style={styles.txtChildStyle}>
+                                                    1 Hour
+                                                </Text> */}
+                                            </View>
+                                        </View>
+                                    </View>
+                                : null
+                            }
 
                             <View style={styles.tableCont}>
                                 <View style={styles.categoryCont}>
@@ -628,7 +796,7 @@ export class WorkShift extends Component {
                                                 <View key={key} style={styles.dailyCont}>
                                                     <View style={[styles.dailyPlaceholder, this._setBottomBorder(0)]}>
                                                         {/* <Text style={styles.txtHorizontalHeader}>{oDailyPolicy[key].header}</Text> */}
-                                                        <Text style={styles.txtHorizontalHeader}>OG-BE</Text>
+                                                        <Text style={styles.txtHorizontalHeader}>{oDailyPolicy[key].header}</Text>
                                                     </View>
                                                     <View style={styles.dailyPlaceholder}>
                                                         <CheckBox
@@ -641,11 +809,7 @@ export class WorkShift extends Component {
                                                         <Text 
 
                                                             disabled={oDailyPolicy[key].dayoff} 
-                                                            onPress={() => {
-                                                                !this.state._defaultSetting.enabled ? 
-                                                                    this._showTimePicker(key, 'timein') : 
-                                                                    null
-                                                            }} 
+                                                            onPress={() => {this._showTimePicker(key, 'timein')}}
                                                             style={styles.txtContent}>
                                                             
                                                             {oDailyPolicy[key].timein ? oDailyPolicy[key].timein.toUpperCase() : null}
@@ -657,11 +821,7 @@ export class WorkShift extends Component {
 
                                                     <Text 
                                                         disabled={oDailyPolicy[key].dayoff} 
-                                                        onPress={() => {
-                                                            !this.state._defaultSetting.enabled ? 
-                                                                this._showTimePicker(key, 'timeout') :
-                                                                null
-                                                        }}
+                                                        onPress={() => {this._showTimePicker(key, 'timeout')}}
                                                         style={styles.txtContent}>
                                                         
                                                         {oDailyPolicy[key].timeout ? oDailyPolicy[key].timeout.toUpperCase() : null}
@@ -683,86 +843,50 @@ export class WorkShift extends Component {
                                         <View style={styles.defaultTimeCheckbox}>
                                             <CheckBox
                                                 onValueChange={ (value) => {this._activateDefaultTime(value)}} 
-                                                value={this.state._defaultSetting.enabled}
+                                                value={this.state._activeSchedule.defaultsetting.enabled}
                                             />
                                             <Text style={styles.txtDefaultTimeMsg}>
                                                 {description_DefaultTime}
                                             </Text>
                                         </View>
-                                            <View style={styles.defaultTimePlaceholder}>
-                                                <View style={styles.defaultTimeRow}>
-                                                    <View style={styles.defaultTimeLeft}>
-                                                        <Text style={styles.txtDefaultTimeMsg}>TIME-IN</Text>
-                                                    </View>
-                                                    <View style={styles.defaultTimeRight}>
-                                                        <Text 
-                                                            onPress={() => this._showTimePicker('default', 'timein')} 
-                                                            style={styles.txtContent}>
-                                                            
-                                                            {this.state._defaultSetting.timein ? this.state._defaultSetting.timein.toUpperCase() : null}
+                                        {
+                                            this.state._activeSchedule.defaultsetting.enabled ?
+                                                <View style={styles.defaultTimePlaceholder}>
+                                                    <View style={styles.defaultTimeRow}>
+                                                        <View style={styles.defaultTimeLeft}>
+                                                            <Text style={styles.txtDefaultTimeMsg}>TIME-IN</Text>
+                                                        </View>
+                                                        <View style={styles.defaultTimeRight}>
+                                                            <Text 
+                                                                onPress={() => this._showTimePicker('default', 'timein')} 
+                                                                style={styles.txtContent}>
+                                                                
+                                                                {this.state._activeSchedule.defaultsetting.timein ? this.state._activeSchedule.defaultsetting.timein.toUpperCase() : null}
 
-                                                        </Text>
+                                                            </Text>
+                                                        </View>
+                                                    </View>
+                                                    <View style={styles.defaultTimeRow}>
+                                                        <View style={styles.defaultTimeLeft}>
+                                                            <Text style={styles.txtDefaultTimeMsg}>TIME-OUT</Text>
+                                                        </View>
+                                                        <View style={styles.defaultTimeRight}>
+                                                            <Text 
+                                                                onPress={() => this._showTimePicker('default', 'timeout')} 
+                                                                style={styles.txtContent}>
+                                                                
+                                                                {this.state._activeSchedule.defaultsetting.timeout ? this.state._activeSchedule.defaultsetting.timeout.toUpperCase() : null}
+                                                                
+                                                            </Text>
+                                                        </View>
                                                     </View>
                                                 </View>
-                                                <View style={styles.defaultTimeRow}>
-                                                    <View style={styles.defaultTimeLeft}>
-                                                        <Text style={styles.txtDefaultTimeMsg}>TIME-OUT</Text>
-                                                    </View>
-                                                    <View style={styles.defaultTimeRight}>
-                                                        <Text 
-                                                            onPress={() => this._showTimePicker('default', 'timeout')} 
-                                                            style={styles.txtContent}>
-                                                            
-                                                            {this.state._defaultSetting.timeout ? this.state._defaultSetting.timeout.toUpperCase() : null}
-                                                            
-                                                        </Text>
-                                                    </View>
-                                                </View>
-                                                    
-                                            </View>
-                                        
+                                            : null
+                                        }
                                     </View>
                                 : null
                             }
 
-
-{/*                             <View style={styles.childPropGroupCont}>
-                                <View style={styles.childGroupTitleCont}>
-                                    <Text style={styles.txtChildGroupTitle}>
-                                        Work Shift Effectivity
-                                    </Text>
-                                </View>
-                                <View style={styles.childContentCont}>
-                                    <View style={styles.childPropCont}>
-                                        <View style={styles.childPropNameCont}>
-                                            <Text style={styles.txtChildStyle}>
-                                            VALID FROM
-                                            </Text>
-                                        </View>
-                                        <View style={styles.childPropValueCont}>
-                                            <View style={styles.datePickerCont}>
-                                                <Text numberOfLines={1} style={styles.txtChildStyle}>
-                                                    (WED) FEB 10, 2017
-                                                </Text>
-                                            </View>
-                                        </View>
-                                    </View>
-                                    <View style={styles.childPropCont}>
-                                        <View style={styles.childPropNameCont}>
-                                            <Text style={styles.txtChildStyle}>
-                                            VALID UNTIL
-                                            </Text>
-                                        </View>
-                                        <View style={styles.childPropValueCont}>
-                                            <View style={styles.datePickerCont}>
-                                                <Text numberOfLines={1} style={styles.txtChildStyle}>
-                                                    UNTIL CHANGED
-                                                </Text>
-                                            </View>
-                                        </View>
-                                    </View>
-                                </View>
-                            </View> */}
                         </CustomCard>
 
                         <CustomCard 
@@ -770,20 +894,20 @@ export class WorkShift extends Component {
                             headerBackground={'transparent'}
                             description={description_BreakTime} 
                             oType='Switch'
-                            oSwitch={
+                            rightHeader={
                                 <Switch
                                     disabled={this.state._disabledMode}
-                                    onValueChange={ (value) => this.setState({_isBreaktimeEnabled: value})} 
+                                    onValueChange={ (value) => {this._enableBreakTime(value)}} 
                                     onTintColor={color_SwitchOn}
                                     thumbTintColor={color_SwitchThumb}
                                     tintColor={color_SwitchOff}
-                                    value={ this.state._isBreaktimeEnabled } 
+                                    value={ this.state._activeSchedule.enablebreaktime} 
                                 />
                             }
                         >
                             {
-                                this.state._isBreaktimeEnabled ? breakTimeDetails : null
-                            }      
+                                this.state._activeSchedule.enablebreaktime ? breakTimeDetails : null
+                            }
                         </CustomCard>
                         
                     </ScrollView>
@@ -794,7 +918,7 @@ export class WorkShift extends Component {
                         onWarningContinue={this._continueActionOnWarning}
                         message={this.state._resMsg}
                     />
-                    {actionButton}
+                    {this.state._disabledMode ? actionButton : null}
                 </View>
             );
         }

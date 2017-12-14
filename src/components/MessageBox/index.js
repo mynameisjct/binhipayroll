@@ -277,14 +277,12 @@ export default class MsgBox extends Component{
     }
 
     render(){
-        return(
-            <Modal 
-                animationType="fade"
-                transparent={true}
-                visible={this.props.show}
-                onRequestClose={() => {alert("Modal has been closed.")}}>
-            
-                <View style={styles.container}>
+        if(!this.props.show){
+            return null;
+        }
+        else{
+            return (
+                <View style={{justifyContent: 'center', alignItems: 'center', position: 'absolute', flex: 1, zIndex: 100, width: '100%', height: '100%', backgroundColor: 'rgba(0,0,0,0.9);'}}>
                     <View style={styles.messageBox}>
                         <View style={[styles.header, this.themeColor(this.state.promptType)]}>
                             <View style={styles.title}>
@@ -315,8 +313,8 @@ export default class MsgBox extends Component{
                     </View>
                 </View>
                 
-            </Modal>
 
-        );
+            );
+        }
     }
 }

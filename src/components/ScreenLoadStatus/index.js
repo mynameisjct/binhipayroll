@@ -48,3 +48,18 @@ export class PromptError extends Component{
         );
     }
 }
+
+export class PromptGeneric extends Component{
+    render(){
+        return(
+            <View style={{justifyContent: 'center', alignItems: 'center', position: 'absolute', flex: 1, zIndex: 100, width: '100%', height: '100%', backgroundColor: 'rgba(0,0,0,0.9);'}}>
+                <ActivityIndicator
+                    animating = {this.props.show}
+                    color = '#EEB843'
+                    size = "large"
+                    style = {styles.activityIndicator}/>
+                <Text style={{color: '#fff'}}>{this.props.title}</Text>
+            </View>
+        )
+    }
+}

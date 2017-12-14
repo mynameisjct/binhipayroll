@@ -23,7 +23,7 @@ export default {
         maxWidth: 200,
         backgroundColor: '#505251',
         borderRightWidth: 2,
-        borderColor: '#22313F'
+        borderColor: '#434646'
     },
 
     scrollableCont: {

@@ -38,17 +38,3 @@ export const get = payload =>
 		.then((res) => {
 			dispatch(update(res));
 		});
-
-
-/* export const WorkShiftHasErrored = () => ({
-	type: WORKSHIFT_HAS_ERRORED,
-	hasErrored: bool
-})
-
-export const WorkShiftIsLoading(bool) {
-    return {
-        type: WORKSHIFT_IS_LOADING,
-        isLoading: bool
-    };
-}
-*/

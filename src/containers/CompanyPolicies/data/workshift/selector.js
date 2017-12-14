@@ -14,10 +14,15 @@ export const getWorkShiftObject = () => {
 	return store.getState().companyPoliciesReducer.workshift;	
 };
 
-export const getDefaultActiveType = () => {
-	let oSchedule = [...store.getState().companyPoliciesReducer.workshift.schedule];
-	let iActiveID = oSchedule.find(_findActive);
-	return iActiveID;
+export const getDefaultActiveSchedule = () => {
+	try{
+		let oSchedule = [...store.getState().companyPoliciesReducer.workshift.schedule];
+		let iActiveID = oSchedule.find(_findActive);
+		return iActiveID;
+	}
+	catch(exception){
+		return null
+	}
 };
 
 export const getScheduleFromTypeID = (id) => {
@@ -26,6 +31,10 @@ export const getScheduleFromTypeID = (id) => {
 	let iActiveID = oSchedule.find(_findScheduleFromTypeID);
 	return iActiveID;
 };
+
+export const getDefaultSchedule = () => {
+	return store.getState().companyPoliciesReducer.workshift.defaultschedule;	
+}
 
 //Not utilized in current logic
 export const getWorkShifTypes = () => {

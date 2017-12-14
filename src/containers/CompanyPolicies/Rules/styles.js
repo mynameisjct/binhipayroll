@@ -91,7 +91,6 @@ export default {
         textDecorationLine: 'underline',
         fontFamily: 'Helvetica-Light',
         fontSize: 14,
-        color: '#434646'
     },
 
     defaultTimeMargin: {
@@ -139,6 +138,42 @@ export default {
 
     defaultTimeRight: {
     },
+
+    btnRightCont: {
+        flex: 1,
+        height: '100%',
+        flexDirection: 'row',
+        alignItems: 'center'
+        
+    },
+
+    btnSave: {
+        width: 120,
+        height: 35,
+        backgroundColor: '#4CAF50',
+        borderRadius: 100,
+        borderWidth: 0.7,
+        borderColor: '#D1D4D6',
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+
+    btnCancel: {
+        width: 100,
+        height: 35,
+        backgroundColor: '#D75450',
+        borderRadius: 100,
+        borderWidth: 0.7,
+        borderColor: '#D1D4D6',
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+
+    txtBtn: {
+        fontFamily: 'Helvetica-Light',
+        fontSize: 15,
+        color: '#fff'
+    },
     
     //******************BreakTime**************//
     containerPlaceholder: {
@@ -161,8 +196,8 @@ export default {
 
     breakNameCont: {
         flex: 0.2,
-        minWidth: 180,
-        maxWidth: 180,
+        minWidth: 130,
+        maxWidth: 130,
         backgroundColor: 'transparent',
         justifyContent: 'center',
         alignItems: 'flex-start',
@@ -321,7 +356,7 @@ export default {
 
     childPropCont: {
         paddingTop: 10,
-        height: 50,
+        height: 60,
         backgroundColor: 'transparent',
         flexDirection: 'row'
     },
@@ -340,14 +375,14 @@ export default {
 
     txtChildStyle: {
         fontFamily: 'Helvetica-Light',
-        fontSize: 14,
+        fontSize: 15,
         color: '#434646'
     },
 
     datePickerCont: {
         flex: 1,
         width: 160,
-        borderRadius: 5,
+        borderRadius: 7,
         borderWidth: 0.7,
         borderColor: '#505251',
         justifyContent: 'center',

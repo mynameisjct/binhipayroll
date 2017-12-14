@@ -43,15 +43,15 @@ export default class CustomCard extends Component{
             oTitle =  
                 <View style={styles.textCont}>
                     <View style={{flex: 0.5, flexDirection: 'column'}}>
-                        <View style={{flex:0.65, justifyContent: 'flex-end'}}>
+                        <View style={{flex:0.55, justifyContent: 'flex-end'}}>
                             <Text style={styles.txtTitle}>{this.props.title}</Text>
                         </View>
-                        <View style={{flex: 0.35, justifyContent: 'flex-start'}}>
+                        <View style={{flex: 0.45, justifyContent: 'flex-start'}}>
                             <Text style={styles.txtDescription}>{this.props.description}</Text>
                         </View>
                     </View>
                     <View style={{flex:0.5, justifyContent: 'center', alignItems: 'flex-end', paddingRight: 50}}>
-                        {this.props.oSwitch}
+                        {this.props.rightHeader}
                     </View>
                 </View>
         }
@@ -62,7 +62,18 @@ export default class CustomCard extends Component{
                         <Text style={styles.txtTitle}>{this.props.title}</Text>
                     </View>
                     <View style={{flex:0.5, justifyContent: 'center', alignItems: 'flex-end', paddingRight: 25}}>
-                        {this.props.oPicker}
+                        {this.props.rightHeader}
+                    </View>
+                </View>
+        }
+        else if(this.props.oType.toUpperCase()=='BUTTON'){
+            oTitle =  
+                <View style={styles.textCont}>
+                    <View style={{flex: 0.5, justifyContent: 'center'}}>
+                        <Text style={styles.txtTitle}>{this.props.title}</Text>
+                    </View>
+                    <View style={{flex:0.5, justifyContent: 'center', alignItems: 'flex-end', paddingRight: 25}}>
+                        {this.props.rightHeader}
                     </View>
                 </View>
         }

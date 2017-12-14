@@ -203,7 +203,7 @@ export default class Breaktime extends Component{
                         title={title_BreakTime} 
                         description={description_BreakTime} 
                         oType='Switch'
-                        oSwitch={
+                        rightHeader={
                             <Switch
                                 onValueChange={ (value) => this.setState({_isBreaktimeEnabled: value})} 
                                 onTintColor={color_SwitchOn}

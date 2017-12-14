@@ -60,7 +60,7 @@ export default {
     txtTime: {
         fontFamily: 'Helvetica-Light',
         fontSize: 15,
-        width: 100,
+        width: 500,
         marginBottom: 2,
         color: '#434646'
 

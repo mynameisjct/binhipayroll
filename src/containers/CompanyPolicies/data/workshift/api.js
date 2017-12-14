@@ -1,9 +1,9 @@
 import { fetchApi } from '../../../../services/api';
 
 const endPoints = {
-	create: '/users',
+	create: 'forms/workschedule.php',
 	get: 'forms/workschedule.php',
-	delete: 'remove'
+	remove: 'forms/workschedule.php'
 };
 
 export const create = payload => fetchApi(endPoints.create, payload, 'post');

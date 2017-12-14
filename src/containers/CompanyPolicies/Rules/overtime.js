@@ -123,7 +123,7 @@ export default class WorkShift extends Component {
                     title={title_Overtime} 
                     description={description_Overtime} 
                     oType='Switch'
-                    oSwitch={
+                    rightHeader={
                         <Switch
                             onValueChange={ (value) => this.setState({_isBreaktimeEnabled: value})} 
                             onTintColor={color_SwitchOn}

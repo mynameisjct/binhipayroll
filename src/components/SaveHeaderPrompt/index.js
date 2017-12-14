@@ -54,10 +54,10 @@ export default class SaveHeaderPrompt extends Component{
 
                 <TouchableNativeFeedback
                     disabled={this.props.disableSave}
-                    onPress={() => {alert('PRESSED!')}}
+                    onPress={() => {this.props.onDone()}}
                     background={TouchableNativeFeedback.SelectableBackground()}>
                     <View style={styles.headerRight}>
-                        <Text disabled={this.props.disableSave} style={[styles.txtBtn, this._enableSaveBtn(this.props.disableSave)]}>SAVE</Text>
+                        <Text disabled={this.props.disableSave} style={[styles.txtBtn, this._enableSaveBtn(this.props.disableSave)]}>DONE</Text>
                     </View>
                 </TouchableNativeFeedback>
 
