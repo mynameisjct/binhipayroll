@@ -19,7 +19,8 @@ import {
     ActivityIndicator,
     TextInput,
     TouchableNativeFeedback,
-    TimePickerAndroid
+    TimePickerAndroid,
+    Keyboard 
 } from 'react-native';
 import moment from "moment";
 
@@ -35,8 +36,8 @@ export default class FormBreakTime extends Component{
             _showForm: false,
             _disableSave: true,
             _id: '',
-            _timestart: '00:00 AM',
-            _timeend: '00:00 PM',
+            _timestart: '',
+            _timeend: '',
             _name: '',
             _duration: '',
             _timeDifference: '',
@@ -51,13 +52,19 @@ export default class FormBreakTime extends Component{
     componentWillReceiveProps(nextProps){
         if(!this.props.show && (this.props.show!=nextProps.show)){
             let objData = {...nextProps.data}
-
+            console.log('objData.id: ' + objData.id);
             this.setState({
                 _id: objData.id,
                 _name: objData.name,
                 _timestart: objData.timestart,
                 _timeend: objData.timeend,
-            })
+            },
+                () => {
+                    this._calculateDifference();
+                    this._updateName(this.state._name);
+                }
+            )
+
         }
     }
 
@@ -93,12 +100,16 @@ export default class FormBreakTime extends Component{
         if(strType.toUpperCase() == 'TIMESTART'){
             this.setState({
                 _timestart: strTime
-            })
+            },
+                () => this._calculateDifference()
+            )
         }
         else{
             this.setState({
                 _timeend: strTime
-            })
+            },
+                () => this._calculateDifference()
+            )
         }
     }
     
@@ -115,7 +126,8 @@ export default class FormBreakTime extends Component{
     }
 
     _verifyInput = () => {
-/*         if(this.state._timeDifference <= 0){
+        Keyboard.dismiss();
+        if(this.state._timeDifference <= 0){
             this.setState({
                 _msgBoxType: 'error-ok',
                 _msgBoxShow: true,
@@ -130,14 +142,7 @@ export default class FormBreakTime extends Component{
                 timeend: this.state._timeend,
                 duration: this.state._duration
             })
-        } */
-        this.props.onDone({
-            id: this.state._id,
-            name: this.state._name,
-            timestart: this.state._timestart,
-            timeend: this.state._timeend,
-            duration: this.state._duration
-        })
+        }
     }
 
     _calculateDifference = () => {
@@ -149,7 +154,10 @@ export default class FormBreakTime extends Component{
         }) */
         let hours = parseInt(duration.asHours());
         let minutes = parseInt(duration.asMinutes())-hours*60;
-        return (hours + 'hour '+ minutes+'min');
+        this.setState({
+            _duration: hours + 'hour '+ minutes+'min',
+            _timeDifference: duration
+        })
     }
 
     _closeMsgBox = () => {
@@ -212,7 +220,7 @@ export default class FormBreakTime extends Component{
                             </TouchableNativeFeedback>
                             <View style={styles.timeFieldCont}>
                                 <Text style={styles.txtLabel}>DURATION</Text>
-                                <Text style={styles.txtTime}>{this._calculateDifference()}</Text>
+                                <Text style={styles.txtTime}>{this.state._duration}</Text>
                             </View>
 
                         </View>
