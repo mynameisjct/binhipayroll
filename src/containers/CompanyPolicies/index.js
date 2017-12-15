@@ -63,13 +63,13 @@ export class CompanyPolicies extends Component {
                     id : '001',
                     name: 'Work Shift',
                     iconName: 'timetable',
-                    btnColor: btnActive
+                    btnColor: btnInactive
                 },
                 {
                     id : '002',
                     name: 'Payroll',
                     iconName: 'cash',
-                    btnColor: btnInactive
+                    btnColor: btnActive
                 },
                 {
                     id : '003',
@@ -140,7 +140,7 @@ export class CompanyPolicies extends Component {
                 () => {
                     this._getAllCompanyPolicies();
                     this.setState({
-                        _activeChild: '001'
+                        _activeChild: '002'
                     })
                     
                 }
@@ -259,14 +259,11 @@ export class CompanyPolicies extends Component {
     }
 
     _setActiveChild = (id, index) => {
+        this._setBtnColor(index);
         this.setState({
             _activeChild: id,
             _activeBtn: index,
-        },
-            () => {
-                this._setBtnColor(index);
-            }
-        );
+        });
     }
 
     _setBtnColor = (index) => {

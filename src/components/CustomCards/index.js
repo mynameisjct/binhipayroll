@@ -80,7 +80,9 @@ export default class CustomCard extends Component{
         else{
             oTitle =  
                 <View style={styles.textCont}>
-                    <Text style={styles.txtTitle}>{this.props.title}</Text>
+                    <View style={{justifyContent: 'center'}}>
+                        <Text style={styles.txtTitle}>{this.props.title}</Text>
+                    </View>
                 </View>
         }
 

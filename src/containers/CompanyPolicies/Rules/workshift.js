@@ -27,6 +27,10 @@ import SavePrompt from '../../../components/SavePrompt';
 import apiConfig, {endPoints} from '../../../services/api/config';
 import * as PromptScreen from '../../../components/ScreenLoadStatus';
 import FormBreakTime from '../Forms/formBreakTime';
+
+//Helper
+import * as oHelper from '../../../helper';
+
 //api
 import * as workshiftApi from '../data/workshift/api';
 
@@ -52,6 +56,8 @@ export class WorkShift extends Component {
     constructor(props){
         super(props);
         this.state = {
+            _activeRequest: '',
+            _activeBreakTimeIndex: '',
             _loadedStatus: '',
             _bNoWorkShift: false,
             _status: status_loading,
@@ -363,13 +369,23 @@ export class WorkShift extends Component {
 
     _continueActionOnWarning = () => {
         this._closeMsgBox();
-        this._overrideAllTime();
+        if(this.state._activeRequest == 'DELETE-ACTIVE-SCHEDULE'){
+            this._deleteActiveWorkShift();
+        }
+        else if(this.state._activeRequest == 'DELETE-BREAKTIME'){
+            this._deleteBreakTime(this.state._activeBreakTimeIndex);
+        }
+        else{
+            this._overrideAllTime();
+        }
     }
 
     _closeMsgBox = () => {
         this.setState({
             _msgBoxShow: false,
-            _resMsg: ''
+            _resMsg: '',
+            _activeRequest: '',
+            _activeBreakTimeIndex: ''
         });
     }
 
@@ -396,7 +412,7 @@ export class WorkShift extends Component {
     }
 
     _saveWorkShift = () => {
-        if(this.state._activeSchedule.description == '')
+        if(!oHelper.isStringEmptyOrSpace(this.state._activeSchedule.description)){
             this.setState({
                 _promptMsg: save_loading_message,
                 _promptShow: true
@@ -413,8 +429,6 @@ export class WorkShift extends Component {
             workshiftApi.create(oInput)
             .then((response) => response.json())
             .then((res) => {
-                console.log('oInput:' + JSON.stringify(oInput));
-                console.log('res: ' + JSON.stringify(res));
                 this.setState({
                     _promptShow: false
                 });
@@ -437,11 +451,27 @@ export class WorkShift extends Component {
                 }
             })
             .catch((exception) => {
-                console.log('exception:' + exception);
                 this.setState({
                     _promptShow: false
                 })
             });
+        }
+        else{
+            this.setState({
+                _msgBoxShow: true,
+                _msgBoxType: 'error-ok',
+                _resMsg: 'Unable to save. Please input Shift Name.'
+            });
+        }
+    }
+
+    _deleteActiveWorkShiftRequest = () => {
+        this.setState({
+            _msgBoxShow: true,
+            _msgBoxType: 'warning',
+            _resMsg: 'This will permanently delete work shift "' + this.state._activeSchedule.description + '". Press continue to proceed.',
+            _activeRequest: 'DELETE-ACTIVE-SCHEDULE'
+        });
     }
 
     _deleteActiveWorkShift = () => {
@@ -458,12 +488,10 @@ export class WorkShift extends Component {
             clientid: '',
             schedid: this.state._activeSchedule.id
         };
-        console.log('oInput:' + JSON.stringify(oInput));
 
         workshiftApi.remove(oInput)
         .then((response) => response.json())
         .then((res) => {
-            console.log('res: ' + JSON.stringify(res));
             this.setState({
                 _promptShow: false
             });
@@ -486,7 +514,6 @@ export class WorkShift extends Component {
             
         })
         .catch((exception) => {
-            console.log('exception:' + exception);
             this.setState({
                 _promptShow: false
             })
@@ -536,7 +563,6 @@ export class WorkShift extends Component {
     }
     
     _onBreakTimeUpdate = (oActiveBreakTime) => {
-        console.log('oActiveBreakTime: ' + JSON.stringify(oActiveBreakTime));
         this._onBreakTimeFormClose();
         let oActiveSchedule = {...this.state._activeSchedule};
         let oBreakTime = [...oActiveSchedule.breaktime];
@@ -548,7 +574,6 @@ export class WorkShift extends Component {
 
         else{
             oBreakTime.map((oBreak, index) => {
-                console.log('oBreak.id: ' + oBreak.id);
                 if(oBreak.id==oActiveBreakTime.id){
                     oBreakTime[index] = oActiveBreakTime;
                 }
@@ -559,11 +584,7 @@ export class WorkShift extends Component {
 
         this.setState({
             _activeSchedule: oActiveSchedule
-        },
-            () => {
-                console.log('oBreakTime: ' + JSON.stringify(oBreakTime));
-            }
-        )
+        })
     }
 /*     _requestDeleteBreakTime = () => {
         this.setState({
@@ -572,8 +593,17 @@ export class WorkShift extends Component {
             _msgBoxShow: true,
         })
     } */
+    _deleteBreakTimeRequest = (oBreakTime, index) => {
+        this.setState({
+            _msgBoxShow: true,
+            _msgBoxType: 'warning',
+            _resMsg: 'This will permanently delete the break time named "' + oBreakTime.name + '". Press continue to proceed.',
+            _activeRequest: 'DELETE-BREAKTIME',
+            _activeBreakTimeIndex: index
+        });
+    }
 
-    _deleteBreakTime = (oBreakTime, index) => {
+    _deleteBreakTime = (index) => {
         let oActiveSchedule = {...this.state._activeSchedule};
         let oActiveBreakTime = [...this.state._activeSchedule.breaktime];
 
@@ -628,7 +658,6 @@ export class WorkShift extends Component {
             let oRightOption;
             let oRightOptionType;
             let strTitle;
-            console.log('_activeType: ' + this.state._activeType);
             if(this.state._disabledMode){
                 oRightOption = (
                     <View style={styles.effectivityOptionCont}>
@@ -688,7 +717,7 @@ export class WorkShift extends Component {
                         <Icon2 name="table-edit" color='#fff' size={22} style={styles.actionButtonIcon} />
                     </ActionButton.Item> */}
                     
-                    <ActionButton.Item buttonColor='#D75450' title="DELETE CURRENT WORK SHIFT" onPress={() => {this._deleteActiveWorkShift()}}>
+                    <ActionButton.Item buttonColor='#D75450' title="DELETE CURRENT WORK SHIFT" onPress={() => {this._deleteActiveWorkShiftRequest()}}>
                         <Icon2 name="delete-empty" color='#fff' size={22} style={styles.actionButtonIcon} />
                     </ActionButton.Item>
                 </ActionButton>
@@ -747,7 +776,7 @@ export class WorkShift extends Component {
                                                     <View style={styles.breakDetailsCont}>
                                                         <TouchableOpacity
                                                             activeOpacity={0.7}
-                                                            onPress={() => {this._deleteBreakTime(oBreakTime, index)}}
+                                                            onPress={() => {this._deleteBreakTimeRequest(oBreakTime, index)}}
                                                             >
                                                             <Icon size={30} name='md-close-circle' color='#EEB843' />
                                                         </TouchableOpacity>

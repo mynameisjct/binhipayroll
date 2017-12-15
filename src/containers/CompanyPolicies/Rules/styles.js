@@ -236,7 +236,7 @@ export default {
 
     subContentCont: {
         flexDirection: 'column',
-        minHeight: 50,
+        minHeight: 60,
         backgroundColor: 'transparent',
         justifyContent: 'center',
         paddingLeft: 20,
@@ -294,8 +294,7 @@ export default {
         width: 120,
         paddingLeft: 15,
         alignItems: 'flex-start',
-        justifyContent: 'center',
-        backgroundColor: 'transparent'
+        justifyContent: 'center'
     },
 
     txtPropTitle: {
@@ -316,7 +315,7 @@ export default {
 
     txtDefault: {
         fontFamily: 'Helvetica-Light',
-        fontSize: 14,
+        fontSize: 15,
         color: '#434646'
     },
 
@@ -326,8 +325,9 @@ export default {
 
     payrollChildProp: {
         flexDirection: 'row',
+        height: 50,
         paddingTop: 2,
-        paddingLeft: 40,
+        paddingLeft: 50,
         backgroundColor: 'transparent'
     },
 
@@ -388,6 +388,9 @@ export default {
         justifyContent: 'center',
         alignItems: 'center'
     }
+
+    //********PAYROLL************//
+    
     
 
     
