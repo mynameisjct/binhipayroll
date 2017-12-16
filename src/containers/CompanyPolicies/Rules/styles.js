@@ -328,7 +328,8 @@ export default {
         height: 50,
         paddingTop: 2,
         paddingLeft: 50,
-        backgroundColor: 'transparent'
+        backgroundColor: 'transparent',
+        alignItems: 'center'
     },
 
     childPropGroupCont: {

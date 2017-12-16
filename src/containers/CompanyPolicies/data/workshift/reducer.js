@@ -1,13 +1,13 @@
 import * as actionTypes from './actionTypes';
 
 const initialState = {
-	companyworkshift: null,
+	workshift: null,
 };
 
 export const reducer = (state = initialState, action) => {
 	switch (action.type) {
 		case actionTypes.UPDATE:
-			return action.companyworkshift;
+			return action.workshift;
 			break;
 
 		case actionTypes.EMPTY:

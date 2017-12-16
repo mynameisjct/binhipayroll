@@ -3,5 +3,5 @@ import {store} from '../../../../store';
 let activeTypeID = '';
 
 export const getAllPayrollSchedule = () => {
-	return store.getState().companyPoliciesReducer.payrollschedule;
+	return store.getState().companyPoliciesReducer.tax;
 };

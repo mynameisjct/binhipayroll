@@ -1,0 +1,67 @@
+{
+    "flagno":"1",
+    "message":"Record found",
+    "paytype":{
+        "label":"payroll type",
+        "value":"Semi-Monthly",
+        "options":["Semi-Monthly","Monthly","Weekly"]
+    },
+    "data":{
+        "semimonthly":{
+            "enableoption":true,
+            "firstpayday":{
+                "label":"First pay day",
+                "value":"15",
+                "option":["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30"]
+            },
+            "secondpayday":{
+                "label":"second pay day",
+                "value":"30"
+            },
+            "cutoff":{
+                "label":"Cut-off",
+                "value":"5",
+                "options":["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15"]
+            },
+            "firstperiod":{
+                "label":"First period",
+                "value":"25-09"
+            },
+            "secondperiod":{
+                "label":"10-24"
+            }
+        },
+        "monthly":{
+            "enableoption":true,
+            "payday":{
+                "label":
+                "Pay day",
+                "value":null
+                },
+            "cutoff":{
+                "label":"Cut-off",
+                "options":["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15"],
+                "value":null
+            },
+            "period":{
+                "label":"Period",
+                "value":null
+            }
+        },
+        "weekly":{
+            "enableoption":true,
+            "payday":{
+                "label":"Pay day",
+                "value":null
+            },
+            "cutoff":{
+                "label":"Cut-off",
+                "value":null
+            },
+            "period":{
+                "label":"Period",
+                "value":null
+            }
+        }
+    }
+}

@@ -1,0 +1,75 @@
+{
+    "flagno":"1",
+    "message":"<MESSAGE HERE>",
+    "paytype":{
+                "value": "Semi-Monthly",
+                "options": ["Semi-Monthly","Monthly","Weekly"]
+        },
+    "data":{
+        "semimonthly":{
+            "enableoption": true,
+            "firstpayday":{
+                "label": "First Pay Day",
+                "value": "15",
+                "options": ["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30"]
+            },
+
+            "secondpayday":{
+                "label": "Second Pay Day",
+                "value":"30"
+            },
+
+            "cutoff":{
+                "label": "Cut-off",
+                "value":"5",
+                "options":["0","1","2","3","4","5","6","7","8","9","10"]
+            },
+
+            "firstperiod":{
+                "label": "First Period",
+                "value":"25-09"
+            },
+
+            "secondperiod":{
+                "label": "Second Period",
+                "value":"10-24"
+            }
+        },
+
+        "monthly":{
+            "enableoption": true,
+            "payday":{
+                "label": "Pay Day",
+                "value": "30",
+                "options": ["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30"]
+            },
+            "cutoff":{
+                "label": "Cut-off",
+                "value":"5",
+                "options":["0","1","2","3","4","5","6","7","8","9","10","11","12","13","14","15"]
+            },
+            "period":{
+                "label": "Period",
+                "value":"25-26"
+            }
+        },
+
+        "weekly":{
+            "enableoption": true,
+            "payday":{
+                "label": "Pay Day",
+                "value": "Friday",
+                "options": ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+            },
+            "cutoff":{
+                "label": "Cut-off",
+                "value":"Thursday",
+                "options":["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+            },
+            "period":{
+                "label": "Period",
+                "value":"Wednesday-Thursday"
+            }
+        }
+    }
+}

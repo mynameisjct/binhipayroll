@@ -1,13 +1,13 @@
 import * as actionTypes from './actionTypes';
 
 const initialState = {
-	payload: null,
+	tax: null,
 };
 
 export const reducer = (state = initialState, action) => {
 	switch (action.type) {
 		case actionTypes.UPDATE:
-			return action.payload;
+			return action.tax;
 			break;
 
 		case actionTypes.EMPTY:

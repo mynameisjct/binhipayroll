@@ -32,6 +32,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import {SetLoginInfo, SetActiveCompany} from '../../actions';
 import * as workshiftActions from './data/workshift/actions';
+import * as payrollActions from './data/payroll/actions';
 
 //Status Prompt Components
 import * as StatusLoader from '../../components/ScreenLoadStatus';
@@ -53,6 +54,7 @@ export class CompanyPolicies extends Component {
 
             //Error-0, Success-1, Loading-2,  Handler
             _workShiftStatus: ['2', ''],
+            _payrollStatus: ['2', ''],
 
             //Active Child State
             _activeChild: '',   
@@ -117,7 +119,6 @@ export class CompanyPolicies extends Component {
         }
         
         //Binding for Refresh Control
-        this._getWorkScheduleStatus = this._getWorkScheduleStatus.bind(this);
         this._getWorkSchedule = this._getWorkSchedule.bind(this);
     }
 
@@ -155,6 +156,8 @@ export class CompanyPolicies extends Component {
     
     _getAllCompanyPolicies = () => {
         this._getWorkSchedule();
+        this._getPayrollSchedule();
+      /*   this._getTaxSettings(); */
     }
 
     _getWorkSchedule = (bForceUpdate) => {
@@ -186,76 +189,64 @@ export class CompanyPolicies extends Component {
 		});
     }
 
-    _getWorkScheduleStatus = () =>{
-        return this.state._workShiftStatus
-    }
-/*     _getWorkSchedule = (bForceUpdate) => {
-        let objLoginInfo = Object.assign({}, this.props.logininfo);
-        let objActiveCompany = Object.assign({}, this.props.activecompany);
-        workshiftAPI.get({
-            companyid: objActiveCompany.id,
-            username: objLoginInfo.resUsername,
+    _getPayrollSchedule = (bForceUpdate) => {
+        let curStatus = [2, 'Loading...'];
+        this.setState({
+            _payrollStatus: curStatus
+        });
+
+        this.props.actions.payroll.get({
+            companyid: this.state._objActiveCompany.id,
+            username: this.state._objLoginInfo.resUsername,
             transtype: 'get',
             accesstoken: '',
             clientid: '',
         })
- 		.then((res) => {
-			console.log('IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIISUCCESS!');
+        .then(() => {
+            console.log('this.props.payroll: ' + JSON.stringify(this.props.payroll));
+            let oPayroll  = {...this.props.payroll};
+            let oStatus = [oPayroll.flagno, oPayroll.message];
+            this.setState({
+                _payrollStatus: oStatus
+            });
 		})
 		.catch((exception) => {
-			// Displays only the first error message
-			console.log('ERRRRRRRRRRRRRRRRRRRRRRRRRRRRROOOOOOOOORRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR!');
+            console.log('exception: ' + exception);
+            let oStatus = [0, 'Application error was encountered. \n Please contact BINHI-MeDFI'];
+			this.setState({
+                _workShiftStatus: oStatus
+            })
 		});
-    } */
-
-/*     _getWorkSchedule = (bForceUpdate) => {
-        if(!this.props.workShift || bForceUpdate){
-            let objLoginInfo = Object.assign({}, this.props.logininfo)
-            let objActiveCompany = Object.assign({}, this.props.activecompany)
-            this.props.dispatchFetchDataFromDB({
-                url: apiConfig.url + endPoints.workShift,
-                strModule: 'WORKSHIFT',
-                strType: 'WORKSHIFT_GET',
-                input: {
-                    companyid: objActiveCompany.id,
-                    username: objLoginInfo.resUsername,
-                    transtype: 'get'
-                }
-            });
-        } */
-
-    _getBreakTime = (bForceUpdate) => {
-        if(bForceUpdate){
-            let objLoginInfo = Object.assign({}, this.props.logininfo)
-            let objActiveCompany = Object.assign({}, this.props.activecompany)
-            this.props.dispatchFetchDataFromDB({
-                url: apiConfig.url + endPoints.breakTime,
-                strModule: 'BREAKTIME',
-                strType: 'BREAKTIME_GET',
-                input: {
-                    companyid: objActiveCompany.id,
-                    username: objLoginInfo.resUsername,
-                    transtype: 'get'
-                }
-            });
-        }
     }
 
-    _getPayroll = (bForceUpdate) => {
-        if(bForceUpdate){
-            let objLoginInfo = Object.assign({}, this.props.logininfo)
-            let objActiveCompany = Object.assign({}, this.props.activecompany)
-            this.props.dispatchFetchDataFromDB({
-                url: apiConfig.url + endPoints.payrollPolicy,
-                strModule: 'PAYROLL',
-                strType: 'PAYROLL_GET',
-                input: {
-                    companyid: objActiveCompany.id,
-                    username: objLoginInfo.resUsername,
-                    transtype: 'get'
-                }
+    _getTaxSettings = () => {
+        let curStatus = [2, 'Loading...'];
+        this.setState({
+            _payrollStatus: curStatus
+        });
+
+        this.props.actions.payroll.get({
+            companyid: this.state._objActiveCompany.id,
+            username: this.state._objLoginInfo.resUsername,
+            transtype: 'get',
+            accesstoken: '',
+            clientid: '',
+        })
+        .then(() => {
+            console.log('this.props.payroll: ' + JSON.stringify(this.props.payroll));
+            let oPayroll  = {...this.props.payroll};
+            let oStatus = [oPayroll.flagno, oPayroll.message];
+            this.setState({
+                _payrollStatus: oStatus
             });
-        }
+		})
+		.catch((exception) => {
+            console.log('exception: ' + exception);
+            let oStatus = [0, 'Application error was encountered. \n Please contact BINHI-MeDFI'];
+			this.setState({
+                _workShiftStatus: oStatus
+            })
+		});
     }
 
     _setActiveChild = (id, index) => {
@@ -370,7 +361,8 @@ function mapStateToProps (state) {
         activecompany: state.activeCompanyReducer.activecompany,
         fetchHasErrored: state.fetchHasErrored,
         fetchIsLoading: state.fetchIsLoading,
-        companyWorkShift: state.companyPoliciesReducer.workshift
+        companyWorkShift: state.companyPoliciesReducer.workshift,
+        payroll: state.companyPoliciesReducer.payroll
         
     }
 }
@@ -379,6 +371,7 @@ function mapDispatchToProps (dispatch) {
     return {
         actions: {
             workshift: bindActionCreators(workshiftActions, dispatch),
+            payroll: bindActionCreators(payrollActions, dispatch),
         },
     }
 }

@@ -1,8 +1,8 @@
 import { fetchApi } from '../../../../services/api';
 
 const endPoints = {
-	create: 'forms\payrollpolicies.php',
-	get: 'forms\payrollpolicies.php',
+	create: 'forms/payrollpolicies.php',
+	get: 'forms/payrollpolicies.php',
 };
 
 export const create = payload => fetchApi(endPoints.create, payload, 'post');
