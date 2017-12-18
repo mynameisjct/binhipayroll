@@ -180,7 +180,7 @@ export class WorkShift extends Component {
         }
     }
 
-    _initValues = (companyWorkShift) => {
+    _initValues = () => {
         let bNoWorkShift = false;
         let oWorkShift = {...workShiftSelector.getWorkShiftObject()};
         let oDefaultScheule = {...workShiftSelector.getDefaultActiveSchedule()};
@@ -649,7 +649,9 @@ export class WorkShift extends Component {
         }
         else if(pProgress==2){
             return (
-                <PromptScreen.PromptLoading title={pMessage}/>
+                <View style={styles.container}>
+                    <PromptScreen.PromptLoading title={pMessage}/>
+                </View>
             );
         }
 

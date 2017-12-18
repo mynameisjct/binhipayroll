@@ -3,12 +3,23 @@ import {
     View,
     Text,
     ScrollView,
-    Picker
+    Picker,
+    RefreshControl
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 
-import CustomCard from '../../../components/CustomCards';
+//Styles and Behavior
+import CustomCard, 
+    {
+        PropTitle,
+        PropLevel1, 
+        PropLevel2
+    } 
+from '../../../components/CustomCards';
 import styles from './styles'
+
+//Redux
+import * as payrollSelector from '../data/payroll/selector';
 
 const title_Payroll = 'Set Payroll Rules and Schedule';
 
@@ -19,6 +30,13 @@ export class SemiMonthly extends Component{
             _status: 2,
             _data: {}
         }
+    }
+    
+    componentDidMount = () => {
+        this.setState({
+            _status: 1,
+            _data: this.props.data
+        })
     }
 
     _setFirstPayDay = (value) => {
@@ -101,13 +119,6 @@ export class SemiMonthly extends Component{
         return tempVal
     }
 
-    componentDidMount = () => {
-        this.setState({
-            _status: 1,
-            _data: {...this.props.data}
-        })
-    }
-
     render(){
         if(this.state._status == 0){
             return null;
@@ -118,16 +129,10 @@ export class SemiMonthly extends Component{
         else{
             return(
                 <View style={styles.container}>
-                    <View style={styles.subContentCont}>
-                        <View style={styles.titleCont}>
-                            <Text style={styles.txtPropTitle}>Payroll Schedule </Text>
-                        </View>
-                    </View>
-                    <View style={styles.payrollChildProp}>
-                        <View style={styles.titleCont}>
-                            <Text style={styles.txtDefault}>FirstPayDay</Text>
-                        </View>
-                        <View style={[styles.propContChild, styles.adjustChildProp]}>
+                    <PropTitle name='Payroll Schedule'/>
+                    <PropLevel2 
+                        name='First Pay Day'
+                        content={
                             <Picker
                                 mode='dropdown'
                                 style={styles.pickerStyle}
@@ -139,23 +144,16 @@ export class SemiMonthly extends Component{
                                     ))
                                 }
                             </Picker>
-                        </View>
-                    </View>
-                    <View style={styles.payrollChildProp}>
-                        <View style={styles.titleCont}>
-                            <Text style={styles.txtDefault}>Second Payday</Text>
-                        </View>
-                        <View style={[styles.propContTxt, styles.adjustChildProp]}>
-                            <Text style={styles.txtDefault}>
-                                {this.state._data.secondpayday.value}
-                            </Text>
-                        </View>
-                    </View>
-                    <View style={styles.payrollChildProp}>
-                        <View style={styles.titleCont}>
-                            <Text style={styles.txtDefault}>Cut-off</Text>
-                        </View>
-                        <View style={[styles.propContChild, styles.adjustChildProp]}>
+                        }
+                    />
+                    <PropLevel2 
+                        name='Second Pay Day'
+                        content={this.state._data.secondpayday.value}
+                        contentType='Text'
+                    />
+                    <PropLevel2 
+                        name='Cut-off'
+                        content={
                             <Picker
                                 mode='dropdown'
                                 style={styles.pickerStyle}
@@ -167,28 +165,18 @@ export class SemiMonthly extends Component{
                                     ))
                                 }
                             </Picker>
-                        </View>
-                    </View>
-                    <View style={styles.payrollChildProp}>
-                        <View style={styles.titleCont}>
-                            <Text style={styles.txtDefault}>First Period</Text>
-                        </View>
-                        <View style={[styles.propContTxt, styles.adjustChildProp]}>
-                            <Text style={styles.txtDefault}>
-                                {this.state._data.firstperiod.value}
-                            </Text>
-                        </View>
-                    </View>
-                    <View style={styles.payrollChildProp}>
-                        <View style={styles.titleCont}>
-                            <Text style={styles.txtDefault}>Second Period</Text>
-                        </View>
-                        <View style={[styles.propContTxt, styles.adjustChildProp]}>
-                            <Text style={styles.txtDefault}>
-                                {this.state._data.secondperiod.value}
-                            </Text>
-                        </View>
-                    </View>
+                        }
+                    />
+                    <PropLevel2 
+                        name='First Period'
+                        content={this.state._data.firstperiod.value}
+                        contentType='Text'
+                    />
+                    <PropLevel2 
+                        name='Second Period'
+                        content={this.state._data.secondperiod.value}
+                        contentType='Text'
+                    />
                 </View>
             );
         }
@@ -280,57 +268,46 @@ export class Monthly extends Component{
         else{
             return(
                 <View style={styles.container}>
-                    <View style={styles.subContentCont}>
-                        <View style={styles.titleCont}>
-                            <Text style={styles.txtPropTitle}>Payroll Schedule </Text>
-                        </View>
-                    </View>
-                    <View style={styles.payrollChildProp}>
-                            <View style={styles.titleCont}>
-                                <Text style={styles.txtDefault}>Pay Day</Text>
-                            </View>
-                            <View style={[styles.propContChild, styles.adjustChildProp]}>
-                                <Picker
-                                    mode='dropdown'
-                                    style={styles.pickerStyle}
-                                    selectedValue={this.state._data.payday.value}
-                                    onValueChange={(itemValue, itemIndex) => {this._setPayDay(itemValue)}}>
-                                    {
-                                        this.state._data.payday.options.map((paytype, index) => (
-                                            <Picker.Item key={index} label={paytype} value={paytype} />
-                                        ))
-                                    }
-                                </Picker>
-                            </View>
-                        </View>
-                        <View style={styles.payrollChildProp}>
-                            <View style={styles.titleCont}>
-                                <Text style={styles.txtDefault}>Cut-off</Text>
-                            </View>
-                            <View style={[styles.propContChild, styles.adjustChildProp]}>
-                                <Picker
-                                    mode='dropdown'
-                                    style={styles.pickerStyle}
-                                    selectedValue={this.state._data.cutoff.value}
-                                    onValueChange={(itemValue, itemIndex) => {this._setCutOff(itemValue)}}>
-                                    {
-                                        this.state._data.cutoff.options.map((paytype, index) => (
-                                            <Picker.Item key={index} label={paytype} value={paytype} />
-                                        ))
-                                    }
-                                </Picker>
-                            </View>
-                        </View>
-                        <View style={styles.payrollChildProp}>
-                            <View style={styles.titleCont}>
-                                <Text style={styles.txtDefault}>Period</Text>
-                            </View>
-                            <View style={[styles.propContTxt, styles.adjustChildProp]}>
-                                <Text style={styles.txtDefault}>
-                                    {this.state._data.period.value}
-                                </Text>
-                            </View>
-                        </View>
+                    <PropTitle name='Payroll Schedule'/>
+                    <PropLevel2 
+                        name='Pay Day'
+                        content={
+                            <Picker
+                                mode='dropdown'
+                                style={styles.pickerStyle}
+                                selectedValue={this.state._data.payday.value}
+                                onValueChange={(itemValue, itemIndex) => {this._setPayDay(itemValue)}}>
+                                {
+                                    this.state._data.payday.options.map((paytype, index) => (
+                                        <Picker.Item key={index} label={paytype} value={paytype} />
+                                    ))
+                                }
+                            </Picker>
+                        }
+                    />
+
+                    <PropLevel2 
+                        name='Cut-off'
+                        content={
+                            <Picker
+                                mode='dropdown'
+                                style={styles.pickerStyle}
+                                selectedValue={this.state._data.cutoff.value}
+                                onValueChange={(itemValue, itemIndex) => {this._setCutOff(itemValue)}}>
+                                {
+                                    this.state._data.cutoff.options.map((paytype, index) => (
+                                        <Picker.Item key={index} label={paytype} value={paytype} />
+                                    ))
+                                }
+                            </Picker>
+                        }
+                    />
+
+                    <PropLevel2 
+                        name='Period'
+                        content={this.state._data.period.value}
+                        contentType='Text'
+                    />
                 </View>
             );
         }
@@ -397,14 +374,12 @@ export class Weekly extends Component{
         let yPeriod = parseInt(tempDay) -  (parseInt(tempDay) - parseInt(tempCutOff));
         yPeriod = this._fixDayValue(yPeriod);
 
-        
-        
-        console.log('iPayDay: ' + iPayDay);
+/*         console.log('iPayDay: ' + iPayDay);
         console.log('iCutOff: ' + iCutOff);
         console.log('tempDay: ' + tempDay);
         console.log('tempCutOff: ' + tempCutOff);
         console.log('xPeriod: ' + xPeriod);
-        console.log('yPeriod: ' + yPeriod);
+        console.log('yPeriod: ' + yPeriod); */
 
         let period = this._getDay(xPeriod, '') + ' - ' + this._getDay(yPeriod, '');
 
@@ -450,57 +425,49 @@ export class Weekly extends Component{
         else{
             return(
                 <View style={styles.container}>
-                    <View style={styles.subContentCont}>
-                        <View style={styles.titleCont}>
-                            <Text style={styles.txtPropTitle}>Payroll Schedule </Text>
-                        </View>
-                    </View>
-                    <View style={styles.payrollChildProp}>
-                            <View style={styles.titleCont}>
-                                <Text style={styles.txtDefault}>Pay Day</Text>
-                            </View>
-                            <View style={[styles.propContChild, styles.adjustChildProp, {width: 150}]}>
-                                <Picker
-                                    mode='dropdown'
-                                    style={styles.pickerStyle}
-                                    selectedValue={this.state._data.payday.value}
-                                    onValueChange={(itemValue, itemIndex) => {this._setPayDay(itemValue)}}>
-                                    {
-                                        this.state._data.payday.options.map((paytype, index) => (
-                                            <Picker.Item key={index} label={paytype} value={paytype} />
-                                        ))
-                                    }
-                                </Picker>
-                            </View>
-                        </View>
-                        <View style={styles.payrollChildProp}>
-                            <View style={styles.titleCont}>
-                                <Text style={styles.txtDefault}>Cut-off</Text>
-                            </View>
-                            <View style={[styles.propContChild, styles.adjustChildProp, {width: 150}]}>
-                                <Picker
-                                    mode='dropdown'
-                                    style={styles.pickerStyle}
-                                    selectedValue={this.state._data.cutoff.value}
-                                    onValueChange={(itemValue, itemIndex) => {this._setCutOff(itemValue)}}>
-                                    {
-                                        this.state._data.cutoff.options.map((paytype, index) => (
-                                            <Picker.Item key={index} label={paytype} value={paytype} />
-                                        ))
-                                    }
-                                </Picker>
-                            </View>
-                        </View>
-                        <View style={styles.payrollChildProp}>
-                            <View style={styles.titleCont}>
-                                <Text style={styles.txtDefault}>Period</Text>
-                            </View>
-                            <View style={[styles.propContTxt, styles.adjustChildProp, {width: 200}]}>
-                                <Text style={styles.txtDefault}>
-                                    {this.state._data.period.value}
-                                </Text>
-                            </View>
-                        </View>
+                    <PropTitle name='Payroll Schedule'/>
+                    <PropLevel2 
+                        name='Pay Day'
+                        content={
+                            <Picker
+                                mode='dropdown'
+                                style={styles.pickerStyle}
+                                selectedValue={this.state._data.payday.value}
+                                onValueChange={(itemValue, itemIndex) => {this._setPayDay(itemValue)}}>
+                                {
+                                    this.state._data.payday.options.map((paytype, index) => (
+                                        <Picker.Item key={index} label={paytype} value={paytype} />
+                                    ))
+                                }
+                            </Picker>
+                        }
+                        contentStyle={{width: 150}}
+                    />
+                    <PropLevel2 
+                        name='Cut-off'
+                        content={
+                            <Picker
+                                mode='dropdown'
+                                style={styles.pickerStyle}
+                                selectedValue={this.state._data.cutoff.value}
+                                onValueChange={(itemValue, itemIndex) => {this._setCutOff(itemValue)}}>
+                                {
+                                    this.state._data.cutoff.options.map((paytype, index) => (
+                                        <Picker.Item key={index} label={paytype} value={paytype} />
+                                    ))
+                                }
+                            </Picker>
+                        }
+                        contentStyle={{width: 150}}
+                    />
+
+                    <PropLevel2 
+                        name='Period'
+                        content={this.state._data.period.value}
+                        contentType='Text'
+                        contentStyle={{width: 200}}
+                    />
+    
                 </View>
             );
         }
@@ -511,76 +478,36 @@ export default class Payroll extends Component{
     constructor(props){
         super(props);
         this.state = {
-            _status: 2,
-            _activePayrollType: '',
-            
-            _payrolldata: {
-                paytype:{
-                        value: "Semi-Monthly",
-                        options: ["Semi-Monthly","Monthly","Weekly"]
-                },
-                data:{
-                    semimonthly:{
-                        firstpayday:{
-                            value: "15",
-                            options: ["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30"]
-                        },
-
-                        secondpayday:{
-                            value:"30"
-                        },
-
-                        cutoff:{
-                            value:"5",
-                            options:["0","1","2","3","4","5","6","7","8","9","10"]
-                        },
-
-                        firstperiod:{
-                            value:"25-09"
-                        },
-
-                        secondperiod:{
-                            value:"10-24"
-                        }
-                    },
-
-                    monthly:{
-                        payday:{
-                            value: "30",
-                            options: ["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30"]
-                        },
-                        cutoff:{
-                            value:"5",
-                            options:["0","1","2","3","4","5","6","7","8","9","10","11","12","13","14","15"]
-                        },
-                        period:{
-                            value:"25-26"
-                        },
-                    },
-
-                    weekly:{
-                        payday:{
-                            value: "Friday",
-                            options: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
-                        },
-                        cutoff:{
-                            value:"Thursday",
-                            options:["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
-                        },
-                        period:{
-                            value:"Wednesday-Thursday"
-                        },
-                    }, 
-                }
-            }
+            _status: [2, 'Loading...'],
+            _payrolldata: {},
+            _refreshing: false
         }
     }
     
-    componentDidMount = () => {
+    componentDidMount(){
+        if(this.props.status[0]==1){
+            this._initValues(this.props.status);
+        }
+
         this.setState({
-            _activePayrollType: this.state._payrolldata.paytype.value.toUpperCase(),
-            _status: 1
+            _status: [...this.props.status]
+        });
+    }
+    
+    componentWillReceiveProps(nextProps) {
+        if(this.state._status[0] != nextProps.status[0]){
+            if(nextProps.status[0]==1){
+                this._initValues(nextProps.status);
+            }
+        }
+    }
+
+    _initValues = (status) => {
+        this.setState({
+            _status: status,
+            _payrolldata: JSON.parse(JSON.stringify(payrollSelector.getPayrollData()))
         })
+        console.log('JSON.stringify(payrollSelector.getPayrollData()): ' + JSON.stringify(payrollSelector.getPayrollData()))
     }
 
     _setActivePaytype = (strActivePayType) => {
@@ -588,20 +515,22 @@ export default class Payroll extends Component{
         oData.paytype.value = strActivePayType;
         this.setState({
             _payrolldata: oData,
-            _activePayrollType: strActivePayType.toUpperCase()
         });
     }
 
     render(){
-        if(this.state._status == 0){
+        let pStatus = [...this.state._status];
+        let pProgress = pStatus[0];
+        let pMessage = pStatus[1];
+        if(pProgress == 0){
             return null;
         }
-        else if(this.state._status == 2){
+        else if(pProgress == 2){
             return null;
         }
         else{
             let oPayrollSchedule;
-            switch(this.state._activePayrollType){
+            switch(this.state._payrolldata.paytype.value.toUpperCase()){
                 case 'SEMI-MONTHLY':
                     oPayrollSchedule = (<SemiMonthly data={this.state._payrolldata.data.semimonthly}/>);
                     break;
@@ -617,14 +546,18 @@ export default class Payroll extends Component{
             }
             return(
                 <View style={styles.container}>
-                    <ScrollView>
+                    <ScrollView
+                        refreshControl={
+                            <RefreshControl
+                                refreshing={this.state._refreshing}
+                                onRefresh={() => this.props.triggerRefresh(true)}
+                            />
+                        }
+                    >
                         <CustomCard title={title_Payroll} oType='Text'>
-                            <View style={[styles.contentCont, styles.customBottomBorder]}>
-                                <View style={styles.titleCont}>
-
-                                    <Text style={styles.txtPropTitle}>Payroll Type </Text>
-                                </View>
-                                <View style={styles.propCont}>
+                            <PropLevel1 
+                                name='Payroll Type' 
+                                content={
                                     <Picker
                                         mode='dropdown'
                                         selectedValue={this.state._payrolldata.paytype.value}
@@ -635,9 +568,8 @@ export default class Payroll extends Component{
                                             ))
                                         }
                                     </Picker>
-                                </View>
-                            </View>
-
+                                }
+                            />
                             { oPayrollSchedule }
 
                         </CustomCard>

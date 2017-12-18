@@ -100,3 +100,78 @@ export default class CustomCard extends Component{
         );
     }
 }
+
+export class PropTitle extends Component{
+    render(){
+        return(
+            <View style={styles.subContentCont}>
+                <View style={styles.childTitleCont}>
+                    <Text style={styles.txtPropTitle}>{this.props.name}</Text>
+                </View>
+            </View>
+        )
+    }
+}
+
+export class PropLevel1 extends Component{
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            nameStyle: this.props.nameStyle || {},
+            contentStyle: this.props.contentStyle || {},
+            contentType: this.props.contentType || ''
+        }
+    }
+    render(){
+        return(
+            <View style={[styles.childCont, styles.customBottomBorder]}>
+                <View style={[styles.childTitleCont, this.state.nameStyle]}>
+                    <Text style={styles.txtPropTitle}>{this.props.name}</Text>
+                </View>
+                <View style={[styles.propCont, this.state.contentStyle]}>
+                    {this.props.content}
+                </View>
+            </View>
+        )
+    }
+}
+
+export class PropLevel2 extends Component{
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            nameStyle: this.props.nameStyle || {},
+            contentStyle: this.props.contentStyle || {},
+            contentType: this.props.contentType || ''
+        }
+    }
+    
+
+    render(){
+        let oContent = 
+            <View style={[styles.propContChild, styles.adjustChildProp, this.state.contentStyle]}>
+                {this.props.content}
+            </View>;
+
+        if(this.state.contentType.toUpperCase() == "TEXT"){
+            oContent = (
+                <View style={[styles.propContTxt, styles.adjustChildProp, this.state.contentStyle]}>
+                    <Text style={styles.txtDefault}>
+                        {this.props.content}
+                    </Text>
+                </View>
+            )
+        }
+        
+        return(
+            <View style={styles.payrollChildProp}>
+                <View style={[styles.childTitleCont, this.state.nameStyle]}>
+                    <Text style={styles.txtDefault}>{this.props.name}</Text>
+                </View>
+                {oContent}
+            </View>
+        )
+    }
+}

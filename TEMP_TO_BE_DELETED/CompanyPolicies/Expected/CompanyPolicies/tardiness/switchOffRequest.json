@@ -1,0 +1,26 @@
+{
+    "input":{
+        "companyid": "0001",
+        "username": "jovanni",
+        "accesstoken": "<accesstoken>",
+        "clientid": "<>"
+    },
+
+    "output1":{
+        "flagno": "1",
+        "message": "Ok to switch off Tardiness Policy",
+        "data":[]
+    },
+
+    "output2":{
+        "flagno": "0",
+        "message": "Unable to switch off Tardiness Policy. Contact BINHI-MeDFI for assistance.",
+        "data":[]
+    },
+
+    "output3":{
+        "flagno": "2",
+        "message": "There are 10 employees with tardiness policy enabled. Switching off Tardiness rule in Company Policies will also disable employees' tardiness policy. Press continue to proceed.",
+        "data":[]
+    }
+}

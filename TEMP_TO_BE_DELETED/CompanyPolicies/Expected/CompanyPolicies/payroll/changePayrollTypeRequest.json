@@ -1,0 +1,23 @@
+{
+    "input":{
+        "companyid": "0001",
+        "username": "jovanni",
+        "accesstoken": "<accesstoken>",
+        "clientid": "<>"
+    },
+    
+    "output1": {
+        "flagno":"1",
+        "message":"Okay to modify. No employees and rules utilizing the active payroll type."
+    },
+
+    "output2": {
+        "flagno":"0",
+        "message":"Unable to change payroll type. Contact BINHI-MEDFI for assistance."
+    },
+
+    "output3": {
+        "flagno":"2",
+        "message":"<MESSAGE HERE>"
+    }
+}

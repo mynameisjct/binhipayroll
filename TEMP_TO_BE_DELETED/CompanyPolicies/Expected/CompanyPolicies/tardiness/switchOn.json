@@ -1,0 +1,14 @@
+{
+    "input":{
+        "companyid": "0001",
+        "username": "jovanni",
+        "accesstoken": "<accesstoken>",
+        "clientid": "<>"
+    },
+
+    "output":{
+        "flagno": "1",
+        "message": "Successfully switched on Tardiness Policy. Application will monitor tardiness based on the set rules.",
+        "data":[]
+    }
+}

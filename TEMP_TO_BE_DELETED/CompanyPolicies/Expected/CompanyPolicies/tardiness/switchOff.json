@@ -1,0 +1,20 @@
+{
+    "input":{
+        "companyid": "0001",
+        "username": "jovanni",
+        "accesstoken": "<accesstoken>",
+        "clientid": "<>"
+    },
+
+    "output1":{
+        "flagno": "1",
+        "message": "Successfully switched off the Tardiness Policy",
+        "data":[]
+    },
+
+    "output2":{
+        "flagno": "0",
+        "message": "Unable to switch off Tardiness Policy. Contact BINHI-MeDFI for assistance.",
+        "data":[]
+    }
+}

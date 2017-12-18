@@ -126,7 +126,6 @@ export class CompanyPolicies extends Component {
         header : 
             <Header2 title= 'COMPANY POLICIES'/>
     }
-
     componentDidMount = () => {
         this._initPage();
     }
@@ -136,14 +135,11 @@ export class CompanyPolicies extends Component {
             this.setState({
                 _objLoginInfo: {...this.props.logininfo},
                 _objActiveCompany: {...this.props.activecompany},
-                _status: 1
+                _status: 1,
+                _activeChild: '002'
             },
                 () => {
                     this._getAllCompanyPolicies();
-                    this.setState({
-                        _activeChild: '002'
-                    })
-                    
                 }
             )
         }
@@ -155,7 +151,7 @@ export class CompanyPolicies extends Component {
     }
     
     _getAllCompanyPolicies = () => {
-        this._getWorkSchedule();
+/*         this._getWorkSchedule(); */
         this._getPayrollSchedule();
       /*   this._getTaxSettings(); */
     }
@@ -202,6 +198,7 @@ export class CompanyPolicies extends Component {
             accesstoken: '',
             clientid: '',
         })
+        
         .then(() => {
             console.log('this.props.payroll: ' + JSON.stringify(this.props.payroll));
             let oPayroll  = {...this.props.payroll};
@@ -214,7 +211,7 @@ export class CompanyPolicies extends Component {
             console.log('exception: ' + exception);
             let oStatus = [0, 'Application error was encountered. \n Please contact BINHI-MeDFI'];
 			this.setState({
-                _workShiftStatus: oStatus
+                _payrollStatus: oStatus
             })
 		});
     }
@@ -233,7 +230,7 @@ export class CompanyPolicies extends Component {
             clientid: '',
         })
         .then(() => {
-            console.log('this.props.payroll: ' + JSON.stringify(this.props.payroll));
+            /* console.log('this.props.payroll: ' + JSON.stringify(this.props.payroll)); */
             let oPayroll  = {...this.props.payroll};
             let oStatus = [oPayroll.flagno, oPayroll.message];
             this.setState({
@@ -250,14 +247,15 @@ export class CompanyPolicies extends Component {
     }
 
     _setActiveChild = (id, index) => {
-        this._setBtnColor(index);
+        let btnState = this._getBtnState(index);
         this.setState({
+            _policyList: btnState,
             _activeChild: id,
             _activeBtn: index,
         });
     }
 
-    _setBtnColor = (index) => {
+    _getBtnState = (index) => {
         let objNew = [...this.state._policyList];
         objNew.map((btnInfo, curIndex) => {
             if(index==curIndex){
@@ -267,9 +265,7 @@ export class CompanyPolicies extends Component {
                 objNew[curIndex].btnColor = btnInactive;
             }
         })
-        this.setState({
-            _policyList: objNew
-        })
+        return objNew;
     }
 
     render(){
@@ -281,7 +277,7 @@ export class CompanyPolicies extends Component {
                 childComponent = (<WorkShift status={this.state._workShiftStatus} triggerRefresh={this._getWorkSchedule}/>);
                 break;
             case '002':
-                childComponent = (<Payroll/>);
+                childComponent = (<Payroll status={this.state._payrollStatus} triggerRefresh={this._getPayrollSchedule}/>);
                 break;
             case '003':
                 childComponent = (<Tax/>);

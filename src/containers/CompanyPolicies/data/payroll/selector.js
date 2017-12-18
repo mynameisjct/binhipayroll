@@ -1,7 +1,5 @@
 import {store} from '../../../../store';
 
-let activeTypeID = '';
-
-export const getAllPayrollSchedule = () => {
-	return store.getState().companyPoliciesReducer.payrollschedule;
+export const getPayrollData = () => {
+	return store.getState().companyPoliciesReducer.payroll;
 };

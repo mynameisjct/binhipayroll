@@ -1,0 +1,23 @@
+{
+    "flagno": "1",
+    "message": "Success!",
+    "transtype": "get",
+    "enabled": true,
+    "data":[
+        {
+            "id": "0001",
+            "name": "Default",
+            "threshhold": {
+                "graceperiod": "25 mins",
+                "maxduration": "Do not mark as Leave"
+            },
+            "penalties": {
+                "suspension": {
+                    "maxallowedtardiness": "6",
+                },
+                
+                    
+            }
+        }
+    ]
+}
