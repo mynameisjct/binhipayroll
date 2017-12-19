@@ -52,7 +52,7 @@ export class PromptError extends Component{
 export class PromptGeneric extends Component{
     render(){
         return(
-            <View style={{justifyContent: 'center', alignItems: 'center', position: 'absolute', flex: 1, zIndex: 100, width: '100%', height: '100%', backgroundColor: 'rgba(0,0,0,0.9);'}}>
+            <View style={{justifyContent: 'center', alignItems: 'center', position: 'absolute', flex: 1, zIndex: 100, width: '100%', height: '100%', backgroundColor: 'rgba(0,0,0,0.8);'}}>
                 <ActivityIndicator
                     animating = {this.props.show}
                     color = '#EEB843'

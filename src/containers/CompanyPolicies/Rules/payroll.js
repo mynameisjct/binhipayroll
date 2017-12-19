@@ -19,7 +19,21 @@ from '../../../components/CustomCards';
 import styles from './styles'
 
 //Redux
+import { connect } from 'react-redux';
 import * as payrollSelector from '../data/payroll/selector';
+import * as payrollActions from '../data/payroll/actions';
+import { bindActionCreators } from 'redux';
+
+//API
+import * as payrollApi from '../data/payroll/api';
+
+//Custom Components
+import * as PromptScreen from '../../../components/ScreenLoadStatus';
+import SavePrompt from '../../../components/SavePrompt';
+import MessageBox from '../../../components/MessageBox';
+
+//Helper
+import * as oHelper from '../../../helper/';
 
 const title_Payroll = 'Set Payroll Rules and Schedule';
 
@@ -59,15 +73,17 @@ export class SemiMonthly extends Component{
         );
         
         //Assign New Values
-        oData.firstpayday.value=value;
-        oData.secondpayday.value=dSecondPayDay;
+        oData.firstpayday.value=''+value;
+        oData.secondpayday.value=''+dSecondPayDay;
         oData.firstperiod.value=arrCutOff[0];
         oData.secondperiod.value=arrCutOff[1];
         
         //Set New Values
         this.setState({
             _data: oData
-        })
+        },
+            () => this.props.change()
+        )
     }
 
     _setCutOff = (value) => {
@@ -78,13 +94,15 @@ export class SemiMonthly extends Component{
         );
         
         let oData = {...this.state._data};
-        oData.cutoff.value=value;
+        oData.cutoff.value=''+value;
         oData.firstperiod.value = arrCutOff[0];
         oData.secondperiod.value = arrCutOff[1];
 
         this.setState({
             _data: oData,
-        })
+        },
+            () => this.props.change()
+        )
     }
 
     _calculatePeriod = (iFirstPayDay, iSecondPayDay, iCutOff) => {
@@ -102,8 +120,8 @@ export class SemiMonthly extends Component{
         ySecondPeriod = this._fixDayValue(ySecondPeriod);
 
 
-        let firstPeriod = xFirstPeriod + ' - ' + yFirstPeriod;
-        let secondperiod = xSecondPeriod + ' - ' + ySecondPeriod;
+        let firstPeriod = xFirstPeriod + '-' + yFirstPeriod;
+        let secondperiod = xSecondPeriod + '-' + ySecondPeriod;
 
         return [firstPeriod, secondperiod]
     }
@@ -209,13 +227,15 @@ export class Monthly extends Component{
         );
         
         //Assign New Values
-        oData.payday.value=value;
+        oData.payday.value=''+value;
         oData.period.value=arrCutOff;
 
         //Set New Values
         this.setState({
             _data: oData
-        })
+        },
+            () => this.props.change()
+        )
     }
 
     _setCutOff = (value) => {
@@ -225,12 +245,14 @@ export class Monthly extends Component{
         );
         
         let oData = {...this.state._data};
-        oData.cutoff.value=value;
+        oData.cutoff.value=''+value;
         oData.period.value = arrCutOff;
 
         this.setState({
             _data: oData,
-        })
+        },
+            () => this.props.change()
+        )
     }
 
     _calculatePeriod = (iPayDay, iCutOff) => {
@@ -241,7 +263,7 @@ export class Monthly extends Component{
         let yPeriod = parseInt(iPayDay) - parseInt(iCutOff);
         yPeriod = this._fixDayValue(yPeriod);
 
-        let period = xPeriod + ' - ' + yPeriod;
+        let period = xPeriod + '-' + yPeriod;
 
         return period;
     }
@@ -346,7 +368,9 @@ export class Weekly extends Component{
         //Set New Values
         this.setState({
             _data: oData
-        })
+        },
+            () => this.props.change()
+        )
     }
 
     _setCutOff = (value) => {
@@ -361,7 +385,9 @@ export class Weekly extends Component{
 
         this.setState({
             _data: oData,
-        })
+        },
+            () => this.props.change()
+        )
     }
 
     _calculatePeriod = (iPayDay, iCutOff) => {
@@ -381,7 +407,7 @@ export class Weekly extends Component{
         console.log('xPeriod: ' + xPeriod);
         console.log('yPeriod: ' + yPeriod); */
 
-        let period = this._getDay(xPeriod, '') + ' - ' + this._getDay(yPeriod, '');
+        let period = this._getDay(xPeriod, '') + '-' + this._getDay(yPeriod, '');
 
         return period;
     }
@@ -410,7 +436,7 @@ export class Weekly extends Component{
             return days.indexOf(value.toUpperCase());
         }
         else{
-            return days[value];
+            return oHelper.capitalizeFirstLetter((days[value]).toLowerCase());
         }
         
     }
@@ -474,14 +500,30 @@ export class Weekly extends Component{
     }
 }
 
-export default class Payroll extends Component{
+export class Payroll extends Component{
     constructor(props){
         super(props);
         this.state = {
             _status: [2, 'Loading...'],
             _payrolldata: {},
-            _refreshing: false
+            _refreshing: false,
+            _changeFlag: false,
+
+            //Messagebox
+            _msgBoxShow: false,
+            _msgBoxType: '',
+            _resMsg: '',
+
+            //Local Prompt
+            _transPrompt:{
+                show: false,
+                message: ''
+            }
         }
+
+        this._updatePayrollData = this._updatePayrollData.bind(this);
+        this._undoPayrollData = this._undoPayrollData.bind(this);
+        this._detectChanges = this._detectChanges.bind(this);
     }
     
     componentDidMount(){
@@ -499,6 +541,10 @@ export default class Payroll extends Component{
             if(nextProps.status[0]==1){
                 this._initValues(nextProps.status);
             }
+
+            this.setState({
+                _status: nextProps.status
+            })
         }
     }
 
@@ -507,7 +553,6 @@ export default class Payroll extends Component{
             _status: status,
             _payrolldata: JSON.parse(JSON.stringify(payrollSelector.getPayrollData()))
         })
-        console.log('JSON.stringify(payrollSelector.getPayrollData()): ' + JSON.stringify(payrollSelector.getPayrollData()))
     }
 
     _setActivePaytype = (strActivePayType) => {
@@ -515,30 +560,178 @@ export default class Payroll extends Component{
         oData.paytype.value = strActivePayType;
         this.setState({
             _payrolldata: oData,
+        },
+            () => {this._detectChanges()}
+        );
+
+    }
+
+    _requestToChangePayType = (value) => {
+        const oInput = {
+            companyid: this.props.activecompany.id,
+            username: this.props.logininfo.resUsername,
+            transtype: 'request',
+            accesstoken: '',
+            clientid: '',
+        };
+
+        let oStatus = [2, 'Loading...'];
+        this.setState({
+            _status: oStatus
         });
+
+        payrollApi.changeRequest(oInput)
+        .then((response) => response.json())
+        .then((res) => {
+            console.log('INPUT: ' + JSON.stringify(oInput))
+            console.log('OUTPUT: ' + JSON.stringify(res));
+            switch(''+res.flagno){
+                case '0':
+                    this.setState({
+                        _msgBoxShow: true,
+                        _msgBoxType: 'error',
+                        _resMsg: res.message
+                    })
+                    break;
+                case '1':
+                    this.setState({_status: [1, '']})
+                    this._setActivePaytype(value);
+                    break;
+                case '2':
+                    this.setState({
+                        _msgBoxShow: true,
+                        _msgBoxType: 'warning',
+                        _resMsg: res.message
+                    })
+                    break;
+            }
+        })
+
+        .catch((exception) => {
+            console.log('exception: ' + exception);
+        });
+    }
+
+    _updatePayrollData = () => {
+        this.setState({
+            _transPrompt: {show: true, message: 'Saving Payroll Policy changes. Please wait...'}
+        });
+
+        const oInput = {
+            companyid: this.props.activecompany.id,
+            username: this.props.logininfo.resUsername,
+            transtype: 'update',
+            accesstoken: '',
+            clientid: '',
+            payrolldata: this.state._payrolldata
+        };
+
+        payrollApi.update(oInput)
+        .then((response) => response.json())
+        .then((res) => {
+            this.setState({
+                _transPrompt: {show: false}
+            });
+            console.log('UPDATE-INPUT: '+ JSON.stringify(this.state._payrolldata))
+            console.log('UPDATE-RESPONSE: '+ JSON.stringify(res))
+            switch(res.flagno){
+                case '0':
+                    this.setState({
+                        _msgBoxShow: true,
+                        _msgBoxType: 'error',
+                        _resMsg: res.message
+                    })
+                    break;
+                case '1':
+                    this.setState({
+                        _msgBoxShow: true,
+                        _msgBoxType: 'success',
+                        _resMsg: res.message,
+                        _changeFlag: false
+                    });
+                    
+                    this.props.actions.payroll.update(res);
+                    break;
+                case '2':
+                    this.setState({
+                        _msgBoxShow: true,
+                        _msgBoxType: 'warning',
+                        _resMsg: res.message
+                    })
+                    break;
+                default: 
+                    break;
+            }
+        })
+
+        .catch((exception) => {
+            this.setState({
+                _msgBoxShow: true,
+                _msgBoxType: 'error',
+                _resMsg: {exception}
+            })
+        });
+    }
+
+    _undoPayrollData = () => {
+        this._initValues([1,'']);
+        this.setState({_changeFlag: false})
+    }
+
+    _detectChanges = () => {
+        /* console.log('this.state._payrolldata: ' + JSON.stringify(this.state._payrolldata.data.semimonthly))
+        console.log('payrollSelector.getPayrollData()): ' + JSON.stringify(payrollSelector.getPayrollData()))
+        console.log('this.state._payrolldata: ' + JSON.stringify(this.state._payrolldata)) */
+        if(JSON.stringify(payrollSelector.getPayrollData()) !== JSON.stringify(this.state._payrolldata)){
+            this.setState({_changeFlag: true})
+        }else{
+            this.setState({_changeFlag: false})
+        }
+    }
+    
+    _closeMsgBox = () => {
+        this.setState({
+            _msgBoxShow: false
+        })
     }
 
     render(){
         let pStatus = [...this.state._status];
         let pProgress = pStatus[0];
         let pMessage = pStatus[1];
-        if(pProgress == 0){
-            return null;
+        if(pProgress==0){
+            return (
+                <ScrollView
+                    refreshControl={
+                        <RefreshControl
+                            refreshing={this.state._refreshing}
+                            onRefresh={() => this.props.triggerRefresh(true)}
+                        />
+                    }
+                >
+                    <PromptScreen.PromptError title={pMessage}/>
+                </ScrollView>
+            );
         }
-        else if(pProgress == 2){
-            return null;
+        else if(pProgress==2){
+            return (
+                <View style={styles.container}>
+                    <PromptScreen.PromptLoading title={pMessage}/>
+                </View>
+            );
         }
         else{
+            /* console.log('VARCHECK: ' + JSON.stringify(this.state._payrolldata)); */
             let oPayrollSchedule;
             switch(this.state._payrolldata.paytype.value.toUpperCase()){
                 case 'SEMI-MONTHLY':
-                    oPayrollSchedule = (<SemiMonthly data={this.state._payrolldata.data.semimonthly}/>);
+                    oPayrollSchedule = (<SemiMonthly change={this._detectChanges} data={this.state._payrolldata.data.semimonthly}/>);
                     break;
                 case 'MONTHLY':
-                    oPayrollSchedule = (<Monthly data={this.state._payrolldata.data.monthly}/>);
+                    oPayrollSchedule = (<Monthly change={this._detectChanges} data={this.state._payrolldata.data.monthly}/>);
                     break;
                 case 'WEEKLY':
-                    oPayrollSchedule = (<Weekly data={this.state._payrolldata.data.weekly}/>);
+                    oPayrollSchedule = (<Weekly change={this._detectChanges} data={this.state._payrolldata.data.weekly}/>);
                     break;
                 default:
                     //Display an error
@@ -546,6 +739,15 @@ export default class Payroll extends Component{
             }
             return(
                 <View style={styles.container}>
+                    { this.state._transPrompt.show ?
+                        <PromptScreen.PromptGeneric show= {this.state._transPrompt.show} title={this.state._transPrompt.message}/>
+                        : null
+                    }
+                    {
+                        this.state._changeFlag ?
+                            <SavePrompt saveAction={this._updatePayrollData} undoAction={this._undoPayrollData}/>
+                        : null
+                    }
                     <ScrollView
                         refreshControl={
                             <RefreshControl
@@ -561,7 +763,7 @@ export default class Payroll extends Component{
                                     <Picker
                                         mode='dropdown'
                                         selectedValue={this.state._payrolldata.paytype.value}
-                                        onValueChange={(itemValue, itemIndex) => {this._setActivePaytype(itemValue)}}>
+                                        onValueChange={(itemValue, itemIndex) => {this._requestToChangePayType(itemValue)}}>
                                         {
                                             this.state._payrolldata.paytype.options.map((paytype, index) => (
                                                 <Picker.Item key={index} label={paytype} value={paytype} />
@@ -574,8 +776,37 @@ export default class Payroll extends Component{
 
                         </CustomCard>
                     </ScrollView>
+                    <MessageBox
+                        promptType={this.state._msgBoxType}
+                        show={this.state._msgBoxShow}
+                        onClose={this._closeMsgBox}
+                        onWarningContinue={this._continueActionOnWarning}
+                        message={this.state._resMsg}
+                    />
                 </View>
             );
         }
     }
 }
+
+function mapStateToProps (state) {
+    return {
+        logininfo: state.loginReducer.logininfo,
+        activecompany: state.activeCompanyReducer.activecompany,
+        payroll: state.companyPoliciesReducer.payroll
+        
+    }
+}
+
+function mapDispatchToProps (dispatch) {
+    return {
+        actions: {
+            payroll: bindActionCreators(payrollActions, dispatch),
+        },
+    }
+}
+
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(Payroll)

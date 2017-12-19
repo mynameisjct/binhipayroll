@@ -9,7 +9,6 @@ import { TabNavigator } from 'react-navigation';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 //Chil Views and Properties
-import Header2 from '../Headers/header2';
 import styles from './styles';
 import apiConfig, {endPoints} from '../../services/api/config';
 
@@ -33,9 +32,12 @@ import { bindActionCreators } from 'redux';
 import {SetLoginInfo, SetActiveCompany} from '../../actions';
 import * as workshiftActions from './data/workshift/actions';
 import * as payrollActions from './data/payroll/actions';
+import * as taxActions from './data/tax/actions'
 
-//Status Prompt Components
+//Custom Components
 import * as StatusLoader from '../../components/ScreenLoadStatus';
+import Header2 from '../Headers/header2';
+import MessageBox from '../../components/MessageBox';
 
 //Constants
 const btnActive = 'rgba(255, 255, 255, 0.3);'
@@ -55,6 +57,10 @@ export class CompanyPolicies extends Component {
             //Error-0, Success-1, Loading-2,  Handler
             _workShiftStatus: ['2', ''],
             _payrollStatus: ['2', ''],
+            _taxStatus: ['2',''],
+
+            //Unsaved Transaction
+            _hasActiveTransaction: false,
 
             //Active Child State
             _activeChild: '',   
@@ -115,17 +121,27 @@ export class CompanyPolicies extends Component {
                     iconName: 'wunderlist',
                     btnColor: btnInactive
                 },
-            ]
+            ],
+
+            //Messagebox
+            _msgBoxShow: false,
+            _msgBoxType: '',
+            _resMsg: ''
         }
         
         //Binding for Refresh Control
         this._getWorkSchedule = this._getWorkSchedule.bind(this);
+        this._getPayrollSchedule = this._getPayrollSchedule.bind(this);
+
+        //Active Unsaved Transaction Trigger
+        this._hasActiveTransaction = this._hasActiveTransaction.bind(this);
     }
 
     static navigationOptions = {
         header : 
             <Header2 title= 'COMPANY POLICIES'/>
     }
+    
     componentDidMount = () => {
         this._initPage();
     }
@@ -149,11 +165,17 @@ export class CompanyPolicies extends Component {
             })
         }
     }
+
+    _hasActiveTransaction = (value) => {
+        this.setState({
+            _hasActiveTransaction: value
+        })
+    }
     
     _getAllCompanyPolicies = () => {
-/*         this._getWorkSchedule(); */
+        this._getWorkSchedule();
         this._getPayrollSchedule();
-      /*   this._getTaxSettings(); */
+        this._getTaxSettings();
     }
 
     _getWorkSchedule = (bForceUpdate) => {
@@ -200,7 +222,7 @@ export class CompanyPolicies extends Component {
         })
         
         .then(() => {
-            console.log('this.props.payroll: ' + JSON.stringify(this.props.payroll));
+            /* console.log('this.props.payroll: ' + JSON.stringify(this.props.payroll)); */
             let oPayroll  = {...this.props.payroll};
             let oStatus = [oPayroll.flagno, oPayroll.message];
             this.setState({
@@ -219,29 +241,30 @@ export class CompanyPolicies extends Component {
     _getTaxSettings = () => {
         let curStatus = [2, 'Loading...'];
         this.setState({
-            _payrollStatus: curStatus
+            _taxStatus: curStatus
         });
-
-        this.props.actions.payroll.get({
+        
+        let oInput = {
             companyid: this.state._objActiveCompany.id,
             username: this.state._objLoginInfo.resUsername,
             transtype: 'get',
             accesstoken: '',
             clientid: '',
-        })
+        }
+
+        this.props.actions.tax.get(oInput)
         .then(() => {
-            /* console.log('this.props.payroll: ' + JSON.stringify(this.props.payroll)); */
-            let oPayroll  = {...this.props.payroll};
-            let oStatus = [oPayroll.flagno, oPayroll.message];
+            let oTax  = {...this.props.tax};
+            let oStatus = [oTax.flagno, oTax.message];
             this.setState({
-                _payrollStatus: oStatus
+                _taxStatus: oStatus
             });
 		})
 		.catch((exception) => {
             console.log('exception: ' + exception);
             let oStatus = [0, 'Application error was encountered. \n Please contact BINHI-MeDFI'];
 			this.setState({
-                _workShiftStatus: oStatus
+                _taxStatus: oStatus
             })
 		});
     }
@@ -274,13 +297,13 @@ export class CompanyPolicies extends Component {
 
         switch (this.state._activeChild){
             case '001': 
-                childComponent = (<WorkShift status={this.state._workShiftStatus} triggerRefresh={this._getWorkSchedule}/>);
+                childComponent = (<WorkShift hasUnsaved={this._hasActiveTransaction} status={this.state._workShiftStatus} triggerRefresh={this._getWorkSchedule}/>);
                 break;
             case '002':
-                childComponent = (<Payroll status={this.state._payrollStatus} triggerRefresh={this._getPayrollSchedule}/>);
+                childComponent = (<Payroll hasUnsaved={this._hasActiveTransaction} status={this.state._payrollStatus} triggerRefresh={this._getPayrollSchedule}/>);
                 break;
             case '003':
-                childComponent = (<Tax/>);
+                childComponent = (<Tax hasUnsaved={this._hasActiveTransaction} status={this.state._taxStatus} triggerRefresh={this._getTaxSettings}/>);
                 break;
             case '004':
                 childComponent = (<Tardiness/>);
@@ -345,6 +368,13 @@ export class CompanyPolicies extends Component {
                             childComponent
                         }
                     </View>
+                    <MessageBox
+                        promptType={this.state._msgBoxType}
+                        show={this.state._msgBoxShow}
+                        onClose={this._closeMsgBox}
+                        onWarningContinue={this._continueActionOnWarning}
+                        message={this.state._resMsg}
+                    />
                 </View>
             );
         }
@@ -355,11 +385,9 @@ function mapStateToProps (state) {
     return {
         logininfo: state.loginReducer.logininfo,
         activecompany: state.activeCompanyReducer.activecompany,
-        fetchHasErrored: state.fetchHasErrored,
-        fetchIsLoading: state.fetchIsLoading,
         companyWorkShift: state.companyPoliciesReducer.workshift,
-        payroll: state.companyPoliciesReducer.payroll
-        
+        payroll: state.companyPoliciesReducer.payroll,
+        tax: state.companyPoliciesReducer.tax
     }
 }
 
@@ -368,6 +396,7 @@ function mapDispatchToProps (dispatch) {
         actions: {
             workshift: bindActionCreators(workshiftActions, dispatch),
             payroll: bindActionCreators(payrollActions, dispatch),
+            tax: bindActionCreators(taxActions,dispatch)
         },
     }
 }

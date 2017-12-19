@@ -1,0 +1,17 @@
+{
+    "flagno":1,
+    "message":"Record found",
+    "frequency":{
+        "data":{
+            "label":"Frequency",
+            "value":"Monthly",
+            "options":["Monthly","Every Pay Day"]
+        }
+    },
+    "companytin":{
+        "data":{
+            "label":"Company",
+            "value":"12345"
+        }
+    }
+}

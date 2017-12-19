@@ -19,5 +19,7 @@ export const get = payload =>
 		api.get(payload)
 		.then((response) => response.json())
 		.then((res) => {
+			console.log('INPUT: ' + JSON.stringify(payload));
+			console.log('OUTPUT: ' + JSON.stringify(res));
 			dispatch(update(res));
 		});
