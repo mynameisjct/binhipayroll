@@ -132,7 +132,7 @@ export class CompanyPolicies extends Component {
         //Binding for Refresh Control
         this._getWorkSchedule = this._getWorkSchedule.bind(this);
         this._getPayrollSchedule = this._getPayrollSchedule.bind(this);
-
+        this._getTaxSettings = this._getTaxSettings.bind(this);
         //Active Unsaved Transaction Trigger
         this._hasActiveTransaction = this._hasActiveTransaction.bind(this);
     }
@@ -144,6 +144,13 @@ export class CompanyPolicies extends Component {
     
     componentDidMount = () => {
         this._initPage();
+    }
+
+    componentWillReceiveProps(nextProps){
+        let objActiveCompany = {...nextProps.activecompany};
+        if (this.props.activecompany.id !== objActiveCompany.id){
+            this.componentDidMount();
+        }
     }
 
     _initPage = () => {
@@ -254,6 +261,7 @@ export class CompanyPolicies extends Component {
 
         this.props.actions.tax.get(oInput)
         .then(() => {
+            console.log('ZZZZZthis.props.tax: ' + JSON.stringify(this.props.tax));
             let oTax  = {...this.props.tax};
             let oStatus = [oTax.flagno, oTax.message];
             this.setState({
@@ -271,11 +279,13 @@ export class CompanyPolicies extends Component {
 
     _setActiveChild = (id, index) => {
         let btnState = this._getBtnState(index);
-        this.setState({
-            _policyList: btnState,
-            _activeChild: id,
-            _activeBtn: index,
-        });
+        requestAnimationFrame(() => {
+            this.setState({
+                _policyList: btnState,
+                _activeChild: id,
+                _activeBtn: index,
+            })
+        })
     }
 
     _getBtnState = (index) => {
@@ -306,7 +316,7 @@ export class CompanyPolicies extends Component {
                 childComponent = (<Tax hasUnsaved={this._hasActiveTransaction} status={this.state._taxStatus} triggerRefresh={this._getTaxSettings}/>);
                 break;
             case '004':
-                childComponent = (<Tardiness/>);
+                childComponent = (<Tardiness/>)
                 break;
             case '005':
                 childComponent = (<Undertime/>);

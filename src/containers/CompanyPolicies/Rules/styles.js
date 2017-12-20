@@ -319,6 +319,16 @@ export default {
         color: '#434646'
     },
 
+    txtClickable: {
+        fontFamily: 'Helvetica-Light',
+        fontSize: 15,
+        color: '#434646',
+        paddingLeft: 15, 
+        height: '100%',
+        textAlignVertical: 'center'
+
+    },
+
     adjustChildProp: {
         marginLeft: -20,
     },

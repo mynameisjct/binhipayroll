@@ -1,7 +1,7 @@
 import * as api from './api';
 import * as actionTypes from './actionTypes';
 
-const update = payload => ({
+export const update = payload => ({
 	type: actionTypes.UPDATE,
 	payload,
 });
