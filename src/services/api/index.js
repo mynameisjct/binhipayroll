@@ -18,10 +18,8 @@ export const fetchApi = (endPoint, payload = {}, strMethod = 'post', headers = {
 				if (json) throw json;
 				throw e;
             });
-            console.log("TEST_TRUE");
 		} else {
             throw e;
-            console.log("TEST_FALSE");
 		}
 	});
 }

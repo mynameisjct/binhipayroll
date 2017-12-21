@@ -32,7 +32,8 @@ import { bindActionCreators } from 'redux';
 import {SetLoginInfo, SetActiveCompany} from '../../actions';
 import * as workshiftActions from './data/workshift/actions';
 import * as payrollActions from './data/payroll/actions';
-import * as taxActions from './data/tax/actions'
+import * as taxActions from './data/tax/actions';
+import * as tardinessActions from './data/tardiness/actions';
 
 //Custom Components
 import * as StatusLoader from '../../components/ScreenLoadStatus';
@@ -58,6 +59,12 @@ export class CompanyPolicies extends Component {
             _workShiftStatus: ['2', ''],
             _payrollStatus: ['2', ''],
             _taxStatus: ['2',''],
+            _tardinessStatus: ['2', ''],
+            _undertimeStatus: ['2', ''],
+            _overtimeStatus: ['2', ''],
+            _leaveStatus: ['2', ''],
+            _benefitsStatus: ['2', ''],
+            _bonusStatus: ['2', ''],
 
             //Unsaved Transaction
             _hasActiveTransaction: false,
@@ -77,7 +84,7 @@ export class CompanyPolicies extends Component {
                     id : '002',
                     name: 'Payroll',
                     iconName: 'cash',
-                    btnColor: btnActive
+                    btnColor: btnInactive
                 },
                 {
                     id : '003',
@@ -89,7 +96,7 @@ export class CompanyPolicies extends Component {
                     id : '004',
                     name: 'Tardiness',
                     iconName: 'clock-alert',
-                    btnColor: btnInactive
+                    btnColor: btnActive
                 },
                 {
                     id : '005',
@@ -133,6 +140,13 @@ export class CompanyPolicies extends Component {
         this._getWorkSchedule = this._getWorkSchedule.bind(this);
         this._getPayrollSchedule = this._getPayrollSchedule.bind(this);
         this._getTaxSettings = this._getTaxSettings.bind(this);
+        this._getTardinessRule = this._getTardinessRule.bind(this);
+/*         this._getUndertimeRule = this._getUndertimeRule.bind(this);
+        this._getOvertimeRule = this._getOvertimeRule.bind(this);
+        this._getLeavesRule = this._getLeavesRule.bind(this);
+        this._getBenefitsRule = this._getBenefitsRule.bind(this);
+        this._getBonusRule = this._getBenefitsRule.bind(this); */
+
         //Active Unsaved Transaction Trigger
         this._hasActiveTransaction = this._hasActiveTransaction.bind(this);
     }
@@ -159,7 +173,7 @@ export class CompanyPolicies extends Component {
                 _objLoginInfo: {...this.props.logininfo},
                 _objActiveCompany: {...this.props.activecompany},
                 _status: 1,
-                _activeChild: '002'
+                _activeChild: '004'
             },
                 () => {
                     this._getAllCompanyPolicies();
@@ -183,6 +197,7 @@ export class CompanyPolicies extends Component {
         this._getWorkSchedule();
         this._getPayrollSchedule();
         this._getTaxSettings();
+        this._getTardinessRule();
     }
 
     _getWorkSchedule = (bForceUpdate) => {
@@ -261,7 +276,7 @@ export class CompanyPolicies extends Component {
 
         this.props.actions.tax.get(oInput)
         .then(() => {
-            console.log('ZZZZZthis.props.tax: ' + JSON.stringify(this.props.tax));
+            /* console.log('this.props.tax: ' + JSON.stringify(this.props.tax)); */
             let oTax  = {...this.props.tax};
             let oStatus = [oTax.flagno, oTax.message];
             this.setState({
@@ -273,6 +288,38 @@ export class CompanyPolicies extends Component {
             let oStatus = [0, 'Application error was encountered. \n Please contact BINHI-MeDFI'];
 			this.setState({
                 _taxStatus: oStatus
+            })
+		});
+    }
+
+    _getTardinessRule = () => {
+        let curStatus = [2, 'Loading...'];
+        this.setState({
+            _tardinessStatus: curStatus
+        });
+        
+        let oInput = {
+            companyid: this.state._objActiveCompany.id,
+            username: this.state._objLoginInfo.resUsername,
+            transtype: 'get',
+            accesstoken: '',
+            clientid: '',
+        }
+
+        this.props.actions.tardiness.get(oInput)
+        .then(() => {
+            /* console.log('this.props.tardiness: ' + JSON.stringify(this.props.tardiness)); */
+            let oTardiness  = {...this.props.tardiness};
+            let oStatus = [oTardiness.flagno, oTardiness.message];
+            this.setState({
+                _tardinessStatus: oStatus
+            });
+		})
+		.catch((exception) => {
+            console.log('exception: ' + exception);
+            let oStatus = [0, 'Application error was encountered. \n Please contact BINHI-MeDFI'];
+			this.setState({
+                _tardinessStatus: oStatus
             })
 		});
     }
@@ -316,7 +363,7 @@ export class CompanyPolicies extends Component {
                 childComponent = (<Tax hasUnsaved={this._hasActiveTransaction} status={this.state._taxStatus} triggerRefresh={this._getTaxSettings}/>);
                 break;
             case '004':
-                childComponent = (<Tardiness/>)
+                childComponent = (<Tardiness hasUnsaved={this._hasActiveTransaction} status={this.state._tardinessStatus} triggerRefresh={this._getTardinessRule}/>)
                 break;
             case '005':
                 childComponent = (<Undertime/>);
@@ -397,7 +444,8 @@ function mapStateToProps (state) {
         activecompany: state.activeCompanyReducer.activecompany,
         companyWorkShift: state.companyPoliciesReducer.workshift,
         payroll: state.companyPoliciesReducer.payroll,
-        tax: state.companyPoliciesReducer.tax
+        tax: state.companyPoliciesReducer.tax,
+        tardiness: state.companyPoliciesReducer.tardiness
     }
 }
 
@@ -406,7 +454,8 @@ function mapDispatchToProps (dispatch) {
         actions: {
             workshift: bindActionCreators(workshiftActions, dispatch),
             payroll: bindActionCreators(payrollActions, dispatch),
-            tax: bindActionCreators(taxActions,dispatch)
+            tax: bindActionCreators(taxActions,dispatch),
+            tardiness: bindActionCreators(tardinessActions,dispatch)
         },
     }
 }

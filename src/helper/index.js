@@ -3,7 +3,6 @@ export function isStringEmpty(strValue) {
     return !strValue
 }
 
-
 export function isStringOnlySpace(strValue){
     return !strValue.trim().length
 }

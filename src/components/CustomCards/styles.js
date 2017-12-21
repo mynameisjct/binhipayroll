@@ -108,6 +108,10 @@ export default {
 
     },
 
+    adjustPropLevel1: {
+        marginLeft: 30,
+    },
+
     effectivityOptionCont: {
         backgroundColor: 'transparent',
         height: 35,
@@ -131,7 +135,7 @@ export default {
     txtPropTitle: {
         fontFamily: 'Helvetica-Bold',
         color: '#434646',
-        fontSize: 16,
+        fontSize: 15,
         fontWeight: '500'
     },
 
@@ -148,10 +152,6 @@ export default {
         fontFamily: 'Helvetica-Light',
         fontSize: 15,
         color: '#434646'
-    },
-
-    adjustChildProp: {
-        marginLeft: -20,
     },
 
     payrollChildProp: {

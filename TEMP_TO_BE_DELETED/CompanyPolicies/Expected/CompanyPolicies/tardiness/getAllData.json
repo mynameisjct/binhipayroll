@@ -11,15 +11,19 @@
                 "graceperiod": "25 mins",
                 "maxduration": "Do not mark as Leave"
             },
-            "activepenalty": "0001",
+            "activepenalty": {
+                "id": "2001", 
+                "label": "suspension"
+            },
+
             "penalties":[
                 {
-                    "id": "0001",
+                    "id": "2001",
                     "label": "Suspension",
                     "maxallowedtardiness": "6"
                 },
                 {
-                    "id": "0002",
+                    "id": "2002",
                     "label": "Deduction",
                     "frombegintime": true
                 }
@@ -32,36 +36,44 @@
                 "graceperiod": "25 mins",
                 "maxduration": "Do not mark as Leave"
             },
-            "activepenalty": "0001",
+            "activepenalty": {
+                "id": "2001", 
+                "label": "suspension"
+            },
+
             "penalties":[
                 {
-                    "id": "0001",
+                    "id": "2001",
                     "label": "Suspension",
                     "maxallowedtardiness": "6"
                 },
                 {
-                    "id": "0002",
+                    "id": "2002",
                     "label": "Deduction",
                     "frombegintime": true
                 }
             ]
         },
         {
-            "id": "0001",
+            "id": "0003",
             "name": "Tardiness2",
             "threshhold": {
                 "graceperiod": "25 mins",
                 "maxduration": "Do not mark as Leave"
             },
-            "activepenalty": "0001",
+            "activepenalty": {
+                "id": "2001", 
+                "label": "suspension"
+            },
+
             "penalties":[
                 {
-                    "id": "0001",
+                    "id": "2001",
                     "label": "Suspension",
                     "maxallowedtardiness": "6"
                 },
                 {
-                    "id": "0002",
+                    "id": "2002",
                     "label": "Deduction",
                     "frombegintime": true
                 }
@@ -76,15 +88,19 @@
             "graceperiod": "15 mins",
             "maxduration": "Do not mark as Leave"
         },
-        "activepenalty": "0002",
+        "activepenalty": {
+            "id": "2001", 
+            "label": "suspension"
+        },
+
         "penalties":[
             {
-                "id": "0001",
+                "id": "2001",
                 "label": "Suspension",
                 "maxallowedtardiness": "6"
             },
             {
-                "id": "0002",
+                "id": "2002",
                 "label": "Deduction",
                 "frombegintime": true
             }

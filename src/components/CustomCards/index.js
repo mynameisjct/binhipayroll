@@ -129,7 +129,7 @@ export class PropLevel1 extends Component{
                 <View style={[styles.childTitleCont, this.state.nameStyle]}>
                     <Text style={styles.txtPropTitle}>{this.props.name}</Text>
                 </View>
-                <View style={[styles.propCont, this.state.contentStyle]}>
+                <View style={[styles.propCont, styles.adjustPropLevel1, this.state.contentStyle]}>
                     {this.props.content}
                 </View>
             </View>
@@ -144,20 +144,21 @@ export class PropLevel2 extends Component{
         this.state = {
             nameStyle: this.props.nameStyle || {},
             contentStyle: this.props.contentStyle || {},
-            contentType: this.props.contentType || ''
+            placeHolderStyle: this.props.placeHolderStyle || {},
+            contentType: this.props.contentType || '',
         }
     }
     
 
     render(){
         let oContent = 
-            <View style={[styles.propContChild, styles.adjustChildProp, this.state.contentStyle]}>
+            <View style={[styles.propContChild, this.state.contentStyle]}>
                 {this.props.content}
             </View>;
 
         if(this.state.contentType.toUpperCase() == "TEXT"){
             oContent = (
-                <View style={[styles.propContTxt, styles.adjustChildProp, this.state.contentStyle]}>
+                <View style={[styles.propContTxt, this.state.contentStyle]}>
                     <Text style={styles.txtDefault}>
                         {this.props.content}
                     </Text>
@@ -166,7 +167,7 @@ export class PropLevel2 extends Component{
         }
         
         return(
-            <View style={styles.payrollChildProp}>
+            <View style={[styles.payrollChildProp, this.state.placeHolderStyle]}>
                 <View style={[styles.childTitleCont, this.state.nameStyle]}>
                     <Text style={styles.txtDefault}>{this.props.name}</Text>
                 </View>
