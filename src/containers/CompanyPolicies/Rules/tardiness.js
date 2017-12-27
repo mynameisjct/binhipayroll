@@ -7,7 +7,8 @@ import {
     TimePickerAndroid,
     ScrollView,
     TextInput,
-    TouchableOpacity
+    TouchableOpacity,
+    RefreshControl
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import ActionButton from 'react-native-action-button';
@@ -15,6 +16,15 @@ import Icon2 from 'react-native-vector-icons/MaterialCommunityIcons';
 
 //Styles
 import styles from './styles'
+
+//Redux
+import { connect } from 'react-redux';
+import * as tardinessSelector from '../data/tardiness/selector';
+import * as tardinessActions from '../data/tardiness/actions';
+import { bindActionCreators } from 'redux';
+
+//API
+import * as payrollApi from '../data/payroll/api';
 
 //Custom Components
 import * as PromptScreen from '../../../components/ScreenLoadStatus';
@@ -35,13 +45,14 @@ const color_SwitchThumb='#EEB843';
 const cl_suspension = '2001';
 const cl_deduction = '2002';
 
-export default class Tardiness extends Component{
+export class Tardiness extends Component{
     constructor(props){
         super(props);
         this.state = {
             //Gereric States
+            _refreshing: false,
             _disabledMode: true,
-            _status: [1, 'Loading...'],
+            _status: [2, 'Loading...'],
 
             //Penalty
             _suspensionOptions: [
@@ -110,7 +121,7 @@ export default class Tardiness extends Component{
         }
     }
 
-/*     componentDidMount(){
+    componentDidMount(){
         if(this.props.status[0]==1){
             this._initValues();
         }
@@ -120,16 +131,54 @@ export default class Tardiness extends Component{
         });
     }
 
-    _initValues = () => {
+    componentWillReceiveProps(nextProps) {
+        if(this.state._status[0] != nextProps.status[0]){
+            if(nextProps.status[0]==1){
+                this._initValues();
+            }
 
+            this.setState({
+                _status: nextProps.status
+            })
+        }
+    }
+
+    _initValues = () => {
+        
         this.setState({
-            _curWorkShiftObj: oWorkShift,
-            _activeSchedule: oDefaultScheule,
-            _activeType: oActiveType,
-            _bNoWorkShift: bNoWorkShift,
-            _disabledMode: !bNoWorkShift
-        }); 
-    } */
+            _tardinessData: JSON.parse(JSON.stringify(tardinessSelector.getTardinessData())),
+            _activeTardiness: JSON.parse(JSON.stringify(tardinessSelector.getDefaultActiveTardiness())),
+        },
+            () => {
+                console.log('_activeTardiness: ' + JSON.stringify(this.state._activeTardiness));
+                console.log('_tardinessData: ' + JSON.stringify(this.state._tardinessData));
+            }
+        )
+    }
+
+    _getPenaltyValue = () => {
+        let oPenaltyVal = null;
+        let oPenalties = [...this.state._activeTardiness.penalties];
+        oPenalties.map(a => {
+            if(a.id == this.state._activeTardiness.activepenalty.id){
+                if(a.id == cl_deduction){
+                    oPenaltyVal = a.frombegintime;
+                }
+                else if(a.id == cl_suspension){
+                    oPenaltyVal = a.maxallowedtardiness;
+                }
+            }
+        });
+        console.log('_getPenaltyValue: ' + oPenaltyVal);
+        return oPenaltyVal;
+    }
+    
+    _setActiveRule = (value) => {
+        this.setState({
+            _activeTardiness: 
+                JSON.parse(JSON.stringify(tardinessSelector.getActiveTardinessFromID(value)))
+        })
+    }
 
     _enableTardiness = (value) => {
         let oTardiness = {...this.state._tardinessData};
@@ -147,7 +196,7 @@ export default class Tardiness extends Component{
         })
     }
 
-    _showTimePicker = async() => {
+    _showTimePicker = async(attribName) => {
         let defaultTime = 0;
 
         try {
@@ -159,13 +208,48 @@ export default class Tardiness extends Component{
             });
 
             if (action !== TimePickerAndroid.dismissedAction) {
-            this._setTime(strKey, strType, hour, minute);
+                this._setTime(strKey, strType, hour, minute);
+                if(attribName=='GP'){
+                    this._updateGracePeriod();
+                }
+                else if(attribName == 'HDL'){
+                    this._updateMaxTolerance();
+                }
             }
         } 
         
         catch ({code, message}) {
             console.warn('Cannot open time picker', message);
         }
+    }
+
+    _updateGracePeriod = () => {
+        let oPenalties = [...this.state._activeTardiness.penalties];
+        oPenalties.map((a, index) => {
+            if(a.id == this.state._activeTardiness.activepenalty.id){
+                if(a.id == cl_deduction){
+                    oPenaltyVal = a.frombegintime;
+                }
+                else if(a.id == cl_suspension){
+                    oPenaltyVal = a.maxallowedtardiness;
+                }
+            }
+        });
+    }
+
+    _updateMaxTolerance = () => {
+        let oPenaltyVal = null;
+        let oPenalties = [...this.state._activeTardiness.penalties];
+        oPenalties.map(a => {
+            if(a.id == this.state._activeTardiness.activepenalty.id){
+                if(a.id == cl_deduction){
+                    oPenaltyVal = a.frombegintime;
+                }
+                else if(a.id == cl_suspension){
+                    oPenaltyVal = a.maxallowedtardiness;
+                }
+            }
+        });
     }
 
     _setTime = () => {
@@ -200,6 +284,10 @@ export default class Tardiness extends Component{
         })
     }
 
+    _triggerRefresh = () => {
+        this.props.triggerRefresh(true);
+    }
+
     render(){
         //Loading View Status
         let pStatus = [...this.state._status];
@@ -212,7 +300,7 @@ export default class Tardiness extends Component{
                     refreshControl={
                         <RefreshControl
                             refreshing={this.state._refreshing}
-                            onRefresh={() => this.props.triggerRefresh(true)}
+                            onRefresh={() => this._triggerRefresh()}
                         />
                         }
                 >
@@ -220,6 +308,7 @@ export default class Tardiness extends Component{
                 </ScrollView>
             );
         }
+
         else if(pProgress==2){
             return (
                 <View style={styles.container}>
@@ -237,6 +326,7 @@ export default class Tardiness extends Component{
             let strTitle;
             let oActivePenalty;
             let oActivePenaltyRule;
+            let suspensionValue = null;
 
             if(this.state._disabledMode){
                 pTitle='Tardiness';
@@ -253,19 +343,23 @@ export default class Tardiness extends Component{
                 );
                 oRightOptionType = 'Switch';
                 strTitle = pTitle;
+
+                //Rule Name
                 oRuleName = (
                     <Picker
                         mode='dropdown'
                         style={styles.pickerStyle}
-                        selectedValue={this.state._activeTardiness.activepenalty.id}
-                        onValueChange={(itemValue, itemIndex) => {this._setPenalty(itemValue)}}>
+                        selectedValue={this.state._activeTardiness.id}
+                        onValueChange={(itemValue, itemIndex) => {this._setActiveRule(itemValue)}}>
                         {
-                            this.state._activeTardiness.penalties.map((option, index) => (
-                                <Picker.Item key={index} label={option.label} value={option.id} />
+                            this.state._tardinessData.data.map((data, index) => (
+                                <Picker.Item key={index} label={data.name} value={data.id} />
                             ))
                         }
                     </Picker>
                 );
+
+                //Penalty
                 oActivePenalty = (
                     <Text 
                         style={{color: '#434646', 
@@ -275,7 +369,7 @@ export default class Tardiness extends Component{
                         }}>
                         {this.state._activeTardiness.activepenalty.label}
                     </Text>
-                )
+                );
             }
             else{
                 pTitle='Add New Tardiness Rule';
@@ -304,7 +398,7 @@ export default class Tardiness extends Component{
                 oRuleName = (
                     <TextInput 
                         autoCapitalize='none'
-                        disabled={true}
+                        editable={true}
                         placeholder='Rule Name'
                         style={{paddingRight: 10, height: '100%'}}
                         onChangeText={() => {}}
@@ -367,18 +461,19 @@ export default class Tardiness extends Component{
                             <TextInput 
                                 autoCapitalize='none'
                                 keyboardType='numeric'
-                                disabled={true}
                                 placeholder='Rule Name'
                                 style={{paddingRight: 10, height: '100%'}}
                                 onChangeText={() => {}}
-                                value={this.state._tardinessData.name}
+                                value={this._getPenaltyValue()}
                                 returnKeyType="done"
                                 underlineColorAndroid='transparent'
                             />
                         }
                         contentStyle={{
-                            width: 280,
+                            paddingLeft: 15,
+                            width: 120,
                         }}
+                        hideBorder={this.state._disabledMode}
 
                         placeHolderStyle={{height: 100}}
                     />
@@ -404,10 +499,6 @@ export default class Tardiness extends Component{
                                         content={
                                             oRuleName
                                         }
-                                        contentStyle={{
-                                            paddingRight: 15,
-                                            
-                                        }}
                                     />
                                     <PropTitle name='Threshhold'/>
                                     <PropLevel2 
@@ -415,11 +506,12 @@ export default class Tardiness extends Component{
                                         content={
                                             <Text 
                                                 disabled={this.state._disabledMode}
-                                                onPress={() => {this._showTimePicker()}}
+                                                onPress={() => {this._showTimePicker('GP')}}
                                                 style={{color: '#434646', height: '100%', textAlignVertical: 'center'}}>
                                                 {this.state._activeTardiness.threshhold.graceperiod}
                                             </Text>
                                         }
+                                        hideBorder={this.state._disabledMode}
                                         contentStyle={{
                                             paddingLeft: 15,
                                             justifyContent: 'center',
@@ -440,6 +532,7 @@ export default class Tardiness extends Component{
                                                 {this.state._activeTardiness.threshhold.maxduration}
                                             </Text>
                                         }
+                                        hideBorder={this.state._disabledMode}
                                         contentStyle={{
                                             paddingLeft: 15,
                                             justifyContent: 'center',
@@ -454,6 +547,7 @@ export default class Tardiness extends Component{
                                         content={
                                             oActivePenalty
                                         }
+                                        hideBorder={this.state._disabledMode}
                                         contentStyle={{
                                             width: 150
                                         }}
@@ -488,3 +582,25 @@ export default class Tardiness extends Component{
         }
     }
 }
+
+function mapStateToProps (state) {
+    return {
+        logininfo: state.loginReducer.logininfo,
+        activecompany: state.activeCompanyReducer.activecompany,
+        tardiness: state.companyPoliciesReducer.tardiness
+        
+    }
+}
+
+function mapDispatchToProps (dispatch) {
+    return {
+        actions: {
+            tardiness: bindActionCreators(tardinessActions, dispatch),
+        },
+    }
+}
+
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(Tardiness)

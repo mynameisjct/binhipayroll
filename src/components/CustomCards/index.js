@@ -146,13 +146,30 @@ export class PropLevel2 extends Component{
             contentStyle: this.props.contentStyle || {},
             placeHolderStyle: this.props.placeHolderStyle || {},
             contentType: this.props.contentType || '',
+            hideBorder: this.props.hideBorder || false
         }
     }
     
+    componentWillReceiveProps = (nextProps) => {
+        if(this.state.hideBorder !== nextProps.hideBorder){
+            this.setState({
+                hideBorder: nextProps.hideBorder
+            })
+        }
+    }
+
+    _getBorder = () => {
+        console.log('this.state.hideBorder: ' + this.state.hideBorder);
+        if (this.state.hideBorder){
+            return({
+                borderWidth: 0
+            })
+        }
+    }
 
     render(){
         let oContent = 
-            <View style={[styles.propContChild, this.state.contentStyle]}>
+            <View style={[styles.propContChild, this.state.contentStyle, this._getBorder()]}>
                 {this.props.content}
             </View>;
 

@@ -5,7 +5,6 @@ import {
     ScrollView,
     TouchableNativeFeedback
 } from 'react-native';
-import { TabNavigator } from 'react-navigation';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 //Chil Views and Properties
@@ -316,6 +315,7 @@ export class CompanyPolicies extends Component {
             });
 		})
 		.catch((exception) => {
+            console.log('oInput: ' + JSON.stringify(oInput));
             console.log('exception: ' + exception);
             let oStatus = [0, 'Application error was encountered. \n Please contact BINHI-MeDFI'];
 			this.setState({
