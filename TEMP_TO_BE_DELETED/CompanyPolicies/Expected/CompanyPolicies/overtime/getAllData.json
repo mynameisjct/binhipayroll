@@ -1,0 +1,68 @@
+{
+    "flagno": "1",
+    "message": "Success!",
+    "enabled": true,
+    "data":[
+        {
+            "id": "0001",
+            "name": "Default",
+            "minovertime":{
+                "label": "Minimum Paid Overtime",
+                "value": "1 hour",
+                "options": ["1 hour", "2 hours", "3 hours", "4 hours", "5 hours"]
+            },
+
+            "maxovertime":{
+                "label": "Maximum Paid Overtime",
+                "value": "5 hours",
+                "options": ["Unlimited Duration",  "1 hour", "2 hours", "3 hours", "4 hours", "5 hours"]
+            }
+        },
+        {
+            "id": "0002",
+            "name": "OT 1",
+            "minovertime":{
+                "label": "Minimum Paid Overtime",
+                "value": "2 hour",
+                "options": ["1 hour", "2 hours", "3 hours", "4 hours", "5 hours"]
+            },
+
+            "maxovertime":{
+                "label": "Maximum Paid Overtime",
+                "value": "3 hours",
+                "options": ["Unlimited Duration",  "1 hour", "2 hours", "3 hours", "4 hours", "5 hours"]
+            }
+        },
+        {
+            "id": "0003",
+            "name": "OT2",
+            "minovertime":{
+                "label": "Minimum Paid Overtime",
+                "value": "3 hour",
+                "options": ["1 hour", "2 hours", "3 hours", "4 hours", "5 hours"]
+            },
+
+            "maxovertime":{
+                "label": "Maximum Paid Overtime",
+                "value": "4 hours",
+                "options": ["Unlimited Duration",  "1 hour", "2 hours", "3 hours", "4 hours", "5 hours"]
+            }
+        }
+    ],
+
+    "default":{
+        "id": "0001",
+        "name": "Default",
+        "minovertime":{
+            "label": "Minimum Paid Overtime",
+            "value": "1 hour",
+            "options": ["1 hour", "2 hours", "3 hours", "4 hours", "5 hours"]
+        },
+
+        "maxovertime":{
+            "label": "Maximum Paid Overtime",
+            "value": "Unlimited Duration",
+            "options": ["Unlimited Duration",  "1 hour", "2 hours", "3 hours", "4 hours", "5 hours"]
+        }
+    }
+}

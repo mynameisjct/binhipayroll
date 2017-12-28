@@ -305,7 +305,7 @@ export default {
     },
 
     pickerStyle: {
-        color: '#212223'
+        color: '#434646'
         /* backgroundColor: 'green' */
     },
 

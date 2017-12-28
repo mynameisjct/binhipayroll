@@ -8,7 +8,7 @@ export const getTardinessData = () => {
 
 export const getDefaultActiveTardiness = () => {
 	let oData = [...store.getState().companyPoliciesReducer.tardiness.data];
-	let oSortedData = [...oData.sort(compare)];
+	let oSortedData = [...oData.sort(compare).reverse()];
 	let oDefaultActive = {...oSortedData[0]};
 	return oDefaultActive;
 }
@@ -23,6 +23,10 @@ export const getActiveTardinessFromID = (value) => {
 	catch(exception){
 		return null
 	}
+}
+
+export const getDefaultTardiness = () => {
+	return {...store.getState().companyPoliciesReducer.tardiness.defaultdata};
 }
 
 

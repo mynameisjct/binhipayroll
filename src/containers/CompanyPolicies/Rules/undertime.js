@@ -1,22 +1,3 @@
-/* import React, { Component } from 'react';
-import {
-    View,
-    Text
-} from 'react-native';
-
-import Icon from 'react-native-vector-icons/Ionicons';
-import styles from './styles'
-
-export default class Undertime extends Component{
-    render(){
-        return(
-            <View style={styles.container}>
-                <Text> THIS SHOULD DISPLAY UNDETIME POLICY </Text>
-            </View>
-        );
-    }
-} */
-
 import React, { Component } from 'react';
 import {
     View,
@@ -25,7 +6,9 @@ import {
     Picker,
     TimePickerAndroid,
     ScrollView,
-    TextInput
+    TextInput,
+    TouchableOpacity,
+    RefreshControl
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import ActionButton from 'react-native-action-button';
@@ -34,20 +17,37 @@ import Icon2 from 'react-native-vector-icons/MaterialCommunityIcons';
 //Styles
 import styles from './styles'
 
+//Redux
+import { connect } from 'react-redux';
+import * as tardinessSelector from '../data/tardiness/selector';
+import * as tardinessActions from '../data/tardiness/actions';
+import { bindActionCreators } from 'redux';
+
+//API
+import * as tardinessApi from '../data/tardiness/api';
+
 //Custom Components
+import MessageBox from '../../../components/MessageBox';
 import * as PromptScreen from '../../../components/ScreenLoadStatus';
 import CustomCard, 
 {
     PropTitle,
     PropLevel1, 
     PropLevel2
-} 
+}
 from '../../../components/CustomCards';
 
+//Helper
+import * as oHelper from '../../../helper';
+
+//Class Constants
 const description_Undertime = 'Set Undertime Rules';
 const color_SwitchOn='#838383';
 const color_SwitchOff='#505251';
 const color_SwitchThumb='#EEB843';
+const cl_suspension = '2001';
+const cl_deduction = '2002';
+const save_loading_message = 'Saving new Tardiness Rule. Please wait...';
 
 export default class Undertime extends Component{
     constructor(props){

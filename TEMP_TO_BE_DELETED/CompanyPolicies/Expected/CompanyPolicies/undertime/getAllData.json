@@ -1,0 +1,96 @@
+{
+    "flagno": "1",
+    "message": "Success!",
+    "enabled": true,
+    "data":[
+        {
+            "id": "0001",
+            "name": "Default",
+            "activepenalty": {
+                "id": "2001", 
+                "label": "suspension"
+            },
+
+            "penalties":[
+                {
+                    "id": "2001",
+                    "label": "Suspension",
+                    "maxallowedtardiness": "6"
+                },
+                {
+                    "id": "2002",
+                    "label": "Deduction",
+                    "value:": "per minute",
+                    "options": ["per minute", "per 30 minutes", "per hour"]
+                }
+            ]
+        },
+        {
+            "id": "0002",
+            "name": "Default",
+            "activepenalty": {
+                "id": "2002", 
+                "label": "suspension"
+            },
+
+            "penalties":[
+                {
+                    "id": "2001",
+                    "label": "Suspension",
+                    "maxallowedtardiness": "6"
+                },
+                {
+                    "id": "2002",
+                    "label": "Deduction",
+                    "value:": "per hour",
+                    "options": ["per minute", "per 30 minutes", "per hour"] 
+                }
+            ]
+        },
+        {
+            "id": "0003",
+            "name": "Default",
+            "activepenalty": {
+                "id": "2002", 
+                "label": "suspension"
+            },
+
+            "penalties":[
+                {
+                    "id": "2001",
+                    "label": "Suspension",
+                    "maxallowedtardiness": "6"
+                },
+                {
+                    "id": "2002",
+                    "label": "Deduction",
+                    "value:": "per 30 minutes",
+                    "options": ["per minute", "per 30 minutes", "per hour"] 
+                }
+            ]
+        }
+    ],
+
+    "defaultd":{
+        "id": "",
+        "name": "",
+        "activepenalty": {
+            "id": "2001", 
+            "label": "suspension"
+        },
+
+        "penalties":[
+            {
+                "id": "2001",
+                "label": "Suspension",
+                "maxallowedtardiness": "6"
+            },
+            {
+                "id": "2002",
+                "label": "Deduction",
+                "value:": "per minute",
+                "options": ["per minute", "per 30 minutes", "per hour"]
+            }
+        ]
+    }
+}

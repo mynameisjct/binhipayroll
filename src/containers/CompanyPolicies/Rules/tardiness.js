@@ -24,9 +24,10 @@ import * as tardinessActions from '../data/tardiness/actions';
 import { bindActionCreators } from 'redux';
 
 //API
-import * as payrollApi from '../data/payroll/api';
+import * as tardinessApi from '../data/tardiness/api';
 
 //Custom Components
+import MessageBox from '../../../components/MessageBox';
 import * as PromptScreen from '../../../components/ScreenLoadStatus';
 import CustomCard, 
 {
@@ -36,14 +37,17 @@ import CustomCard,
 }
 from '../../../components/CustomCards';
 
+//Helper
+import * as oHelper from '../../../helper';
+
 //Class Constants
 const description_Tardiness = 'Set Tardiness Rules';
 const color_SwitchOn='#838383';
 const color_SwitchOff='#505251';
 const color_SwitchThumb='#EEB843';
-
 const cl_suspension = '2001';
 const cl_deduction = '2002';
+const save_loading_message = 'Saving new Tardiness Rule. Please wait...';
 
 export class Tardiness extends Component{
     constructor(props){
@@ -53,11 +57,16 @@ export class Tardiness extends Component{
             _refreshing: false,
             _disabledMode: true,
             _status: [2, 'Loading...'],
+            _promptShow: false,
+            _promptMsg: '',
+            _msgBoxShow: false,
+            _msgBoxType: '',
+            _resMsg: '',
 
             //Penalty
             _suspensionOptions: [
-                'from the beginning of the shift',
-                'from the end of the grace period'
+                'from the end of the grace period',
+                'from the beginning of the shift'
             ],
             _maxallowedtardiness: '6',
             _frombegintime: 1,
@@ -143,6 +152,15 @@ export class Tardiness extends Component{
         }
     }
 
+    _closeMsgBox = () => {
+        this.setState({
+            _msgBoxShow: false,
+            _resMsg: '',
+            _activeRequest: '',
+            _activeBreakTimeIndex: ''
+        });
+    }
+
     _initValues = () => {
         
         this.setState({
@@ -154,6 +172,94 @@ export class Tardiness extends Component{
                 console.log('_tardinessData: ' + JSON.stringify(this.state._tardinessData));
             }
         )
+    }
+
+    _saveRule = () => {
+        if(!oHelper.isStringEmptyOrSpace(this.state._activeTardiness.name)){
+            this.setState({
+                _promptMsg: save_loading_message,
+                _promptShow: true
+            })
+            const oInput = {
+                companyid: this.props.activecompany.id,
+                username: this.props.logininfo.resUsername,
+                transtype: 'update',
+                accesstoken: '',
+                clientid: '',
+                data: this.state._activeTardiness,
+            };
+
+            tardinessApi.create(oInput)
+            .then((response) => response.json())
+            .then((res) => {
+                console.log('INPUT: ' + JSON.stringify(oInput));
+                console.log('OUTPUT: ' + JSON.stringify(res));
+                this.setState({
+                    _promptShow: false
+                });
+                if(res.flagno==0){
+                    this.setState({
+                        _msgBoxShow: true,
+                        _msgBoxType: 'error-ok',
+                        _resMsg: res.message
+                    });
+                }
+                else if(res.flagno==1){
+                    this.setState({
+                        _msgBoxShow: true,
+                        _msgBoxType: 'success',
+                        _resMsg: res.message,
+                        _bNoWorkShift: false
+                    })
+                    this._updateStore(res);
+                }
+                else{
+                    this.setState({
+                        _msgBoxShow: true,
+                        _msgBoxType: 'error-ok',
+                        _resMsg: 'Unable to save. An Unknown Error has been encountered. Contact BINHI-MeDFI.'
+                    });
+                }
+            })
+            .catch((exception) => {
+                this.setState({
+                    _promptShow: false,
+                    _msgBoxShow: true,
+                    _msgBoxType: 'error-ok',
+                    _resMsg: exception
+                })
+            });
+        }
+        else{
+            console.log('SHOULD BE AN ERROR PROMPT!');
+            this.setState({
+                _msgBoxShow: true,
+                _msgBoxType: 'error-ok',
+                _resMsg: 'Unable to save. Please input Rule Name.'
+            });
+        }
+    }
+
+    _updateStore = (res) => {
+        let oTardinessData = {...this.state._tardinessData};
+        let oData = [...oTardinessData.data];
+
+        let oActiveTardiness = {...this.state._activeTardiness};
+        oActiveTardiness.id = res.id
+        oData.push(oActiveTardiness);
+
+        oTardinessData.data = oData;
+
+        this.props.actions.tardiness.update(oTardinessData);
+        this._disableAll();
+    }
+
+    _updateRuleName = (strVal) => {
+        let oActiveTardiness = {...this.state._activeTardiness};
+        oActiveTardiness.name = strVal;
+        this.setState({
+            _activeTardiness: oActiveTardiness
+        })
     }
 
     _getPenaltyValue = () => {
@@ -189,8 +295,18 @@ export class Tardiness extends Component{
     }
 
     _setPenalty = (value) => {
+        let strLabel = '';
+
+        if(value==cl_deduction){
+            strLabel = 'Deduction';
+        }
+        else{
+            strLabel = 'Suspension';
+        }
+
         let oActiveTardiness = {...this.state._activeTardiness};
         oActiveTardiness.activepenalty.id=value;
+        oActiveTardiness.activepenalty.label=strLabel;
         this.setState({
             _activeTardiness: oActiveTardiness
         })
@@ -208,12 +324,19 @@ export class Tardiness extends Component{
             });
 
             if (action !== TimePickerAndroid.dismissedAction) {
-                this._setTime(strKey, strType, hour, minute);
+                let strHr = '';
+                let strMin = '';
+
+                hour>1 ? strHr = 'hours' : strHr = 'hour'
+                minute>1 ? strMin = 'mins' : strMin = 'min'
+
+
+                let strTime = hour + strHr + ' ' + minute + strMin
                 if(attribName=='GP'){
-                    this._updateGracePeriod();
+                    this._updateGracePeriod(strTime);
                 }
                 else if(attribName == 'HDL'){
-                    this._updateMaxTolerance();
+                    this._updateMaxTolerance(strTime);
                 }
             }
         } 
@@ -223,51 +346,60 @@ export class Tardiness extends Component{
         }
     }
 
-    _updateGracePeriod = () => {
-        let oPenalties = [...this.state._activeTardiness.penalties];
-        oPenalties.map((a, index) => {
-            if(a.id == this.state._activeTardiness.activepenalty.id){
-                if(a.id == cl_deduction){
-                    oPenaltyVal = a.frombegintime;
-                }
-                else if(a.id == cl_suspension){
-                    oPenaltyVal = a.maxallowedtardiness;
-                }
-            }
-        });
+    _updateGracePeriod = (strTime) => {
+        let oActiveTardiness = {...this.state._activeTardiness};
+        oActiveTardiness.threshhold.graceperiod = strTime;
+        this.setState({
+            _activeTardiness: oActiveTardiness
+        })
     }
 
-    _updateMaxTolerance = () => {
-        let oPenaltyVal = null;
-        let oPenalties = [...this.state._activeTardiness.penalties];
-        oPenalties.map(a => {
-            if(a.id == this.state._activeTardiness.activepenalty.id){
-                if(a.id == cl_deduction){
-                    oPenaltyVal = a.frombegintime;
-                }
-                else if(a.id == cl_suspension){
-                    oPenaltyVal = a.maxallowedtardiness;
-                }
-            }
-        });
+    _updateMaxTolerance = (strTime) => {
+        let oActiveTardiness = {...this.state._activeTardiness};
+        oActiveTardiness.threshhold.maxduration = strTime;
+        this.setState({
+            _activeTardiness: oActiveTardiness
+        })
     }
 
     _setTime = () => {
         
     }
 
-    _setSuspensionRule = () =>{
+    _setPenaltyValue = (strVal) =>{
+        let oActiveTardiness = {...this.state._activeTardiness};
+        let oPenalties = [...oActiveTardiness.penalties];
+        oPenalties.map((a, index) => {
+            if(a.id == this.state._activeTardiness.activepenalty.id){
+                if(a.id == cl_deduction){
+                    oPenalties[index].frombegintime = !!+strVal;
+                }
+                else if(a.id == cl_suspension){
+                    oPenalties[index].maxallowedtardiness = strVal;
+                }
+            }
+        });
+
+        oActiveTardiness.penalties = oPenalties
         
+        this.setState({
+            _activeTardiness: oActiveTardiness
+        })
     }
     
     //Add New Rule
     _addNewRule = () => {
+        this.setState({
+            _activeTardiness: JSON.parse(JSON.stringify(tardinessSelector.getDefaultTardiness()))
+        })
         this._enableAll();
     }
 
     //Cancel Add/Edit Transaction
     _cancelEdit = () => {
+        this._initValues();
         this._disableAll();
+
     }
 
     //Disable Edit Mode
@@ -365,7 +497,9 @@ export class Tardiness extends Component{
                         style={{color: '#434646', 
                             height: '100%', 
                             textAlignVertical: 'center',
-                            paddingLeft: 15
+                            width: 150,
+                            paddingLeft: 15,
+                            paddingRight: 15
                         }}>
                         {this.state._activeTardiness.activepenalty.label}
                     </Text>
@@ -388,7 +522,7 @@ export class Tardiness extends Component{
                             disabled={this.state._disableBtn}
                             style={styles.btnSave}
                             activeOpacity={0.6}
-                            onPress={() => {this._saveWorkShift()}}>
+                            onPress={() => {this._saveRule()}}>
                             <Text style={styles.txtBtn}>SAVE</Text>
                         </TouchableOpacity>
                     </View>
@@ -398,10 +532,10 @@ export class Tardiness extends Component{
                 oRuleName = (
                     <TextInput 
                         autoCapitalize='none'
-                        editable={true}
+                        editable={!this.state._disabledMode}
                         placeholder='Rule Name'
-                        style={{paddingRight: 10, height: '100%'}}
-                        onChangeText={() => {}}
+                        style={{color: '#434646', paddingLeft: 10, height: '100%'}}
+                        onChangeText={(text) => {this._updateRuleName(text)}}
                         value={this.state._tardinessData.name}
                         returnKeyType="done"
                         underlineColorAndroid='transparent'
@@ -422,66 +556,21 @@ export class Tardiness extends Component{
                 )
             }
 
-            if(this.state._activeTardiness.activepenalty.id == cl_deduction){
-                oActivePenaltyRule = (
-                    <PropLevel2 
-                        name={'If employee clocked in\n' + 
-                            'after the grace period,\n' + 
-                            'make a tardiness de-\n' +
-                            'duction based on the\n' + 
-                            'number of minutes'}
-                        content={
-                            <Picker
-                                mode='dropdown'
-                                style={styles.pickerStyle}
-                                selectedValue={this.state._frombegintime}
-                                onValueChange={(itemValue, itemIndex) => {this._setSuspensionRule(itemValue)}}>
-                                {
-                                    this.state._suspensionOptions.map((option, index) => (
-                                        <Picker.Item key={index} label={option} value={index} />
-                                    ))
-                                }
-                            </Picker>
-                        }
-                        contentStyle={{
-                            width: 280,
-                        }}
-
-                        placeHolderStyle={{height: 100}}
-                    />
-                );
-            }
-            else if(this.state._activeTardiness.activepenalty.id == cl_suspension){
-                oActivePenaltyRule = (
-                    <PropLevel2 
-                        name={'Notify a Suspension\n' + 
-                            'Approval when number\n' + 
-                            'of occurences is breached'}
-                        content={
-                            <TextInput 
-                                autoCapitalize='none'
-                                keyboardType='numeric'
-                                placeholder='Rule Name'
-                                style={{paddingRight: 10, height: '100%'}}
-                                onChangeText={() => {}}
-                                value={this._getPenaltyValue()}
-                                returnKeyType="done"
-                                underlineColorAndroid='transparent'
-                            />
-                        }
-                        contentStyle={{
-                            paddingLeft: 15,
-                            width: 120,
-                        }}
-                        hideBorder={this.state._disabledMode}
-
-                        placeHolderStyle={{height: 100}}
-                    />
-                )
-            }
             return(
                 <View style={styles.container}>
-                    <ScrollView>
+                    { this.state._promptShow ?
+                        <PromptScreen.PromptGeneric show= {this.state._promptShow} title={this.state._promptMsg}/>
+                        : null
+                    }
+
+                    <ScrollView
+                        refreshControl={
+                            <RefreshControl
+                                refreshing={this.state._refreshing}
+                                onRefresh={() => this.props.triggerRefresh(true)}
+                            />
+                        }
+                    >
                         <CustomCard 
                             title={strTitle} 
                             description={description_Tardiness} 
@@ -514,8 +603,8 @@ export class Tardiness extends Component{
                                         hideBorder={this.state._disabledMode}
                                         contentStyle={{
                                             paddingLeft: 15,
-                                            justifyContent: 'center',
-                                            width: 120
+                                            paddingRight: 15,
+                                            width: 140
                                         }}
                                     />
                                     <View style={{height: 15}}>
@@ -525,7 +614,7 @@ export class Tardiness extends Component{
                                         content={
                                             <Text 
                                                 disabled={this.state._disabledMode}
-                                                onPress={() => {this._showTimePicker()}}
+                                                onPress={() => {this._showTimePicker('HDL')}}
                                                 style={{color: '#434646', 
                                                 height: '100%', 
                                                 textAlignVertical: 'center'}}>
@@ -535,8 +624,8 @@ export class Tardiness extends Component{
                                         hideBorder={this.state._disabledMode}
                                         contentStyle={{
                                             paddingLeft: 15,
-                                            justifyContent: 'center',
-                                            width: 120
+                                            paddingRight: 15,
+                                            width: 140
                                         }}
                                     />
                                     <View style={{marginTop: 30, borderBottomWidth: 1, borderColor: '#D1D4D6'}}>
@@ -552,10 +641,69 @@ export class Tardiness extends Component{
                                             width: 150
                                         }}
                                     />
-                                    {
-                                        oActivePenaltyRule
-                                    }
+                                    
+                                    { this.state._activeTardiness.activepenalty.id == cl_deduction ?
+                                        <PropLevel2 
+                                            name={'If employee clocked in\n' + 
+                                                'after the grace period,\n' + 
+                                                'make a tardiness de-\n' +
+                                                'duction based on the\n' + 
+                                                'number of minutes'}
+                                            content={
+                                                <Picker
+                                                    enabled={!this.state._disabledMode}
+                                                    mode='dropdown'
+                                                    style={styles.pickerStyle}
+                                                    selectedValue={Number(this.state._activeTardiness.penalties[1].frombegintime)}
+                                                    onValueChange={(itemValue, itemIndex) => {this._setPenaltyValue(itemIndex)}}>
+                                                    {
+                                                        this.state._suspensionOptions.map((option, index) => (
+                                                            <Picker.Item key={index} label={option} value={index} />
+                                                        ))
+                                                    }
+                                                </Picker>
+                                            }
+                                            hideBorder={this.state._disabledMode}
+                                            
+                                            contentStyle={{
+                                                width: 280,
+                                            }}
 
+                                            placeHolderStyle={{height: 100}}
+                                        />
+                                        : null
+                                    }
+                                    
+                                    {
+                                        this.state._activeTardiness.activepenalty.id == cl_suspension ?
+                                            <PropLevel2 
+                                                name={'Notify a Suspension\n' + 
+                                                    'Approval when number\n' + 
+                                                    'of occurences is breached'}
+                                                content={
+                                                    <TextInput 
+                                                        editable={!this.state._disabledMode}
+                                                        autoCapitalize='none'
+                                                        keyboardType='numeric'
+                                                        placeholder='Rule Name'
+                                                        style={{color: '#434646', height: '100%'}}
+                                                        onChangeText={(text)  => {this._setPenaltyValue(text)}}
+                                                        value={this._getPenaltyValue()}
+                                                        returnKeyType="done"
+                                                        underlineColorAndroid='transparent'
+                                                    />
+                                                }
+                                                contentStyle={{
+                                                    paddingLeft: 10,
+                                                    paddingRight: 10,
+                                                    width: 150,
+                                                }}
+                                                hideBorder={this.state._disabledMode}
+                        
+                                                placeHolderStyle={{height: 100}}
+                                            />
+                                        : null
+                                    }
                                 </View>
                             : null
                         }
@@ -577,6 +725,13 @@ export class Tardiness extends Component{
                             </ActionButton>
                         :null
                     }
+                    <MessageBox
+                        promptType={this.state._msgBoxType}
+                        show={this.state._msgBoxShow}
+                        onClose={this._closeMsgBox}
+                        onWarningContinue={this._continueActionOnWarning}
+                        message={this.state._resMsg}
+                    />
                 </View>
             );
         }

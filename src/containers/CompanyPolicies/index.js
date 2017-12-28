@@ -140,9 +140,9 @@ export class CompanyPolicies extends Component {
         this._getPayrollSchedule = this._getPayrollSchedule.bind(this);
         this._getTaxSettings = this._getTaxSettings.bind(this);
         this._getTardinessRule = this._getTardinessRule.bind(this);
-/*         this._getUndertimeRule = this._getUndertimeRule.bind(this);
+        this._getUndertimeRule = this._getUndertimeRule.bind(this);
         this._getOvertimeRule = this._getOvertimeRule.bind(this);
-        this._getLeavesRule = this._getLeavesRule.bind(this);
+/*         this._getLeavesRule = this._getLeavesRule.bind(this);
         this._getBenefitsRule = this._getBenefitsRule.bind(this);
         this._getBonusRule = this._getBenefitsRule.bind(this); */
 

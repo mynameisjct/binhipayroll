@@ -1,9 +1,9 @@
 import * as api from './api';
 import * as actionTypes from './actionTypes';
 
-export const update = tardiness => ({
+export const update = payload => ({
 	type: actionTypes.UPDATE,
-	tardiness,
+	payload,
 });
 
 export const empty = () => ({
@@ -14,7 +14,7 @@ export const remove = () => ({
 	type: actionTypes.REMOVE,
 });
 
-export const get = payload => 
+/* export const get = payload =>
 	dispatch =>
 		api.get(payload)
 		.then((response) => response.json())
@@ -23,16 +23,15 @@ export const get = payload =>
 			console.log('INPUT: ' + JSON.stringify(payload));
 			console.log('OUTPUT: ' + JSON.stringify(res));
 			dispatch(update(res));
-		});
+		}); */
 
 
-/* //MOCK DATA
+//MOCK DATA
 const mockJSON = {
-	sucess: 'http://www.mocky.io/v2/5a4317d53000004f35709ec2',
-	error: 'http://www.mocky.io/v2/5a42ffa13000007a30709ea5'
+	sucess: 'http://www.mocky.io/v2/5a44ae4b2e00006804708673',
 }
 
-export const get = payload => 
+export const get = payload =>
 	dispatch =>
 		fetchApi(mockJSON.sucess,payload)
 		.then((response) => response.json())
@@ -63,4 +62,4 @@ export const fetchApi = (endPoint, payload = {}, strMethod = 'post', headers = {
 		}
 	});
 }
-		 */
+		
