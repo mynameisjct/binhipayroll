@@ -283,20 +283,21 @@ export class EmpeSidebarSidebar extends Component {
         return(this.state._activeUser.resFName + ' ' + this.state._activeUser.resLName);
     }
 
-    setPickerValue = (name, index) => {
+    setPickerValue = (compId, index) => {
         let activeCompany = Object.assign({},...this.state._activeCompany);
-        activeCompany.name = name;
-        activeCompany.id = index;
+        let strName = this.state._activeUser.resCompany[index].name;
+        activeCompany.name = strName;
+        activeCompany.id = compId;
         this.setState({
             _activeCompany: activeCompany
         })
-        this._dispathActiveCompanyProps(name, index);
+        this._dispathActiveCompanyProps(strName, compId);
     }
 
-    _dispathActiveCompanyProps = (name, index) => {
+    _dispathActiveCompanyProps = (name, compId) => {
         this.props.dispatchStoreValues({
             name: name,
-            id: index
+            id: compId
         })
         this.getNotificationsCount();
     }
@@ -327,12 +328,12 @@ export class EmpeSidebarSidebar extends Component {
                         <View style={styles.companyPicker}>
                             <Picker
                                 mode='dropdown'
-                                selectedValue={this.state._activeCompany.name}
+                                selectedValue={this.state._activeCompany.id}
                                 onValueChange={(itemValue, itemIndex) => {this.setPickerValue(itemValue, itemIndex)}}>
                                 
                                 {
                                     this.state._activeUser.resCompany.map((company, index) => (
-                                        <Picker.Item key={company.id} label={company.name} value={company.name} />
+                                        <Picker.Item key={company.id} label={company.name} value={company.id} />
                                     ))
                                 }
                                 

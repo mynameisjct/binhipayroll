@@ -12,10 +12,31 @@
                 "options": ["1 hour", "2 hours", "3 hours", "4 hours", "5 hours"]
             },
 
+            "syncenabled": false,
+
             "maxovertime":{
                 "label": "Maximum Paid Overtime",
                 "value": "5 hours",
                 "options": ["Unlimited Duration",  "1 hour", "2 hours", "3 hours", "4 hours", "5 hours"]
+            },
+            
+            "rates":{
+                "regularworkingday": {
+                    "label": "Regular Working Day",
+                    "value": "1"
+                },
+                "regularholiday":{
+                    "label": "Regular Holiday",
+                    "value": "2"
+                },
+                "specialholiday":{
+                    "label": "Special Holiday",
+                    "value": "2"
+                },
+                "restday":{
+                    "label": "Rest Day",
+                    "value": "1.3"
+                }
             }
         },
         {
@@ -27,10 +48,31 @@
                 "options": ["1 hour", "2 hours", "3 hours", "4 hours", "5 hours"]
             },
 
+            "syncenabled": false,
+            
             "maxovertime":{
                 "label": "Maximum Paid Overtime",
-                "value": "3 hours",
+                "value": "5 hours",
                 "options": ["Unlimited Duration",  "1 hour", "2 hours", "3 hours", "4 hours", "5 hours"]
+            },
+            
+            "rates":{
+                "regularworkingday": {
+                    "label": "Regular Working Day",
+                    "value": "1"
+                },
+                "regularholiday":{
+                    "label": "Regular Holiday",
+                    "value": "2"
+                },
+                "specialholiday":{
+                    "label": "Special Holiday",
+                    "value": "1.3"
+                },
+                "restday":{
+                    "label": "Rest Day",
+                    "value": "1.3"
+                }
             }
         },
         {
@@ -42,10 +84,31 @@
                 "options": ["1 hour", "2 hours", "3 hours", "4 hours", "5 hours"]
             },
 
+            "syncenabled": true,
+
             "maxovertime":{
                 "label": "Maximum Paid Overtime",
-                "value": "4 hours",
+                "value": "5 hours",
                 "options": ["Unlimited Duration",  "1 hour", "2 hours", "3 hours", "4 hours", "5 hours"]
+            },
+            
+            "rates":{
+                "regularworkingday": {
+                    "label": "Regular Working Day",
+                    "value": "1"
+                },
+                "regularholiday":{
+                    "label": "Regular Holiday",
+                    "value": "2"
+                },
+                "specialholiday":{
+                    "label": "Special Holiday",
+                    "value": "1.3"
+                },
+                "restday":{
+                    "label": "Rest Day",
+                    "value": "1.3"
+                }
             }
         }
     ],
@@ -59,10 +122,38 @@
             "options": ["1 hour", "2 hours", "3 hours", "4 hours", "5 hours"]
         },
 
+        "syncenabled": true,
+        
         "maxovertime":{
             "label": "Maximum Paid Overtime",
-            "value": "Unlimited Duration",
+            "value": "5 hours",
             "options": ["Unlimited Duration",  "1 hour", "2 hours", "3 hours", "4 hours", "5 hours"]
+        },
+        
+        "rates":{
+            "regularworkingday": {
+                "label": "Regular Working Day",
+                "value": "1"
+            },
+            "regularholiday":{
+                "label": "Regular Holiday",
+                "value": "2"
+            },
+            "specialholiday":{
+                "label": "Special Holiday",
+                "value": "1.3"
+            },
+            "restday":{
+                "label": "Rest Day",
+                "value": "1.3"
+            }
         }
+    },
+
+    "standardrates": {
+        "regularworkingday": "1",
+        "regularholiday": "2",
+        "specialholiday": "1.3",
+        "restday": "1.3"
     }
 }

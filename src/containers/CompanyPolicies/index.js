@@ -33,6 +33,7 @@ import * as workshiftActions from './data/workshift/actions';
 import * as payrollActions from './data/payroll/actions';
 import * as taxActions from './data/tax/actions';
 import * as tardinessActions from './data/tardiness/actions';
+import * as undertimeActions from './data/undertime/actions';
 
 //Custom Components
 import * as StatusLoader from '../../components/ScreenLoadStatus';
@@ -95,13 +96,13 @@ export class CompanyPolicies extends Component {
                     id : '004',
                     name: 'Tardiness',
                     iconName: 'clock-alert',
-                    btnColor: btnActive
+                    btnColor: btnInactive
                 },
                 {
                     id : '005',
                     name: 'Undertime',
                     iconName: 'timelapse',
-                    btnColor: btnInactive
+                    btnColor: btnActive
                 },
                 {
                     id : '006',
@@ -141,7 +142,7 @@ export class CompanyPolicies extends Component {
         this._getTaxSettings = this._getTaxSettings.bind(this);
         this._getTardinessRule = this._getTardinessRule.bind(this);
         this._getUndertimeRule = this._getUndertimeRule.bind(this);
-        this._getOvertimeRule = this._getOvertimeRule.bind(this);
+        /* this._getOvertimeRule = this._getOvertimeRule.bind(this); */
 /*         this._getLeavesRule = this._getLeavesRule.bind(this);
         this._getBenefitsRule = this._getBenefitsRule.bind(this);
         this._getBonusRule = this._getBenefitsRule.bind(this); */
@@ -156,23 +157,24 @@ export class CompanyPolicies extends Component {
     }
     
     componentDidMount = () => {
-        this._initPage();
+        this._initPage(this.props);
     }
 
     componentWillReceiveProps(nextProps){
         let objActiveCompany = {...nextProps.activecompany};
         if (this.props.activecompany.id !== objActiveCompany.id){
-            this.componentDidMount();
+            console.log('objActiveCompany: ' + JSON.stringify(objActiveCompany));
+            this._initPage(nextProps);
         }
     }
 
-    _initPage = () => {
+    _initPage = (oProps) => {
         try{
             this.setState({
-                _objLoginInfo: {...this.props.logininfo},
-                _objActiveCompany: {...this.props.activecompany},
+                _objLoginInfo: {...oProps.logininfo},
+                _objActiveCompany: {...oProps.activecompany},
                 _status: 1,
-                _activeChild: '004'
+                _activeChild: '005'
             },
                 () => {
                     this._getAllCompanyPolicies();
@@ -197,6 +199,8 @@ export class CompanyPolicies extends Component {
         this._getPayrollSchedule();
         this._getTaxSettings();
         this._getTardinessRule();
+        this._getUndertimeRule();
+        /* this._getOvertimeRule(); */
     }
 
     _getWorkSchedule = (bForceUpdate) => {
@@ -259,7 +263,7 @@ export class CompanyPolicies extends Component {
 		});
     }
 
-    _getTaxSettings = () => {
+    _getTaxSettings = (bForceUpdate) => {
         let curStatus = [2, 'Loading...'];
         this.setState({
             _taxStatus: curStatus
@@ -291,7 +295,7 @@ export class CompanyPolicies extends Component {
 		});
     }
 
-    _getTardinessRule = () => {
+    _getTardinessRule = (bForceUpdate) => {
         let curStatus = [2, 'Loading...'];
         this.setState({
             _tardinessStatus: curStatus
@@ -307,7 +311,7 @@ export class CompanyPolicies extends Component {
 
         this.props.actions.tardiness.get(oInput)
         .then(() => {
-            /* console.log('this.props.tardiness: ' + JSON.stringify(this.props.tardiness)); */
+/*             console.log('this.props.tardiness: ' + JSON.stringify(this.props.tardiness)); */
             let oTardiness  = {...this.props.tardiness};
             let oStatus = [oTardiness.flagno, oTardiness.message];
             this.setState({
@@ -322,6 +326,39 @@ export class CompanyPolicies extends Component {
                 _tardinessStatus: oStatus
             })
 		});
+    }
+
+    _getUndertimeRule = (bForceUpdate) => {
+        let curStatus = [2, 'Loading...'];
+        this.setState({
+            _undertimeStatus: curStatus
+        });
+
+        let oInput = {
+            companyid: this.state._objActiveCompany.id,
+            username: this.state._objLoginInfo.resUsername,
+            transtype: 'get',
+            accesstoken: '',
+            clientid: '',
+        }
+        
+        this.props.actions.undertime.get(oInput)
+        .then(() => {
+            console.log('this.props.undertime: ' + JSON.stringify(this.props.undertime));
+            let oUndertime  = {...this.props.undertime};
+            let oStatus = [oUndertime.flagno, oUndertime.message];
+            this.setState({
+                _undertimeStatus: oStatus
+            });
+		})
+		.catch((exception) => {
+            console.log('oInput: ' + JSON.stringify(oInput));
+            console.log('exception: ' + exception);
+            let oStatus = [0, 'Application error was encountered. \n Please contact BINHI-MeDFI'];
+			this.setState({
+                _undertimeStatus: oStatus
+            })
+		}); 
     }
 
     _setActiveChild = (id, index) => {
@@ -354,19 +391,44 @@ export class CompanyPolicies extends Component {
 
         switch (this.state._activeChild){
             case '001': 
-                childComponent = (<WorkShift hasUnsaved={this._hasActiveTransaction} status={this.state._workShiftStatus} triggerRefresh={this._getWorkSchedule}/>);
+                childComponent = (
+                    <WorkShift 
+                        hasUnsaved={this._hasActiveTransaction} 
+                        status={this.state._workShiftStatus} 
+                        triggerRefresh={this._getWorkSchedule}/>
+                );
                 break;
             case '002':
-                childComponent = (<Payroll hasUnsaved={this._hasActiveTransaction} status={this.state._payrollStatus} triggerRefresh={this._getPayrollSchedule}/>);
+                childComponent = (
+                    <Payroll 
+                        hasUnsaved={this._hasActiveTransaction} 
+                        status={this.state._payrollStatus} 
+                        triggerRefresh={this._getPayrollSchedule}/>
+                );
                 break;
             case '003':
-                childComponent = (<Tax hasUnsaved={this._hasActiveTransaction} status={this.state._taxStatus} triggerRefresh={this._getTaxSettings}/>);
+                childComponent = (
+                    <Tax 
+                        hasUnsaved={this._hasActiveTransaction} 
+                        status={this.state._taxStatus} 
+                        triggerRefresh={this._getTaxSettings}/>
+                );
                 break;
             case '004':
-                childComponent = (<Tardiness hasUnsaved={this._hasActiveTransaction} status={this.state._tardinessStatus} triggerRefresh={this._getTardinessRule}/>)
+                childComponent = (
+                    <Tardiness 
+                        hasUnsaved={this._hasActiveTransaction} 
+                        status={this.state._tardinessStatus} 
+                        triggerRefresh={this._getTardinessRule}/>
+                )
                 break;
             case '005':
-                childComponent = (<Undertime/>);
+                childComponent = (
+                    <Undertime 
+                        hasUnsaved={this._hasActiveTransaction} 
+                        status={this.state._undertimeStatus} 
+                        triggerRefresh={this._getUndertimeRule}/>
+                )
                 break;
             case '006':
                 childComponent = (<Overtime/>);
@@ -445,7 +507,8 @@ function mapStateToProps (state) {
         companyWorkShift: state.companyPoliciesReducer.workshift,
         payroll: state.companyPoliciesReducer.payroll,
         tax: state.companyPoliciesReducer.tax,
-        tardiness: state.companyPoliciesReducer.tardiness
+        tardiness: state.companyPoliciesReducer.tardiness,
+        undertime: state.companyPoliciesReducer.undertime
     }
 }
 
@@ -455,7 +518,8 @@ function mapDispatchToProps (dispatch) {
             workshift: bindActionCreators(workshiftActions, dispatch),
             payroll: bindActionCreators(payrollActions, dispatch),
             tax: bindActionCreators(taxActions,dispatch),
-            tardiness: bindActionCreators(tardinessActions,dispatch)
+            tardiness: bindActionCreators(tardinessActions,dispatch),
+            undertime: bindActionCreators(undertimeActions,dispatch)
         },
     }
 }

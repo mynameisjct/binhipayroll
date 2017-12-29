@@ -48,6 +48,8 @@ const color_SwitchThumb='#EEB843';
 const cl_suspension = '2001';
 const cl_deduction = '2002';
 const save_loading_message = 'Saving new Tardiness Rule. Please wait...';
+const switch_loading_message = 'Switching Tardiness Rule. Please wait...';
+const delete_loading_message = 'Deleting Active Rule. Please wait...';
 
 export class Tardiness extends Component{
     constructor(props){
@@ -152,28 +154,6 @@ export class Tardiness extends Component{
         }
     }
 
-    _closeMsgBox = () => {
-        this.setState({
-            _msgBoxShow: false,
-            _resMsg: '',
-            _activeRequest: '',
-            _activeBreakTimeIndex: ''
-        });
-    }
-
-    _initValues = () => {
-        
-        this.setState({
-            _tardinessData: JSON.parse(JSON.stringify(tardinessSelector.getTardinessData())),
-            _activeTardiness: JSON.parse(JSON.stringify(tardinessSelector.getDefaultActiveTardiness())),
-        },
-            () => {
-                console.log('_activeTardiness: ' + JSON.stringify(this.state._activeTardiness));
-                console.log('_tardinessData: ' + JSON.stringify(this.state._tardinessData));
-            }
-        )
-    }
-
     _saveRule = () => {
         if(!oHelper.isStringEmptyOrSpace(this.state._activeTardiness.name)){
             this.setState({
@@ -211,7 +191,7 @@ export class Tardiness extends Component{
                         _resMsg: res.message,
                         _bNoWorkShift: false
                     })
-                    this._updateStore(res);
+                    this._pushNewRuleToStore(res);
                 }
                 else{
                     this.setState({
@@ -231,7 +211,7 @@ export class Tardiness extends Component{
             });
         }
         else{
-            console.log('SHOULD BE AN ERROR PROMPT!');
+            /* console.log('SHOULD BE AN ERROR PROMPT!'); */
             this.setState({
                 _msgBoxShow: true,
                 _msgBoxType: 'error-ok',
@@ -240,7 +220,119 @@ export class Tardiness extends Component{
         }
     }
 
-    _updateStore = (res) => {
+    _toggleTardiness = (value) => {
+        this.setState({
+            _promptMsg: switch_loading_message,
+            _promptShow: true
+        })
+        const oInput = {
+            companyid: this.props.activecompany.id,
+            username: this.props.logininfo.resUsername,
+            transtype: 'request',
+            accesstoken: '',
+            clientid: '',
+            enabled: value
+        };
+
+        tardinessApi.toggleSwitch(oInput)
+        .then((response) => response.json())
+        .then((res) => {
+/*             console.log('INPUT: ' + JSON.stringify(oInput));
+            console.log('OUTPUT: ' + JSON.stringify(res)); */
+            this.setState({
+                _promptShow: false
+            });
+            if(res.flagno==0){
+                this.setState({
+                    _msgBoxShow: true,
+                    _msgBoxType: 'error-ok',
+                    _resMsg: res.message
+                });
+            }
+            else if(res.flagno==1){
+                this.setState({
+                    _msgBoxShow: true,
+                    _msgBoxType: 'success',
+                    _resMsg: res.message,
+                    _bNoWorkShift: false
+                })
+                this._setTardinessSwitch(value);
+            }
+            else{
+                this.setState({
+                    _msgBoxShow: true,
+                    _msgBoxType: 'error-ok',
+                    _resMsg: 'Unable to save. An Unknown Error has been encountered. Contact BINHI-MeDFI.'
+                });
+            }
+        })
+        .catch((exception) => {
+            this.setState({
+                _promptShow: false,
+                _msgBoxShow: true,
+                _msgBoxType: 'error-ok',
+                _resMsg: exception
+            })
+        });
+    }
+
+    _deleteActiveRule = (value) => {
+        this.setState({
+            _promptMsg: delete_loading_message,
+            _promptShow: true
+        })
+        const oInput = {
+            companyid: this.props.activecompany.id,
+            username: this.props.logininfo.resUsername,
+            transtype: 'delete',
+            accesstoken: '',
+            clientid: '',
+            id: this.state._activeTardiness.id
+        };
+
+        tardinessApi.remove(oInput)
+        .then((response) => response.json())
+        .then((res) => {
+/*             console.log('INPUT: ' + JSON.stringify(oInput));
+            console.log('OUTPUT: ' + JSON.stringify(res)); */
+            this.setState({
+                _promptShow: false
+            });
+            if(res.flagno==0){
+                this.setState({
+                    _msgBoxShow: true,
+                    _msgBoxType: 'error-ok',
+                    _resMsg: res.message
+                });
+            }
+            else if(res.flagno==1){
+                this.setState({
+                    _msgBoxShow: true,
+                    _msgBoxType: 'success',
+                    _resMsg: res.message,
+                    _bNoWorkShift: false
+                })
+                this._popActiveRuleFromStore(value);
+            }
+            else{
+                this.setState({
+                    _msgBoxShow: true,
+                    _msgBoxType: 'error-ok',
+                    _resMsg: 'Unable to save. An Unknown Error has been encountered. Contact BINHI-MeDFI.'
+                });
+            }
+        })
+        .catch((exception) => {
+            this.setState({
+                _promptShow: false,
+                _msgBoxShow: true,
+                _msgBoxType: 'error-ok',
+                _resMsg: exception
+            })
+        });
+    }
+
+    _pushNewRuleToStore = (res) => {
         let oTardinessData = {...this.state._tardinessData};
         let oData = [...oTardinessData.data];
 
@@ -252,6 +344,63 @@ export class Tardiness extends Component{
 
         this.props.actions.tardiness.update(oTardinessData);
         this._disableAll();
+        this._initValues();
+    }
+
+    _setTardinessSwitch = (value) => {
+        let oTardiness = {...this.state._tardinessData};
+        oTardiness.enabled = value;
+        this.props.actions.tardiness.update(oTardiness);
+        this._initValues();
+    }
+
+    _popActiveRuleFromStore = () => {
+        let oTardiness = {...this.state._tardinessData};
+        let aTardinessData = [...oTardiness.data];
+        let iPopIndex;
+
+        aTardinessData.map((data,index) => {
+            if(data.id == this.state._activeTardiness.id){
+                aTardinessData.splice(index, 1);
+            }
+        });
+
+        oTardiness.data = aTardinessData;
+        this.props.actions.tardiness.update(oTardiness);
+        this._initValues();
+    }
+
+    _closeMsgBox = () => {
+        this.setState({
+            _msgBoxShow: false,
+            _resMsg: '',
+            _activeRequest: '',
+            _activeBreakTimeIndex: ''
+        });
+    }
+
+    _initValues = () => {
+        let bFlag = true;
+        let oActiveTardiness = JSON.parse(JSON.stringify(tardinessSelector.getDefaultActiveTardiness()));
+        
+        if (!oActiveTardiness){
+            oActiveTardiness = JSON.parse(JSON.stringify(tardinessSelector.getDefaultTardiness()));
+            bFlag = false;
+        }
+
+        /* console.log('oActiveTardiness: ' + JSON.stringify(oActiveTardiness));
+        console.log('bFlag: ' + bFlag); */
+
+        this.setState({
+            _tardinessData: JSON.parse(JSON.stringify(tardinessSelector.getTardinessData())),
+            _activeTardiness: oActiveTardiness,
+            _disabledMode: bFlag
+        },
+            () => {
+                /* console.log('_activeTardiness: ' + JSON.stringify(this.state._activeTardiness));
+                console.log('_tardinessData: ' + JSON.stringify(this.state._tardinessData)); */
+            }
+        )
     }
 
     _updateRuleName = (strVal) => {
@@ -275,7 +424,7 @@ export class Tardiness extends Component{
                 }
             }
         });
-        console.log('_getPenaltyValue: ' + oPenaltyVal);
+        /* console.log('_getPenaltyValue: ' + oPenaltyVal); */
         return oPenaltyVal;
     }
     
@@ -283,14 +432,6 @@ export class Tardiness extends Component{
         this.setState({
             _activeTardiness: 
                 JSON.parse(JSON.stringify(tardinessSelector.getActiveTardinessFromID(value)))
-        })
-    }
-
-    _enableTardiness = (value) => {
-        let oTardiness = {...this.state._tardinessData};
-        oTardiness.enabled = value;
-        this.setState({
-            _tardinessData: oTardiness
         })
     }
 
@@ -399,7 +540,9 @@ export class Tardiness extends Component{
     _cancelEdit = () => {
         this._initValues();
         this._disableAll();
-
+        if(this.state._tardinessData.data.length === 0){
+            this._toggleTardiness(false);
+        }
     }
 
     //Disable Edit Mode
@@ -460,13 +603,13 @@ export class Tardiness extends Component{
             let oActivePenaltyRule;
             let suspensionValue = null;
 
-            if(this.state._disabledMode){
+            if(this.state._disabledMode || !this.state._tardinessData.enabled){
                 pTitle='Tardiness';
                 pType='Switch';
                 oRightOption = (
                     <Switch
                         disabled={false}
-                        onValueChange={ (value) => {this._enableTardiness(value)}} 
+                        onValueChange={ (value) => {this._toggleTardiness(value)}} 
                         onTintColor={color_SwitchOn}
                         thumbTintColor={color_SwitchThumb}
                         tintColor={color_SwitchOff}
@@ -719,7 +862,7 @@ export class Tardiness extends Component{
                                     <Icon2 name="bell-plus" color='#fff' size={22} style={styles.actionButtonIcon} />
                                 </ActionButton.Item>
                                 
-                                <ActionButton.Item buttonColor='#D75450' title="DELETE CURRENT TARDINESS RULE" onPress={() => {this._deleteActiveWorkShiftRequest()}}>
+                                <ActionButton.Item buttonColor='#D75450' title="DELETE CURRENT TARDINESS RULE" onPress={() => {this._deleteActiveRule()}}>
                                     <Icon2 name="delete-empty" color='#fff' size={22} style={styles.actionButtonIcon} />
                                 </ActionButton.Item>
                             </ActionButton>
