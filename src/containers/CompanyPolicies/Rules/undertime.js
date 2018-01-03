@@ -343,10 +343,10 @@ export class Undertime extends Component{
             _activeUndertime: oActiveUndertime,
             _disabledMode: bFlag
         },
-            () => {
+            /* () => {
                 console.log('_activeUndertime: ' + JSON.stringify(this.state._activeUndertime));
                 console.log('_undertimeData: ' + JSON.stringify(this.state._undertimeData));
-            }
+            } */
         )
     }
 

@@ -1,0 +1,32 @@
+{
+    "flagno": "1",
+    "message": "Success!",
+    "enabled": true,
+    "leavetypes":[
+        {
+            "id": "0001",
+            "name": "Sick Leave",
+            "allowablecount": 5
+        },
+        {
+            "id": "0002",
+            "name": "Vaction Leave",
+            "allowablecount": 3
+        },
+        {
+            "id": "0003",
+            "name": "Multi Purpose Leave",
+            "allowablecount": 2
+        }
+    ],
+
+    "expirydate":{
+        "month": "12",
+        "day": "31",
+        "unusedleaveaction":{
+            "value": "Convert to Cash",
+            "options":  ["Reset Only", "Convert to Cash", "Carry Forward"]
+        },
+        "maxconvertible": 5
+    }
+}

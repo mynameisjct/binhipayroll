@@ -43,7 +43,9 @@ export class PromptError extends Component{
     render(){
         return(
             <View style={styles.errorCont}>
-                <Text style={styles.txtMsgError}>{this.props.title}</Text>
+                <View style={styles.placeHolderErrorMessage}>
+                    <Text style={styles.txtMsgError}>{this.props.title}</Text>
+                </View>
             </View>
         );
     }

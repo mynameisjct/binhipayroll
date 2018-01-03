@@ -34,6 +34,8 @@ import * as payrollActions from './data/payroll/actions';
 import * as taxActions from './data/tax/actions';
 import * as tardinessActions from './data/tardiness/actions';
 import * as undertimeActions from './data/undertime/actions';
+import * as overtimeActions from './data/overtime/actions';
+import * as leavesActions from './data/leaves/actions';
 
 //Custom Components
 import * as StatusLoader from '../../components/ScreenLoadStatus';
@@ -102,7 +104,7 @@ export class CompanyPolicies extends Component {
                     id : '005',
                     name: 'Undertime',
                     iconName: 'timelapse',
-                    btnColor: btnActive
+                    btnColor: btnInactive
                 },
                 {
                     id : '006',
@@ -114,7 +116,7 @@ export class CompanyPolicies extends Component {
                     id : '007',
                     name: 'Leaves',
                     iconName: 'timer-off',
-                    btnColor: btnInactive
+                    btnColor: btnActive
                 },
                 {
                     id : '008',
@@ -142,9 +144,9 @@ export class CompanyPolicies extends Component {
         this._getTaxSettings = this._getTaxSettings.bind(this);
         this._getTardinessRule = this._getTardinessRule.bind(this);
         this._getUndertimeRule = this._getUndertimeRule.bind(this);
-        /* this._getOvertimeRule = this._getOvertimeRule.bind(this); */
-/*         this._getLeavesRule = this._getLeavesRule.bind(this);
-        this._getBenefitsRule = this._getBenefitsRule.bind(this);
+        this._getOvertimeRule = this._getOvertimeRule.bind(this);
+        this._getLeavesRule = this._getLeavesRule.bind(this);
+/*         this._getBenefitsRule = this._getBenefitsRule.bind(this);
         this._getBonusRule = this._getBenefitsRule.bind(this); */
 
         //Active Unsaved Transaction Trigger
@@ -163,7 +165,7 @@ export class CompanyPolicies extends Component {
     componentWillReceiveProps(nextProps){
         let objActiveCompany = {...nextProps.activecompany};
         if (this.props.activecompany.id !== objActiveCompany.id){
-            console.log('objActiveCompany: ' + JSON.stringify(objActiveCompany));
+            /* console.log('objActiveCompany: ' + JSON.stringify(objActiveCompany)); */
             this._initPage(nextProps);
         }
     }
@@ -174,7 +176,7 @@ export class CompanyPolicies extends Component {
                 _objLoginInfo: {...oProps.logininfo},
                 _objActiveCompany: {...oProps.activecompany},
                 _status: 1,
-                _activeChild: '005'
+                _activeChild: '007'
             },
                 () => {
                     this._getAllCompanyPolicies();
@@ -200,7 +202,8 @@ export class CompanyPolicies extends Component {
         this._getTaxSettings();
         this._getTardinessRule();
         this._getUndertimeRule();
-        /* this._getOvertimeRule(); */
+        this._getOvertimeRule();
+        this._getLeavesRule();
     }
 
     _getWorkSchedule = (bForceUpdate) => {
@@ -319,8 +322,8 @@ export class CompanyPolicies extends Component {
             });
 		})
 		.catch((exception) => {
-            console.log('oInput: ' + JSON.stringify(oInput));
-            console.log('exception: ' + exception);
+            /* console.log('oInput: ' + JSON.stringify(oInput));
+            console.log('exception: ' + exception); */
             let oStatus = [0, 'Application error was encountered. \n Please contact BINHI-MeDFI'];
 			this.setState({
                 _tardinessStatus: oStatus
@@ -344,7 +347,7 @@ export class CompanyPolicies extends Component {
         
         this.props.actions.undertime.get(oInput)
         .then(() => {
-            console.log('this.props.undertime: ' + JSON.stringify(this.props.undertime));
+            /* console.log('this.props.undertime: ' + JSON.stringify(this.props.undertime)); */
             let oUndertime  = {...this.props.undertime};
             let oStatus = [oUndertime.flagno, oUndertime.message];
             this.setState({
@@ -352,11 +355,77 @@ export class CompanyPolicies extends Component {
             });
 		})
 		.catch((exception) => {
+            /* console.log('oInput: ' + JSON.stringify(oInput));
+            console.log('exception: ' + exception); */
+            let oStatus = [0, 'Application error was encountered. \n Please contact BINHI-MeDFI'];
+			this.setState({
+                _undertimeStatus: oStatus
+            })
+		}); 
+    }
+
+    _getOvertimeRule = (bForceUpdate) => {
+        let curStatus = [2, 'Loading...'];
+        this.setState({
+            _overtimeStatus: curStatus
+        });
+
+        let oInput = {
+            companyid: this.state._objActiveCompany.id,
+            username: this.state._objLoginInfo.resUsername,
+            transtype: 'get',
+            accesstoken: '',
+            clientid: '',
+        }
+        
+        this.props.actions.overtime.get(oInput)
+        .then(() => {
+            /* console.log('this.props.overtime: ' + JSON.stringify(this.props.overtime)); */
+            let oOvertime  = {...this.props.overtime};
+            let oStatus = [oOvertime.flagno, oOvertime.message];
+            this.setState({
+                _overtimeStatus: oStatus
+            });
+		})
+		.catch((exception) => {
+            /* console.log('oInput: ' + JSON.stringify(oInput)); */
+            console.log('exception: ' + exception);
+            let oStatus = [0, 'Application error was encountered. \n Please contact BINHI-MeDFI'];
+			this.setState({
+                _overtimeStatus: oStatus
+            })
+		}); 
+    }
+
+    _getLeavesRule = (bForceUpdate) => {
+        let curStatus = [2, 'Loading...'];
+        this.setState({
+            _leaveStatus: curStatus
+        });
+
+        let oInput = {
+            companyid: this.state._objActiveCompany.id,
+            username: this.state._objLoginInfo.resUsername,
+            transtype: 'get',
+            accesstoken: '',
+            clientid: '',
+        }
+        
+        this.props.actions.leaves.get(oInput)
+        .then(() => {
+            console.log('this.props.leaves: ' + JSON.stringify(this.props.leaves));
+            let oLeaves  = {...this.props.leaves};
+            let oStatus = [oLeaves.flagno, oLeaves.message];
+            this.setState({
+                _leaveStatus: oStatus
+            });
+		})
+		.catch((exception) => {
             console.log('oInput: ' + JSON.stringify(oInput));
             console.log('exception: ' + exception);
             let oStatus = [0, 'Application error was encountered. \n Please contact BINHI-MeDFI'];
 			this.setState({
-                _undertimeStatus: oStatus
+                _leaveStatus: oStatus
             })
 		}); 
     }
@@ -431,10 +500,20 @@ export class CompanyPolicies extends Component {
                 )
                 break;
             case '006':
-                childComponent = (<Overtime/>);
+                childComponent = (
+                    <Overtime
+                        hasUnsaved={this._hasActiveTransaction} 
+                        status={this.state._overtimeStatus} 
+                        triggerRefresh={this._getOvertimeRule}/>
+                );
                 break;
             case '007':
-                childComponent = (<Leaves/>);
+                childComponent = (
+                    <Leaves
+                        hasUnsaved={this._hasActiveTransaction} 
+                        status={this.state._leaveStatus} 
+                        triggerRefresh={this._getLeavesRule}/>
+                );
                 break;
             case '008':
                 childComponent = (<Benefits/>);
@@ -508,7 +587,9 @@ function mapStateToProps (state) {
         payroll: state.companyPoliciesReducer.payroll,
         tax: state.companyPoliciesReducer.tax,
         tardiness: state.companyPoliciesReducer.tardiness,
-        undertime: state.companyPoliciesReducer.undertime
+        undertime: state.companyPoliciesReducer.undertime,
+        overtime: state.companyPoliciesReducer.overtime,
+        leaves: state.companyPoliciesReducer.leaves
     }
 }
 
@@ -519,7 +600,9 @@ function mapDispatchToProps (dispatch) {
             payroll: bindActionCreators(payrollActions, dispatch),
             tax: bindActionCreators(taxActions,dispatch),
             tardiness: bindActionCreators(tardinessActions,dispatch),
-            undertime: bindActionCreators(undertimeActions,dispatch)
+            undertime: bindActionCreators(undertimeActions,dispatch),
+            overtime: bindActionCreators(overtimeActions, dispatch),
+            leaves: bindActionCreators(leavesActions, dispatch)
         },
     }
 }

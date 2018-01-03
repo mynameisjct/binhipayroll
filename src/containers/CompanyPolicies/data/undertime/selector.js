@@ -7,7 +7,6 @@ export const getUndertimeData = () => {
 };
 
 export const getDefaultActiveUnderTime = () => {
-	console.log('=========I WAS IN getDefaultActiveUnderTime function ')
 	try{
 		let oData = [...store.getState().companyPoliciesReducer.undertime.data];
 		let oSortedData = [...oData.sort(compare).reverse()];

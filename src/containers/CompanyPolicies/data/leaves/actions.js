@@ -10,25 +10,21 @@ export const empty = () => ({
 	type: actionTypes.EMPTY,
 });
 
-export const remove = () => ({
-	type: actionTypes.REMOVE,
-});
-
 /* export const get = payload =>
 	dispatch =>
 		api.get(payload)
 		.then((response) => response.json())
 		.then((res) => {
-			console.log('===============UNDERTIME===============');
+			console.log('========================');
 			console.log('INPUT: ' + JSON.stringify(payload));
 			console.log('OUTPUT: ' + JSON.stringify(res));
 			dispatch(update(res));
-		}); */
-
+		});
+ */
 
 //MOCK DATA
 const mockJSON = {
-	sucess: 'http://www.mocky.io/v2/5a4c38093000000921a697e4',
+	sucess: 'http://www.mocky.io/v2/5a4c974a3000003f32a69921',
 }
 
 export const get = payload =>

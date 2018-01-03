@@ -37,9 +37,13 @@ export default {
 
     errorCont: {
         flex: 1,
-        backgroundColor: '#fff',
+        backgroundColor: 'blue',
+    },
+    
+    placeHolderErrorMessage: {
         justifyContent: 'center',
         alignItems: 'center',
+        backgroundColor: 'red'
     }
 
 };

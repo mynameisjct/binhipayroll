@@ -24,7 +24,7 @@ export const empty = () => ({
 
 //MOCK DATA
 const mockJSON = {
-	sucess: 'http://www.mocky.io/v2/5a44b1c02e0000070570867a',
+	sucess: 'http://www.mocky.io/v2/5a4c85013000004f2fa698da',
 }
 
 export const get = payload =>
