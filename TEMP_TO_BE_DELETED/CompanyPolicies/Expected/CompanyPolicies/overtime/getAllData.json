@@ -114,8 +114,8 @@
     ],
 
     "default":{
-        "id": "0001",
-        "name": "Default",
+        "id": "",
+        "name": "",
         "minovertime":{
             "label": "Minimum Paid Overtime",
             "value": "1 hour",

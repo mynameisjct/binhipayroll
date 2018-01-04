@@ -119,6 +119,12 @@ export default {
         color: '#434646'
     },
 
+    txtDefault: {
+        fontFamily: 'Helvetica-Light',
+        fontSize: 14,
+        color: '#434646'
+    },
+
     txtDefaultTime:{
         textDecorationLine: 'underline',
         fontFamily: 'Helvetica-Light',
@@ -187,6 +193,12 @@ export default {
         flexDirection: 'column'
     },
 
+    leaveCont: {
+        flex: 1,
+        flexDirection: 'column',
+        paddingLeft: 30
+    },
+
     breakTimeDetailsCont: {
         flex: 1,
         flexDirection: 'row',
@@ -201,6 +213,23 @@ export default {
         backgroundColor: 'transparent',
         justifyContent: 'center',
         alignItems: 'flex-start',
+    },
+
+    leaveNameCont: {
+        flex: 0.2,
+        minWidth: 200,
+        maxWidth: 200,
+        backgroundColor: 'transparent',
+        justifyContent: 'center',
+        alignItems: 'flex-start',
+    },
+
+    leaveDetailsCont: {
+        flex: 0.2,
+        minWidth: 160,
+        backgroundColor: 'transparent',
+        justifyContent: 'center',
+        alignItems: 'center'
     },
 
     breakDetailsCont: {
@@ -311,12 +340,6 @@ export default {
 
     effectiveDatePickerStyle: {
         color: '#212223',
-    },
-
-    txtDefault: {
-        fontFamily: 'Helvetica-Light',
-        fontSize: 15,
-        color: '#434646'
     },
 
     txtClickable: {

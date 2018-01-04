@@ -50,6 +50,14 @@ const cl_deduction = '2002';
 const save_loading_message = 'Saving new Tardiness Rule. Please wait...';
 const switch_loading_message = 'Switching Tardiness Rule. Please wait...';
 const delete_loading_message = 'Deleting Active Rule. Please wait...';
+const tardiness_disabled = 'Disabled — when Tardiness is turned off,' +
+" when an employee has clocked in after its scheduled time-in,"  +
+" the system will NOT impose a penalty and will NOT deduct the employees' pay."
+
+const tardiness_enabled = 'Enabled — when Tardiness is turned on,' +
+" when an employee has clocked in after its scheduled time-in,"  +
+" the system will determine a penalty based on defined Rules. Employer can add Rules" +
+' and can set Grace Period and Penalties.'
 
 export class Tardiness extends Component{
     constructor(props){
@@ -571,16 +579,7 @@ export class Tardiness extends Component{
 
         if(pProgress==0){
             return (
-                <ScrollView
-                    refreshControl={
-                        <RefreshControl
-                            refreshing={this.state._refreshing}
-                            onRefresh={() => this._triggerRefresh()}
-                        />
-                        }
-                >
-                    <PromptScreen.PromptError title={pMessage}/>
-                </ScrollView>
+                <PromptScreen.PromptError title='Tardiness Policy' onRefresh={()=>this.props.triggerRefresh(true)}/>
             );
         }
 
@@ -771,8 +770,7 @@ export class Tardiness extends Component{
                                             width: 140
                                         }}
                                     />
-                                    <View style={{marginTop: 30, borderBottomWidth: 1, borderColor: '#D1D4D6'}}>
-                                    </View>
+
                                     <PropTitle name='Tardiness Penalties'/>
                                     <PropLevel2 
                                         name='Penalty Type'
@@ -848,7 +846,11 @@ export class Tardiness extends Component{
                                         : null
                                     }
                                 </View>
-                            : null
+                            : 
+                            <View style={{paddingTop: 10}}>
+                                <Text>{tardiness_disabled}</Text>
+                                <Text>{'\n' + tardiness_enabled}</Text>
+                            </View>
                         }
                         </CustomCard>
                     </ScrollView>

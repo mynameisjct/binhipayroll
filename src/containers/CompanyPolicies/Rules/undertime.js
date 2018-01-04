@@ -51,6 +51,14 @@ const save_loading_message = 'Saving new Undertime Rule. Please wait...';
 const switch_loading_message = 'Switching Undertime Rule. Please wait...';
 const delete_loading_message = 'Deleting Active Rule. Please wait...';
 
+const undertime_disabled = 'Disabled — when Undertime is turned off,' +
+" when an employee has clocked out earlier from its scheduled time-out,"  +
+" the system will NOT impose a penalty and will NOT deduct the employees' pay."
+
+const undertime_enabled = 'Enabled — when Undertime is turned on,' +
+" when an employee has clocked out earlier from its scheduled time-out,"  +
+" the system WILL IMPOSE a penalty or WILL DEDUCT the employee's pay."
+
 export class Undertime extends Component{
     constructor(props){
         super(props);
@@ -116,6 +124,7 @@ export class Undertime extends Component{
             undertimeApi.create(oInput)
             .then((response) => response.json())
             .then((res) => {
+                console.log('===========SAVE UNDERTIME===========');
                 console.log('INPUT: ' + JSON.stringify(oInput));
                 console.log('OUTPUT: ' + JSON.stringify(res));
                 this.setState({
@@ -264,7 +273,7 @@ export class Undertime extends Component{
                 this.setState({
                     _msgBoxShow: true,
                     _msgBoxType: 'error-ok',
-                    _resMsg: 'Unable to save. An Unknown Error has been encountered. Contact BINHI-MeDFI.'
+                    _resMsg: 'Unable to Delete. An Unknown Error has been encountered. Contact BINHI-MeDFI.'
                 });
             }
         })
@@ -343,10 +352,10 @@ export class Undertime extends Component{
             _activeUndertime: oActiveUndertime,
             _disabledMode: bFlag
         },
-            /* () => {
+            () => {
                 console.log('_activeUndertime: ' + JSON.stringify(this.state._activeUndertime));
                 console.log('_undertimeData: ' + JSON.stringify(this.state._undertimeData));
-            } */
+            }
         )
     }
 
@@ -464,16 +473,7 @@ export class Undertime extends Component{
 
         if(pProgress==0){
             return (
-                <ScrollView
-                    refreshControl={
-                        <RefreshControl
-                            refreshing={this.state._refreshing}
-                            onRefresh={() => this._triggerRefresh()}
-                        />
-                        }
-                >
-                    <PromptScreen.PromptError title={pMessage}/>
-                </ScrollView>
+                <PromptScreen.PromptError title='Undertime Policy' onRefresh={()=>this.props.triggerRefresh(true)}/>
             );
         }
 
@@ -685,7 +685,11 @@ export class Undertime extends Component{
                                         : null
                                     }
                                 </View>
-                            : null
+                            : 
+                            <View style={{paddingTop: 10}}>
+                                    <Text>{undertime_disabled}</Text>
+                                    <Text>{'\n' + undertime_enabled}</Text>
+                            </View>
                         }
                         </CustomCard>
                     </ScrollView>

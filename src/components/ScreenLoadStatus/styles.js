@@ -28,22 +28,57 @@ export default {
     },
 
     txtMsgError: {
-        color: '#D75450',
-        fontFamily: 'Helvetica-Light',
+        color: '#8E929A',
+        fontFamily: 'Helvetica-Bold',
         fontSize: 16,
         textAlign: 'center',
-        fontStyle: 'italic'
+        fontStyle: 'italic',
+        fontWeight: '300'
     },
 
     errorCont: {
         flex: 1,
-        backgroundColor: 'blue',
     },
     
     placeHolderErrorMessage: {
-        justifyContent: 'center',
+        width: '100%',
+        height: '100%',
+        flexDirection: 'column',
+        backgroundColor: 'transparent', 
+    },
+
+    contTap: {
+        flex: 1,
+        flexDirection: 'row',
+        backgroundColor: 'transparent',
+        justifyContent: 'center'
+    },
+
+    placeholderIcon: {
+        flex: 0.5,
+        justifyContent: 'flex-start',
+        alignItems: 'flex-end',
+        backgroundColor: 'transparent',
+        marginRight: 120
+    },
+
+    placeholderMsg: {
+        flex: 0.5,
+        justifyContent: 'flex-start',
+        alignItems: 'flex-start',
+        marginLeft: -100
+    },
+
+    contCloud: {
+        flex: 1,
+        width: '100%',
         alignItems: 'center',
-        backgroundColor: 'red'
-    }
+        justifyContent: 'flex-end',
+        backgroundColor: 'transparent'
+    },
+
+    iconCloud: {
+        marginBottom: -15
+    },
 
 };

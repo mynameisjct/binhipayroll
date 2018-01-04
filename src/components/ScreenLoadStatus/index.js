@@ -14,7 +14,7 @@ import {
     View,
     Text,
     ActivityIndicator,
-
+    TouchableOpacity
 } from 'react-native';
 
 import styles from './styles';
@@ -43,9 +43,25 @@ export class PromptError extends Component{
     render(){
         return(
             <View style={styles.errorCont}>
-                <View style={styles.placeHolderErrorMessage}>
-                    <Text style={styles.txtMsgError}>{this.props.title}</Text>
-                </View>
+                <TouchableOpacity 
+                    activeOpacity={0.6}
+                    onPress={() => this.props.onRefresh()}>                    
+                
+                    <View style={styles.placeHolderErrorMessage}>
+
+                        <View style={styles.contCloud}>
+                            <Icon style={styles.iconCloud} size={130} name='ios-cloud' color='#8E929A' />
+                            <Text style={styles.txtMsgError}>{'Error Loading ' + this.props.title}</Text>
+                        </View>
+                        
+                        <View style={styles.contTap}>
+                            <Text style={styles.txtMsgError}>
+                                {<Icon size={20} name='ios-refresh-outline' color='#838383' />}  
+                                {' Tap to Retry'}
+                            </Text>
+                        </View>
+                    </View>
+                </TouchableOpacity>
             </View>
         );
     }

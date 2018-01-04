@@ -701,16 +701,7 @@ export class Payroll extends Component{
         let pMessage = pStatus[1];
         if(pProgress==0){
             return (
-                <ScrollView
-                    refreshControl={
-                        <RefreshControl
-                            refreshing={this.state._refreshing}
-                            onRefresh={() => this.props.triggerRefresh(true)}
-                        />
-                    }
-                >
-                    <PromptScreen.PromptError title={pMessage}/>
-                </ScrollView>
+                <PromptScreen.PromptError title='Payroll Policy' onRefresh={()=>this.props.triggerRefresh(true)}/>
             );
         }
         else if(pProgress==2){

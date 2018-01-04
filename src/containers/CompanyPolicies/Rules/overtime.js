@@ -50,6 +50,15 @@ const save_loading_message = 'Saving new Overtime Rule. Please wait...';
 const switch_loading_message = 'Switching Overtime Rule. Please wait...';
 const delete_loading_message = 'Deleting Active Overtime Rule. Please wait...';
 
+const overtime_disabled = 'Disabled — when Overtime is turned off,' +
+" the system will disregard the hours worked by the employees beyond" +
+' the shceduled time-out. Therefore, overtime will not be calculated' +
+" during payroll."
+
+const overtime_enabled = 'Enabled — when Overtime is turned on,' +
+" the system will calculate, based on rules, the hours worked by the employees beyond" +
+" the shceduled time-out and credit the amount on the employees' pay."
+
 class OvertimeForm extends Component {
     render(){
         /* console.log('this.props.disabledMode: ' + this.props.disabledMode); */
@@ -238,6 +247,7 @@ class OvertimeForm extends Component {
                             }}
                         />
 
+
                         <PropLevel2 
                             name={this.props.activeRule.rates.regularholiday.label}
                             content={
@@ -303,7 +313,12 @@ class OvertimeForm extends Component {
 
                         
                     </View>
-                    : null }     
+                    : 
+                    <View style={{paddingTop: 10}}>
+                        <Text>{overtime_disabled}</Text>
+                        <Text>{'\n' + overtime_enabled}</Text>
+                    </View>
+                }     
             </CustomCard>
         )
     }
@@ -470,6 +485,65 @@ export class Overtime extends Component {
         } */
     }
 
+    _toggleOvertime = (value) => {
+        this.setState({
+            _promptMsg: switch_loading_message,
+            _promptShow: true
+        })
+        const oInput = {
+            companyid: this.props.activecompany.id,
+            username: this.props.logininfo.resUsername,
+            transtype: 'request',
+            accesstoken: '',
+            clientid: '',
+            enabled: value
+        };
+
+        overtimeApi.toggleSwitch(oInput)
+        .then((response) => response.json())
+        .then((res) => {
+            console.log('=======Overtime Toggle=======');
+            console.log('INPUT: ' + JSON.stringify(oInput));
+            console.log('OUTPUT: ' + JSON.stringify(res));
+            this.setState({
+                _promptShow: false
+            });
+            if(res.flagno==0){
+                this.setState({
+                    _msgBoxShow: true,
+                    _msgBoxType: 'error-ok',
+                    _resMsg: res.message
+                });
+            }
+            else if(res.flagno==1){
+                this.setState({
+                    _msgBoxShow: true,
+                    _msgBoxType: 'success',
+                    _resMsg: res.message,
+                    _bNoWorkShift: false
+                })
+                this._setOvertimeSwitch(value);
+            }
+            else{
+                this.setState({
+                    _msgBoxShow: true,
+                    _msgBoxType: 'error-ok',
+                    _resMsg: 'Unable to save. An Unknown Error has been encountered. Contact BINHI-MeDFI.'
+                });
+            }
+        })
+        .catch((exception) => {
+            console.log('=======Overtime Toggle ERROR=======');
+            console.log('INPUT: ' + JSON.stringify(oInput));
+            this.setState({
+                _promptShow: false,
+                _msgBoxShow: true,
+                _msgBoxType: 'error-ok',
+                _resMsg: exception
+            })
+        });
+    }
+
     _pushNewRuleToStore = (res) => {
         let oAllData = {...this.state._allData};
         let oDataArray = [...oAllData.data];
@@ -482,6 +556,13 @@ export class Overtime extends Component {
 
         this.props.actions.overtime.update(oAllData);
         this._disableAll();
+        this._initValues();
+    }
+
+    _setOvertimeSwitch = (value) => {
+        let oOvertime = {...this.state._allData};
+        oOvertime.enabled = value;
+        this.props.actions.overtime.update(oOvertime);
         this._initValues();
     }
 
@@ -500,11 +581,7 @@ export class Overtime extends Component {
     }
 
     _triggerSwitch = (value) => {
-        let oData = {...this.state._allData}
-        oData.enabled = value;
-        this.setState({
-            _allData: oData
-        })
+        this._toggleOvertime(value);
     }
 
     _updateActiveRule = (value) => {
@@ -587,16 +664,7 @@ export class Overtime extends Component {
 
         if(pProgress==0){
             return (
-                <ScrollView
-                    refreshControl={
-                        <RefreshControl
-                            refreshing={this.state._refreshing}
-                            onRefresh={() => this.props.triggerRefresh(true)}
-                        />
-                        }
-                >
-                    <PromptScreen.PromptError title={pMessage}/>
-                </ScrollView>
+                <PromptScreen.PromptError title='Overtime Policy' onRefresh={()=>this.props.triggerRefresh(true)}/>
             );
         }
 

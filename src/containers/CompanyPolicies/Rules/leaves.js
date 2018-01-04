@@ -8,7 +8,8 @@ import {
     ScrollView,
     TextInput,
     TouchableOpacity,
-    RefreshControl
+    RefreshControl,
+    TouchableNativeFeedback
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import ActionButton from 'react-native-action-button';
@@ -47,7 +48,94 @@ const color_SwitchOn='#FFF4DE';
 const color_SwitchOff='#838383';
 const color_SwitchThumb='#EEB843';
 
-class LeavesForm extends Component{
+const leaves_disabled = 'Disabled — when Leaves is turned off,' +
+" the system will automatically mark an employee as absent when" +
+" the employee has no time-in and time-out record on a working day." +
+' Consequently, "No Work, No Pay" policy will be imposed.'
+
+const leaves_enabled = 'Enabled — when Leaves is turned on,' +
+" the system will allows the employer to add Leave Types from which" +
+" the employer can assign to its employees, individually."
+
+class LeaveType extends Component{
+    render(){
+        return(
+            <View style={styles.containerPlaceholder}>
+                <ScrollView horizontal={true}>
+                    <View style={styles.leaveCont}>
+                        <View style={[styles.breakTimeDetailsCont, styles.breakHeaderBorder]}>
+                            <View style={styles.leaveNameCont}>
+                                <Text style={styles.txtBreakName}>NAME</Text>
+                            </View>
+                            <View style={styles.leaveDetailsCont}>
+                                <Text style={styles.txtDefault}>NUMBER OF PAID DAYS</Text>
+                            </View>
+                            { 
+                                !this.props.disabledMode ?
+                                    <View style={styles.leaveDetailsCont}>
+                                        <Text style={styles.txtDefault}>DELETE</Text>
+                                    </View>
+                                :null
+                            }
+                                
+                        </View>
+                        
+                        {
+                            this.props.data.data.map((oLeave, index) => (
+                                <TouchableNativeFeedback
+                                    key={index}
+                                    onPress={() => {
+                                        /* this._openUpdateLeaveForm(oLeave) */
+                                    }}
+                                    background={TouchableNativeFeedback.SelectableBackground()}>
+                                    <View style={styles.breakTimeDetailsCont}>
+                                        <View style={styles.leaveNameCont}>
+                                            <Text style={styles.txtBreakName}>{oLeave.name}</Text>
+                                        </View>
+                                        <View style={styles.leaveDetailsCont}>
+                                            <Text style={styles.txtDefault}>{oLeave.paiddays}</Text>
+                                        </View>
+                                        { 
+                                            !this.props.disabledMode ?
+                                                <View style={styles.leaveDetailsCont}>
+                                                    <TouchableOpacity
+                                                        activeOpacity={0.7}
+                                                        onPress={() => {}}
+                                                        >
+                                                        <Icon size={30} name='md-close-circle' color='#EEB843' />
+                                                    </TouchableOpacity>
+                                                </View>
+                                            : null
+                                        }
+                                    </View>
+                                </TouchableNativeFeedback>
+                            ))
+                        }
+                        { 
+                            !this.props.disabledMode ?
+                                <View style={styles.breakTimeDetailsCont}>
+                                    <View style={styles.breakNameCont}>
+                                        <TouchableOpacity
+                                            style={{paddingLeft: 30, paddingTop: 10}}
+                                            activeOpacity={0.7}
+                                            onPress={() => {/* this._openUpdateLeaveForm(JSON.parse(JSON.stringify(this.state._defaultLeave))) */}}
+                                            >
+                                            <Icon size={30} name='md-add' color='#EEB843' />
+                                        </TouchableOpacity>
+                                    </View>
+                                </View>
+                            :
+                            null
+                        }
+
+                    </View>
+                </ScrollView>
+            </View>
+        )
+    }
+}
+
+class LeavesForm extends Component {
     render(){
         return(
             <CustomCard
@@ -56,7 +144,7 @@ class LeavesForm extends Component{
                 oType='Switch'
                 rightHeader={
                     <Switch
-                        onValueChange={ (value) => {}} 
+                        onValueChange={ (value) => {this.props.triggerSwitch(value)}} 
                         onTintColor={color_SwitchOn}
                         thumbTintColor={color_SwitchThumb}
                         tintColor={color_SwitchOff}
@@ -64,46 +152,62 @@ class LeavesForm extends Component{
                     />
                 }
             >
+                {   
+                    this.props.data.enabled ?
+                        <View>
+                            <View style={{marginTop: -20}}>
+                                <PropTitle name='Leave Types'/>
+                            </View>
 
-                <PropTitle name='Leave Types'/>
-                <PropTitle name='Leave Expiration'/>
-                <PropLevel2 
-                    name='Select Month and Day'
-                    content={
-                        <Text 
-                            style={{color: '#434646', 
-                                height: '100%', 
-                                textAlignVertical: 'center',
-                                width: 190,
-                                paddingLeft: 15,
-                                paddingRight: 15
-                            }}>
-                            December 31
-                        </Text>
-                    }
-                    contentStyle={{
-                        width: 190
-                    }}
-                />
-                <PropLevel2 
-                    name='Unused Leaves Action'
-                    content={
-                        <Picker
-                            mode='dropdown'
-                            style={styles.pickerStyle}
-                            selectedValue={this.props.data.expirydate.unusedleaveaction.value}
-                            onValueChange={(itemValue, itemIndex) => {this.props.updateThreshhold('minovertime', itemValue)}}>
-                            {
-                                this.props.data.expirydate.unusedleaveaction.options.map((data, index) => (
-                                    <Picker.Item key={index} label={data} value={data} />
-                                ))
-                            }
-                        </Picker>
-                    }
-                    contentStyle={{
-                        width: 190
-                    }}
-                />                
+                            <LeaveType data={this.props.data} disabledMode={this.props.disabledMode}/>
+                                    
+                            <PropTitle name='Leave Expiration'/>
+                            <PropLevel2 
+                                name='Select Month and Day'
+                                content={
+                                    <Text 
+                                        style={{color: '#434646', 
+                                            height: '100%', 
+                                            textAlignVertical: 'center',
+                                            width: 190,
+                                            paddingLeft: 15,
+                                            paddingRight: 15
+                                        }}>
+                                        December 31
+                                    </Text>
+                                }
+                                contentStyle={{
+                                    width: 190
+                                }}
+                            />
+                            <PropLevel2 
+                                name='Unused Leaves Action'
+                                content={
+                                    <Picker
+                                        mode='dropdown'
+                                        style={styles.pickerStyle}
+                                        selectedValue={this.props.data.expirydate.unusedleaveaction.value}
+                                        onValueChange={(itemValue, itemIndex) => {this.props.updateThreshhold('minovertime', itemValue)}}>
+                                        {
+                                            this.props.data.expirydate.unusedleaveaction.options.map((data, index) => (
+                                                <Picker.Item key={index} label={data} value={data} />
+                                            ))
+                                        }
+                                    </Picker>
+                                }
+                                contentStyle={{
+                                    width: 190
+                                }}
+
+                                placeHolderStyle={{height: 60}}
+                            />
+                        </View>
+                    :
+                        <View style={{paddingTop: 10}}>
+                            <Text>{leaves_disabled}</Text>
+                            <Text>{'\n' + leaves_enabled}</Text>
+                        </View>  
+                }           
             </CustomCard>
         )
     }
@@ -115,7 +219,7 @@ export class Leaves extends Component{
         this.state = {
             //Gereric States
             _refreshing: false,
-            _disabledMode: true,
+            _disabledMode: false,
             _status: [2, 'Loading...'],
             _promptShow: false,
             _promptMsg: '',
@@ -124,9 +228,10 @@ export class Leaves extends Component{
             _resMsg: '',
 
             //Local States
-            _allData: null,
-            _activeRule: null,
+            _allData: null
         }
+
+        this._triggerSwitch = this._triggerSwitch.bind(this);
     }
 
     componentDidMount(){
@@ -167,6 +272,14 @@ export class Leaves extends Component{
         })
     }
     
+    _triggerSwitch = (value) => {
+        let oData = {...this.state._allData}
+        oData.enabled = value;
+        this.setState({
+            _allData: oData
+        })
+    }
+
     render(){
         let pStatus = [...this.state._status];
         let pProgress = pStatus[0];
@@ -174,16 +287,7 @@ export class Leaves extends Component{
 
         if(pProgress==0){
             return (
-                <ScrollView
-                    refreshControl={
-                        <RefreshControl
-                            refreshing={this.state._refreshing}
-                            onRefresh={() => this.props.triggerRefresh(true)}
-                        />
-                        }
-                >
-                    <PromptScreen.PromptError title={pMessage}/>
-                </ScrollView>
+                <PromptScreen.PromptError title='Leave Policy' onRefresh={()=>this.props.triggerRefresh(true)}/>
             );
         }
 
@@ -209,8 +313,8 @@ export class Leaves extends Component{
                         <LeavesForm
                             disabledMode={this.state._disabledMode}
                             data={this.state._allData}
-/*                             activeRule={this.state._activeRule}
                             triggerSwitch={this._triggerSwitch}
+/*                             activeRule={this.state._activeRule}
                             updateActiveRule={this._updateActiveRule}
                             cancelEdit={this._cancelEdit}
                             saveRule={this._saveRule}
@@ -218,6 +322,7 @@ export class Leaves extends Component{
                             updateThreshhold={this._updateThreshhold}
                             updateRuleName={this._updateRuleName} */
                         />
+
                     </ScrollView>
 
                     <MessageBox

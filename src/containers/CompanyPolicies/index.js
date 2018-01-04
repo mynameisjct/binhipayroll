@@ -126,7 +126,7 @@ export class CompanyPolicies extends Component {
                 },
                 {
                     id : '009',
-                    name: 'Bonus',
+                    name: '13th Month Pay',
                     iconName: 'wunderlist',
                     btnColor: btnInactive
                 },
@@ -388,7 +388,8 @@ export class CompanyPolicies extends Component {
             });
 		})
 		.catch((exception) => {
-            /* console.log('oInput: ' + JSON.stringify(oInput)); */
+            console.log('======OVERTIME ERROR=======');
+            console.log('oInput: ' + JSON.stringify(oInput));
             console.log('exception: ' + exception);
             let oStatus = [0, 'Application error was encountered. \n Please contact BINHI-MeDFI'];
 			this.setState({

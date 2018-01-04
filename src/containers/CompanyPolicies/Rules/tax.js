@@ -43,6 +43,14 @@ const description_Tax = 'Enable Withholding Tax Calculation';
 const color_SwitchOn='#FFF4DE';
 const color_SwitchOff='#838383';
 const color_SwitchThumb='#EEB843';
+const tax_disabled = 'Disabled — when the Withholding Tax is turned off,' +
+                        ' the system will NOT calculate and will NOT deduct a Tax' +
+                        " from every employee's income."
+
+const tax_enabled = 'Enabled — when the Withholding Tax is turned on,' +
+                        ' the system will calculate and will deduct a Tax' + 
+                        " from every employee's income" + 
+                        ' based on the Personal Income Tax Rates.'
 
 export class Tax extends Component{
     constructor(props){
@@ -244,16 +252,7 @@ export class Tax extends Component{
         let pMessage = pStatus[1];
         if(pProgress=='0'){
             return (
-                <ScrollView
-                    refreshControl={
-                        <RefreshControl
-                            refreshing={this.state._refreshing}
-                            onRefresh={() => this.props.triggerRefresh(true)}
-                        />
-                    }
-                >
-                    <PromptScreen.PromptError title={pMessage}/>
-                </ScrollView>
+                <PromptScreen.PromptError title='Tax Policy' onRefresh={()=>this.props.triggerRefresh(true)}/>
             );
         }
         else if(pProgress=='2'){
@@ -331,7 +330,11 @@ export class Tax extends Component{
                                         contentStyle={{width: 170}}
                                     />
                                 </View>
-                                : null
+                            : 
+                            <View style={{paddingTop: 10}}>
+                                <Text>{tax_disabled}</Text>
+                                <Text>{'\n' + tax_enabled}</Text>
+                            </View>
                         }
 
                         </CustomCard>

@@ -635,16 +635,7 @@ export class WorkShift extends Component {
 
         if(pProgress==0){
             return (
-                <ScrollView
-                    refreshControl={
-                        <RefreshControl
-                            refreshing={this.state._refreshing}
-                            onRefresh={() => this.props.triggerRefresh(true)}
-                        />
-                        }
-                >
-                    <PromptScreen.PromptError title={pMessage}/>
-                </ScrollView>
+                <PromptScreen.PromptError title='Work Shift Policy' onRefresh={()=>this.props.triggerRefresh(true)}/>
             );
         }
         else if(pProgress==2){
