@@ -401,7 +401,7 @@ export class Overtime extends Component {
     _saveRule = () => {
         //Temp - To delete
         /* console.log('this.state._activeRule.name: ' + this.state._activeRule.name); */
-        if(!oHelper.isStringEmptyOrSpace(this.state._activeRule.name)){
+        /* if(!oHelper.isStringEmptyOrSpace(this.state._activeRule.name)){
             let res = {id: '005', message: 'Successfully Added New Rule, "' + this.state._activeRule.name + '"'}
             this.setState({
                 _msgBoxShow: true,
@@ -418,9 +418,9 @@ export class Overtime extends Component {
                 _resMsg: 'Unable to save. Please input Rule Name.'
             });
             
-        }
+        } */
 
-        /* if(!oHelper.isStringEmptyOrSpace(this.state._activeRule.name)){
+        if(!oHelper.isStringEmptyOrSpace(this.state._activeRule.name)){
             this.setState({
                 _promptMsg: save_loading_message,
                 _promptShow: true
@@ -434,7 +434,7 @@ export class Overtime extends Component {
                 data: this.state._activeRule,
             };
 
-            undertimeApi.create(oInput)
+            overtimeApi.create(oInput)
             .then((response) => response.json())
             .then((res) => {
                 console.log('INPUT: ' + JSON.stringify(oInput));
@@ -482,7 +482,64 @@ export class Overtime extends Component {
                 _msgBoxType: 'error-ok',
                 _resMsg: 'Unable to save. Please input Rule Name.'
             });
-        } */
+        }
+    }
+
+    _deleteActiveRule = () => {
+        this.setState({
+            _promptMsg: delete_loading_message,
+            _promptShow: true
+        })
+        const oInput = {
+            companyid: this.props.activecompany.id,
+            username: this.props.logininfo.resUsername,
+            transtype: 'delete',
+            accesstoken: '',
+            clientid: '',
+            id: this.state._activeRule.id
+        };
+
+        overtimeApi.remove(oInput)
+        .then((response) => response.json())
+        .then((res) => {
+            console.log('INPUT: ' + JSON.stringify(oInput));
+            console.log('OUTPUT: ' + JSON.stringify(res));
+            this.setState({
+                _promptShow: false
+            });
+            if(res.flagno==0){
+                this.setState({
+                    _msgBoxShow: true,
+                    _msgBoxType: 'error-ok',
+                    _resMsg: res.message
+                });
+            }
+            else if(res.flagno==1){
+                this.setState({
+                    _msgBoxShow: true,
+                    _msgBoxType: 'success',
+                    _resMsg: res.message,
+                    _bNoWorkShift: false
+                })
+                this._popActiveRuleFromStore();
+            }
+            else{
+                this.setState({
+                    _msgBoxShow: true,
+                    _msgBoxType: 'error-ok',
+                    _resMsg: 'Unable to Delete. An Unknown Error has been encountered. Contact BINHI-MeDFI.'
+                });
+            }
+        })
+        .catch((exception) => {
+            console.log('INPUT: ' + JSON.stringify(oInput));
+            this.setState({
+                _promptShow: false,
+                _msgBoxShow: true,
+                _msgBoxType: 'error-ok',
+                _resMsg: exception
+            })
+        });
     }
 
     _toggleOvertime = (value) => {
@@ -559,6 +616,21 @@ export class Overtime extends Component {
         this._initValues();
     }
 
+    _popActiveRuleFromStore = () => {
+        let oOvertime = {...this.state._allData};
+        let aOvertimeData = [...oOvertime.data];
+
+        aOvertimeData.map((data,index) => {
+            if(data.id == this.state._activeRule.id){
+                aOvertimeData.splice(index, 1);
+            }
+        });
+
+        oOvertime.data = aOvertimeData;
+        this.props.actions.overtime.update(oOvertime);
+        this._initValues();
+    }
+
     _setOvertimeSwitch = (value) => {
         let oOvertime = {...this.state._allData};
         oOvertime.enabled = value;
@@ -600,6 +672,9 @@ export class Overtime extends Component {
     }
 
     _cancelEdit = () => {
+        if(this.state._allData.data.length === 0){
+            this._toggleOvertime(false);
+        }
         this._initValues();
     }
 

@@ -44,7 +44,7 @@ export default {
     txtNameLabel: {
         fontFamily: 'Helvetica-Light',
         fontSize: 15,
-        width: 100,
+        width: 300,
         color: '#838383'
 
     },

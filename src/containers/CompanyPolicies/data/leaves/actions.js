@@ -15,12 +15,12 @@ export const empty = () => ({
 		api.get(payload)
 		.then((response) => response.json())
 		.then((res) => {
-			console.log('========================');
+			console.log('===========LEAVES=============');
 			console.log('INPUT: ' + JSON.stringify(payload));
 			console.log('OUTPUT: ' + JSON.stringify(res));
 			dispatch(update(res));
-		});
- */
+		}); */
+
 
 //MOCK DATA
 const mockJSON = {

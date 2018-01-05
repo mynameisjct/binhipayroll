@@ -28,6 +28,7 @@ import { bindActionCreators } from 'redux';
 import * as leavesApi from '../data/leaves/api';
 
 //Custom Components
+import FormLeaves from '../Forms/formLeaves';
 import MessageBox from '../../../components/MessageBox';
 import * as PromptScreen from '../../../components/ScreenLoadStatus';
 import CustomCard, 
@@ -54,10 +55,30 @@ const leaves_disabled = 'Disabled — when Leaves is turned off,' +
 ' Consequently, "No Work, No Pay" policy will be imposed.'
 
 const leaves_enabled = 'Enabled — when Leaves is turned on,' +
-" the system will allows the employer to add Leave Types from which" +
+" the system will allow the employer to add Leave Types from which" +
 " the employer can assign to its employees, individually."
 
+const monthNames = [ "January", "February", "March", "April", "May", "June",
+"July", "August", "September", "October", "November", "December" ];
+
 class LeaveType extends Component{
+    _requestToShowForm = (value) => {
+        let objVal;
+
+        if(!value){
+            objVal = {
+                id: '',
+                name: '',
+                paiddays: ''
+            }
+        }
+        else{
+            objVal = {...value}
+        }
+        console.log('objVal: ' + JSON.stringify(objVal));
+        this.props.showForm(objVal)
+    }
+
     render(){
         return(
             <View style={styles.containerPlaceholder}>
@@ -85,7 +106,7 @@ class LeaveType extends Component{
                                 <TouchableNativeFeedback
                                     key={index}
                                     onPress={() => {
-                                        /* this._openUpdateLeaveForm(oLeave) */
+                                        this._requestToShowForm(oLeave)
                                     }}
                                     background={TouchableNativeFeedback.SelectableBackground()}>
                                     <View style={styles.breakTimeDetailsCont}>
@@ -100,7 +121,7 @@ class LeaveType extends Component{
                                                 <View style={styles.leaveDetailsCont}>
                                                     <TouchableOpacity
                                                         activeOpacity={0.7}
-                                                        onPress={() => {}}
+                                                        onPress={() => {this.props.deleteItem(oLeave)}}
                                                         >
                                                         <Icon size={30} name='md-close-circle' color='#EEB843' />
                                                     </TouchableOpacity>
@@ -118,7 +139,7 @@ class LeaveType extends Component{
                                         <TouchableOpacity
                                             style={{paddingLeft: 30, paddingTop: 10}}
                                             activeOpacity={0.7}
-                                            onPress={() => {/* this._openUpdateLeaveForm(JSON.parse(JSON.stringify(this.state._defaultLeave))) */}}
+                                            onPress={() => {this._requestToShowForm(null)}}
                                             >
                                             <Icon size={30} name='md-add' color='#EEB843' />
                                         </TouchableOpacity>
@@ -136,7 +157,31 @@ class LeaveType extends Component{
 }
 
 class LeavesForm extends Component {
+    _getDays(month) {
+        try{
+            let iDays = new Date(2018, month, 0).getDate();
+            console.log('iDays: ' + iDays);
+            let days = [];
+
+            for (let index = 1; index <= iDays; index++) { 
+                days.push(''+index);
+            }
+            return days;
+        }
+        catch(exception){
+            console.log('exception: ' + exception);
+            return [];
+        }
+        
+    }
+
     render(){
+        let iExpiryMonth = this.props.data.expirydate.month - 1;
+        let iExpiryDay = this.props.data.expirydate.day - 1;
+        let aDays = this._getDays(this.props.data.expirydate.month);
+        console.log('this.props.data.expirydate.day: ' + this.props.data.expirydate.day);
+        console.log('iExpiryDay: ' + iExpiryDay);
+        console.log('aDays: ' + aDays);
         return(
             <CustomCard
                 title={title_Leaves} 
@@ -159,27 +204,59 @@ class LeavesForm extends Component {
                                 <PropTitle name='Leave Types'/>
                             </View>
 
-                            <LeaveType data={this.props.data} disabledMode={this.props.disabledMode}/>
+                            <LeaveType 
+                                data={this.props.data} 
+                                disabledMode={this.props.disabledMode}
+                                showForm={(value) => this.props.showForm(value)}
+                                deleteItem={(value) => this.props.deleteItem(value)}/>
                                     
                             <PropTitle name='Leave Expiration'/>
+                            
                             <PropLevel2 
-                                name='Select Month and Day'
+                                name='Select Month'
                                 content={
-                                    <Text 
-                                        style={{color: '#434646', 
-                                            height: '100%', 
-                                            textAlignVertical: 'center',
-                                            width: 190,
-                                            paddingLeft: 15,
-                                            paddingRight: 15
-                                        }}>
-                                        December 31
-                                    </Text>
+                                    <Picker
+                                        prompt='Select Month'
+                                        mode='dialog'
+                                        style={styles.pickerStyle}
+                                        selectedValue={iExpiryMonth}
+                                        onValueChange={(itemValue, itemIndex) => {this.props.updateExpiry('month', 1+itemValue)}}>
+                                        {
+                                            monthNames.map((data, index) => (
+                                                <Picker.Item itemStyle={{backgroundColor: 'red'}} key={index} label={data} value={index} />
+                                            ))
+                                        }
+                                    </Picker>
                                 }
                                 contentStyle={{
-                                    width: 190
+                                    width: 140
                                 }}
+
+                                placeHolderStyle={{height: 60}}
                             />
+                            <PropLevel2 
+                                name='Select Day'
+                                content={
+                                    <Picker
+                                        prompt='Select Day'
+                                        mode='dialog'
+                                        style={styles.pickerStyle}
+                                        selectedValue={iExpiryDay}
+                                        onValueChange={(itemValue, itemIndex) => {this.props.updateExpiry('day', 1+itemValue)}}>
+                                        {
+                                            aDays.map((data, index) => (
+                                                <Picker.Item itemStyle={{backgroundColor: 'red'}} key={index} label={data} value={index} />
+                                            ))
+                                        }
+                                    </Picker>
+                                }
+                                contentStyle={{
+                                    width: 140
+                                }}
+
+                                placeHolderStyle={{height: 60}}
+                            />
+                            
                             <PropLevel2 
                                 name='Unused Leaves Action'
                                 content={
@@ -187,7 +264,7 @@ class LeavesForm extends Component {
                                         mode='dropdown'
                                         style={styles.pickerStyle}
                                         selectedValue={this.props.data.expirydate.unusedleaveaction.value}
-                                        onValueChange={(itemValue, itemIndex) => {this.props.updateThreshhold('minovertime', itemValue)}}>
+                                        onValueChange={(itemValue, itemIndex) => {this.props.updateExpiry('unusedleaveaction', itemValue)}}>
                                         {
                                             this.props.data.expirydate.unusedleaveaction.options.map((data, index) => (
                                                 <Picker.Item key={index} label={data} value={data} />
@@ -201,6 +278,30 @@ class LeavesForm extends Component {
 
                                 placeHolderStyle={{height: 60}}
                             />
+                            {
+                                this.props.data.expirydate.unusedleaveaction.value.toUpperCase() == 'CONVERT TO CASH' ?
+                                    <PropLevel2 
+                                        name={'Maximum\nConvertibleLeaves'}
+                                        content={
+                                            <TextInput 
+                                                autoCapitalize='none'
+                                                keyboardType='numeric'
+                                                placeholder=''
+                                                style={{paddingLeft: 15, color: '#434646', height: '100%'}}
+                                                onChangeText={inputTxt =>  {this.props.updateExpiry('maxconvertible', inputTxt)}}
+                                                value={''+this.props.data.expirydate.maxconvertible}
+                                                returnKeyType="done"
+                                                underlineColorAndroid='transparent'
+                                            />
+                                        }
+                                        hideBorder={this.props.disabledMode}
+                                        contentStyle={{
+                                            width: 75
+                                        }}
+                                    />
+                                :
+                                    null
+                            }
                         </View>
                     :
                         <View style={{paddingTop: 10}}>
@@ -228,10 +329,20 @@ export class Leaves extends Component{
             _resMsg: '',
 
             //Local States
-            _allData: null
+            _allData: null,
+            _activeLeaveType: null,
+            _leaveFormTitle: '',
+            _bShowForm: false,
+            _pendingTransactionType: '',
+            _pendingTransactionData: null
         }
 
         this._triggerSwitch = this._triggerSwitch.bind(this);
+        this._onLeaveFormClose = this._onLeaveFormClose.bind(this);
+        this._onFormCommit = this._onFormCommit.bind(this);
+        this._showLeaveForm = this._showLeaveForm.bind(this);
+        this._deleteLeaveTypeRequest = this._deleteLeaveTypeRequest.bind(this);
+        this._updateExpiry = this._updateExpiry.bind(this);
     }
 
     componentDidMount(){
@@ -280,6 +391,136 @@ export class Leaves extends Component{
         })
     }
 
+    _onLeaveFormClose = (value) => {
+        this.setState({
+            _bShowForm: false
+        })
+    }
+
+    _onFormCommit = (value) => {
+        if(value.id == ''){
+            let id = '-1';
+            this._pushNewLeaveType(id, value);
+            this.setState({
+                _msgBoxShow: true,
+                _msgBoxType: 'success',
+                _resMsg: 'Successfully Saved new Leave Type "' + value.name + '."'
+            })
+            this._onLeaveFormClose();
+        }
+        else{
+            this._updateLeaveType(value);
+        }
+
+        let res = {flagno: '1', message: 'Sample Error'};
+
+        return res;
+    }
+
+    _pushNewLeaveType = (id, value) => {
+        let oAllData = {...this.state._allData};
+        let oDataArray = [...oAllData.data];
+
+        let oActiveType = {...value};
+        oActiveType.id = id
+        oDataArray.push(oActiveType);
+
+        oAllData.data = oDataArray;
+
+        this.props.actions.leaves.update(oAllData);
+        this._initValues();
+    }
+
+    _updateLeaveType = (value) => {
+        let oAllData = {...this.state._allData}; 
+        let objIndex = oAllData.data.findIndex((obj => obj.id == value.id));
+        
+        oAllData.data[objIndex].name = value.name;
+        oAllData.data[objIndex].name = value.paiddays;
+
+        this.props.actions.leaves.update(oAllData);
+        this._initValues();
+    }
+
+    _deleteLeaveTypeRequest = (value) => {
+        this.setState({
+            _pendingTransactionType: 'DELETE',
+            _pendingTransactionData: value,
+            _msgBoxShow: true,
+            _msgBoxType: 'warning',
+            _resMsg: 'Deleting a Leave Type is an irreversible action.' + 
+                ' The system, though,  will not allow to delete a Leave Type that is currently' + 
+                ' assigned to any employee. Please continue to delete "' + value.name + '".'
+        })
+    }
+
+    _deleteLeaveType = (value) => {
+        let oAllData = {...this.state._allData}; 
+        let objIndex = oAllData.data.findIndex((obj => obj.id == value.id));
+
+        oAllData.data.splice(objIndex, 1);
+
+        this.props.actions.leaves.update(oAllData);
+        this.setState({_msgBoxShow: false});
+        this._initValues();
+    }
+
+    _showLeaveForm = (value) => {
+        let strFormTitle = 'ADD NEW LEAVE TYPE';
+        if (value.id > 0){
+            strFormTitle = 'EDIT LEAVE TYPE';
+        }
+        this.setState({
+            _activeLeaveType: {...value},
+            _bShowForm: true,
+            _leaveFormTitle: strFormTitle
+        })
+    }
+    
+    _continueActionOnWarning = () => {
+        if(this.state._pendingTransactionType == 'DELETE'){
+           this._deleteLeaveType(this.state._pendingTransactionData);
+        }
+    }
+
+    _updateExpiry = (strType, value) => {
+        console.log('=====_updateExpiry=====')
+        console.log('strType: ' + strType);
+        console.log('value: ' + value);
+        let oAllData = {...this.state._allData}; 
+        let bFlagUpdate = true;
+
+        switch(strType.toUpperCase()){
+            case 'DAY':
+                oAllData.expirydate.day = value;
+                break;
+            case 'MONTH':
+                oAllData.expirydate.month = value;
+                break;
+            case 'UNUSEDLEAVEACTION':
+                oAllData.expirydate.unusedleaveaction.value = value;
+                break;
+            case 'MAXCONVERTIBLE':
+                oAllData.expirydate.maxconvertible = value;
+                break;
+            default:
+                bFlagUpdate = false;
+        }
+        
+        if (bFlagUpdate) {
+
+            this.setState({
+                _allData: oAllData
+            },
+                () => {
+                    console.log('this.state._allData: ' + JSON.stringify(this.state._allData))
+                }
+            );
+
+            this.props.actions.leaves.update(oAllData);
+        }
+    }
+
     render(){
         let pStatus = [...this.state._status];
         let pProgress = pStatus[0];
@@ -314,6 +555,9 @@ export class Leaves extends Component{
                             disabledMode={this.state._disabledMode}
                             data={this.state._allData}
                             triggerSwitch={this._triggerSwitch}
+                            showForm={this._showLeaveForm}
+                            deleteItem={this._deleteLeaveTypeRequest}
+                            updateExpiry={this._updateExpiry}
 /*                             activeRule={this.state._activeRule}
                             updateActiveRule={this._updateActiveRule}
                             cancelEdit={this._cancelEdit}
@@ -332,10 +576,20 @@ export class Leaves extends Component{
                         onWarningContinue={this._continueActionOnWarning}
                         message={this.state._resMsg}
                     />
+
                     { this.state._promptShow ?
                         <PromptScreen.PromptGeneric show= {this.state._promptShow} title={this.state._promptMsg}/>
                         : null
                     }
+
+                    <FormLeaves
+                        data={this.state._activeLeaveType}
+                        title={this.state._leaveFormTitle}
+                        show={this.state._bShowForm}
+                        onFormClose={this._onLeaveFormClose}
+                        onDone={this._onFormCommit}/>
+                        
+
                 </View>
             );
         }

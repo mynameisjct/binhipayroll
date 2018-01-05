@@ -483,6 +483,10 @@ export class Login extends Component {
     fetchDataFromDB(strType){
         console.log('---------------------------------');
         console.log('START: ' + this.state._curTime);
+        console.log('INPUT: ' + JSON.stringify({sysdate: this.state._transDate,
+            systime: this.state._transTime,
+            username: this.state._username,
+            password: this.state._password}));
         if (strType.toUpperCase()=='LOGIN'){
             
             fetch(apiConfig.url + script_Login,{
@@ -502,7 +506,7 @@ export class Login extends Component {
             }).then((response)=> response.json())
                 .then((res)=>{
                         console.log('END: ' + this.state._curTime);
-                        /* console.log('JSON.stringify(res): ' + JSON.stringify(res)) */
+                        console.log('JSON.stringify(res): ' + JSON.stringify(res))
                         this.setState({
                             _resSuccess: res.flagno,
                             _resMsg: res.message,
