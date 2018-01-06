@@ -1,0 +1,18 @@
+{
+    "flagno": "1",
+    "message": "Success!",
+    "government": {
+        "enabled": true,
+        "description": {
+            "enabled": "when Government Benefits is turned on,"
+        }
+        "data": [
+            {
+                "description": "Once a Government Benefit is enabled, the system will automatically deduct the employee's contribution from its pay."
+                "enabled": true,
+                "name": "SSS",
+                "id": "0001"
+            }
+        ]
+    }
+}

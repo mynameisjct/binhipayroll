@@ -46,8 +46,8 @@ const description_Overtime = 'Allow paid overtime';
 const color_SwitchOn='#FFF4DE';
 const color_SwitchOff='#838383';
 const color_SwitchThumb='#EEB843';
-const save_loading_message = 'Saving new Overtime Rule. Please wait...';
-const switch_loading_message = 'Switching Overtime Rule. Please wait...';
+const save_loading_message = 'Saving new Overtime Policy. Please wait...';
+const switch_loading_message = 'Switching Overtime Policy. Please wait...';
 const delete_loading_message = 'Deleting Active Overtime Rule. Please wait...';
 
 const overtime_disabled = 'Disabled — when Overtime is turned off,' +

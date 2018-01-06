@@ -49,6 +49,10 @@ const color_SwitchOn='#FFF4DE';
 const color_SwitchOff='#838383';
 const color_SwitchThumb='#EEB843';
 
+const save_loading_message = 'Saving new Leave Policy. Please wait...';
+const switch_loading_message = 'Switching Leave Policy. Please wait...';
+const delete_loading_message = 'Deleting a Leave Type. Please wait...';
+
 const leaves_disabled = 'Disabled — when Leaves is turned off,' +
 " the system will automatically mark an employee as absent when" +
 " the employee has no time-in and time-out record on a working day." +
@@ -75,7 +79,7 @@ class LeaveType extends Component{
         else{
             objVal = {...value}
         }
-        console.log('objVal: ' + JSON.stringify(objVal));
+        /* console.log('objVal: ' + JSON.stringify(objVal)); */
         this.props.showForm(objVal)
     }
 
@@ -157,31 +161,12 @@ class LeaveType extends Component{
 }
 
 class LeavesForm extends Component {
-    _getDays(month) {
-        try{
-            let iDays = new Date(2018, month, 0).getDate();
-            console.log('iDays: ' + iDays);
-            let days = [];
-
-            for (let index = 1; index <= iDays; index++) { 
-                days.push(''+index);
-            }
-            return days;
-        }
-        catch(exception){
-            console.log('exception: ' + exception);
-            return [];
-        }
-        
-    }
-
     render(){
+        
         let iExpiryMonth = this.props.data.expirydate.month - 1;
-        let iExpiryDay = this.props.data.expirydate.day - 1;
-        let aDays = this._getDays(this.props.data.expirydate.month);
+        /* console.log('iExpiryMonth: ' + iExpiryMonth );
         console.log('this.props.data.expirydate.day: ' + this.props.data.expirydate.day);
-        console.log('iExpiryDay: ' + iExpiryDay);
-        console.log('aDays: ' + aDays);
+        console.log('this.props.aDays: '  + this.props.aDays); */
         return(
             <CustomCard
                 title={title_Leaves} 
@@ -217,7 +202,7 @@ class LeavesForm extends Component {
                                 content={
                                     <Picker
                                         prompt='Select Month'
-                                        mode='dialog'
+                                        mode='dropdown'
                                         style={styles.pickerStyle}
                                         selectedValue={iExpiryMonth}
                                         onValueChange={(itemValue, itemIndex) => {this.props.updateExpiry('month', 1+itemValue)}}>
@@ -239,13 +224,13 @@ class LeavesForm extends Component {
                                 content={
                                     <Picker
                                         prompt='Select Day'
-                                        mode='dialog'
+                                        mode='dropdown'
                                         style={styles.pickerStyle}
-                                        selectedValue={iExpiryDay}
-                                        onValueChange={(itemValue, itemIndex) => {this.props.updateExpiry('day', 1+itemValue)}}>
+                                        selectedValue={this.props.data.expirydate.day}
+                                        onValueChange={(itemValue, itemIndex) => {this.props.updateExpiry('day', itemValue)}}>
                                         {
-                                            aDays.map((data, index) => (
-                                                <Picker.Item itemStyle={{backgroundColor: 'red'}} key={index} label={data} value={index} />
+                                            this.props.aDays.map((data, index) => (
+                                                <Picker.Item key={index} label={data} value={data} />
                                             ))
                                         }
                                     </Picker>
@@ -334,10 +319,11 @@ export class Leaves extends Component{
             _leaveFormTitle: '',
             _bShowForm: false,
             _pendingTransactionType: '',
-            _pendingTransactionData: null
+            _pendingTransactionData: null,
+            _aDays: []
         }
 
-        this._triggerSwitch = this._triggerSwitch.bind(this);
+        this._toggleLeave = this._toggleLeave.bind(this);
         this._onLeaveFormClose = this._onLeaveFormClose.bind(this);
         this._onFormCommit = this._onFormCommit.bind(this);
         this._showLeaveForm = this._showLeaveForm.bind(this);
@@ -368,11 +354,13 @@ export class Leaves extends Component{
     }
 
     _initValues = () => {
+        let oAllData = JSON.parse(JSON.stringify(leavesSelector.getAllData()));
         this.setState({
-            _allData: JSON.parse(JSON.stringify(leavesSelector.getAllData())),
+            _allData: oAllData,
+            _aDays: oHelper.getArrayOfDaysInMonth(oAllData.expirydate.month)
         },
             () => {
-                console.log('this.state._allData: ' + JSON.stringify(this.state._allData));
+                /* console.log('this.state._allData: ' + JSON.stringify(this.state._allData)); */
             }
         )
     }
@@ -383,12 +371,73 @@ export class Leaves extends Component{
         })
     }
     
-    _triggerSwitch = (value) => {
+    _toggleLeave = (value) => {
+        this.setState({
+            _promptMsg: switch_loading_message,
+            _promptShow: true
+        })
+        const oInput = {
+            companyid: this.props.activecompany.id,
+            username: this.props.logininfo.resUsername,
+            transtype: 'request',
+            accesstoken: '',
+            clientid: '',
+            enabled: value
+        };
+
+        leavesApi.toggleSwitch(oInput)
+        .then((response) => response.json())
+        .then((res) => {
+            console.log('=======Leave Toggle=======');
+            console.log('INPUT: ' + JSON.stringify(oInput));
+            console.log('OUTPUT: ' + JSON.stringify(res));
+            this.setState({
+                _promptShow: false
+            });
+            if(res.flagno==0){
+                this.setState({
+                    _msgBoxShow: true,
+                    _msgBoxType: 'error-ok',
+                    _resMsg: res.message
+                });
+            }
+            else if(res.flagno==1){
+                this.setState({
+                    _msgBoxShow: true,
+                    _msgBoxType: 'success',
+                    _resMsg: res.message,
+                    _bNoWorkShift: false
+                })
+                this._setLeaveSwitch(value);
+            }
+            else{
+                this.setState({
+                    _msgBoxShow: true,
+                    _msgBoxType: 'error-ok',
+                    _resMsg: 'Unable to save. An Unknown Error has been encountered. Contact BINHI-MeDFI.'
+                });
+            }
+        })
+        .catch((exception) => {
+            console.log('=======Overtime Toggle ERROR=======');
+            console.log('INPUT: ' + JSON.stringify(oInput));
+            this.setState({
+                _promptShow: false,
+                _msgBoxShow: true,
+                _msgBoxType: 'error-ok',
+                _resMsg: exception
+            })
+        });
+        
+    }
+
+    _setLeaveSwitch = (value) => {
         let oData = {...this.state._allData}
         oData.enabled = value;
         this.setState({
             _allData: oData
         })
+        this.props.actions.leaves.update(oData);
     }
 
     _onLeaveFormClose = (value) => {
@@ -398,23 +447,78 @@ export class Leaves extends Component{
     }
 
     _onFormCommit = (value) => {
-        if(value.id == ''){
-            let id = '-1';
-            this._pushNewLeaveType(id, value);
-            this.setState({
-                _msgBoxShow: true,
-                _msgBoxType: 'success',
-                _resMsg: 'Successfully Saved new Leave Type "' + value.name + '."'
+        let oRes = {};
+
+        this.setState({
+            _promptMsg: save_loading_message,
+            _promptShow: true
+        })
+        const oInput = {
+            companyid: this.props.activecompany.id,
+            username: this.props.logininfo.resUsername,
+            transtype: 'update',
+            accesstoken: '',
+            clientid: '',
+            data: value,
+        };
+
+        leavesApi.create(oInput)
+            .then((response) => response.json())
+            .then((res) => {
+                console.log('===========Leave Update=============');
+                console.log('INPUT: ' + JSON.stringify(oInput));
+                console.log('OUTPUT: ' + JSON.stringify(res));
+                oRes = {...res};
+
+                this.setState({
+                    _promptShow: false
+                });
+
+                if(res.flagno==0){
+
+                }
+
+                else if(res.flagno==1){
+                    
+                    this.setState({
+                        _msgBoxShow: true,
+                        _msgBoxType: 'success',
+                        _resMsg: res.message,
+                        _bNoWorkShift: false
+                    })
+                    
+                    //Update 
+                    if(value.id == ''){
+                        this._pushNewLeaveType(id, value);
+                        this._onLeaveFormClose();
+                    }
+                    else{
+                        this._updateLeaveType(value);
+                    }
+                }
+                else{
+                    this.setState({
+                        _msgBoxShow: true,
+                        _msgBoxType: 'error-ok',
+                        _resMsg: 'Unable to save. An Unknown Error has been encountered. Contact BINHI-MeDFI.'
+                    });
+                }
             })
-            this._onLeaveFormClose();
-        }
-        else{
-            this._updateLeaveType(value);
-        }
+            .catch((exception) => {
+                console.log('INPUT: ' + JSON.stringify(oInput));
+                this.setState({
+                    _promptShow: false,
+                    _msgBoxShow: true,
+                    _msgBoxType: 'error-ok',
+                    _resMsg: exception
+                })
+                oRes = {
+                    flagno: "0",
+                    message: 'Unable to save. An Unknown Error has been encountered. Contact BINHI-MeDFI.'            
+                }
+            });
 
-        let res = {flagno: '1', message: 'Sample Error'};
-
-        return res;
+        return oRes;
     }
 
     _pushNewLeaveType = (id, value) => {
@@ -455,13 +559,70 @@ export class Leaves extends Component{
     }
 
     _deleteLeaveType = (value) => {
+        this.setState({
+            _promptMsg: delete_loading_message,
+            _promptShow: true
+        })
+        const oInput = {
+            companyid: this.props.activecompany.id,
+            username: this.props.logininfo.resUsername,
+            transtype: 'delete',
+            accesstoken: '',
+            clientid: '',
+            id: value.id
+        };
+
+        leavesApi.remove(oInput)
+        .then((response) => response.json())
+        .then((res) => {
+            console.log('=====Leaves Delete=====');
+            console.log('INPUT: ' + JSON.stringify(oInput));
+            console.log('OUTPUT: ' + JSON.stringify(res));
+            this.setState({
+                _promptShow: false
+            });
+            if(res.flagno==0){
+                this.setState({
+                    _msgBoxShow: true,
+                    _msgBoxType: 'error-ok',
+                    _resMsg: res.message
+                });
+            }
+            else if(res.flagno==1){
+                this.setState({
+                    _msgBoxShow: true,
+                    _msgBoxType: 'success',
+                    _resMsg: res.message,
+                    _bNoWorkShift: false
+                })
+                this._popLeaveFromStore(value);
+            }
+            else{
+                this.setState({
+                    _msgBoxShow: true,
+                    _msgBoxType: 'error-ok',
+                    _resMsg: 'Unable to Delete. An Unknown Error has been encountered. Contact BINHI-MeDFI.'
+                });
+            }
+        })
+        .catch((exception) => {
+            console.log('INPUT: ' + JSON.stringify(oInput));
+            this.setState({
+                _promptShow: false,
+                _msgBoxShow: true,
+                _msgBoxType: 'error-ok',
+                _resMsg: exception
+            })
+        });
+    }
+
+    _popLeaveFromStore = (value) => {
         let oAllData = {...this.state._allData}; 
         let objIndex = oAllData.data.findIndex((obj => obj.id == value.id));
 
         oAllData.data.splice(objIndex, 1);
 
         this.props.actions.leaves.update(oAllData);
-        this.setState({_msgBoxShow: false});
         this._initValues();
     }
 
@@ -489,12 +650,14 @@ export class Leaves extends Component{
         console.log('value: ' + value);
         let oAllData = {...this.state._allData}; 
         let bFlagUpdate = true;
+        let aDays = [];
 
         switch(strType.toUpperCase()){
             case 'DAY':
                 oAllData.expirydate.day = value;
                 break;
             case 'MONTH':
+                aDays = oHelper.getArrayOfDaysInMonth(value)
                 oAllData.expirydate.month = value;
                 break;
             case 'UNUSEDLEAVEACTION':
@@ -508,15 +671,18 @@ export class Leaves extends Component{
         }
         
         if (bFlagUpdate) {
-
-            this.setState({
-                _allData: oAllData
-            },
-                () => {
-                    console.log('this.state._allData: ' + JSON.stringify(this.state._allData))
-                }
-            );
-
+            if(aDays.length > 0){
+                this.setState({
+                    _allData: oAllData,
+                    _aDays: aDays
+                });
+            }
+            else{
+                this.setState({
+                    _allData: oAllData,
+                });
+            }
+            
             this.props.actions.leaves.update(oAllData);
         }
     }
@@ -554,10 +720,11 @@ export class Leaves extends Component{
                         <LeavesForm
                             disabledMode={this.state._disabledMode}
                             data={this.state._allData}
-                            triggerSwitch={this._triggerSwitch}
+                            triggerSwitch={this._toggleLeave}
                             showForm={this._showLeaveForm}
                             deleteItem={this._deleteLeaveTypeRequest}
                             updateExpiry={this._updateExpiry}
+                            aDays={this.state._aDays}
 /*                             activeRule={this.state._activeRule}
                             updateActiveRule={this._updateActiveRule}
                             cancelEdit={this._cancelEdit}

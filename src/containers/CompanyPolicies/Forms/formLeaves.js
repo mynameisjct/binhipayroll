@@ -110,6 +110,7 @@ export default class FormLeaves extends Component{
             paiddays: this.state._paiddays
         }
         let oRes = this.props.onDone(oData);
+        console.log('JSON.stringify(oRes): ' + JSON.stringify(oRes));
         if (oRes.flagno == 0){
             this.setState({
                 _msgBoxShow: true,
@@ -117,7 +118,6 @@ export default class FormLeaves extends Component{
                 _resMsg: oRes.message
             })
         }
-    
     }
 
     _closeMsgBox = () => {

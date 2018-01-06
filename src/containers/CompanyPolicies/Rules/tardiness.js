@@ -47,8 +47,8 @@ const color_SwitchOff='#505251';
 const color_SwitchThumb='#EEB843';
 const cl_suspension = '2001';
 const cl_deduction = '2002';
-const save_loading_message = 'Saving new Tardiness Rule. Please wait...';
-const switch_loading_message = 'Switching Tardiness Rule. Please wait...';
+const save_loading_message = 'Saving new Tardiness Policy. Please wait...';
+const switch_loading_message = 'Switching Tardiness Policy. Please wait...';
 const delete_loading_message = 'Deleting Active Rule. Please wait...';
 const tardiness_disabled = 'Disabled — when Tardiness is turned off,' +
 " when an employee has clocked in after its scheduled time-in,"  +
