@@ -9,7 +9,8 @@ import {
     TextInput,
     TouchableOpacity,
     RefreshControl,
-    TouchableNativeFeedback
+    TouchableNativeFeedback,
+    ToastAndroid
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import ActionButton from 'react-native-action-button';
@@ -52,6 +53,7 @@ const color_SwitchThumb='#EEB843';
 const save_loading_message = 'Saving new Leave Policy. Please wait...';
 const switch_loading_message = 'Switching Leave Policy. Please wait...';
 const delete_loading_message = 'Deleting a Leave Type. Please wait...';
+const expiry_loading_message = 'Updating Leave Expiry Rule. Please wait...';
 
 const leaves_disabled = 'Disabled — when Leaves is turned off,' +
 " the system will automatically mark an employee as absent when" +
@@ -161,6 +163,34 @@ class LeaveType extends Component{
 }
 
 class LeavesForm extends Component {
+    constructor(props){
+        super(props);
+        this.state = {
+            _strMaxConvertible: this.props.data.expirydate.maxconvertible
+        }
+    }
+
+    componentWillReceiveProps = (nextProps) => {
+        if(nextProps.data.expirydate.maxconvertible != this.state._strMaxConvertible){
+            this.setState({
+                _strMaxConvertible: nextProps.data.expirydate.maxconvertible
+            })
+        }
+    }
+
+    _showToast = (value) => {
+        ToastAndroid.show(value, ToastAndroid.SHORT);
+    }
+
+    _updateMaxConvertible = (value) => {
+        if(!isNaN(value)){
+            this.setState({_strMaxConvertible: value})
+        }
+        else{
+            this._showToast('INPUT SHOULD BE A VALID NUMBER FORMAT')
+        }
+    }
+
     render(){
         
         let iExpiryMonth = this.props.data.expirydate.month - 1;
@@ -272,9 +302,14 @@ class LeavesForm extends Component {
                                                 autoCapitalize='none'
                                                 keyboardType='numeric'
                                                 placeholder=''
+                                                onBlur={() => {
+                                                    this.props.updateExpiry('maxconvertible', this.state._strMaxConvertible)
+                                                }}
                                                 style={{paddingLeft: 15, color: '#434646', height: '100%'}}
-                                                onChangeText={inputTxt =>  {this.props.updateExpiry('maxconvertible', inputTxt)}}
-                                                value={''+this.props.data.expirydate.maxconvertible}
+                                                onChangeText={inputTxt =>  {
+                                                    this._updateMaxConvertible(inputTxt)
+                                                }}
+                                                value={''+this.state._strMaxConvertible}
                                                 returnKeyType="done"
                                                 underlineColorAndroid='transparent'
                                             />
@@ -446,7 +481,7 @@ export class Leaves extends Component{
         })
     }
 
-    _onFormCommit = (value) => {
+    _onFormCommit = async(value) => {
         let oRes = {};
 
         this.setState({
@@ -462,13 +497,13 @@ export class Leaves extends Component{
             data: value,
         };
 
-        leavesApi.create(oInput)
+        await leavesApi.create(oInput)
             .then((response) => response.json())
             .then((res) => {
                 console.log('===========Leave Update=============');
                 console.log('INPUT: ' + JSON.stringify(oInput));
                 console.log('OUTPUT: ' + JSON.stringify(res));
-                oRes = {...res};
+                oRes = res;
 
                 this.setState({
                     _promptShow: false
@@ -479,18 +514,16 @@ export class Leaves extends Component{
                 }
 
                 else if(res.flagno==1){
-                    
+                    this._onLeaveFormClose();
                     this.setState({
                         _msgBoxShow: true,
                         _msgBoxType: 'success',
                         _resMsg: res.message,
                         _bNoWorkShift: false
                     })
-                    
                     //Update 
                     if(value.id == ''){
-                        this._pushNewLeaveType(id, value);
-                        this._onLeaveFormClose();
+                        this._pushNewLeaveType(value.id, value);
                     }
                     else{
                         this._updateLeaveType(value);
@@ -570,6 +603,7 @@ export class Leaves extends Component{
             accesstoken: '',
             clientid: '',
             id: value.id
+            
         };
 
         leavesApi.remove(oInput)
@@ -581,6 +615,7 @@ export class Leaves extends Component{
             this.setState({
                 _promptShow: false
             });
+            
             if(res.flagno==0){
                 this.setState({
                     _msgBoxShow: true,
@@ -588,6 +623,7 @@ export class Leaves extends Component{
                     _resMsg: res.message
                 });
             }
+
             else if(res.flagno==1){
                 this.setState({
                     _msgBoxShow: true,
@@ -644,12 +680,14 @@ export class Leaves extends Component{
         }
     }
 
-    _updateExpiry = (strType, value) => {
-        console.log('=====_updateExpiry=====')
+    _updateExpiry = async(strType, value) => {
+        console.log('========UPDATE EXPIRY===========');
         console.log('strType: ' + strType);
         console.log('value: ' + value);
-        let oAllData = {...this.state._allData}; 
+
+        let oAllData = JSON.parse(JSON.stringify(this.state._allData)); 
         let bFlagUpdate = true;
+        let bFlagDBSuccess = false;
         let aDays = [];
 
         switch(strType.toUpperCase()){
@@ -664,27 +702,97 @@ export class Leaves extends Component{
                 oAllData.expirydate.unusedleaveaction.value = value;
                 break;
             case 'MAXCONVERTIBLE':
-                oAllData.expirydate.maxconvertible = value;
+                let val = value;
+                if(val==''){
+                    val='0'
+                }
+                oAllData.expirydate.maxconvertible = val;
                 break;
             default:
                 bFlagUpdate = false;
         }
         
         if (bFlagUpdate) {
-            if(aDays.length > 0){
-                this.setState({
-                    _allData: oAllData,
-                    _aDays: aDays
-                });
+            bFlagDBSuccess = await this._updateExpiryToDB({...oAllData.expirydate});
+            /* bFlagDBSuccess = true; */
+            console.log('=======LEAVE EXPIRY TEST======');
+            console.log('bFlagDBSuccess: ' + bFlagDBSuccess);
+            if(bFlagDBSuccess){
+                if(aDays.length > 0){
+                    this.setState({
+                        _allData: oAllData,
+                        _aDays: aDays
+                    });
+                }
+                else{
+                    this.setState({
+                        _allData: oAllData,
+                    });
+                }
+                this.props.actions.leaves.update(oAllData);
             }
-            else{
-                this.setState({
-                    _allData: oAllData,
-                });
-            }
-            
-            this.props.actions.leaves.update(oAllData);
         }
+    }
+
+    _updateExpiryToDB = async (value) => {
+        let bFlag = false;
+
+        this.setState({
+            _promptMsg: expiry_loading_message,
+            _promptShow: true
+        })
+        const oInput = {
+            companyid: this.props.activecompany.id,
+            username: this.props.logininfo.resUsername,
+            transtype: 'updateexpiry',
+            accesstoken: '',
+            clientid: '',
+            expirydate: value
+        };
+
+        await leavesApi.remove(oInput)
+            .then((response) => response.json())
+            .then((res) => {
+                console.log('=====Update Leaves Expiry Rule=====');
+                console.log('INPUT: ' + JSON.stringify(oInput));
+                console.log('OUTPUT: ' + JSON.stringify(res));
+                this.setState({
+                    _promptShow: false
+                });
+                if(res.flagno==0){
+                    this.setState({
+                        _msgBoxShow: true,
+                        _msgBoxType: 'error-ok',
+                        _resMsg: res.message
+                    });
+                }
+                else if(res.flagno==1){
+                    this.setState({
+                        _msgBoxShow: true,
+                        _msgBoxType: 'success',
+                        _resMsg: res.message,
+                        _bNoWorkShift: false
+                    })
+                    bFlag = true;
+                }
+                else{
+                    this.setState({
+                        _msgBoxShow: true,
+                        _msgBoxType: 'error-ok',
+                        _resMsg: 'Unable to update Leave Expiry Rule. An Unknown Error has been encountered. '
+                    });
+                }
+            })
+            .catch((exception) => {
+                console.log('INPUT: ' + JSON.stringify(oInput));
+                this.setState({
+                    _promptShow: false,
+                    _msgBoxShow: true,
+                    _msgBoxType: 'error-ok',
+                    _resMsg: exception
+                })
+            });
+        return bFlag;
     }
 
     render(){

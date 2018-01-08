@@ -9,7 +9,7 @@
         Date              By            Description
 
 **************************************************************/
-import React, { Component } from 'react';
+import React, { Component, PureComponent } from 'react';
 import {
     View,
     Text,
@@ -98,6 +98,17 @@ export default class CustomCard extends Component{
                 </View>
             </View>
         );
+    }
+}
+
+export class Description extends PureComponent{
+    render(){
+        return(
+            <View style={{paddingTop: 10}}>
+                <Text style={styles.txtDescriptionCard}>{this.props.disabled}</Text>
+                <Text style={styles.txtDescriptionCard}>{'\n' + this.props.enabled}</Text>
+            </View>
+        )
     }
 }
 

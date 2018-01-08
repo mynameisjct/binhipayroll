@@ -6,6 +6,7 @@ import { reducer as tardinessReducer } from './tardiness/reducer';
 import { reducer as undertimeReducer } from './undertime/reducer';
 import { reducer as overtimeReducer } from './overtime/reducer';
 import { reducer as leavesReducer } from './leaves/reducer';
+import { reducer as benefitsReducer } from './benefits/reducer';
 
 export const reducer = combineReducers({
 	workshift: workshiftReducer,
@@ -14,5 +15,6 @@ export const reducer = combineReducers({
 	tardiness: tardinessReducer,
 	undertime: undertimeReducer,
 	overtime: overtimeReducer,
-	leaves: leavesReducer
+	leaves: leavesReducer,
+	benefits: benefitsReducer
 });

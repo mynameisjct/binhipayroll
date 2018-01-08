@@ -89,8 +89,8 @@ export default class FormLeaves extends Component{
     _evaluateSaveButton = () => {
         let bDisabled = true;
         
-        if(this.props.data.name != this.state._name && 
-            this.props.data.paiddays != this.state._paiddays &&
+        if((this.props.data.name != this.state._name || 
+            this.props.data.paiddays != this.state._paiddays) &&
             !isStringEmptyOrSpace(this.state._name) && 
             !isStringEmptyOrSpace(this.state._paiddays)) {
                 
@@ -102,14 +102,15 @@ export default class FormLeaves extends Component{
         })
     }
 
-    _onCommit = () => {
+    _onCommit = async() => {
         Keyboard.dismiss();
         let oData = {
             id: this.state._id,
             name: this.state._name,
             paiddays: this.state._paiddays
         }
-        let oRes = this.props.onDone(oData);
+        let oRes = await this.props.onDone(oData);
+        /* console.log('this.props.onDone(oData): ' + JSON.stringify(this.props.onDone(oData))); */
         console.log('JSON.stringify(oRes): ' + JSON.stringify(oRes));
         if (oRes.flagno == 0){
             this.setState({

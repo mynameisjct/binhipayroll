@@ -199,6 +199,13 @@ export default {
         paddingLeft: 30
     },
 
+    benefitsCont: {
+        flex: 1,
+        flexDirection: 'column',
+        paddingLeft: 30,
+        maxWidth: 600
+    },
+
     breakTimeDetailsCont: {
         flex: 1,
         flexDirection: 'row',
@@ -224,9 +231,28 @@ export default {
         alignItems: 'flex-start',
     },
 
+    benefitsNameCont: {
+        flex: 0.2,
+        minWidth: 130,
+        maxWidth: 130,
+        backgroundColor: 'transparent',
+        justifyContent: 'center',
+        alignItems: 'flex-start',
+    },
+
     leaveDetailsCont: {
         flex: 0.2,
         minWidth: 160,
+        minWidth: 160,
+        backgroundColor: 'transparent',
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+
+    benefitsDetailsCont: {
+        flex: 0.2,
+        minWidth: 100,
+        minWidth: 100,
         backgroundColor: 'transparent',
         justifyContent: 'center',
         alignItems: 'center'

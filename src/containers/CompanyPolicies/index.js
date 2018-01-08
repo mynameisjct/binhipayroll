@@ -36,6 +36,7 @@ import * as tardinessActions from './data/tardiness/actions';
 import * as undertimeActions from './data/undertime/actions';
 import * as overtimeActions from './data/overtime/actions';
 import * as leavesActions from './data/leaves/actions';
+import * as benefitsActions from './data/benefits/actions';
 
 //Custom Components
 import * as StatusLoader from '../../components/ScreenLoadStatus';
@@ -116,13 +117,13 @@ export class CompanyPolicies extends Component {
                     id : '007',
                     name: 'Leaves',
                     iconName: 'timer-off',
-                    btnColor: btnActive
+                    btnColor: btnInactive
                 },
                 {
                     id : '008',
                     name: 'Benefits',
                     iconName: 'format-list-numbers',
-                    btnColor: btnInactive
+                    btnColor: btnActive
                 },
                 {
                     id : '009',
@@ -139,14 +140,14 @@ export class CompanyPolicies extends Component {
         }
         
         //Binding for Refresh Control
-        this._getWorkSchedule = this._getWorkSchedule.bind(this);
+/*         this._getWorkSchedule = this._getWorkSchedule.bind(this);
         this._getPayrollSchedule = this._getPayrollSchedule.bind(this);
         this._getTaxSettings = this._getTaxSettings.bind(this);
         this._getTardinessRule = this._getTardinessRule.bind(this);
         this._getUndertimeRule = this._getUndertimeRule.bind(this);
         this._getOvertimeRule = this._getOvertimeRule.bind(this);
         this._getLeavesRule = this._getLeavesRule.bind(this);
-/*         this._getBenefitsRule = this._getBenefitsRule.bind(this);
+        this._getBenefitsRule = this._getBenefitsRule.bind(this);
         this._getBonusRule = this._getBenefitsRule.bind(this); */
 
         //Active Unsaved Transaction Trigger
@@ -176,7 +177,7 @@ export class CompanyPolicies extends Component {
                 _objLoginInfo: {...oProps.logininfo},
                 _objActiveCompany: {...oProps.activecompany},
                 _status: 1,
-                _activeChild: '007'
+                _activeChild: '008'
             },
                 () => {
                     this._getAllCompanyPolicies();
@@ -204,6 +205,7 @@ export class CompanyPolicies extends Component {
         this._getUndertimeRule();
         this._getOvertimeRule();
         this._getLeavesRule();
+        this._getBenefitsRule();
     }
 
     _getWorkSchedule = (bForceUpdate) => {
@@ -431,6 +433,39 @@ export class CompanyPolicies extends Component {
 		}); 
     }
 
+    _getBenefitsRule = (bForceUpdate) => {
+        let curStatus = [2, 'Loading...'];
+        this.setState({
+            _benefitsStatus: curStatus
+        });
+
+        let oInput = {
+            companyid: this.state._objActiveCompany.id,
+            username: this.state._objLoginInfo.resUsername,
+            transtype: 'get',
+            accesstoken: '',
+            clientid: '',
+        }
+        
+        this.props.actions.benefits.get(oInput)
+        .then(() => {
+            console.log('this.props.benefits: ' + JSON.stringify(this.props.benefits));
+            let oBenefits  = {...this.props.benefits};
+            let oStatus = [oBenefits.flagno, oBenefits.message];
+            this.setState({
+                _benefitsStatus: oStatus
+            });
+		})
+		.catch((exception) => {
+            console.log('oInput: ' + JSON.stringify(oInput));
+            console.log('exception: ' + exception);
+            let oStatus = [0, 'Application error was encountered. \n Please contact BINHI-MeDFI'];
+			this.setState({
+                _benefitsStatus: oStatus
+            })
+		}); 
+    }
+
     _setActiveChild = (id, index) => {
         let btnState = this._getBtnState(index);
         requestAnimationFrame(() => {
@@ -458,75 +493,6 @@ export class CompanyPolicies extends Component {
     render(){
         //Child View Should be placed within render to make it listen to parent's state changes
         let childComponent;
-
-        switch (this.state._activeChild){
-            case '001': 
-                childComponent = (
-                    <WorkShift 
-                        hasUnsaved={this._hasActiveTransaction} 
-                        status={this.state._workShiftStatus} 
-                        triggerRefresh={this._getWorkSchedule}/>
-                );
-                break;
-            case '002':
-                childComponent = (
-                    <Payroll 
-                        hasUnsaved={this._hasActiveTransaction} 
-                        status={this.state._payrollStatus} 
-                        triggerRefresh={this._getPayrollSchedule}/>
-                );
-                break;
-            case '003':
-                childComponent = (
-                    <Tax 
-                        hasUnsaved={this._hasActiveTransaction} 
-                        status={this.state._taxStatus} 
-                        triggerRefresh={this._getTaxSettings}/>
-                );
-                break;
-            case '004':
-                childComponent = (
-                    <Tardiness 
-                        hasUnsaved={this._hasActiveTransaction} 
-                        status={this.state._tardinessStatus} 
-                        triggerRefresh={this._getTardinessRule}/>
-                )
-                break;
-            case '005':
-                childComponent = (
-                    <Undertime 
-                        hasUnsaved={this._hasActiveTransaction} 
-                        status={this.state._undertimeStatus} 
-                        triggerRefresh={this._getUndertimeRule}/>
-                )
-                break;
-            case '006':
-                childComponent = (
-                    <Overtime
-                        hasUnsaved={this._hasActiveTransaction} 
-                        status={this.state._overtimeStatus} 
-                        triggerRefresh={this._getOvertimeRule}/>
-                );
-                break;
-            case '007':
-                childComponent = (
-                    <Leaves
-                        hasUnsaved={this._hasActiveTransaction} 
-                        status={this.state._leaveStatus} 
-                        triggerRefresh={this._getLeavesRule}/>
-                );
-                break;
-            case '008':
-                childComponent = (<Benefits/>);
-                break;
-            case '009':
-                childComponent = (<Bonus/>);
-                break;
-            default:
-                childComponent = (null);
-                break;
-        }
-
         if(this.state._status == 0){
             return(<StatusLoader.PromptError title={'Unable to load Company Policies.\n Please Contact BINHI-MeDFI.'}/>)
         }
@@ -534,6 +500,79 @@ export class CompanyPolicies extends Component {
             return(<StatusLoader.PromptLoading title='Loading...'/>)
         }
         else{
+            switch (this.state._activeChild){
+                case '001': 
+                    childComponent = (
+                        <WorkShift 
+                            hasUnsaved={this._hasActiveTransaction} 
+                            status={this.state._workShiftStatus} 
+                            triggerRefresh={this._getWorkSchedule}/>
+                    );
+                    break;
+                case '002':
+                    childComponent = (
+                        <Payroll 
+                            hasUnsaved={this._hasActiveTransaction} 
+                            status={this.state._payrollStatus} 
+                            triggerRefresh={this._getPayrollSchedule}/>
+                    );
+                    break;
+                case '003':
+                    childComponent = (
+                        <Tax 
+                            hasUnsaved={this._hasActiveTransaction} 
+                            status={this.state._taxStatus} 
+                            triggerRefresh={this._getTaxSettings}/>
+                    );
+                    break;
+                case '004':
+                    childComponent = (
+                        <Tardiness 
+                            hasUnsaved={this._hasActiveTransaction} 
+                            status={this.state._tardinessStatus} 
+                            triggerRefresh={this._getTardinessRule}/>
+                    )
+                    break;
+                case '005':
+                    childComponent = (
+                        <Undertime 
+                            hasUnsaved={this._hasActiveTransaction} 
+                            status={this.state._undertimeStatus} 
+                            triggerRefresh={this._getUndertimeRule}/>
+                    )
+                    break;
+                case '006':
+                    childComponent = (
+                        <Overtime
+                            hasUnsaved={this._hasActiveTransaction} 
+                            status={this.state._overtimeStatus} 
+                            triggerRefresh={this._getOvertimeRule}/>
+                    );
+                    break;
+                case '007':
+                    childComponent = (
+                        <Leaves
+                            hasUnsaved={this._hasActiveTransaction} 
+                            status={this.state._leaveStatus} 
+                            triggerRefresh={this._getLeavesRule}/>
+                    );
+                    break;
+                case '008':
+                    childComponent = (
+                        <Benefits
+                            hasUnsaved={this._hasActiveTransaction} 
+                            status={this.state._benefitsStatus} 
+                            triggerRefresh={this._getBenefitsRule}/>
+                    );
+                    break;
+                case '009':
+                    childComponent = (<Bonus/>);
+                    break;
+                default:
+                    childComponent = (null);
+                    break;
+            }
+
             return(
                 <View style={styles.container}>
                     <View style={styles.leftCont}>
@@ -590,7 +629,8 @@ function mapStateToProps (state) {
         tardiness: state.companyPoliciesReducer.tardiness,
         undertime: state.companyPoliciesReducer.undertime,
         overtime: state.companyPoliciesReducer.overtime,
-        leaves: state.companyPoliciesReducer.leaves
+        leaves: state.companyPoliciesReducer.leaves,
+        benefits: state.companyPoliciesReducer.benefits
     }
 }
 
@@ -603,7 +643,8 @@ function mapDispatchToProps (dispatch) {
             tardiness: bindActionCreators(tardinessActions,dispatch),
             undertime: bindActionCreators(undertimeActions,dispatch),
             overtime: bindActionCreators(overtimeActions, dispatch),
-            leaves: bindActionCreators(leavesActions, dispatch)
+            leaves: bindActionCreators(leavesActions, dispatch),
+            benefits: bindActionCreators(benefitsActions, dispatch)
         },
     }
 }

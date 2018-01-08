@@ -154,6 +154,12 @@ export default {
         color: '#434646'
     },
 
+    txtDescriptionCard: {
+        fontFamily: 'Helvetica-Light',
+        fontSize: 14,
+        color: '#838383'
+    },
+
     payrollChildProp: {
         flexDirection: 'row',
         height: 47,
