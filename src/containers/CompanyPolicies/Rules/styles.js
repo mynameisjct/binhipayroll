@@ -233,8 +233,8 @@ export default {
 
     benefitsNameCont: {
         flex: 0.2,
-        minWidth: 130,
-        maxWidth: 130,
+        minWidth: 180,
+        maxWidth: 180,
         backgroundColor: 'transparent',
         justifyContent: 'center',
         alignItems: 'flex-start',
@@ -250,6 +250,24 @@ export default {
     },
 
     benefitsDetailsCont: {
+        flex: 0.2,
+        minWidth: 180,
+        minWidth: 180,
+        backgroundColor: 'transparent',
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+
+    benefitsAmountCont: {
+        flex: 0.2,
+        minWidth: 150,
+        minWidth: 150,
+        backgroundColor: 'transparent',
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+
+    benefitsDeleteCont: {
         flex: 0.2,
         minWidth: 100,
         minWidth: 100,

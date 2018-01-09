@@ -10,7 +10,7 @@ export const empty = () => ({
 	type: actionTypes.EMPTY,
 });
 
-/* export const get = payload =>
+export const get = payload =>
 	dispatch =>
 		api.get(payload)
 		.then((response) => response.json())
@@ -19,11 +19,11 @@ export const empty = () => ({
 			console.log('INPUT: ' + JSON.stringify(payload));
 			console.log('OUTPUT: ' + JSON.stringify(res));
 			dispatch(update(res));
-		}); */
+		});
 
 
 //MOCK DATA
-const mockJSON = {
+/* const mockJSON = {
 	sucess: 'http://www.mocky.io/v2/5a5327ec300000ca121ebe0c',
 }
 
@@ -61,4 +61,4 @@ export const fetchApi = (endPoint, payload = {}, strMethod = 'post', headers = {
 		}
 	});
 }
-		
+		 */

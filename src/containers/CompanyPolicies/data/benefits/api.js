@@ -1,10 +1,10 @@
 import { fetchApi } from '../../../../services/api';
 
 const endPoints = {
-	create: 'forms/timepolicies/leavepolicies.php',
-	get: 'forms/timepolicies/leavepolicies.php',
-	toggleSwitch: 'forms/timepolicies/leavepolicies.php',
-	remove: 'forms/timepolicies/leavepolicies.php'
+	create: 'forms/benefits/benefits.php',
+	get: 'forms/benefits/benefits.php',
+	toggleSwitch: 'forms/benefits/benefits.php',
+	remove: 'forms/benefits/benefits.php',
 };
 
 export const create = payload => fetchApi(endPoints.create, payload, 'post');
