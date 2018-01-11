@@ -37,6 +37,7 @@ import * as undertimeActions from './data/undertime/actions';
 import * as overtimeActions from './data/overtime/actions';
 import * as leavesActions from './data/leaves/actions';
 import * as benefitsActions from './data/benefits/actions';
+import * as bonusActions from './data/bonus/actions';
 
 //Custom Components
 import * as StatusLoader from '../../components/ScreenLoadStatus';
@@ -81,7 +82,7 @@ export class CompanyPolicies extends Component {
                     id : '001',
                     name: 'Work Shift',
                     iconName: 'timetable',
-                    btnColor: btnInactive
+                    btnColor: btnActive
                 },
                 {
                     id : '002',
@@ -123,7 +124,7 @@ export class CompanyPolicies extends Component {
                     id : '008',
                     name: 'Benefits',
                     iconName: 'format-list-numbers',
-                    btnColor: btnActive
+                    btnColor: btnInactive
                 },
                 {
                     id : '009',
@@ -177,7 +178,7 @@ export class CompanyPolicies extends Component {
                 _objLoginInfo: {...oProps.logininfo},
                 _objActiveCompany: {...oProps.activecompany},
                 _status: 1,
-                _activeChild: '008'
+                _activeChild: '001'
             },
                 () => {
                     this._getAllCompanyPolicies();
@@ -206,6 +207,7 @@ export class CompanyPolicies extends Component {
         this._getOvertimeRule();
         this._getLeavesRule();
         this._getBenefitsRule();
+        this._getBonusRule();
     }
 
     _getWorkSchedule = (bForceUpdate) => {
@@ -466,6 +468,39 @@ export class CompanyPolicies extends Component {
 		}); 
     }
 
+    _getBonusRule = (bForceUpdate) => {
+        let curStatus = [2, 'Loading...'];
+        this.setState({
+            _bonusStatus: curStatus
+        });
+
+        let oInput = {
+            companyid: this.state._objActiveCompany.id,
+            username: this.state._objLoginInfo.resUsername,
+            transtype: 'get',
+            accesstoken: '',
+            clientid: '',
+        }
+        
+        this.props.actions.bonus.get(oInput)
+        .then(() => {
+            console.log('this.props.bonus: ' + JSON.stringify(this.props.bonus));
+            let oBonus  = {...this.props.bonus};
+            let oStatus = [oBonus.flagno, oBonus.message];
+            this.setState({
+                _bonusStatus: oStatus
+            });
+		})
+		.catch((exception) => {
+            console.log('oInput: ' + JSON.stringify(oInput));
+            console.log('exception: ' + exception);
+            let oStatus = [0, 'Application error was encountered. \n Please contact BINHI-MeDFI'];
+			this.setState({
+                _bonusStatus: oStatus
+            })
+		}); 
+    }
+
     _setActiveChild = (id, index) => {
         let btnState = this._getBtnState(index);
         requestAnimationFrame(() => {
@@ -566,7 +601,12 @@ export class CompanyPolicies extends Component {
                     );
                     break;
                 case '009':
-                    childComponent = (<Bonus/>);
+                    childComponent = (
+                        <Bonus
+                            hasUnsaved={this._hasActiveTransaction} 
+                            status={this.state._bonusStatus} 
+                            triggerRefresh={this._getBonusRule}
+                        />);
                     break;
                 default:
                     childComponent = (null);
@@ -576,6 +616,9 @@ export class CompanyPolicies extends Component {
             return(
                 <View style={styles.container}>
                     <View style={styles.leftCont}>
+                        {/* <View style={styles.profileCont}>
+                            <Text>HELLO</Text>
+                        </View> */}
                         <ScrollView contentContainerStyle={styles.scrollableCont}>
                             <View style={styles.optionsCont}>
                                 {
@@ -630,7 +673,9 @@ function mapStateToProps (state) {
         undertime: state.companyPoliciesReducer.undertime,
         overtime: state.companyPoliciesReducer.overtime,
         leaves: state.companyPoliciesReducer.leaves,
-        benefits: state.companyPoliciesReducer.benefits
+        benefits: state.companyPoliciesReducer.benefits,
+        bonus: state.companyPoliciesReducer.bonus
+
     }
 }
 
@@ -644,7 +689,8 @@ function mapDispatchToProps (dispatch) {
             undertime: bindActionCreators(undertimeActions,dispatch),
             overtime: bindActionCreators(overtimeActions, dispatch),
             leaves: bindActionCreators(leavesActions, dispatch),
-            benefits: bindActionCreators(benefitsActions, dispatch)
+            benefits: bindActionCreators(benefitsActions, dispatch),
+            bonus: bindActionCreators(bonusActions, dispatch),
         },
     }
 }

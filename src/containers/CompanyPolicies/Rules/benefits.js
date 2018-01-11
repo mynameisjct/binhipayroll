@@ -52,6 +52,7 @@ const save_loading_message = 'Saving new Company Benefit. Please wait...';
 const gov_switch_loading_message = 'Switching Government Benefits Policy. Please wait...';
 const comp_switch_loading_message = 'Switching Company Benefits Policy. Please wait...';
 const disableBenefit_loading_message = 'Disabling a Government Benefit. Please wait...';
+const enableBenefit_loading_message = 'Enabling a Government Benefit. Please wait...';
 
 const gov_form_modify_title = 'MODIFY GOVERNMENT BENEFIT TYPE';
 const comp_form_modify_title = 'MODIFY COMPANY BENEFIT TYPE';
@@ -67,7 +68,7 @@ const description_Comp= 'Add Company Allowances';
 const color_SwitchOn='#838383';
 const color_SwitchOff='#505251';
 const color_SwitchThumb='#EEB843';
-const UNKNOWNERROR = 'Unable to save. An Unknown Error has been encountered. Contact BINHI-MeDFI.';
+const UNKNOWNERROR = 'Unable to commit transaction. An Unknown Error has been encountered. Contact BINHI-MeDFI.';
 
 class GovernmentBenefits extends Component{
     /* shouldComponentUpdate(nextProps, nextStates){
@@ -79,7 +80,7 @@ class GovernmentBenefits extends Component{
     }
 
     _toggleCheckbox = (id, value) => {
-        this.props.toggleCheckbox('GOVERNMENT', id, value)
+        this.props.toggleCheckbox(id, value)
     }
 
     _openForm = (oBenefit) => {
@@ -197,7 +198,11 @@ class CompanyBenefits extends Component{
                 }
             }
         }
-        this.props.openForm(objBenefit);
+        this.props.openForm(objBenefit);   
+    }
+
+    _deleteCompBenefit = (oBenefit) => {
+        this.props.removeItem(oBenefit);   
     }
 
     render(){
@@ -258,7 +263,7 @@ class CompanyBenefits extends Component{
                                                     <View style={styles.benefitsDeleteCont}>
                                                         <TouchableOpacity
                                                             activeOpacity={0.7}
-                                                            onPress={() => {}}
+                                                            onPress={() => {this._deleteCompBenefit(oBenefit)}}
                                                             >
                                                             <Icon size={30} name='md-close-circle' color='#EEB843' />
                                                         </TouchableOpacity>
@@ -357,12 +362,12 @@ export class Benefits extends Component{
         switch(strType.toUpperCase()){
             case 'GOVERNMENT':
                 oAllData.government.enabled = value;
-                strTransType = 'requestgovtswitch';
+                strTransType = 'requestswitchgovt';
                 strLoading = gov_switch_loading_message;
                 break;
             case 'COMPANY':
                 oAllData.company.enabled = value;
-                strTransType = 'requestcompswitch';
+                strTransType = 'requestswitchcomp';
                 strLoading = comp_switch_loading_message;
                 break;
             default:
@@ -401,42 +406,58 @@ export class Benefits extends Component{
         return bFlag;
     }
 
-    _toggleCheckbox = (strType, id, value) => {
-        console.log('=========_toggleCheckbox===========')
-        console.log('strType: ' + strType);
-        console.log('id: ' + id);
-        console.log('value: ' + value);
+    _toggleCheckbox = async(id, value) => {
+        console.log('=======id: ' + id);
+        console.log('=======value: ' + value);
         let oAllData = JSON.parse(JSON.stringify(this.state._allData));
-        let oGov = {...oAllData.government};
-        let oComp = {...oAllData.company};
+        let oGov = oAllData.government;
+        let bFlag = false;
+        let bSuccess = false;
+        let iBenIndex = 0;
+        let strLoading = disableBenefit_loading_message;
 
-        let bFlag = true;
-        switch(strType.toUpperCase()){
-            case 'GOVERNMENT':
-                oAllData.government.data.map((x, index) => {
-                    if(x.id == id){
-                        oGov.data[index].enabled= value
-                    }
-                })
-                oAllData.government = oGov;
-                break;
-            case 'COMPANY':
-                oAllData.company.data.map((x, index) => {
-                    if(x.id == id){
-                        oComp.data[index].enabled= value
-                    }
-                })
-                oAllData.company = oComp;
-                break;
-            default:
-                bFlag = false;
-                break;
+        if(value){
+            strLoading =  enableBenefit_loading_message;
         }
+
+        oGov.data.map((oBen, index) => {
+            if(oBen.id == id){
+                oAllData.government.data[index].enabled = value
+                bFlag = true;
+                iBenIndex=index;
+            }
+        })
 
         if(bFlag){
-            console.log('JSON.stringify(oAllData): ' + JSON.stringify(oAllData));
-            this._updateAllData(oAllData);
+            let oBenefit = oAllData.government.data[iBenIndex];
+            bSuccess = await this._toggleCheckboxToDB({data: oBenefit}, strLoading);
+            if(bSuccess){
+                this._updateAllData(oAllData);
+            }
         }
+    }
+
+    _toggleCheckboxToDB = async(value, strLoading) => {
+        let bFlag = false;
+        this._showLoadingPrompt(strLoading);
+
+        let oInput = this._requiredInputs();
+        oInput.transtype = 'modifygovtbenefits'
+        oInput.government = value;
+
+        console.log('oInput: ' + JSON.stringify(oInput));
+        await benefitsApi.toggleSwitch(oInput)
+            .then((response) => response.json())
+            .then((res) => {
+                this._hideLoadingPrompt();
+                bFlag = this._evaluateResponse(res);
+            })
+            .catch((exception) => {
+                this._hideLoadingPrompt();
+                this._showMsgBox('error-ok', exception);
+            });
+
+        return bFlag;
     }
 
     _updateAllData = (value) => {
@@ -470,8 +491,10 @@ export class Benefits extends Component{
                 .then((res) => {
                     console.log('OUTPUT: ' + JSON.stringify(res));
                     oRes = res;
-                    if(this._evaluateResponse(res)){
-                        this._closeCompForm();
+                    if(res.flagno==1){
+                        this._evaluateResponse(res);
+                        this._closeGovForm();
+                        this._updateGovBenefitsData(value);
                     }
                 })
                 .catch((exception) => {
@@ -486,8 +509,31 @@ export class Benefits extends Component{
         return oRes;
     }
 
-    _closeCompForm = () => {
-        this.setState({_bShowCompForm: false})
+    _closeGovForm = () => {
+        this.setState({_bShowGovForm: false})
+    }
+
+    _updateGovBenefitsData = (value) => {
+        try{
+            let oAllData = {...this.state._allData};
+            let oGov = oAllData.government;
+            let bFlag = false;
+            
+            oAllData.government.data.map((x, index) => {
+                if(x.id == value.id){
+                    oGov.data[index].compid = value.compid;
+                    bFlag = true;
+                }
+            })
+
+            if(bFlag){
+                oAllData.government = oGov;
+                this._updateAllData(oAllData);
+            }
+        }
+        catch(exception){
+            this._showMsgBox('error-ok', exception);
+        }
     }
 
     //Company Form
@@ -509,7 +555,12 @@ export class Benefits extends Component{
         let oInput = this._requiredInputs();
 
         oInput.company = {...company};
-        oInput.transtype = 'updatecomptbenefits';
+        if(value.id==''){
+            oInput.transtype = 'addcompbenefits';
+        }
+        else{
+            oInput.transtype = 'updatecomptbenefits';
+        }
 
         console.log('oInput: ' + JSON.stringify(oInput));
         await benefitsApi.create(oInput)
@@ -517,8 +568,10 @@ export class Benefits extends Component{
             .then((res) => {
                 console.log('OUTPUT: ' + JSON.stringify(res));
                 oRes = res;
-                if(this._evaluateResponse(res)){
+                if(res.flagno==1){
                     this._closeCompForm();
+                    this._updateCompBenefitsData(value);
+                    this._evaluateResponse(res);
                 }
             })
             .catch((exception) => {
@@ -532,6 +585,57 @@ export class Benefits extends Component{
         this.setState({_bShowCompForm: false})
     }
     
+    _updateCompBenefitsData = (value) => {
+        try{
+            let oAllData = {...this.state._allData};
+            let oComp = oAllData.company;
+            let bFlag = false;
+            
+            oAllData.company.data.map((x, index) => {
+                if(x.id == value.id){
+                    oComp.data[index].name = value.name;
+                    oComp.data[index].amountpermonth = value.amountpermonth;
+                    oComp.data[index].scheme = value.scheme;
+                    bFlag = true;
+                }
+            })
+
+            if(bFlag){
+                oAllData.company = oComp;
+                this._updateAllData(oAllData);
+            }
+        }
+        catch(exception){
+            this._showMsgBox('error-ok', exception);
+        }
+    }
+
+    //Delete Company Benefit
+    _deleteCompBenefit = (value) => {
+        let oRes = {};
+        let company = {data: value};
+        let oInput = this._requiredInputs();
+
+        oInput.company = {...company};
+        oInput.transtype = 'updatecomptbenefits';
+
+        console.log('oInput: ' + JSON.stringify(oInput));
+        benefitsApi.create(oInput)
+            .then((response) => response.json())
+            .then((res) => {
+                console.log('OUTPUT: ' + JSON.stringify(res));
+                oRes = res;
+                if(res.flagno==1){
+                    this._closeCompForm();
+                    this._updateCompBenefitsData(value);
+                    this._evaluateResponse(res);
+                }
+            })
+            .catch((exception) => {
+                this._showMsgBox('error-ok', exception);
+            });
+    }
+
     //Default Functions
 
     _requiredInputs = () => {
@@ -655,7 +759,8 @@ export class Benefits extends Component{
                         title={this.state._strBenefitTitle}
                         show={this.state._bShowCompForm}
                         onFormClose={this._onFormClose}
-                        onDone={this._onCompFormCommit}/>
+                        onDone={this._onCompFormCommit}
+                        removeItem={this._deleteCompBenefit}/>
                 </View>
             );
         }

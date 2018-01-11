@@ -2,12 +2,50 @@
     "flagno": "1",
     "message": "Success!",
     "enabled": true,
-    "data": {
-        
-    }
+    "description": {
+        "enabled": "Enabled â€” when 13th Month Pay is turned on, the system will create a special payroll schedule based on employer's discretion. The 13th Month Pay is based on the calculation, (Basic Monthly Salary x Months Worked) / 12 .",
+        "disabled": "Disabled â€” when 13th Month Pay is turned off, the system will NOT calculate a 13th Month Pay for all employees."
+    },
+    "data": [
+        {
+            "id": "0001",
+            "name": "2018",
+            "installments": "4",
+            "schedule":[
+                {
+                    "date":"03/15/2018",
+                    "editable": true
+                },
+                {
+                    "date": "06/12/2018",
+                    "editable": true
+                },
+                {
+                    "date":"09/10/2018",
+                    "editable": true
+                },
+                {
+                    "date": "12/08/2018",
+                    "editable": true
+                }
+            ],
+            "notification": "10"
+        },
+        {
+            "id": "0002",
+            "name": "2019",
+            "installments": "2",
+            "schedule":[
+                {
+                    "date":"06/15/2018",
+                    "editable": true
+                },
+                {
+                    "date": "12/12/2018",
+                    "editable": true
+                }
+            ],
+            "notification": "10"
+        }
+    ]
 }
-
-
-
-
-

@@ -23,7 +23,13 @@ export default {
         maxWidth: 200,
         backgroundColor: '#505251',
         borderRightWidth: 2,
-        borderColor: '#434646'
+        borderColor: '#434646', 
+        flexDirection: 'column'
+    },
+
+    profileCont: {
+        minHeight: 70,
+        backgroundColor: '#9EADBC',
     },
 
     scrollableCont: {
@@ -43,7 +49,7 @@ export default {
 
     btnCont: {
         height: 60,
-        flexDirection: 'row',
+        flexDirection: 'row'
     },
 
     iconCont: {

@@ -132,6 +132,7 @@ export default class FormGovBenefits extends Component{
             compid: this.state._compid
         }
         let oRes = await this.props.onDone(oData);
+        console.log('oRes: ' + JSON.stringify(oRes));
         if (oRes.flagno == 0){
             this.setState({
                 _msgBoxShow: true,

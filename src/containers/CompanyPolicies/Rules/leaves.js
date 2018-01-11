@@ -483,7 +483,14 @@ export class Leaves extends Component{
 
     _onFormCommit = async(value) => {
         let oRes = {};
+        let bNew = false;
+        let strTranstype = 'update';
 
+        if(value.id ==''){
+            bNew = true;
+            strTranstype = 'add';
+        }
+    
         this.setState({
             _promptMsg: save_loading_message,
             _promptShow: true
@@ -491,7 +498,7 @@ export class Leaves extends Component{
         const oInput = {
             companyid: this.props.activecompany.id,
             username: this.props.logininfo.resUsername,
-            transtype: 'update',
+            transtype: strTranstype,
             accesstoken: '',
             clientid: '',
             data: value,
@@ -522,8 +529,8 @@ export class Leaves extends Component{
                         _bNoWorkShift: false
                     })
                     //Update 
-                    if(value.id == ''){
-                        this._pushNewLeaveType(value.id, value);
+                    if(bNew){
+                        this._pushNewLeaveType(res.id, value);
                     }
                     else{
                         this._updateLeaveType(value);
@@ -573,7 +580,7 @@ export class Leaves extends Component{
         let objIndex = oAllData.data.findIndex((obj => obj.id == value.id));
         
         oAllData.data[objIndex].name = value.name;
-        oAllData.data[objIndex].name = value.paiddays;
+        oAllData.data[objIndex].paiddays = value.paiddays;
 
         this.props.actions.leaves.update(oAllData);
         this._initValues();
