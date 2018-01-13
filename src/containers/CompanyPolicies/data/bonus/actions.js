@@ -15,16 +15,16 @@ export const empty = () => ({
 		api.get(payload)
 		.then((response) => response.json())
 		.then((res) => {
-			console.log('===========BONUS=============');
+			console.log('===========13th Month Pay=============');
 			console.log('INPUT: ' + JSON.stringify(payload));
 			console.log('OUTPUT: ' + JSON.stringify(res));
 			dispatch(update(res));
-		});
- */
+		}); */
+
 
 //MOCK DATA
 const mockJSON = {
-	sucess: 'http://www.mocky.io/v2/5a5579d02f00006605beea4f',
+	sucess: 'http://www.mocky.io/v2/5a5729682e0000a71c11ffee',
 }
 
 export const get = payload =>

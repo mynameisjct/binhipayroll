@@ -124,9 +124,9 @@ export class Undertime extends Component{
             undertimeApi.create(oInput)
             .then((response) => response.json())
             .then((res) => {
-                console.log('===========SAVE UNDERTIME===========');
+                /* console.log('===========SAVE UNDERTIME===========');
                 console.log('INPUT: ' + JSON.stringify(oInput));
-                console.log('OUTPUT: ' + JSON.stringify(res));
+                console.log('OUTPUT: ' + JSON.stringify(res)); */
                 this.setState({
                     _promptShow: false
                 });
@@ -155,7 +155,7 @@ export class Undertime extends Component{
                 }
             })
             .catch((exception) => {
-                console.log('INPUT: ' + JSON.stringify(oInput));
+                /* console.log('INPUT: ' + JSON.stringify(oInput)); */
                 this.setState({
                     _promptShow: false,
                     _msgBoxShow: true,
@@ -191,8 +191,8 @@ export class Undertime extends Component{
         undertimeApi.toggleSwitch(oInput)
         .then((response) => response.json())
         .then((res) => {
-            console.log('INPUT: ' + JSON.stringify(oInput));
-            console.log('OUTPUT: ' + JSON.stringify(res));
+            /* console.log('INPUT: ' + JSON.stringify(oInput));
+            console.log('OUTPUT: ' + JSON.stringify(res)); */
             this.setState({
                 _promptShow: false
             });
@@ -221,7 +221,7 @@ export class Undertime extends Component{
             }
         })
         .catch((exception) => {
-            console.log('INPUT: ' + JSON.stringify(oInput));
+            /* console.log('INPUT: ' + JSON.stringify(oInput)); */
             this.setState({
                 _promptShow: false,
                 _msgBoxShow: true,
@@ -248,8 +248,8 @@ export class Undertime extends Component{
         undertimeApi.remove(oInput)
         .then((response) => response.json())
         .then((res) => {
-            console.log('INPUT: ' + JSON.stringify(oInput));
-            console.log('OUTPUT: ' + JSON.stringify(res));
+            /* console.log('INPUT: ' + JSON.stringify(oInput));
+            console.log('OUTPUT: ' + JSON.stringify(res)); */
             this.setState({
                 _promptShow: false
             });
@@ -278,7 +278,7 @@ export class Undertime extends Component{
             }
         })
         .catch((exception) => {
-            console.log('INPUT: ' + JSON.stringify(oInput));
+            /* console.log('INPUT: ' + JSON.stringify(oInput)); */
             this.setState({
                 _promptShow: false,
                 _msgBoxShow: true,
@@ -353,8 +353,8 @@ export class Undertime extends Component{
             _disabledMode: bFlag
         },
             () => {
-                console.log('_activeUndertime: ' + JSON.stringify(this.state._activeUndertime));
-                console.log('_undertimeData: ' + JSON.stringify(this.state._undertimeData));
+                /* console.log('_activeUndertime: ' + JSON.stringify(this.state._activeUndertime));
+                console.log('_undertimeData: ' + JSON.stringify(this.state._undertimeData)); */
             }
         )
     }

@@ -1,3 +1,4 @@
+//Packages
 import React, { Component } from 'react';
 import {
     View,
@@ -43,7 +44,7 @@ const description_Tax = 'Enable Withholding Tax Calculation';
 const color_SwitchOn='#FFF4DE';
 const color_SwitchOff='#838383';
 const color_SwitchThumb='#EEB843';
-const tax_disabled = 'Disabled — when the Withholding Tax is turned off,' +
+/* const tax_disabled = 'Disabled — when the Withholding Tax is turned off,' +
                         ' the system will NOT calculate and will NOT deduct a Tax' +
                         " from every employee's income."
 
@@ -51,6 +52,15 @@ const tax_enabled = 'Enabled — when the Withholding Tax is turned on,' +
                         ' the system will calculate and will deduct a Tax' + 
                         " from every employee's income" + 
                         ' based on the Personal Income Tax Rates.'
+ */
+
+const tax_disabled = "Disabled — When Withholding Tax is turned off, the" +
+    " system will NOT calculate and will NOT deduct a tax component from every"
+    " employee."
+
+const tax_enabled = "Enabled - When Withholding Tax is turned on, the" + 
+    " system will calculate and deduct a tax component from every employee based" +
+    " on Personal Income Tax Rates."
 
 export class Tax extends Component{
     constructor(props){

@@ -134,6 +134,7 @@ export default class FormCompBenefits extends Component{
         }
 
         let oRes = await this.props.onDone(oData);
+        this._hideLoadingPrompt();
         if (oRes.flagno == 0){
             this.setState({
                 _msgBoxShow: true,
@@ -151,8 +152,14 @@ export default class FormCompBenefits extends Component{
         }
 
         this.setState({
-            _showPrompt: true,
+            _promptShow: true,
             _promptMsg: strMsg
+        })
+    }
+
+    _hideLoadingPrompt = () => {
+        this.setState({
+            _promptShow: false
         })
     }
 

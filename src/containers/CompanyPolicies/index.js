@@ -6,10 +6,10 @@ import {
     TouchableNativeFeedback
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import LinearGradient from 'react-native-linear-gradient';
 
-//Chil Views and Properties
+//Styles Properties
 import styles from './styles';
-import apiConfig, {endPoints} from '../../services/api/config';
 
 //Child Containers
 import WorkShift from './Rules/workshift';;
@@ -43,6 +43,7 @@ import * as bonusActions from './data/bonus/actions';
 import * as StatusLoader from '../../components/ScreenLoadStatus';
 import Header2 from '../Headers/header2';
 import MessageBox from '../../components/MessageBox';
+import { Ranks } from './Rules/ranks';
 
 //Constants
 const btnActive = 'rgba(255, 255, 255, 0.3);'
@@ -60,15 +61,16 @@ export class CompanyPolicies extends Component {
             _objActiveCompany: null,
 
             //Error-0, Success-1, Loading-2,  Handler
-            _workShiftStatus: ['2', ''],
-            _payrollStatus: ['2', ''],
-            _taxStatus: ['2',''],
-            _tardinessStatus: ['2', ''],
-            _undertimeStatus: ['2', ''],
-            _overtimeStatus: ['2', ''],
-            _leaveStatus: ['2', ''],
-            _benefitsStatus: ['2', ''],
-            _bonusStatus: ['2', ''],
+            _workShiftStatus: ['2', 'Loading...'],
+            _payrollStatus: ['2', 'Loading...'],
+            _taxStatus: ['2','Loading...'],
+            _tardinessStatus: ['2', 'Loading...'],
+            _undertimeStatus: ['2', 'Loading...'],
+            _overtimeStatus: ['2', 'Loading...'],
+            _leaveStatus: ['2', 'Loading...'],
+            _benefitsStatus: ['2', 'Loading...'],
+            _bonusStatus: ['2', 'Loading...'],
+            _ranksStatus: ['2', 'Loading...'],
 
             //Unsaved Transaction
             _hasActiveTransaction: false,
@@ -82,7 +84,7 @@ export class CompanyPolicies extends Component {
                     id : '001',
                     name: 'Work Shift',
                     iconName: 'timetable',
-                    btnColor: btnActive
+                    btnColor: btnInactive
                 },
                 {
                     id : '002',
@@ -130,6 +132,12 @@ export class CompanyPolicies extends Component {
                     id : '009',
                     name: '13th Month Pay',
                     iconName: 'wunderlist',
+                    btnColor: btnActive
+                },
+                {
+                    id : '010',
+                    name: 'Ranks',
+                    iconName: 'account-star',
                     btnColor: btnInactive
                 },
             ],
@@ -178,7 +186,7 @@ export class CompanyPolicies extends Component {
                 _objLoginInfo: {...oProps.logininfo},
                 _objActiveCompany: {...oProps.activecompany},
                 _status: 1,
-                _activeChild: '001'
+                _activeChild: '009'
             },
                 () => {
                     this._getAllCompanyPolicies();
@@ -501,6 +509,10 @@ export class CompanyPolicies extends Component {
 		}); 
     }
 
+    _getRanksRule = () => {
+
+    }
+
     _setActiveChild = (id, index) => {
         let btnState = this._getBtnState(index);
         requestAnimationFrame(() => {
@@ -608,6 +620,14 @@ export class CompanyPolicies extends Component {
                             triggerRefresh={this._getBonusRule}
                         />);
                     break;
+                case '010':
+                    childComponent = (
+                        <Ranks
+                            hasUnsaved={this._hasActiveTransaction} 
+                            status={this.state._ranksStatus} 
+                            triggerRefresh={this._getRanksRule}
+                        />);
+                    break;
                 default:
                     childComponent = (null);
                     break;
@@ -615,10 +635,18 @@ export class CompanyPolicies extends Component {
 
             return(
                 <View style={styles.container}>
-                    <View style={styles.leftCont}>
-                        {/* <View style={styles.profileCont}>
-                            <Text>HELLO</Text>
-                        </View> */}
+                    <LinearGradient 
+                            colors={['#818489', '#3f4144', '#202626']}
+                            style={styles.leftCont}>
+                        <LinearGradient 
+                            colors={['#a1a1a3', '#6a6a6d', '#303033']}
+                            /* start={{x: 0.0, y: 0}} end={{x: 0.25, y: 0.3}}
+                            locations={[0,0,1]}  */
+                            style={styles.contTitle}>
+                            <Text style={styles.txtTitle}>
+                                {this.props.activecompany.name.toUpperCase()}
+                            </Text>
+                        </LinearGradient>
                         <ScrollView contentContainerStyle={styles.scrollableCont}>
                             <View style={styles.optionsCont}>
                                 {
@@ -642,7 +670,7 @@ export class CompanyPolicies extends Component {
                                 }
                             </View>
                         </ScrollView>
-                    </View>
+                    </LinearGradient>
                     
                     <View style={styles.rightCont}>
                         {   

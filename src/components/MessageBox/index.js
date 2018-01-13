@@ -282,7 +282,7 @@ export default class MsgBox extends Component{
         }
         else{
             return (
-                <View style={{justifyContent: 'center', alignItems: 'center', position: 'absolute', flex: 1, zIndex: 100, width: '100%', height: '100%', backgroundColor: 'rgba(0,0,0,0.9);'}}>
+                /* <View style={{justifyContent: 'center', alignItems: 'center', position: 'absolute', flex: 1, zIndex: 100, width: '100%', height: '100%', backgroundColor: 'rgba(0,0,0,0.9);'}}>
                     <View style={styles.messageBox}>
                         <View style={[styles.header, this.themeColor(this.state.promptType)]}>
                             <View style={styles.title}>
@@ -311,7 +311,44 @@ export default class MsgBox extends Component{
                         {this.renderButtons()}
 
                     </View>
-                </View>
+                </View> */
+
+                <Modal 
+                    animationType="fade"
+                    transparent={true}
+                    visible={this.props.show}
+                    onRequestClose={() => {alert("Modal has been closed.")}}>
+                
+                    <View style={styles.container}>
+                        <View style={styles.messageBox}>
+                            <View style={[styles.header, this.themeColor(this.state.promptType)]}>
+                                <View style={styles.title}>
+                                    <View>
+                                        <Icon name={this.state._strIcon} size={30} color='#FFF'/>
+                                    </View>
+                                    <View>
+                                        <Text style={styles.txtTitle}>{this.state._strTitle}</Text>
+                                    </View>
+
+                                </View>
+                                <View style={styles.btnCloseCont}>
+                                    <TouchableOpacity 
+                                        style={styles.btnClose}
+                                        activeOpacity={0.6}
+                                        onPress={() => this.props.onClose()}>
+                                        <Text style={styles.txtCloseBtn}>X</Text>
+                                    </TouchableOpacity>
+                                </View>
+                            </View> 
+
+                            <View style={styles.msgCont}>
+                                <Text>{this.props.message} </Text>
+                            </View>
+                            
+                            {this.renderButtons()}
+                        </View>
+                    </View>
+                </Modal>
                 
 
             );

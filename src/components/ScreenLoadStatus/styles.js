@@ -13,6 +13,13 @@ const React = require('react-native');
 const { StyleSheet } = React;
 
 export default {
+    container:{
+        flex:1,
+        backgroundColor: 'rgba(0, 0, 0, 0.8);',
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+
     loadingCont:{
         flex:1,
         backgroundColor: 'rgba(255, 255, 255,1);',

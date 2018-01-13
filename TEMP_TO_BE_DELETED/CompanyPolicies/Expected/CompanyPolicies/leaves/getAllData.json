@@ -1,32 +1,119 @@
 {
     "flagno": "1",
     "message": "Success!",
+    "description":{
+        "enabled": "",
+        "disabled": ""
+    },
     "enabled": true,
-    "leavetypes":[
+    "data":[
         {
             "id": "0001",
             "name": "Sick Leave",
-            "allowablecount": 5
+            "allowablecount": {
+                "label":"Number of Paid Days",
+                "value":5
+            },
+            "expirydate":{
+                "month": {
+                    "label": "Select Month",
+                    "value": "01"
+                },
+                "day": {
+                    "label": "Select Day",
+                    "value": "01"
+                },
+                "unusedleaveaction":{
+                    "label": "Unused Leave Action",
+                    "value": "Convert to Cash",
+                    "options":  ["Reset Only", "Convert to Cash", "Carry Forward"]
+                },
+                "maxconvertible": {
+                    "label": "Maximum Number of Convertible Leaves",
+                    "value": "01"
+                }
+            }
         },
         {
             "id": "0002",
             "name": "Vaction Leave",
-            "allowablecount": 3
+            "allowablecount": {
+                "label":"Number of Paid Days",
+                "value":3
+            },
+            "expirydate":{
+                "month": {
+                    "label": "Select Month",
+                    "value": "01"
+                },
+                "day": {
+                    "label": "Select Day",
+                    "value": "01"
+                },
+                "unusedleaveaction":{
+                    "label": "Unused Leave Action",
+                    "value": "Reset Only",
+                    "options":  ["Reset Only", "Convert to Cash", "Carry Forward"]
+                },
+                "maxconvertible": {
+                    "label": "Maximum Number of Convertible Leaves",
+                    "value": "03"
+                }
+            }
         },
         {
             "id": "0003",
             "name": "Multi Purpose Leave",
-            "allowablecount": 2
+            "allowablecount": {
+                "label":"Number of Paid Days",
+                "value":3
+            },
+            "expirydate":{
+                "month": {
+                    "label": "Select Month",
+                    "value": "01"
+                },
+                "day": {
+                    "label": "Select Day",
+                    "value": "01"
+                },
+                "unusedleaveaction":{
+                    "label": "Unused Leave Action",
+                    "value": "Carry Forward",
+                    "options":  ["Reset Only", "Convert to Cash", "Carry Forward"]
+                },
+                "maxconvertible": {
+                    "label": "Maximum Number of Convertible Leaves",
+                    "value": "05"
+                }
+            }
         }
     ],
-
-    "expirydate":{
-        "month": "12",
-        "day": "31",
-        "unusedleaveaction":{
-            "value": "Convert to Cash",
-            "options":  ["Reset Only", "Convert to Cash", "Carry Forward"]
+    "default": {
+        "id": "",
+        "name": "",
+        "allowablecount": {
+            "label":"Number of Paid Days",
+            "value":3
         },
-        "maxconvertible": 5
+        "expirydate":{
+            "month": {
+                "label": "Select Month",
+                "value": "01"
+            },
+            "day": {
+                "label": "Select Day",
+                "value": "01"
+            },
+            "unusedleaveaction":{
+                "label": "Unused Leave Action",
+                "value": "Reset Only",
+                "options":  ["Reset Only", "Convert to Cash", "Carry Forward"]
+            },
+            "maxconvertible": {
+                "label": "Maximum Number of Convertible Leaves",
+                "value": "05"
+            }
+        }
     }
 }

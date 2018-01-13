@@ -63,17 +63,64 @@ class BonusForm extends Component{
     constructor(props){
         super(props);
         this.state = {
-            _strInstallments: ''
+            _strInstallments: ''+this.props.activeData.installments,
+            _strCutoff: ''+this.props.activeData.cutoff
         }
     }
 
-/*     componentWillReceiveProps = (nextProps) => {
-        if(nextProps.data.expirydate.maxconvertible != this.state._strMaxConvertible){
+    componentWillReceiveProps = (nextProps) => {
+        if(nextProps.activeData.installments != this.state._strInstallments){
             this.setState({
-                _strInstallments: nextProps.data.expirydate.maxconvertible
+                _strInstallments: ''+nextProps.activeData.installments
             })
         }
-    } */
+        if(nextProps.activeData.cutoff != this.state._strCutoff){
+            this.setState({
+                _strCutoff: ''+nextProps.activeData.cutoff
+            })
+        }
+    }
+    
+
+    _setNumberOfInstallments = (value) => {
+        if(Number.isInteger(Number(value))){
+            if(value<=12){
+                this.setState({
+                    _strInstallments: value
+                })
+            }
+            else{
+                this._showToast('INSTALLMENT SHOULD NOT BE GREATER THAN 12');
+            }
+        }
+        else{
+            this._showToast('INSTALLMENT SHOULD BE A WHOLE NUMBER');
+        }
+    }
+
+    _setCutoff = (value) => {
+        if(Number.isInteger(Number(value))){
+            if(value<=30){
+                this.setState({
+                    _strInstallments: value
+                })
+            }
+            else{
+                this._showToast('CUTOFF SHOULD NOT BE GREATER THAN 30 DAYS');
+            }
+        }
+        else{
+            this._showToast('CUTOFF SHOULD BE A WHOLE NUMBER');
+        }
+    }
+
+    _updateInstallments = (value) => {
+        this.props.updateInstallments(value);
+    }
+
+    _updateActiveRule = (id) => {
+        this.props.updateActiveRule(id);
+    }
 
     _showDatePicker = async() => {
         try {
@@ -96,6 +143,10 @@ class BonusForm extends Component{
         this.props.toggleSwitch(value)
     }
 
+    _showToast = (value) => {
+        ToastAndroid.show(value, ToastAndroid.CENTER);
+    }
+
     render(){
         return(
             <CustomCard 
@@ -108,96 +159,117 @@ class BonusForm extends Component{
                         onTintColor={color_SwitchOn}
                         thumbTintColor={color_SwitchThumb}
                         tintColor={color_SwitchOff}
-                        value={ this.props.data.enabled } 
+                        value={ this.props.allData.enabled } 
                     />
                 }>
 
-                <PropLevel1 
-                    name='Select Schedule'
-                    content={
-                        <Picker
-                            mode='dropdown'
-                            style={styles.pickerStyle}
-                            selectedValue={this.props.data.id}
-                            onValueChange={(itemValue, itemIndex) => {this.props.updateActiveRule(itemValue)}}>
-                            {
-                                this.props.data.data.map((data, index) => (
-                                    <Picker.Item key={index} label={data.name} value={data.id} />
+                { 
+                    this.props.allData.enabled ?
+                        <View>
+                            <PropLevel1 
+                                name='Select Year'
+                                content={
+                                    <Picker
+                                        mode='dropdown'
+                                        style={styles.pickerStyle}
+                                        selectedValue={this.props.activeData.id}
+                                        onValueChange={(itemValue, itemIndex) => {this._updateActiveRule(itemValue)}}>
+                                        {
+                                            this.props.allData.data.map((data, index) => (
+                                                <Picker.Item key={index} label={data.name} value={data.id} />
+                                            ))
+                                        }
+                                    </Picker>
+                                }
+                                contentStyle={{
+                                    width: 130
+                                }}
+                            />
+
+                            <PropTitle name='Installments'/>
+                                
+                            <PropLevel2 
+                                name='Number of Installments'
+                                content={
+                                    <TextInput 
+                                        autoCapitalize='none'
+                                        keyboardType='numeric'
+                                        placeholder=''
+                                        onBlur={() => {
+                                            this._updateInstallments(this.state._strInstallments);
+                                        }}
+                                        style={{paddingLeft: 15, color: '#434646', height: '100%'}}
+                                        onChangeText={inputTxt =>  {
+                                            this._setNumberOfInstallments(inputTxt)
+                                        }}
+                                        value={this.state._strInstallments}
+                                        returnKeyType="done"
+                                        underlineColorAndroid='transparent'
+                                    />
+                                }
+                                contentStyle={{
+                                    width: 75
+                                }}
+                            />
+
+                            <PropLevel2 
+                                name='Cutoff'
+                                content={
+                                    <TextInput 
+                                        autoCapitalize='none'
+                                        keyboardType='numeric'
+                                        placeholder=''
+                                        onBlur={() => {
+                                            /* this._updateInstallments(this.state._strInstallments); */
+                                        }}
+                                        style={{paddingLeft: 15, color: '#434646', height: '100%'}}
+                                        onChangeText={inputTxt =>  {
+                                            this._setCutoff(inputTxt)
+                                        }}
+                                        value={this.state._strCutoff}
+                                        returnKeyType="done"
+                                        underlineColorAndroid='transparent'
+                                    />
+                                }
+                                contentStyle={{
+                                    width: 75
+                                }}
+                            />
+
+                            <PropTitle name='Payment Schedule'/>
+                            
+                            { 
+                                this.props.activeData.schedule.map((objData, index)=> (
+                                    <PropLevel2 
+                                        key={index}
+                                        name={'Payment ' + objData.index}
+                                        content={
+                                            <Text 
+                                                disabled={!objData.editable}
+                                                onPress={() => {this._showDatePicker()}}
+                                                style={{color: '#434646', 
+                                                    height: '100%', 
+                                                    textAlignVertical: 'center',
+                                                }}>
+                                                {objData.date.label}
+                                            </Text>
+                                        }
+                                        hideBorder={!objData.editable}
+                                        contentStyle={{
+                                            paddingLeft: 15,
+                                            justifyContent: 'center',
+                                            width: 200
+                                        }}
+                                    />
                                 ))
                             }
-                        </Picker>
-                    }
-                    contentStyle={{
-                        width: 130
-                    }}
-                />
-
-                <PropTitle name='Installments'/>
-                    
-                        <PropLevel2 
-                            name='Number of Installments'
-                            content={
-                                <TextInput 
-                                    autoCapitalize='none'
-                                    keyboardType='numeric'
-                                    placeholder=''
-                                    onBlur={() => {
-                                        /* this.props.updateExpiry('maxconvertible', this.state._strMaxConvertible) */
-                                    }}
-                                    style={{paddingLeft: 15, color: '#434646', height: '100%'}}
-                                    onChangeText={inputTxt =>  {
-                                        /* this._setNumberOfInstallments(inputTxt) */
-                                    }}
-                                    value={'2'}
-                                    returnKeyType="done"
-                                    underlineColorAndroid='transparent'
-                                />
-                            }
-                            contentStyle={{
-                                width: 75
-                            }}
-                        />
-
-                        <PropTitle name='Payment Schedule'/>
-
-                        <PropLevel2 
-                            name='First Payment'
-                            content={
-                                <Text 
-                                    onPress={() => {this._showDatePicker()}}
-                                    style={{color: '#434646', 
-                                        height: '100%', 
-                                        textAlignVertical: 'center',
-                                    }}>
-                                    June 10
-                                </Text>
-                            }
-                            contentStyle={{
-                                paddingLeft: 15,
-                                justifyContent: 'center',
-                                width: 130
-                            }}
-                        />
-                        <View style={{height: 10}}>
+                            
                         </View>
-                        <PropLevel2 
-                            name='Second Payment'
-                            content={
-                                <Text 
-                                    onPress={() => {this._showDatePicker()}}
-                                    style={{color: '#434646', 
-                                        height: '100%', 
-                                        textAlignVertical: 'center',
-                                    }}>
-                                    December 10
-                                </Text>
-                            }
-                            contentStyle={{
-                                paddingLeft: 15,
-                                justifyContent: 'center',
-                                width: 130
-                            }}
-                        />
+                    :   
+                        <Description 
+                        enabled={this.props.allData.description.enabled}
+                        disabled={this.props.allData.description.disabled}/>
+                }
 
             </CustomCard>
         )
@@ -220,10 +292,9 @@ export class Bonus extends Component{
 
             //Local States
             _allData: null,
+            _activeData: null
         }
     }
-
-    
 
     componentDidMount(){
         if(this.props.status[0]==1){
@@ -234,6 +305,7 @@ export class Bonus extends Component{
             _status: [...this.props.status]
         });
     }
+    
 
     componentWillReceiveProps(nextProps) {
         if(this.state._status[0] != nextProps.status[0]){
@@ -249,14 +321,16 @@ export class Bonus extends Component{
 
     _initValues = () => {
         let oAllData = JSON.parse(JSON.stringify(bonusSelector.getAllData()));
-        console.log('BONUS_oAllData: ' + JSON.stringify(oAllData));
+        let oActiveData = JSON.parse(JSON.stringify(bonusSelector.getDefaultActiveData()));        
+
         this.setState({
             _allData: oAllData,
+            _activeData: oActiveData
         })
     }
 
     _toggleSwitch = async(value) => {
-        let oAllData = JSON.parse(JSON.stringify(this.state._allData));
+        let oAllData = {...this.state._allData};
         let bFlag = true;
         let bSuccess = false;
         let strTransType = '';
@@ -272,6 +346,8 @@ export class Bonus extends Component{
             } */
 
             //Update Data from store
+            oAllData.enabled = value;
+            this._updateAllData(oAllData);
         }
     }
 
@@ -298,11 +374,60 @@ export class Bonus extends Component{
         return bFlag;
     }
 
+    _updateInstallments = (value) => {
+        console.log('========_updateInstallment: ' + value);
+        let oAllData = {...this.state._allData};
+        let oActiveData = {...this.state._activeData};
+
+        oActiveData.installments = value;
+        let objIndex = oAllData.data.findIndex((obj => obj.id == this.state._activeData.id));
+        oAllData.data[objIndex] = oActiveData;
+        console.log('========oActiveData: ' + JSON.stringify(oActiveData));
+        console.log('========oAllData: ' + JSON.stringify(oAllData));
+        this._updateActiveData(oActiveData);
+        this._updateAllData(oAllData);
+/*         if(bFlag){
+            bSuccess = await this._toggleSwitchToDB(strTransType, value, strLoading);
+            if(bSuccess){
+                let oInput = this._requiredInputs();
+                oInput.enabled = value;
+                oInput.transtype = strTransType;
+                this._toggleSwitchToDB(oAllData);
+            }
+
+            //Update Data from store
+            let objIndex = oAllData.data.findIndex((obj => obj.id == this.state._activeData.id));
+            oAllData.data[objIndex].installments = value;
+            this._updateAllData(oAllData);
+        } */
+    }
+
+    _updateActiveRule = (id) => {
+        console.log('=====_updateActiveRule: ' + id);
+        let oActiveData = JSON.parse(JSON.stringify(bonusSelector.getRuleFromID(id)));
+        console.log('=====oActiveData: ' + JSON.stringify(oActiveData));
+        this.setState({
+            _activeData: oActiveData
+        })
+    }
+    
+    _addNewSchedule = () => {
+        this.setState({
+            _isNewSched: false
+        })
+    }
+
+    _updateActiveData = (value) => {
+        this.setState({
+            _activeData: value
+        })
+    }
+
     _updateAllData = (value) => {
         this.setState({
             _allData: value
         })
-        this.props.actions.benefits.update(value);
+        this.props.actions.bonus.update(value);
     }
  
     //Default Functions
@@ -392,18 +517,24 @@ export class Bonus extends Component{
                         }
                     >
                         <BonusForm
-                            data={this.state._allData}
+                            allData={this.state._allData}
+                            activeData={this.state._activeData}
                             toggleSwitch={this._toggleSwitch}
+                            updateInstallments={this._updateInstallments}
+                            updateActiveRule={this._updateActiveRule}
                             />
                     </ScrollView>
-                    
-                    <ActionButton 
-                        buttonColor="#EEB843"
-                        spacing={10}>
-                        <ActionButton.Item buttonColor='#26A65B' title="ADD SCHEDULE FOR NEXT YEAR" onPress={() => {this._deleteActiveWorkShiftRequest()}}>
-                            <Icon2 name="plus" color='#fff' size={22} style={styles.actionButtonIcon} />
-                        </ActionButton.Item>
-                    </ActionButton>
+
+                    { this.state._allData.enabled ?
+                        <ActionButton 
+                            buttonColor="#EEB843"
+                            spacing={10}>
+                            <ActionButton.Item buttonColor='#26A65B' title="ADD NEW SCHEDULE" onPress={() => {this._addNewSchedule()}}>
+                                <Icon2 name="plus" color='#fff' size={22} style={styles.actionButtonIcon} />
+                            </ActionButton.Item>
+                        </ActionButton>
+                        : null
+                    }
 
                     <PromptScreen.PromptGeneric 
                         show= {this.state._promptShow} 

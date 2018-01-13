@@ -1,0 +1,8 @@
+
+1. Fetch:
+    a. INPUT: http://www.mocky.io/v2/5a58073f2e0000f45212034f
+    b. OUTPUT: http://www.mocky.io/v2/5a5806b92e0000e65212034c
+
+2. Update/Edit:
+    a. INPUT: http://www.mocky.io/v2/5a58073f2e0000f45212034f
+    b. OUTPUT: 

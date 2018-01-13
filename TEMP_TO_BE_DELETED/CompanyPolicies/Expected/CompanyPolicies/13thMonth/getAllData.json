@@ -3,49 +3,75 @@
     "message": "Success!",
     "enabled": true,
     "description": {
-        "enabled": "Enabled â€” when 13th Month Pay is turned on, the system will create a special payroll schedule based on employer's discretion. The 13th Month Pay is based on the calculation, (Basic Monthly Salary x Months Worked) / 12 .",
-        "disabled": "Disabled â€” when 13th Month Pay is turned off, the system will NOT calculate a 13th Month Pay for all employees."
+        "enabled": "Enabled Ã¢â‚¬â€ when 13th Month Pay is turned on, the system will create a special payroll schedule based on employer's discretion. The 13th Month Pay is based on the calculation, (Basic Monthly Salary x Months Worked) / 12 .",
+        "disabled": "Disabled Ã¢â‚¬â€ when 13th Month Pay is turned off, the system will NOT calculate a 13th Month Pay for all employees."
     },
     "data": [
         {
             "id": "0001",
             "name": "2018",
+            "default":true,
             "installments": "4",
+            "cutoff": "10",
             "schedule":[
                 {
-                    "date":"03/15/2018",
+                    "index":"1",
+                    "date":{
+                        "label":"March 15, Thursday",
+                        "value":"03/15/2018"
+                    },
                     "editable": true
                 },
                 {
-                    "date": "06/12/2018",
+                    "index":"2",
+                    "date":{
+                        "label":"June 12, Tuesday",
+                        "value":"06/12/2018"
+                    },
                     "editable": true
                 },
                 {
-                    "date":"09/10/2018",
+                    "index":"3",
+                    "date":{
+                        "label":"September 09, Sunday",
+                        "value":"09/10/2018"
+                    },
                     "editable": true
                 },
                 {
-                    "date": "12/08/2018",
+                    "index":"4",
+                    "date":{
+                        "label":"December 8, Saturday",
+                        "value":"12/08/20188"
+                    },
                     "editable": true
                 }
-            ],
-            "notification": "10"
+            ]
         },
         {
             "id": "0002",
             "name": "2019",
+            "default":false,
             "installments": "2",
+            "cutoff": "10",
             "schedule":[
                 {
-                    "date":"06/15/2018",
+                    "index":"1",
+                    "date":{
+                        "label":"June 15, Friday",
+                        "value":"06/15/2018"
+                    },
                     "editable": true
                 },
                 {
-                    "date": "12/12/2018",
+                    "index":"2",
+                    "date":{
+                        "label":"December 12, Wednesday",
+                        "value":"12/12/2018"
+                    },
                     "editable": true
                 }
-            ],
-            "notification": "10"
+            ]
         }
     ]
 }

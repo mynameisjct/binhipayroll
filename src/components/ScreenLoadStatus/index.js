@@ -14,7 +14,8 @@ import {
     View,
     Text,
     ActivityIndicator,
-    TouchableOpacity
+    TouchableOpacity,
+    Modal
 } from 'react-native';
 
 import styles from './styles';
@@ -69,7 +70,7 @@ export class PromptError extends Component{
 
 export class PromptGeneric extends Component{
     render(){
-        if(this.props.show){
+        /* if(this.props.show){
             return(
                 <View style={{justifyContent: 'center', alignItems: 'center', position: 'absolute', flex: 1, zIndex: 100, width: '100%', height: '100%', backgroundColor: 'rgba(0,0,0,0.8);'}}>
                     <ActivityIndicator
@@ -83,6 +84,23 @@ export class PromptGeneric extends Component{
         }
         else{
             return null;
-        }
+        } */
+        return(
+            <Modal 
+                animationType="fade"
+                transparent={true}
+                visible={this.props.show}
+                onRequestClose={() => {}}>
+        
+                <View style={styles.container}>
+                    <ActivityIndicator
+                        animating = {this.props.show}
+                        color = '#EEB843'
+                        size = "large"
+                        style = {styles.activityIndicator}/>
+                    <Text style={{color: '#fff'}}>{this.props.title}</Text>
+                </View>
+            </Modal>
+        );
     }
 }

@@ -51,8 +51,8 @@ import * as oHelper from '../../../helper';
 const save_loading_message = 'Saving new Company Benefit. Please wait...';
 const gov_switch_loading_message = 'Switching Government Benefits Policy. Please wait...';
 const comp_switch_loading_message = 'Switching Company Benefits Policy. Please wait...';
-const disableBenefit_loading_message = 'Disabling a Government Benefit. Please wait...';
-const enableBenefit_loading_message = 'Enabling a Government Benefit. Please wait...';
+const disableBenefit_loading_message = 'Deactivating a Government Benefit. Please wait...';
+const enableBenefit_loading_message = 'Activating a Government Benefit. Please wait...';
 
 const gov_form_modify_title = 'MODIFY GOVERNMENT BENEFIT TYPE';
 const comp_form_modify_title = 'MODIFY COMPANY BENEFIT TYPE';
@@ -570,8 +570,9 @@ export class Benefits extends Component{
                 oRes = res;
                 if(res.flagno==1){
                     this._closeCompForm();
-                    this._updateCompBenefitsData(value);
                     this._evaluateResponse(res);
+                    this._updateCompBenefitsData(value, res);
+                    
                 }
             })
             .catch((exception) => {
@@ -585,20 +586,26 @@ export class Benefits extends Component{
         this.setState({_bShowCompForm: false})
     }
     
-    _updateCompBenefitsData = (value) => {
+    _updateCompBenefitsData = (value, res) => {
         try{
+            let curBenefit = value;
             let oAllData = {...this.state._allData};
             let oComp = oAllData.company;
             let bFlag = false;
-            
-            oAllData.company.data.map((x, index) => {
-                if(x.id == value.id){
-                    oComp.data[index].name = value.name;
-                    oComp.data[index].amountpermonth = value.amountpermonth;
-                    oComp.data[index].scheme = value.scheme;
-                    bFlag = true;
-                }
-            })
+            if(curBenefit.id==''){
+                curBenefit.id = res.id;
+                oAllData.company.data.push(curBenefit);
+            }
+            else{
+                oComp.data.map((x, index) => {
+                    if(x.id == value.id){
+                        oAllData.company.data[index].name = value.name;
+                        oAllData.company.data[index].amountpermonth = value.amountpermonth;
+                        oAllData.company.data[index].scheme = value.scheme;
+                        bFlag = true;
+                    }
+                })
+            }
 
             if(bFlag){
                 oAllData.company = oComp;
@@ -612,28 +619,36 @@ export class Benefits extends Component{
 
     //Delete Company Benefit
     _deleteCompBenefit = (value) => {
-        let oRes = {};
-        let company = {data: value};
+        this._showLoadingPrompt(delete_loading_message)
         let oInput = this._requiredInputs();
 
-        oInput.company = {...company};
-        oInput.transtype = 'updatecomptbenefits';
+        oInput.id = value.id || '';
+        oInput.transtype = 'delete';
 
         console.log('oInput: ' + JSON.stringify(oInput));
-        benefitsApi.create(oInput)
+        benefitsApi.remove(oInput)
             .then((response) => response.json())
             .then((res) => {
-                console.log('OUTPUT: ' + JSON.stringify(res));
-                oRes = res;
-                if(res.flagno==1){
-                    this._closeCompForm();
-                    this._updateCompBenefitsData(value);
-                    this._evaluateResponse(res);
+                this._hideLoadingPrompt();
+                if(this._evaluateResponse(res)){
+                    this._deleteCompBenefitFromStore(value);
                 }
             })
             .catch((exception) => {
                 this._showMsgBox('error-ok', exception);
             });
+    }
+
+    _deleteCompBenefitFromStore = (value) => {
+        let oAllData = {...this.state._allData};
+        let objIndex = oAllData.company.data.findIndex((obj => obj.id == value.id));
+
+        oAllData.company.data.splice(objIndex, 1);
+
+        this.setState({
+            _allData: oAllData
+        })
+        this.props.actions.benefits.update(oAllData);
     }
 
     //Default Functions
@@ -646,7 +661,7 @@ export class Benefits extends Component{
             clientid: ''
         })
     }
-    _evaluateResponse = (res) => {
+    _evaluateResponse = async(res) => {
         switch (res.flagno){
             case 0:
                 this._showMsgBox('error-ok', res.message);
@@ -731,7 +746,8 @@ export class Benefits extends Component{
                         <CompanyBenefits 
                             data={this.state._allData.company}
                             toggleSwitch={this._toggleSwitch}
-                            openForm={this._openCompForm}/>
+                            openForm={this._openCompForm}
+                            removeItem={this._deleteCompBenefit}/>
 
                     </ScrollView>
                     
@@ -744,8 +760,7 @@ export class Benefits extends Component{
                         show={this.state._msgBoxShow}
                         onClose={this._closeMsgBox}
                         onWarningContinue={this._continueActionOnWarning}
-                        message={this.state._resMsg}
-                    />
+                        message={this.state._resMsg}/>
 
                     <FormGovBenefits
                         data={this.state._activeBenefitType}
@@ -759,8 +774,7 @@ export class Benefits extends Component{
                         title={this.state._strBenefitTitle}
                         show={this.state._bShowCompForm}
                         onFormClose={this._onFormClose}
-                        onDone={this._onCompFormCommit}
-                        removeItem={this._deleteCompBenefit}/>
+                        onDone={this._onCompFormCommit}/>
                 </View>
             );
         }

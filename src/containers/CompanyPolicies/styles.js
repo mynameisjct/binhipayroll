@@ -27,9 +27,24 @@ export default {
         flexDirection: 'column'
     },
 
+    contTitle: {
+        minHeight: 60,
+        justifyContent: 'center',
+      },
+      txtTitle: {
+        fontSize: 16,
+        fontFamily: 'Helvetica-Bold',
+        textAlign: 'center',
+        margin: 10,
+        fontWeight: '500',
+        color: '#fff',
+        backgroundColor: 'transparent',
+        textShadowColor: '#EEB843'
+      },
+
     profileCont: {
         minHeight: 70,
-        backgroundColor: '#9EADBC',
+        backgroundColor: '#2C5C36',
     },
 
     scrollableCont: {
