@@ -15,7 +15,7 @@ import { DrawerNavigator, DrawerItems, StackNavigator } from 'react-navigation';
 import EmpeDTR from './containers/DTR';
 import EmprDashBoard from './containers/DashBoard';
 import Sidebar from './containers/Sidebar';
-import EmployeeInfo from './containers/EmployeeInfo/';
+import Employees from './containers/Employees/';
 import CompanyPolicies from './containers/CompanyPolicies/';
 import Transactions from './containers/Transactions';
 import Reports from './containers/Reports';
@@ -32,7 +32,7 @@ const CompanyPoliciesNav = StackNavigator({
 });
 
 const EmployeeInfoNav = StackNavigator({
-  EmployeeInfo: {screen: EmployeeInfo},
+  Employees: {screen: Employees},
 });
 
 const TransactionsNav = StackNavigator({
@@ -55,7 +55,7 @@ const RootDrawer = DrawerNavigator(
     CompanyPolicies: {
       screen: CompanyPoliciesNav},
       
-    EmployeeInfo: {
+      Employees: {
       screen: EmployeeInfoNav},
   
     Transactions: {

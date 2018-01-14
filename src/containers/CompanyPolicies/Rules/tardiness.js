@@ -144,6 +144,10 @@ export class Tardiness extends Component{
         if(this.props.status[0]==1){
             this._initValues();
         }
+        else if(this.props.status[0]==3){
+            this.props.triggerRefresh(true);
+        }
+        else;
 
         this.setState({
             _status: [...this.props.status]
@@ -214,7 +218,7 @@ export class Tardiness extends Component{
                     _promptShow: false,
                     _msgBoxShow: true,
                     _msgBoxType: 'error-ok',
-                    _resMsg: exception
+                    _resMsg: exception.message
                 })
             });
         }
@@ -274,12 +278,12 @@ export class Tardiness extends Component{
                 });
             }
         })
-        .catch((exception) => {
+        .catch((err) => {
             this.setState({
                 _promptShow: false,
                 _msgBoxShow: true,
                 _msgBoxType: 'error-ok',
-                _resMsg: exception
+                _resMsg: err.message + '. Please check you Internet Settings.'
             })
         });
     }
@@ -335,7 +339,7 @@ export class Tardiness extends Component{
                 _promptShow: false,
                 _msgBoxShow: true,
                 _msgBoxType: 'error-ok',
-                _resMsg: exception
+                _resMsg: exception.message
             })
         });
     }
@@ -572,6 +576,7 @@ export class Tardiness extends Component{
     }
 
     render(){
+        console.log('xxxxxxxxxxxxx______REDERING TARDINESS');
         //Loading View Status
         let pStatus = [...this.state._status];
         let pProgress = pStatus[0];
@@ -583,15 +588,7 @@ export class Tardiness extends Component{
             );
         }
 
-        else if(pProgress==2){
-            return (
-                <View style={styles.container}>
-                    <PromptScreen.PromptLoading title={pMessage}/>
-                </View>
-            );
-        }
-
-        else{
+        else if(pProgress==1){
             let pTitle;
             let pType;
             let oRuleName;
@@ -877,6 +874,13 @@ export class Tardiness extends Component{
                         onWarningContinue={this._continueActionOnWarning}
                         message={this.state._resMsg}
                     />
+                </View>
+            );
+        }
+        else{
+            return (
+                <View style={styles.container}>
+                    <PromptScreen.PromptLoading title={pMessage}/>
                 </View>
             );
         }

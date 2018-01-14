@@ -103,8 +103,12 @@ export class Tax extends Component{
 
     componentDidMount(){
         if(this.props.status[0]==1){
-            this._initValues(this.props.status);
+            this._initValues();
         }
+        else if(this.props.status[0]==3){
+            this.props.triggerRefresh(true);
+        }
+        else;
 
         this.setState({
             _status: [...this.props.status]
@@ -227,9 +231,10 @@ export class Tax extends Component{
 
         .catch((exception) => {
             this.setState({
+                _transPrompt: false,
                 _msgBoxShow: true,
-                _msgBoxType: 'error',
-                _resMsg: {exception}
+                _msgBoxType: 'error-ok',
+                _resMsg: exception.message
             })
         });
     }
@@ -257,6 +262,7 @@ export class Tax extends Component{
     
 
     render(){
+        console.log('xxxxxxxxxxxxx______REDERING TAX');
         let pStatus = [...this.state._status];
         let pProgress = pStatus[0];
         let pMessage = pStatus[1];
@@ -265,14 +271,8 @@ export class Tax extends Component{
                 <PromptScreen.PromptError title='Tax Policy' onRefresh={()=>this.props.triggerRefresh(true)}/>
             );
         }
-        else if(pProgress=='2'){
-            return (
-                <View style={styles.container}>
-                    <PromptScreen.PromptLoading title={pMessage}/>
-                </View>
-            );
-        }
-        else{
+
+        else if(pProgress=='1'){
             return(
                 <View style={styles.container}>
                     {
@@ -356,6 +356,13 @@ export class Tax extends Component{
                         onWarningContinue={this._continueActionOnWarning}
                         message={this.state._resMsg}
                     />
+                </View>
+            );
+        }
+        else{
+            return (
+                <View style={styles.container}>
+                    <PromptScreen.PromptLoading title={pMessage}/>
                 </View>
             );
         }

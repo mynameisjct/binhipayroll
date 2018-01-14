@@ -327,6 +327,10 @@ export class Benefits extends Component{
         if(this.props.status[0]==1){
             this._initValues();
         }
+        else if(this.props.status[0]==3){
+            this.props.triggerRefresh(true);
+        }
+        else;
 
         this.setState({
             _status: [...this.props.status]
@@ -400,7 +404,7 @@ export class Benefits extends Component{
             })
             .catch((exception) => {
                 this._hideLoadingPrompt();
-                this._showMsgBox('error-ok', exception);
+                this._showMsgBox('error-ok', exception.message);
             });
 
         return bFlag;
@@ -449,12 +453,13 @@ export class Benefits extends Component{
         await benefitsApi.toggleSwitch(oInput)
             .then((response) => response.json())
             .then((res) => {
+                console.log('res:' + JSON.stringify(res));
                 this._hideLoadingPrompt();
                 bFlag = this._evaluateResponse(res);
             })
             .catch((exception) => {
                 this._hideLoadingPrompt();
-                this._showMsgBox('error-ok', exception);
+                this._showMsgBox('error-ok', exception.message);
             });
 
         return bFlag;
@@ -498,13 +503,13 @@ export class Benefits extends Component{
                     }
                 })
                 .catch((exception) => {
-                    this._showMsgBox('error-ok', exception);
-                    oRes={flagno:0, message: UNKNOWNERROR};
+                    this._showMsgBox('error-ok', exception.message);
+                    oRes={flagno:0, message: exception.message};
                 });
         }
         catch(exception){
             oRes={flagno:0, message: UNKNOWNERROR};
-            this._showMsgBox('error-ok', exception);
+            this._showMsgBox('error-ok', exception.message);
         };
         return oRes;
     }
@@ -532,7 +537,7 @@ export class Benefits extends Component{
             }
         }
         catch(exception){
-            this._showMsgBox('error-ok', exception);
+            this._showMsgBox('error-ok', exception.message);
         }
     }
 
@@ -576,7 +581,7 @@ export class Benefits extends Component{
                 }
             })
             .catch((exception) => {
-                this._showMsgBox('error-ok', exception);
+                this._showMsgBox('error-ok', exception.message);
             });
 
         return oRes;
@@ -613,7 +618,7 @@ export class Benefits extends Component{
             }
         }
         catch(exception){
-            this._showMsgBox('error-ok', exception);
+            this._showMsgBox('error-ok', exception.message);
         }
     }
 
@@ -635,7 +640,7 @@ export class Benefits extends Component{
                 }
             })
             .catch((exception) => {
-                this._showMsgBox('error-ok', exception);
+                this._showMsgBox('error-ok', exception.message);
             });
     }
 
@@ -685,6 +690,12 @@ export class Benefits extends Component{
         })
     }
 
+    _hideLoadingPrompt = () => {
+        this.setState({
+            _promptShow: false
+        })
+    }
+    
     _showMsgBox = (strType, msg) => {
         this.setState({
             _msgBoxShow: true,
@@ -693,11 +704,6 @@ export class Benefits extends Component{
         });
     }
 
-    _hideLoadingPrompt = () => {
-        this.setState({
-            _promptShow: false
-        })
-    }
     _closeMsgBox = () => {
         this.setState({
             _msgBoxShow: false
@@ -712,6 +718,7 @@ export class Benefits extends Component{
     }
 
     render(){
+        console.log('xxxxxxxxxxxxx______REDERING BENEFITS');
         console.log('======================this.state._status: ' + this.state._status);
         let pStatus = [...this.state._status];
         let pProgress = pStatus[0];

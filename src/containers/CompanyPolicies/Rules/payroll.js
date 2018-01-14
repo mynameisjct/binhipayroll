@@ -138,6 +138,7 @@ export class SemiMonthly extends Component{
     }
 
     render(){
+        console.log('xxxxxxxxxxxxx______REDERING PAYROLL');
         if(this.state._status == 0){
             return null;
         }
@@ -528,8 +529,12 @@ export class Payroll extends Component{
     
     componentDidMount(){
         if(this.props.status[0]==1){
-            this._initValues(this.props.status);
+            this._initValues();
         }
+        else if(this.props.status[0]==3){
+            this.props.triggerRefresh(true);
+        }
+        else;
 
         this.setState({
             _status: [...this.props.status]
@@ -567,6 +572,10 @@ export class Payroll extends Component{
     }
 
     _requestToChangePayType = (value) => {
+        this.setState({
+            _transPrompt: {show: true, message: 'Saving Payroll Policy changes. Please wait...'}
+        });
+
         const oInput = {
             companyid: this.props.activecompany.id,
             username: this.props.logininfo.resUsername,
@@ -585,6 +594,9 @@ export class Payroll extends Component{
         .then((res) => {
             console.log('INPUT: ' + JSON.stringify(oInput))
             console.log('OUTPUT: ' + JSON.stringify(res));
+            this.setState({
+                _transPrompt: {show: false}
+            });
             switch(''+res.flagno){
                 case '0':
                     this.setState({
@@ -608,7 +620,12 @@ export class Payroll extends Component{
         })
 
         .catch((exception) => {
-            console.log('exception: ' + exception);
+            this.setState({
+                _promptShow: false,
+                _msgBoxShow: true,
+                _msgBoxType: 'error-ok',
+                _resMsg: exception.message
+            })
         });
     }
 
@@ -666,9 +683,10 @@ export class Payroll extends Component{
 
         .catch((exception) => {
             this.setState({
+                _transPrompt: false,
                 _msgBoxShow: true,
                 _msgBoxType: 'error',
-                _resMsg: {exception}
+                _resMsg: exception.message
             })
         });
     }
@@ -704,14 +722,7 @@ export class Payroll extends Component{
                 <PromptScreen.PromptError title='Payroll Policy' onRefresh={()=>this.props.triggerRefresh(true)}/>
             );
         }
-        else if(pProgress==2){
-            return (
-                <View style={styles.container}>
-                    <PromptScreen.PromptLoading title={pMessage}/>
-                </View>
-            );
-        }
-        else{
+        else if(pProgress==1){
             /* console.log('VARCHECK: ' + JSON.stringify(this.state._payrolldata)); */
             let oPayrollSchedule;
             switch(this.state._payrolldata.paytype.value.toUpperCase()){
@@ -777,7 +788,15 @@ export class Payroll extends Component{
                 </View>
             );
         }
+        else{
+            return (
+                <View style={styles.container}>
+                    <PromptScreen.PromptLoading title={pMessage}/>
+                </View>
+            );
+        }
     }
+    
 }
 
 function mapStateToProps (state) {

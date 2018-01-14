@@ -115,7 +115,7 @@ class BonusForm extends Component{
     }
 
     _updateInstallments = (value) => {
-        this.props.updateInstallments(value);
+        /* this.props.updateInstallments(value); */
     }
 
     _updateActiveRule = (id) => {
@@ -170,6 +170,7 @@ class BonusForm extends Component{
                                 name='Select Year'
                                 content={
                                     <Picker
+                                        enabled={this.props.disabledMode}
                                         mode='dropdown'
                                         style={styles.pickerStyle}
                                         selectedValue={this.props.activeData.id}
@@ -181,6 +182,7 @@ class BonusForm extends Component{
                                         }
                                     </Picker>
                                 }
+                                hideBorder={this.props.disabledMode}
                                 contentStyle={{
                                     width: 130
                                 }}
@@ -192,6 +194,7 @@ class BonusForm extends Component{
                                 name='Number of Installments'
                                 content={
                                     <TextInput 
+                                        editable={!this.props.disabledMode}
                                         autoCapitalize='none'
                                         keyboardType='numeric'
                                         placeholder=''
@@ -207,6 +210,7 @@ class BonusForm extends Component{
                                         underlineColorAndroid='transparent'
                                     />
                                 }
+                                hideBorder={this.props.disabledMode}
                                 contentStyle={{
                                     width: 75
                                 }}
@@ -216,6 +220,7 @@ class BonusForm extends Component{
                                 name='Cutoff'
                                 content={
                                     <TextInput 
+                                        editable={!this.props.disabledMode}
                                         autoCapitalize='none'
                                         keyboardType='numeric'
                                         placeholder=''
@@ -231,6 +236,7 @@ class BonusForm extends Component{
                                         underlineColorAndroid='transparent'
                                     />
                                 }
+                                hideBorder={this.props.disabledMode}
                                 contentStyle={{
                                     width: 75
                                 }}
@@ -245,7 +251,7 @@ class BonusForm extends Component{
                                         name={'Payment ' + objData.index}
                                         content={
                                             <Text 
-                                                disabled={!objData.editable}
+                                                disabled={((!objData.editable) || this.props.disabledMode)}
                                                 onPress={() => {this._showDatePicker()}}
                                                 style={{color: '#434646', 
                                                     height: '100%', 
@@ -254,7 +260,7 @@ class BonusForm extends Component{
                                                 {objData.date.label}
                                             </Text>
                                         }
-                                        hideBorder={!objData.editable}
+                                        hideBorder={this.props.disabledMode}
                                         contentStyle={{
                                             paddingLeft: 15,
                                             justifyContent: 'center',
@@ -282,7 +288,7 @@ export class Bonus extends Component{
         this.state = {
             //Gereric States
             _refreshing: false,
-            _disabledMode: false,
+            _disabledMode: true,
             _status: [2, 'Loading...'],
             _promptShow: false,
             _promptMsg: '',
@@ -300,6 +306,10 @@ export class Bonus extends Component{
         if(this.props.status[0]==1){
             this._initValues();
         }
+        else if(this.props.status[0]==3){
+            this.props.triggerRefresh(true);
+        }
+        else;
 
         this.setState({
             _status: [...this.props.status]
@@ -368,7 +378,7 @@ export class Bonus extends Component{
             })
             .catch((exception) => {
                 this._hideLoadingPrompt();
-                this._showMsgBox('error-ok', exception);
+                this._showMsgBox('error-ok', exception.message);
             });
 
         return bFlag;
@@ -491,6 +501,7 @@ export class Bonus extends Component{
     }
 
     render(){
+        console.log('xxxxxxxxxxxxx______REDERING BONUS');
         console.log('======================this.state._status: ' + this.state._status);
         let pStatus = [...this.state._status];
         let pProgress = pStatus[0];
@@ -522,6 +533,7 @@ export class Bonus extends Component{
                             toggleSwitch={this._toggleSwitch}
                             updateInstallments={this._updateInstallments}
                             updateActiveRule={this._updateActiveRule}
+                            disabledMode={this.state._disabledMode}
                             />
                     </ScrollView>
 
@@ -532,6 +544,9 @@ export class Bonus extends Component{
                             <ActionButton.Item buttonColor='#26A65B' title="ADD NEW SCHEDULE" onPress={() => {this._addNewSchedule()}}>
                                 <Icon2 name="plus" color='#fff' size={22} style={styles.actionButtonIcon} />
                             </ActionButton.Item>
+                            <ActionButton.Item buttonColor='#4183D7' title="MODIFY SELECTED YEAR'S SCHEDULE" onPress={() => {this.setState({_disabledMode: false})}}>
+                                <Icon2 name="table-edit" color='#fff' size={22} style={styles.actionButtonIcon} />
+                            </ActionButton.Item> */}
                         </ActionButton>
                         : null
                     }

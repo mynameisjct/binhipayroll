@@ -17,7 +17,6 @@ import EmpeDTR from './containers/DTR';
 import EmprDashBoard from './containers/DashBoard';
 import RootDrawer from './Drawer';
 import ChangePassword from './containers/ChangePassword';
-import EmployeeInfo from './containers/EmployeeInfo/';
 import BranchForm from './containers/CompanyProfile/forms/branch';
 import CompanyIdForm from './containers/CompanyProfile/forms/companyid';
 

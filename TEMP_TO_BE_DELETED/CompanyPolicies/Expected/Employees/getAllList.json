@@ -1,0 +1,36 @@
+{
+    "flagno": "1",
+    "message": "Success",
+    "data": [
+        {
+            "key": "0001",
+            "name": "Asin, Jose Protacio",
+            "position": "Auditor",
+            "branch": "Yacapin branch"
+        },
+        {
+            "key": "0002",
+            "name": "Asinero, Lourdes",
+            "position": "Utility",
+            "branch": "Yacapin branch"
+        },
+        {
+            "key": "0003",
+            "name": "Bagares, Lyn",
+            "position": "Utility",
+            "branch": "Yacapin branch"
+        },
+        {
+            "key": "0004",
+            "name": "Rizal, Delilah",
+            "position": "HR Staff",
+            "branch": "Yacapin branch"
+        },
+        {
+            "key": "0005",
+            "name": "Zamora, Israel",
+            "position": "HR Staff",
+            "branch": "Yacapin branch"
+        }
+    ]
+}

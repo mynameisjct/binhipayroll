@@ -3,7 +3,9 @@ import {
     View,
     Text,
     ScrollView,
-    TouchableNativeFeedback
+    TouchableNativeFeedback,
+    FlatList,
+    TouchableHighlight
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import LinearGradient from 'react-native-linear-gradient';
@@ -42,7 +44,6 @@ import * as bonusActions from './data/bonus/actions';
 //Custom Components
 import * as StatusLoader from '../../components/ScreenLoadStatus';
 import Header2 from '../Headers/header2';
-import MessageBox from '../../components/MessageBox';
 import { Ranks } from './Rules/ranks';
 
 //Constants
@@ -61,16 +62,16 @@ export class CompanyPolicies extends Component {
             _objActiveCompany: null,
 
             //Error-0, Success-1, Loading-2,  Handler
-            _workShiftStatus: ['2', 'Loading...'],
-            _payrollStatus: ['2', 'Loading...'],
-            _taxStatus: ['2','Loading...'],
-            _tardinessStatus: ['2', 'Loading...'],
-            _undertimeStatus: ['2', 'Loading...'],
-            _overtimeStatus: ['2', 'Loading...'],
-            _leaveStatus: ['2', 'Loading...'],
-            _benefitsStatus: ['2', 'Loading...'],
-            _bonusStatus: ['2', 'Loading...'],
-            _ranksStatus: ['2', 'Loading...'],
+            _workShiftStatus: ['3', 'Loading...'],
+            _payrollStatus: ['3', 'Loading...'],
+            _taxStatus: ['3','Loading...'],
+            _tardinessStatus: ['3', 'Loading...'],
+            _undertimeStatus: ['3', 'Loading...'],
+            _overtimeStatus: ['3', 'Loading...'],
+            _leaveStatus: ['3', 'Loading...'],
+            _benefitsStatus: ['3', 'Loading...'],
+            _bonusStatus: ['3', 'Loading...'],
+            _ranksStatus: ['3', 'Loading...'],
 
             //Unsaved Transaction
             _hasActiveTransaction: false,
@@ -81,84 +82,98 @@ export class CompanyPolicies extends Component {
             //List of Children
             _policyList: [
                 {
-                    id : '001',
+                    key : '001',
                     name: 'Work Shift',
                     iconName: 'timetable',
-                    btnColor: btnInactive
+                    btnColor: btnInactive,
+                    /* childComponent: <WorkShift 
+                        status={this.state._workShiftStatus} 
+                        triggerRefresh={this._getWorkSchedule}/> */
                 },
                 {
-                    id : '002',
+                    key : '002',
                     name: 'Payroll',
                     iconName: 'cash',
-                    btnColor: btnInactive
+                    btnColor: btnInactive,
+                    /* childComponent: <Payroll 
+                        status={this.state._payrollStatus} 
+                        triggerRefresh={this._getPayrollSchedule}/> */
                 },
                 {
-                    id : '003',
+                    key : '003',
                     name: 'Withholding Tax',
                     iconName: 'calculator',
-                    btnColor: btnInactive
+                    btnColor: btnInactive,
+                    /* childComponent: <Tardiness 
+                        status={this.state._taxStatus} 
+                        triggerRefresh={this._getTaxSettings}/> */
                 },
                 {
-                    id : '004',
+                    key : '004',
                     name: 'Tardiness',
                     iconName: 'clock-alert',
-                    btnColor: btnInactive
+                    btnColor: btnInactive,
+                    /* childComponent: <Undertime 
+                        status={this.state._tardinessStatus} 
+                        triggerRefresh={this._getTardinessRule}/> */
                 },
                 {
-                    id : '005',
+                    key : '005',
                     name: 'Undertime',
                     iconName: 'timelapse',
-                    btnColor: btnInactive
+                    btnColor: btnInactive,
+                    /* childComponent: <Undertime 
+                        status={this.state._undertimeStatus} 
+                        triggerRefresh={this._getUndertimeRule}/> */
                 },
                 {
-                    id : '006',
+                    key : '006',
                     name: 'Overtime',
                     iconName: 'clock-fast',
-                    btnColor: btnInactive
+                    btnColor: btnInactive,
+                    /* childComponent: <Overtime 
+                        status={this.state._overtimeStatus} 
+                        triggerRefresh={this._getOvertimeRule}/> */
                 },
                 {
-                    id : '007',
+                    key : '007',
                     name: 'Leaves',
                     iconName: 'timer-off',
-                    btnColor: btnInactive
+                    btnColor: btnInactive,
+                    /* childComponent: <Leaves 
+                        status={this.state._leaveStatus} 
+                        triggerRefresh={this._getLeavesRule}/> */
                 },
                 {
-                    id : '008',
+                    key : '008',
                     name: 'Benefits',
                     iconName: 'format-list-numbers',
-                    btnColor: btnInactive
+                    btnColor: btnInactive,
+                    /* childComponent: <Benefits 
+                        status={this.state._benefitsStatus} 
+                        triggerRefresh={this._getBenefitsRule}/> */
                 },
                 {
-                    id : '009',
+                    key : '009',
                     name: '13th Month Pay',
                     iconName: 'wunderlist',
-                    btnColor: btnActive
+                    btnColor: btnActive,
+                    /* childComponent: <Bonus 
+                        status={this.state._bonusStatus} 
+                        triggerRefresh={this._getBonusRule}/> */
                 },
                 {
-                    id : '010',
+                    key : '010',
                     name: 'Ranks',
                     iconName: 'account-star',
-                    btnColor: btnInactive
+                    btnColor: btnInactive,
+                    /* childComponent: <Ranks 
+                        status={this.state._ranksStatus} 
+                        triggerRefresh={this._getRanksRule}/> */
                 },
             ],
-
-            //Messagebox
-            _msgBoxShow: false,
-            _msgBoxType: '',
-            _resMsg: ''
         }
         
-        //Binding for Refresh Control
-/*         this._getWorkSchedule = this._getWorkSchedule.bind(this);
-        this._getPayrollSchedule = this._getPayrollSchedule.bind(this);
-        this._getTaxSettings = this._getTaxSettings.bind(this);
-        this._getTardinessRule = this._getTardinessRule.bind(this);
-        this._getUndertimeRule = this._getUndertimeRule.bind(this);
-        this._getOvertimeRule = this._getOvertimeRule.bind(this);
-        this._getLeavesRule = this._getLeavesRule.bind(this);
-        this._getBenefitsRule = this._getBenefitsRule.bind(this);
-        this._getBonusRule = this._getBenefitsRule.bind(this); */
-
         //Active Unsaved Transaction Trigger
         this._hasActiveTransaction = this._hasActiveTransaction.bind(this);
     }
@@ -176,7 +191,14 @@ export class CompanyPolicies extends Component {
         let objActiveCompany = {...nextProps.activecompany};
         if (this.props.activecompany.id !== objActiveCompany.id){
             /* console.log('objActiveCompany: ' + JSON.stringify(objActiveCompany)); */
-            this._initPage(nextProps);
+            this.setState({
+                _status: 2
+            },
+                () => {
+                    this._initPage(nextProps);
+                }
+            )
+            
         }
     }
 
@@ -185,11 +207,20 @@ export class CompanyPolicies extends Component {
             this.setState({
                 _objLoginInfo: {...oProps.logininfo},
                 _objActiveCompany: {...oProps.activecompany},
-                _status: 1,
-                _activeChild: '009'
+                _workShiftStatus: ['3', 'Loading...'],
+                _payrollStatus: ['3', 'Loading...'],
+                _taxStatus: ['3','Loading...'],
+                _tardinessStatus: ['3', 'Loading...'],
+                _undertimeStatus: ['3', 'Loading...'],
+                _overtimeStatus: ['3', 'Loading...'],
+                _leaveStatus: ['3', 'Loading...'],
+                _benefitsStatus: ['3', 'Loading...'],
+                _bonusStatus: ['3', 'Loading...'],
+                _ranksStatus: ['3', 'Loading...']
             },
                 () => {
-                    this._getAllCompanyPolicies();
+                    this._setActiveChild({key:'001'});
+                    this.setState({_status: 1});
                 }
             )
         }
@@ -207,7 +238,7 @@ export class CompanyPolicies extends Component {
     }
     
     _getAllCompanyPolicies = () => {
-        this._getWorkSchedule();
+/*         this._getWorkSchedule();
         this._getPayrollSchedule();
         this._getTaxSettings();
         this._getTardinessRule();
@@ -215,10 +246,11 @@ export class CompanyPolicies extends Component {
         this._getOvertimeRule();
         this._getLeavesRule();
         this._getBenefitsRule();
-        this._getBonusRule();
+        this._getBonusRule(); */
     }
 
     _getWorkSchedule = (bForceUpdate) => {
+        console.log('IM IN _getWorkSchedule');
         let curStatus = [2, 'Loading...'];
         this.setState({
             _workShiftStatus: curStatus
@@ -513,33 +545,35 @@ export class CompanyPolicies extends Component {
 
     }
 
-    _setActiveChild = (id, index) => {
-        let btnState = this._getBtnState(index);
+    _setActiveChild = (oItem) => {
+        this._setButtons(oItem);
         requestAnimationFrame(() => {
-            this.setState({
-                _policyList: btnState,
-                _activeChild: id,
-                _activeBtn: index,
-            })
+            this._setChildComponent(oItem);
         })
     }
 
-    _getBtnState = (index) => {
-        let objNew = [...this.state._policyList];
-        objNew.map((btnInfo, curIndex) => {
-            if(index==curIndex){
-                objNew[curIndex].btnColor = btnActive;
-            }
-            else{
-                objNew[curIndex].btnColor = btnInactive;
-            }
-        })
-        return objNew;
+_setActiveChild = (oItem) => {
+    this._setButtons(oItem); //immediately trigg
+    requestAnimationFrame(() => {
+        this._setChildComponent(oItem);
+    })
+}
+
+    _setButtons = (oItem) => {
+        let aList = [...this.state._policyList];
+        aList.map((oPolicy) => oPolicy.key === oItem.key ?  
+            oPolicy.btnColor=btnActive : oPolicy.btnColor=btnInactive );
+        this.setState({ _policyList: aList,  _activeChild: '' });
+    }
+
+    _setChildComponent = (oItem) => {
+        this.setState({ _activeChild: oItem.key })
     }
 
     render(){
+        
         //Child View Should be placed within render to make it listen to parent's state changes
-        let childComponent;
+        /* let childComponent; */
         if(this.state._status == 0){
             return(<StatusLoader.PromptError title={'Unable to load Company Policies.\n Please Contact BINHI-MeDFI.'}/>)
         }
@@ -547,6 +581,7 @@ export class CompanyPolicies extends Component {
             return(<StatusLoader.PromptLoading title='Loading...'/>)
         }
         else{
+            let childComponent = '';
             switch (this.state._activeChild){
                 case '001': 
                     childComponent = (
@@ -629,61 +664,54 @@ export class CompanyPolicies extends Component {
                         />);
                     break;
                 default:
-                    childComponent = (null);
+                    childComponent = (<StatusLoader.PromptLoading title='Loading...'/>);
                     break;
             }
+
+            const headerComponent = (
+                <LinearGradient 
+                    colors={['#a1a1a3', '#6a6a6d', '#303033']}
+                    style={styles.contTitle}>
+                    <Text style={styles.txtTitle}>
+                        {this.props.activecompany.name.toUpperCase()}
+                    </Text>
+                </LinearGradient>
+            )
 
             return(
                 <View style={styles.container}>
                     <LinearGradient 
-                            colors={['#818489', '#3f4144', '#202626']}
-                            style={styles.leftCont}>
-                        <LinearGradient 
-                            colors={['#a1a1a3', '#6a6a6d', '#303033']}
-                            /* start={{x: 0.0, y: 0}} end={{x: 0.25, y: 0.3}}
-                            locations={[0,0,1]}  */
-                            style={styles.contTitle}>
-                            <Text style={styles.txtTitle}>
-                                {this.props.activecompany.name.toUpperCase()}
-                            </Text>
-                        </LinearGradient>
-                        <ScrollView contentContainerStyle={styles.scrollableCont}>
-                            <View style={styles.optionsCont}>
-                                {
-                                    this.state._policyList.map((btnInfo, index) => (
-                                        <TouchableNativeFeedback 
-                                            key={index}
-                                            onPress={() => {this._setActiveChild(btnInfo.id, index)}}
-                                            background={TouchableNativeFeedback.SelectableBackground()}>
-                                            <View style={[styles.btnCont, {backgroundColor: btnInfo.btnColor}]}>
-                                                <View style={styles.iconCont}>
-                                                    <View style={styles.iconPlaceholder}>
-                                                        <Icon name={btnInfo.iconName} size={20} color='#fff'/>
-                                                    </View>
-                                                </View>
-                                                <View style={styles.labelCont}>
-                                                    <Text style={styles.txtLabel}>{btnInfo.name}</Text>
+                        colors={['#818489', '#3f4144', '#202626']}
+                        style={styles.leftCont}>
+                        
+                        <View style={styles.optionsCont}>
+                            <FlatList
+                                ListHeaderComponent={headerComponent}
+                                data={this.state._policyList}
+                                renderItem={({item}) => 
+                                    <TouchableNativeFeedback 
+                                        onPress={() => {this._setActiveChild(item)}}
+                                        background={TouchableNativeFeedback.SelectableBackground()}>
+                                        <View style={[styles.btnCont, {backgroundColor: item.btnColor}]}>
+                                            <View style={styles.iconCont}>
+                                                <View style={styles.iconPlaceholder}>
+                                                    <Icon name={item.iconName} size={20} color='#fff'/>
                                                 </View>
                                             </View>
-                                        </TouchableNativeFeedback>
-                                    ))
+                                            <View style={styles.labelCont}>
+                                                <Text style={styles.txtLabel}>{item.name}</Text>
+                                            </View>
+                                        </View>
+                                    </TouchableNativeFeedback>
                                 }
-                            </View>
-                        </ScrollView>
+                                
+                            />
+                        </View>
                     </LinearGradient>
-                    
+                        
                     <View style={styles.rightCont}>
-                        {   
-                            childComponent
-                        }
+                        {childComponent}
                     </View>
-                    <MessageBox
-                        promptType={this.state._msgBoxType}
-                        show={this.state._msgBoxShow}
-                        onClose={this._closeMsgBox}
-                        onWarningContinue={this._continueActionOnWarning}
-                        message={this.state._resMsg}
-                    />
                 </View>
             );
         }

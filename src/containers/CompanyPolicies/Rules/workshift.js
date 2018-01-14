@@ -160,23 +160,42 @@ export class WorkShift extends Component {
 
     componentDidMount(){
         if(this.props.status[0]==1){
-            this._initValues();
+            this.setState({
+                _status: [2, 'Loading...']
+            },
+                () => {
+                    this._initValues();
+                }
+            ) 
+        }
+        else if(this.props.status[0]==3){
+            this.props.triggerRefresh(true);
+        }
+        else{
+            this.setState({
+                _status: [...this.props.status]
+            });
         }
 
-        this.setState({
-            _status: [...this.props.status]
-        });
+        
     }
 
     componentWillReceiveProps(nextProps) {
         if(this.state._status[0] != nextProps.status[0]){
             if(nextProps.status[0]==1){
-                this._initValues();
+                this.setState({
+                    _status: [2, 'Loading...']
+                },
+                    () => {
+                        this._initValues();
+                    }
+                )    
             }
-
-            this.setState({
-                _status: nextProps.status
-            })
+            else{
+                this.setState({
+                    _status: nextProps.status
+                })
+            }
         }
     }
 
@@ -194,9 +213,12 @@ export class WorkShift extends Component {
             _activeSchedule: oDefaultScheule,
             _activeType: oActiveType,
             _bNoWorkShift: bNoWorkShift,
-            _disabledMode: !bNoWorkShift
+            _disabledMode: !bNoWorkShift,
         },
             () => {
+                this.setState({
+                    _status: [1, 'Success!']
+                })
                 /* console.log('_curWorkShiftObj: ' + JSON.stringify(this.state._curWorkShiftObj));
                 console.log('_activeSchedule: ' + JSON.stringify(this.state._activeSchedule));
                 console.log('_activeType: ' + JSON.stringify(this.state._activeType)); */
@@ -452,7 +474,10 @@ export class WorkShift extends Component {
             })
             .catch((exception) => {
                 this.setState({
-                    _promptShow: false
+                    _promptShow: false,
+                    _msgBoxShow: true,
+                    _msgBoxType: 'error-ok',
+                    _resMsg: exception.message
                 })
             });
         }
@@ -520,7 +545,7 @@ export class WorkShift extends Component {
             this.setState({
                 _msgBoxShow: true,
                 _msgBoxType: 'error-ok',
-                _resMsg: JSON.stringify(exception)
+                _resMsg: exception.message
             });
         });
     }
@@ -628,6 +653,7 @@ export class WorkShift extends Component {
     
  
     render(){
+        console.log('xxxxxxxxxxxxx______REDERING WORKSHIFT');
         //Loading View Status
         let pStatus = [...this.state._status];
         let pProgress = pStatus[0];
@@ -638,15 +664,8 @@ export class WorkShift extends Component {
                 <PromptScreen.PromptError title='Work Shift Policy' onRefresh={()=>this.props.triggerRefresh(true)}/>
             );
         }
-        else if(pProgress==2){
-            return (
-                <View style={styles.container}>
-                    <PromptScreen.PromptLoading title={pMessage}/>
-                </View>
-            );
-        }
 
-        else{
+        else if(pProgress==1){
             let oDailyPolicy = {...this.state._activeSchedule.day};
             let oRightOption;
             let oRightOptionType;
@@ -998,6 +1017,13 @@ export class WorkShift extends Component {
                         message={this.state._resMsg}
                     />
                     {this.state._disabledMode ? actionButton : null}
+                </View>
+            );
+        }
+        else{
+            return (
+                <View style={styles.container}>
+                    <PromptScreen.PromptLoading title={pMessage}/>
                 </View>
             );
         }

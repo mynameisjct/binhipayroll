@@ -358,6 +358,10 @@ export class Overtime extends Component {
         if(this.props.status[0]==1){
             this._initValues();
         }
+        else if(this.props.status[0]==3){
+            this.props.triggerRefresh(true);
+        }
+        else;
 
         this.setState({
             _status: [...this.props.status]
@@ -472,7 +476,7 @@ export class Overtime extends Component {
                     _promptShow: false,
                     _msgBoxShow: true,
                     _msgBoxType: 'error-ok',
-                    _resMsg: exception
+                    _resMsg: exception.message
                 })
             });
         }
@@ -537,7 +541,7 @@ export class Overtime extends Component {
                 _promptShow: false,
                 _msgBoxShow: true,
                 _msgBoxType: 'error-ok',
-                _resMsg: exception
+                _resMsg: exception.message
             })
         });
     }
@@ -596,7 +600,7 @@ export class Overtime extends Component {
                 _promptShow: false,
                 _msgBoxShow: true,
                 _msgBoxType: 'error-ok',
-                _resMsg: exception
+                _resMsg: exception.message
             })
         });
     }
@@ -733,6 +737,7 @@ export class Overtime extends Component {
     }
     
     render(){
+        console.log('xxxxxxxxxxxxx______REDERING OVERTIME');
         let pStatus = [...this.state._status];
         let pProgress = pStatus[0];
         let pMessage = pStatus[1];
@@ -743,15 +748,7 @@ export class Overtime extends Component {
             );
         }
 
-        else if(pProgress==2){
-            return (
-                <View style={styles.container}>
-                    <PromptScreen.PromptLoading title={pMessage}/>
-                </View>
-            );
-        }
-
-        else{
+        else if(pProgress==1){
             return(
                 <View style={styles.container}>
                     <ScrollView
@@ -805,6 +802,13 @@ export class Overtime extends Component {
                         <PromptScreen.PromptGeneric show= {this.state._promptShow} title={this.state._promptMsg}/>
                         : null
                     }
+                </View>
+            );
+        }
+        else{
+            return (
+                <View style={styles.container}>
+                    <PromptScreen.PromptLoading title={pMessage}/>
                 </View>
             );
         }

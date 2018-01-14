@@ -24,6 +24,7 @@ import { connect } from 'react-redux';
 import {SetLoginInfo, SetActiveCompany} from '../../actions';
 import styles from './styles';
 import apiConfig from '../../services/api/config';
+import * as PromptScreen from '../../components/ScreenLoadStatus';
 
 const script_Notification = 'forms/empnotifications.php';
 const btnActiveColor='rgba(0, 0, 0, 0.1);';
@@ -78,7 +79,10 @@ export class EmpeSidebarSidebar extends Component {
             _dblFooterIconSize: 20,
 
             _notificationCount: 0,
-            _isNotificationLoading: true
+            _isNotificationLoading: true,
+
+            _promptMsg: '',
+            _promptShow: false
         }
     }
 
@@ -229,22 +233,28 @@ export class EmpeSidebarSidebar extends Component {
         });
     }
     _onPressButton = (targetPage) => {
-        let objBtnColor = Object.assign({}, this.state._btnColors);
-
-        Object.keys(objBtnColor).map(key => {
-            if (key.toUpperCase() == targetPage.toUpperCase()){
-                objBtnColor[key] = btnActiveColor;
-            }
+        this._navigateView(targetPage);
+        requestAnimationFrame(() => {
+            this._setButtonsColor(targetPage);
             
-            else{
-                objBtnColor[key] = btnInactiveColor;
-            }
-        });
+        })
+    }
 
+    _setButtonsColor = (targetPage) => {
+        let objBtnColor = {...this.state._btnColors};
+        
+        Object.keys(objBtnColor).map(key => 
+            key.toUpperCase() == targetPage.toUpperCase ?
+                objBtnColor[key] = btnActiveColor :
+                objBtnColor[key] = btnInactiveColor
+        );
+            
         this.setState({
             _btnColors: objBtnColor
         });
+}
 
+    _navigateView = (targetPage) => {
         switch(targetPage.toUpperCase()){
             case 'COMPANY':
                 this.props.navigation.navigate('CompanyProfile');
@@ -256,7 +266,7 @@ export class EmpeSidebarSidebar extends Component {
                 this.props.navigation.navigate('CompanyPolicies');
                 break
             case 'EMPLOYEES':
-                this.props.navigation.navigate('EmployeeInfo');
+                this.props.navigation.navigate('Employees');
                 break
             case 'TRANSACTIONS':
                 this.props.navigation.navigate('Transactions');
@@ -283,8 +293,15 @@ export class EmpeSidebarSidebar extends Component {
         return(this.state._activeUser.resFName + ' ' + this.state._activeUser.resLName);
     }
 
-    setPickerValue = (compId, index) => {
-        let activeCompany = Object.assign({},...this.state._activeCompany);
+    setPickerValue = async(compId, index) => {
+        let strName = this.state._activeUser.resCompany[index].name;
+        this._showLoadingPrompt('Swithing to ' + strName.toUpperCase() + '. Please wait...');
+        await this._updateActiveCompany(compId, index);
+        this._hideLoadingPrompt();
+    }
+
+    _updateActiveCompany = (compId, index) => {
+        let activeCompany = {...this.state._activeCompany};
         let strName = this.state._activeUser.resCompany[index].name;
         activeCompany.name = strName;
         activeCompany.id = compId;
@@ -302,9 +319,26 @@ export class EmpeSidebarSidebar extends Component {
         this.getNotificationsCount();
     }
 
+    _showLoadingPrompt = (msg) => {
+        this.setState({
+            _promptMsg: msg,
+            _promptShow: true
+        })
+    }
+
+    _hideLoadingPrompt = () => {
+        this.setState({
+            _promptShow: false
+        })
+    }
+
     render(){
         return(
             <SafeAreaView style={styles.container} forceInset={{ top: 'always', horizontal: 'never' }}>
+                <PromptScreen.PromptGeneric 
+                    show= {this.state._promptShow} 
+                    title={this.state._promptMsg}/>
+                    
                 <View style={styles.companyCont}>
                     <TouchableNativeFeedback
                         onPress={() => {this._onPressButton('company')}}
