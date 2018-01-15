@@ -131,16 +131,35 @@ export class PropLevel1 extends Component{
         this.state = {
             nameStyle: this.props.nameStyle || {},
             contentStyle: this.props.contentStyle || {},
-            contentType: this.props.contentType || ''
+            contentType: this.props.contentType || '',
+            hideBorder: this.props.hideBorder || false
         }
     }
+
+    componentWillReceiveProps = (nextProps) => {
+        if(this.state.hideBorder !== nextProps.hideBorder){
+            this.setState({
+                hideBorder: nextProps.hideBorder
+            })
+        }
+    }
+
+    _getBorder = () => {
+        console.log('this.state.hideBorder: ' + this.state.hideBorder);
+        if (this.state.hideBorder){
+            return({
+                borderWidth: 0
+            })
+        }
+    }
+
     render(){
         return(
             <View style={[styles.childCont, styles.customBottomBorder]}>
                 <View style={[styles.childTitleCont, this.state.nameStyle]}>
                     <Text style={styles.txtPropTitle}>{this.props.name}</Text>
                 </View>
-                <View style={[styles.propCont, styles.adjustPropLevel1, this.state.contentStyle]}>
+                <View style={[styles.propCont, styles.adjustPropLevel1, this.state.contentStyle, this._getBorder()]}>
                     {this.props.content}
                 </View>
             </View>

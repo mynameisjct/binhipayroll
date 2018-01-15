@@ -102,7 +102,7 @@ class BonusForm extends Component{
         if(Number.isInteger(Number(value))){
             if(value<=30){
                 this.setState({
-                    _strInstallments: value
+                    _strCutoff: value
                 })
             }
             else{
@@ -115,24 +115,40 @@ class BonusForm extends Component{
     }
 
     _updateInstallments = (value) => {
-        /* this.props.updateInstallments(value); */
+        if (value==''){
+            value='0';
+        }
+        this.setState({
+            _strInstallments: value
+        })
+        this.props.updateInstallments(value);
+    }
+
+    _updateCutoff = (value) => {
+        if (value==''){
+            value='0';
+        }
+        this.setState({
+            _strCutoff: value
+        })
+        this.props.updateCutoff(value);
     }
 
     _updateActiveRule = (id) => {
         this.props.updateActiveRule(id);
     }
 
-    _showDatePicker = async() => {
+    _showDatePicker = async(index) => {
         try {
             const {action, year, month, day} = await DatePickerAndroid.open({
               // Use `new Date()` for current date.
               // May 25 2020. Month 0 is January.
-              minDate: new Date(2018, 0, 1),
-              maxDate: new Date(2018, 11, 31),
-              date: new Date(2018, 0, 1)
+              minDate: new Date(Number(this.props.activeData.name), 0, 1),
+              maxDate: new Date(Number(this.props.activeData.name), 11, 31),
+              date: new Date(Number(this.props.activeData.name), 0, 1)
             });
             if (action !== DatePickerAndroid.dismissedAction) {
-              // Selected year, month (0-11), day
+              this.props.updateSchedule(index,(month+1)+'/'+day+'/'+year)
             }
           } catch ({code, message}) {
             console.warn('Cannot open date picker', message);
@@ -148,41 +164,98 @@ class BonusForm extends Component{
     }
 
     render(){
+        let pTitle = '';
+        if(this.props.disabledMode){
+            pTitle='13th Month Pay';
+            oRightOption = (
+                <Switch
+                    disabled={false}
+                    onValueChange={ (value) => {this._toggleSwitch(value)}} 
+                    onTintColor={color_SwitchOn}
+                    thumbTintColor={color_SwitchThumb}
+                    tintColor={color_SwitchOff}
+                    value={ this.props.allData.enabled }
+                />
+            );
+            oRightOptionType = 'Switch';
+            strTitle = pTitle;
+            
+            //Rule Name
+            oRuleName = (
+                <Picker
+                    mode='dropdown'
+                    style={styles.pickerStyle}
+                    selectedValue={this.props.activeData.id}
+                    onValueChange={(itemValue, itemIndex) => {this._updateActiveRule(itemValue)}}>
+                    {
+                        this.props.allData.data.map((data, index) => (
+                            <Picker.Item key={index} label={data.name} value={data.id} />
+                        ))
+                    }
+                </Picker>
+            );
+        }
+        else{
+            if(this.props.activeData.id == ''){
+                pTitle='Add New 13th Month Pay Schedule';
+            }   
+            else{
+                pTitle='Modify 13th Month Pay Schedule';
+            }
+            pType='Text';
+            oRightOption = (
+                <View style={styles.btnRightCont}>
+                    <TouchableOpacity 
+                        disabled={false}
+                        style={styles.btnCancel}
+                        activeOpacity={0.6}
+                        onPress={() => {this.props.cancelEdit()}}>
+                        <Text style={styles.txtBtn}>CANCEL</Text>
+                    </TouchableOpacity>
+                    <View style={{width: 10}}></View>
+                    <TouchableOpacity 
+                        disabled={this.props.disabledMode}
+                        style={styles.btnSave}
+                        activeOpacity={0.6}
+                        onPress={() => {/* this.props.saveRule() */}}>
+                        <Text style={styles.txtBtn}>SAVE</Text>
+                    </TouchableOpacity>
+                </View>
+            );
+            oRightOptionType = 'BUTTON';
+            strTitle = pTitle;
+            oRuleName = (
+                <TextInput 
+                    autoCapitalize='none'
+                    editable={this.props.disabledMode}
+                    placeholder='Rule Name'
+                    style={{color: '#434646', paddingLeft: 10, height: '100%'}}
+                    onChangeText={(text) => {/* this.props.updateRuleName(text) */}}
+                    value={this.props.activeData.name}
+                    returnKeyType="done"
+                    underlineColorAndroid='transparent'
+                />
+            );
+        }
+
         return(
             <CustomCard 
-                title={title_Bonus} 
+                title={pTitle} 
                 description={description_Bonus} 
-                oType='Switch'
+                oType={oRightOptionType}
                 rightHeader={
-                    <Switch
-                        onValueChange={ (value) => this._toggleSwitch(value)} 
-                        onTintColor={color_SwitchOn}
-                        thumbTintColor={color_SwitchThumb}
-                        tintColor={color_SwitchOff}
-                        value={ this.props.allData.enabled } 
-                    />
+                    oRightOption
                 }>
 
                 { 
                     this.props.allData.enabled ?
                         <View>
                             <PropLevel1 
-                                name='Select Year'
+                                name='Year'
                                 content={
-                                    <Picker
-                                        enabled={this.props.disabledMode}
-                                        mode='dropdown'
-                                        style={styles.pickerStyle}
-                                        selectedValue={this.props.activeData.id}
-                                        onValueChange={(itemValue, itemIndex) => {this._updateActiveRule(itemValue)}}>
-                                        {
-                                            this.props.allData.data.map((data, index) => (
-                                                <Picker.Item key={index} label={data.name} value={data.id} />
-                                            ))
-                                        }
-                                    </Picker>
+                                    oRuleName
                                 }
-                                hideBorder={this.props.disabledMode}
+                                hideBorder={!this.props.disabledMode}
                                 contentStyle={{
                                     width: 130
                                 }}
@@ -225,7 +298,7 @@ class BonusForm extends Component{
                                         keyboardType='numeric'
                                         placeholder=''
                                         onBlur={() => {
-                                            /* this._updateInstallments(this.state._strInstallments); */
+                                            this._updateCutoff(this.state._strCutoff);
                                         }}
                                         style={{paddingLeft: 15, color: '#434646', height: '100%'}}
                                         onChangeText={inputTxt =>  {
@@ -244,20 +317,33 @@ class BonusForm extends Component{
 
                             <PropTitle name='Payment Schedule'/>
                             
+                            {
+                                this.state._strInstallments == 0 ?
+                                    <PropLevel2 
+                                    name={'NOT AVAILABLE'}
+                                    content={
+                                        null
+                                    }
+                                    placeHolderStyle={{width: 300}}
+                                    hideBorder={true}
+                                />
+                                : null
+                            }
+
                             { 
-                                this.props.activeData.schedule.map((objData, index)=> (
+                                [...Array(Number(this.state._strInstallments))].map((x, index) =>
                                     <PropLevel2 
                                         key={index}
-                                        name={'Payment ' + objData.index}
+                                        name={'Payment ' + Number(index + 1)}
                                         content={
                                             <Text 
-                                                disabled={((!objData.editable) || this.props.disabledMode)}
-                                                onPress={() => {this._showDatePicker()}}
+                                                disabled={((!this.props.activeData.schedule[index].editable) || this.props.disabledMode)}
+                                                onPress={() => {this._showDatePicker(index)}}
                                                 style={{color: '#434646', 
                                                     height: '100%', 
                                                     textAlignVertical: 'center',
                                                 }}>
-                                                {objData.date.label}
+                                                {this.props.activeData.schedule[index].date.label}
                                             </Text>
                                         }
                                         hideBorder={this.props.disabledMode}
@@ -267,7 +353,7 @@ class BonusForm extends Component{
                                             width: 200
                                         }}
                                     />
-                                ))
+                                  )
                             }
                             
                         </View>
@@ -385,31 +471,22 @@ export class Bonus extends Component{
     }
 
     _updateInstallments = (value) => {
-        console.log('========_updateInstallment: ' + value);
-        let oAllData = {...this.state._allData};
+        /* console.log('========_updateInstallment: ' + value); */
+        /* let oAllData = {...this.state._allData}; */
         let oActiveData = {...this.state._activeData};
 
         oActiveData.installments = value;
-        let objIndex = oAllData.data.findIndex((obj => obj.id == this.state._activeData.id));
-        oAllData.data[objIndex] = oActiveData;
-        console.log('========oActiveData: ' + JSON.stringify(oActiveData));
-        console.log('========oAllData: ' + JSON.stringify(oAllData));
+/*         let objIndex = oAllData.data.findIndex((obj => obj.id == this.state._activeData.id));
+        oAllData.data[objIndex] = oActiveData; */
+        /* console.log('========oActiveData: ' + JSON.stringify(oActiveData));
+        console.log('========oAllData: ' + JSON.stringify(oAllData)); */
         this._updateActiveData(oActiveData);
-        this._updateAllData(oAllData);
-/*         if(bFlag){
-            bSuccess = await this._toggleSwitchToDB(strTransType, value, strLoading);
-            if(bSuccess){
-                let oInput = this._requiredInputs();
-                oInput.enabled = value;
-                oInput.transtype = strTransType;
-                this._toggleSwitchToDB(oAllData);
-            }
+    }
 
-            //Update Data from store
-            let objIndex = oAllData.data.findIndex((obj => obj.id == this.state._activeData.id));
-            oAllData.data[objIndex].installments = value;
-            this._updateAllData(oAllData);
-        } */
+    _updateCutoff = (value) => {
+        let oActiveData = {...this.state._activeData};
+        oActiveData.cutoff = value;
+        this._updateActiveData(oActiveData);
     }
 
     _updateActiveRule = (id) => {
@@ -422,8 +499,30 @@ export class Bonus extends Component{
     }
     
     _addNewSchedule = () => {
+        
+        let oActiveData = {
+            id: '',
+            name: String(Number(this._getMaxYear()) + 1),
+            default: true,
+            installments: "1",
+            cutoff: "10",
+            schedule:[]
+        }
+
+        for(i=1; i<=12; i++){
+            oActiveData.schedule.push({
+                "index":String(i),
+                "date":{
+                    "label":"Select Date",
+                    "value":""
+                },
+                "editable": true
+            })
+        }
+
         this.setState({
-            _isNewSched: false
+            _activeData: {...oActiveData},
+            _disabledMode: false
         })
     }
 
@@ -433,11 +532,47 @@ export class Bonus extends Component{
         })
     }
 
+    _getMaxYear = () => {
+        let res = Math.max.apply(Math,this.state._allData.data.map(function(o){return o.name;}))
+        return res;
+    }
+
     _updateAllData = (value) => {
         this.setState({
             _allData: value
         })
         this.props.actions.bonus.update(value);
+    }
+
+    _cancelEdit = () => {
+        this.setState({
+            _disabledMode: true
+        })
+        this._initValues();
+    }
+
+    _modifySelectedYear = () => {
+        if(this.state._activeData.editable){
+            this.setState({_disabledMode: false})
+        }
+        else{
+            this._showMsgBox('error-ok', 'You cannot anymore modify 13th Month Pay Schedule for the year ' + this.state._activeData.name + '. Pay was already given on the selected year.')
+        }
+    }
+
+    _updateSchedule = (index, value) => {
+        let strTextDate = oHelper.convertDateToString(value,"MMMM DD, dddd");
+        oActiveData = {...this.state._activeData}
+        oActiveData.schedule.map((x,i) => i == index ? (x.date.value=value, x.date.label=strTextDate) : null)
+
+        console.log('index: ' + index);
+        console.log('value: ' + value);
+        console.log('strTextDate: ' + strTextDate);
+        console.log('oActiveData.schedule: ' + JSON.stringify(oActiveData.schedule));
+        
+        this.setState({
+            _activeData: oActiveData
+        })
     }
  
     //Default Functions
@@ -507,11 +642,9 @@ export class Bonus extends Component{
         let pProgress = pStatus[0];
         let pMessage = pStatus[1];
 
-        if(pProgress==2){
+        if(pProgress==0){
             return (
-                <View style={styles.container}>
-                    <PromptScreen.PromptLoading title={pMessage}/>
-                </View>
+                <PromptScreen.PromptError title='13th Month Policy' onRefresh={()=>this.props.triggerRefresh(true)}/>
             );
         }
 
@@ -532,19 +665,22 @@ export class Bonus extends Component{
                             activeData={this.state._activeData}
                             toggleSwitch={this._toggleSwitch}
                             updateInstallments={this._updateInstallments}
+                            updateCutoff={this._updateCutoff}
                             updateActiveRule={this._updateActiveRule}
                             disabledMode={this.state._disabledMode}
+                            cancelEdit={this._cancelEdit}
+                            updateSchedule={this._updateSchedule}
                             />
                     </ScrollView>
 
-                    { this.state._allData.enabled ?
+                    { this.state._allData.enabled && this.state._disabledMode ?
                         <ActionButton 
                             buttonColor="#EEB843"
                             spacing={10}>
                             <ActionButton.Item buttonColor='#26A65B' title="ADD NEW SCHEDULE" onPress={() => {this._addNewSchedule()}}>
                                 <Icon2 name="plus" color='#fff' size={22} style={styles.actionButtonIcon} />
                             </ActionButton.Item>
-                            <ActionButton.Item buttonColor='#4183D7' title="MODIFY SELECTED YEAR'S SCHEDULE" onPress={() => {this.setState({_disabledMode: false})}}>
+                            <ActionButton.Item buttonColor='#4183D7' title="MODIFY SELECTED YEAR'S SCHEDULE" onPress={() => {this._modifySelectedYear()}}>
                                 <Icon2 name="table-edit" color='#fff' size={22} style={styles.actionButtonIcon} />
                             </ActionButton.Item> */}
                         </ActionButton>
@@ -568,7 +704,9 @@ export class Bonus extends Component{
 
         else{
             return (
-                <PromptScreen.PromptError title='13th Month Policy' onRefresh={()=>this.props.triggerRefresh(true)}/>
+                <View style={styles.container}>
+                    <PromptScreen.PromptLoading title={pMessage}/>
+                </View>
             );
         }
     }

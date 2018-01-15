@@ -18,6 +18,9 @@ import * as StatusLoader from '../../components/ScreenLoadStatus'
 //Helper
 import * as oHelper from '../../helper';
 
+//Redux
+import { connect } from 'react-redux';
+
 export class Employees extends Component {
     constructor(props){
         super(props);
@@ -81,7 +84,10 @@ export class Employees extends Component {
             )
 
             return(
-                <View style={styles.container}>
+                <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+                    <Text>This will display REPORTS</Text>
+                </View>
+                /* <View style={styles.container}>
                     <LinearGradient 
                         colors={['#818489', '#3f4144', '#202626']}
                         style={styles.leftCont}>
@@ -114,7 +120,7 @@ export class Employees extends Component {
                     <View style={styles.rightCont}>
                         {childComponent}
                     </View>
-                </View>
+                </View> */
             );
         }
     }

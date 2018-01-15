@@ -724,12 +724,10 @@ export class Benefits extends Component{
         let pProgress = pStatus[0];
         let pMessage = pStatus[1];
 
-        if(pProgress==2){
+        if(pProgress==0){
             return (
-                <View style={styles.container}>
-                    <PromptScreen.PromptLoading title={pMessage}/>
-                </View>
-            );
+                <PromptScreen.PromptError title='Benefits Policy' onRefresh={()=>this.props.triggerRefresh(true)}/>
+            ); 
         }
 
         else if(pProgress==1){
@@ -788,7 +786,9 @@ export class Benefits extends Component{
 
         else{
             return (
-                <PromptScreen.PromptError title='Benefits Policy' onRefresh={()=>this.props.triggerRefresh(true)}/>
+                <View style={styles.container}>
+                    <PromptScreen.PromptLoading title={pMessage}/>
+                </View>
             );
         }
     }

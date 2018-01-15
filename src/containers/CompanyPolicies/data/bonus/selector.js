@@ -17,6 +17,8 @@ export const getDefaultActiveData = () => {
 		}
 	})
 	oActiveData.schedule = sortData(oActiveData.schedule, true);
+	_addDummySchedule(oActiveData);
+
 	console.log('oActiveData: ' + JSON.stringify(oActiveData))
 	return oActiveData;
 };
@@ -25,6 +27,8 @@ export const getRuleFromID = (id) => {
 	let oAllData = {...store.getState().companyPoliciesReducer.bonus}
 	let oActiveData = oAllData.data[oAllData.data.findIndex((obj => obj.id == id))];
 	oActiveData.schedule = sortData(oActiveData.schedule, true);
+	_addDummySchedule(oActiveData);
+
 	console.log('oActiveData: ' + JSON.stringify(oActiveData))
 	return oActiveData;
 };
@@ -42,9 +46,27 @@ const sortData = (data, bAscending) => {
 
 //Local Functions
 const compare = (a,b) => {
-	if (a.index < b.index)
+	if (Number(a.index) < Number(b.index))
 	  return -1;
-	if (a.index > b.index)
+	if (Number(a.index) > Number(b.index))
 	  return 1;
 	return 0;
+}
+
+const _addDummySchedule = (oActiveData) => {
+	let oData = {...oActiveData}
+	if(oData.schedule.length<12){
+		let iNextIndex = oData.schedule.length + 1;
+		for(i=iNextIndex; i<=12; i++){
+			oData.schedule.push({
+				"index":String(i),
+				"date":{
+					"label":"Select Date",
+					"value":""
+				},
+				"editable": true
+			})
+		}
+	}
+	return(oData)
 }

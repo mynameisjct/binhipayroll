@@ -1,17 +1,19 @@
+import moment from "moment";
+
 //Check if String is empty
-export function isStringEmpty(strValue) {
+export const isStringEmpty = (strValue) => {
     return !strValue
 }
 
-export function isStringOnlySpace(strValue){
+export const isStringOnlySpace = (strValue)  => {
     return !strValue.trim().length
 }
 
-export function isStringEmptyOrSpace(strValue){
+export const isStringEmptyOrSpace = (strValue) => {
     return (isStringEmpty(strValue) || isStringOnlySpace(strValue));
 }
 
-export function capitalizeFirstLetter(string) {
+export const capitalizeFirstLetter = (string) => {
     return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
@@ -30,4 +32,19 @@ export const getArrayOfDaysInMonth = (month) => {
         return [];
     }
     
+}
+
+export const convertDateToString = (strDate, format) => {
+    return moment(strDate).format(format);
+}
+
+export const getDayAbbrev = (_strDay) => {
+    let _curAbbrev = _strDay=='SUNDAY' ? 'SUN':
+    _strDay=='MONDAY' ? 'MON':
+    _strDay=='TUESDAY'?'TUE':
+    _strDay=='WEDNESDAY'?'WED':
+    _strDay=='THURSDAY' ? 'THU':
+    _strDay=='FRIDAY'?'FRI':
+    _strDay=='SATURDAY'?'SAT':'SUN';
+    return _curAbbrev;
 }
