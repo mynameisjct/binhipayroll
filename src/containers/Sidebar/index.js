@@ -236,7 +236,6 @@ export class EmpeSidebarSidebar extends Component {
         this._navigateView(targetPage);
         requestAnimationFrame(() => {
             this._setButtonsColor(targetPage);
-            
         })
     }
 

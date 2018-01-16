@@ -10,12 +10,18 @@ export const getAllData = () => {
 export const getDefaultActiveData = () => {
 	let oAllData = {...store.getState().companyPoliciesReducer.bonus}
 	let oActiveData = null;
-	
+	let bFlag = false;
+
 	oAllData.data.map((objData, index) =>{
 		if(objData.default){
 			oActiveData = objData;
 		}
 	})
+
+	if(oActiveData==null){
+		let iLen = oAllData.data.length;
+		oActiveData = oAllData.data[iLen-1];
+	}
 	oActiveData.schedule = sortData(oActiveData.schedule, true);
 	_addDummySchedule(oActiveData);
 

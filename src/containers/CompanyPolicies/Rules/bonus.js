@@ -47,7 +47,8 @@ from '../../../components/CustomCards';
 import * as oHelper from '../../../helper';
 
 //Class Constants
-const add_loading_message = 'Saving new 13th Month Pay Schedule. Please wait...';
+const switch_loading_message = 'Switching 13th Month Pay Policy. Please wait...';
+const add_loading_message = 'Saving New 13th Month Pay Schedule. Please wait...';
 const update_loading_message = 'Saving 13th Month Pay Policy Changes. Please wait...';
 
 const expiry_loading_message = 'Updating Leave Expiry Rule. Please wait...';
@@ -217,7 +218,7 @@ class BonusForm extends Component{
                         disabled={this.props.disabledMode}
                         style={styles.btnSave}
                         activeOpacity={0.6}
-                        onPress={() => {/* this.props.saveRule() */}}>
+                        onPress={() => {this.props.saveRule()}}>
                         <Text style={styles.txtBtn}>SAVE</Text>
                     </TouchableOpacity>
                 </View>
@@ -346,7 +347,7 @@ class BonusForm extends Component{
                                                 {this.props.activeData.schedule[index].date.label}
                                             </Text>
                                         }
-                                        hideBorder={this.props.disabledMode}
+                                        hideBorder={((!this.props.activeData.schedule[index].editable) || this.props.disabledMode)}
                                         contentStyle={{
                                             paddingLeft: 15,
                                             justifyContent: 'center',
@@ -421,7 +422,8 @@ export class Bonus extends Component{
 
         this.setState({
             _allData: oAllData,
-            _activeData: oActiveData
+            _activeData: oActiveData,
+            _disabledMode: true
         })
     }
 
@@ -430,30 +432,25 @@ export class Bonus extends Component{
         let bFlag = true;
         let bSuccess = false;
         let strTransType = '';
-        let strLoading = '';
+        let strLoading = switch_loading_message;
 
         if(bFlag){
-/*             bSuccess = await this._toggleSwitchToDB(strTransType, value, strLoading);
+            bSuccess = await this._toggleSwitchToDB(value, strLoading);
             if(bSuccess){
-                let oInput = this._requiredInputs();
-                oInput.enabled = value;
-                oInput.transtype = strTransType;
-                this._toggleSwitchToDB(oAllData);
-            } */
-
-            //Update Data from store
-            oAllData.enabled = value;
-            this._updateAllData(oAllData);
+                //Update Data from store
+                oAllData.enabled = value;
+                this._updateAllData(oAllData);
+            }
         }
     }
 
-    _toggleSwitchToDB = async (strTransType, value, strLoading) => {
+    _toggleSwitchToDB = async ( value, strLoading) => {
         let bFlag = false;
         this._showLoadingPrompt(strLoading);
 
         let oInput = this._requiredInputs();
-        oInput.enabled = value;
-        oInput.transtype = strTransType;
+        oInput.enabled = value
+        oInput.transtype = 'request';
 
         console.log('oInput: ' + JSON.stringify(oInput));
         await bonusApi.toggleSwitch(oInput)
@@ -503,9 +500,10 @@ export class Bonus extends Component{
         let oActiveData = {
             id: '',
             name: String(Number(this._getMaxYear()) + 1),
-            default: true,
+            default: false,
+            editable: true,
             installments: "1",
-            cutoff: "10",
+            cutoff: "5",
             schedule:[]
         }
 
@@ -556,7 +554,7 @@ export class Bonus extends Component{
             this.setState({_disabledMode: false})
         }
         else{
-            this._showMsgBox('error-ok', 'You cannot anymore modify 13th Month Pay Schedule for the year ' + this.state._activeData.name + '. Pay was already given on the selected year.')
+            this._showMsgBox('error-ok', 'You cannot anymore modify 13th Month Pay Schedule for the year ' + this.state._activeData.name + '.')
         }
     }
 
@@ -574,7 +572,77 @@ export class Bonus extends Component{
             _activeData: oActiveData
         })
     }
- 
+
+    _saveRule = () => {
+        let oAllData = {...this.state._allData}
+        let oActiveData = JSON.parse(JSON.stringify(this.state._activeData));
+        let oSchedule = oActiveData.schedule;
+        //Clear Unused Leaves
+        let iLen = oActiveData.installments;
+        console.log('iLen: ' + iLen);
+        oSchedule.splice(iLen);
+        console.log('oSchedule: ' + JSON.stringify(oSchedule));
+        let bSuccess = false;
+        let strTransType = 'update';
+        let strLoading = update_loading_message;
+        if(oActiveData.id==''){
+            strTransType='add';
+            strLoading = add_loading_message;
+        }
+
+        bSuccess = this._saveRuleToDB(strTransType, oActiveData, strLoading);
+    }
+
+    _saveRuleToDB = async(strTransType, value, strLoading) => {
+        let bFlag = false;
+        this._showLoadingPrompt(strLoading);
+
+        let oInput = this._requiredInputs();
+        oInput.data = value;
+        oInput.transtype = strTransType;
+
+        console.log('oInput: ' + JSON.stringify(oInput));
+        await bonusApi.create(oInput)
+            .then((response) => response.json())
+            .then((res) => {
+                this._hideLoadingPrompt();
+                bFlag = this._evaluateResponse(res);
+                if(res.flagno==1){
+                    this._updateDataFromRuleChanges(res);
+                }
+                
+            })
+            .catch((exception) => {
+                this._hideLoadingPrompt();
+                this._showMsgBox('error-ok', exception.message);
+            });
+
+        return bFlag;
+    }
+
+    _updateDataFromRuleChanges = (res) => {
+        let oAllData = {...this.state._allData};
+        let oActiveData = {...this.state._activeData};
+        if(oActiveData.id!=''){
+            oActiveData.id = res.id;
+            oAllData.data.push(oActiveData);
+        }
+        else{
+            oAllData.data.map((x, index) => {
+                if(x.id == oActiveData.id){
+                    oAllData.data[index].name = oActiveData.name;
+                    oAllData.data[index].default = oActiveData.default;
+                    oAllData.data[index].editable = oActiveData.editable;
+                    oAllData.data[index].installments = oActiveData.installments;
+                    oAllData.data[index].cutoff = oActiveData.cutoff;
+                    oAllData.data[index].schedule = oActiveData.schedule;
+                }
+            })
+        }
+
+        this._updateAllData(oAllData);
+    }
+  
     //Default Functions
 
     _requiredInputs = () => {
@@ -670,6 +738,7 @@ export class Bonus extends Component{
                             disabledMode={this.state._disabledMode}
                             cancelEdit={this._cancelEdit}
                             updateSchedule={this._updateSchedule}
+                            saveRule={this._saveRule}
                             />
                     </ScrollView>
 

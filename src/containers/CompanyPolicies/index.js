@@ -219,7 +219,7 @@ export class CompanyPolicies extends Component {
                 _ranksStatus: ['3', 'Loading...']
             },
                 () => {
-                    this._setActiveChild({key:'001'});
+                    this._setActiveChild({key:'007'});
                     this.setState({_status: 1});
                 }
             )
@@ -556,6 +556,7 @@ _setActiveChild = (oItem) => {
     this._setButtons(oItem); //immediately trigg
     requestAnimationFrame(() => {
         this._setChildComponent(oItem);
+        this.flatListRef.scrollToIndex({animated: true, index: Number(oItem.key)-1});
     })
 }
 
@@ -569,6 +570,10 @@ _setActiveChild = (oItem) => {
     _setChildComponent = (oItem) => {
         this.setState({ _activeChild: oItem.key })
     }
+
+    _getItemLayout = (data, index) => (
+        { length: 50, offset: 50 * index, index }
+      )
 
     render(){
         
@@ -668,16 +673,6 @@ _setActiveChild = (oItem) => {
                     break;
             }
 
-            const headerComponent = (
-                <LinearGradient 
-                    colors={['#a1a1a3', '#6a6a6d', '#303033']}
-                    style={styles.contTitle}>
-                    <Text style={styles.txtTitle}>
-                        {this.props.activecompany.name.toUpperCase()}
-                    </Text>
-                </LinearGradient>
-            )
-
             return(
                 <View style={styles.container}>
                     <LinearGradient 
@@ -685,8 +680,16 @@ _setActiveChild = (oItem) => {
                         style={styles.leftCont}>
                         
                         <View style={styles.optionsCont}>
+                            <LinearGradient 
+                                colors={['#a1a1a3', '#6a6a6d', '#303033']}
+                                style={styles.contTitle}>
+                                <Text style={styles.txtTitle}>
+                                    {this.props.activecompany.name.toUpperCase()}
+                                </Text>
+                            </LinearGradient>
                             <FlatList
-                                ListHeaderComponent={headerComponent}
+                                getItemLayout={this._getItemLayout}
+                                ref={(ref) => { this.flatListRef = ref; }}
                                 data={this.state._policyList}
                                 renderItem={({item}) => 
                                     <TouchableNativeFeedback 
