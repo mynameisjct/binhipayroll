@@ -1,0 +1,61 @@
+{
+    "flagno": "1",
+    "message": "Success",
+    "employee": {
+        "basicinfo":{
+            "title": "BASIC INFORMATION",
+            "firstname": "Juan",
+            "middlename": "Perez",
+            "lastname": "Dela Cruz",
+            "nickname": "Juan",
+            "birthday": "06/01/1990",
+            "gender": {
+                "value": "Male",
+                "options": ["Male", "Female"]
+            },
+            "civilstatus": {
+                "value": "Married",
+                "options": ["Single", "Married", "Divorced", "Separated", "Widowed"]
+            }
+        },
+        "contactinfo":{
+            "title": "CONTACT INFORMATION",
+            "mobile": [
+                "0907 321 4567",
+                "0917 231 4567",
+                "0927 123 4567",
+                "0937 312 4567"
+            ],
+            "telephone": [
+                "851 - 2354",
+                "852 - 2354",
+                "853 - 2354",
+                "854 - 2354"
+            ],
+            "email": [
+                "hello@yahoo.com",
+                "hi@gmail.com",
+                "world@binhi.com"
+            ]
+        },
+        "ids": {
+            "title": "GOVERNMENT IDS",
+            "tin": {
+                "label": "Personal TIN",
+                "value": "123-345-678"
+            },
+            "sss": {
+                "label": "SSS No.",
+                "value": "123-345-678"
+            },
+            "philhealth": {
+                "label": "Phil Health No.",
+                "value": "123-345-678"
+            },
+            "pagibig": {
+                "label": "Pag - IBI No.",
+                "value": "123-345-678"
+            }
+        }
+    }
+}

@@ -1,0 +1,57 @@
+{
+    "flagno": "1",
+    "message": "Success",
+    "employee": {
+        "present":{
+            "title": "PRESENT ADDRESS",
+            "province": {
+                "label": "Province",
+                "id": "001",
+                "value": "Misamis Oriental",
+                "options": ["Province"]
+            },
+            "city": {
+                "label": "City",
+                "id": "011",
+                "value": "Cagayan de Oro City",
+                "options": ["City"]
+            },
+            "barangay": {
+                "label": "Barangay",
+                "id": "022",
+                "value": "Consolacion",
+                "options": ["Barangay"]
+            },
+            "street": {
+                "label": "street",
+                "value": "Zone 1, Bahaon Street"
+            }
+        },
+
+        "permanent":{
+            "title": "PERMANENT ADDRESS",
+            "province": {
+                "label": "Province",
+                "id": "001",
+                "value": "Misamis Oriental",
+                "options": ["Province"]
+            },
+            "city": {
+                "label": "City",
+                "id": "011",
+                "value": "Cagayan de Oro City",
+                "options": ["City"]
+            },
+            "barangay": {
+                "label": "Barangay",
+                "id": "022",
+                "value": "Consolacion",
+                "options": ["Barangay"]
+            },
+            "street": {
+                "label": "street",
+                "value": "Zone 1, Bahaon Street"
+            }
+        }
+    }
+}

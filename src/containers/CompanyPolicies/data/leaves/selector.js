@@ -12,19 +12,24 @@ export const getDefaultActiveData = () => {
 	let oActiveData = null;
 	let bFlag = false;
 
-	oAllData.data.map((objData, index) =>{
-		if(objData.default){
-			oActiveData = objData;
-		}
-	})
-
-	if(oActiveData==null){
-		let iLen = oAllData.data.length;
-		oActiveData = oAllData.data[iLen-1];
+	if (oAllData.data.length === 0 ){
+		return null;
 	}
+	else{
+		oAllData.data.map((objData, index) =>{
+			if(objData.default){
+				oActiveData = objData;
+			}
+		})
 
-	console.log('oActiveData: ' + JSON.stringify(oActiveData))
-	return oActiveData;
+		if(oActiveData==null){
+			let iLen = oAllData.data.length;
+			oActiveData = oAllData.data[iLen-1];
+		}
+
+		console.log('oActiveData: ' + JSON.stringify(oActiveData))
+		return oActiveData;
+	}
 };
 
 export const getDefaultData = (id) => {

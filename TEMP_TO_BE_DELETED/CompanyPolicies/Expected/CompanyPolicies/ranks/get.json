@@ -1,0 +1,35 @@
+{
+    "flagno": "1",
+    "message": "Success!",
+    "description": "<DESCRIPTION HERE>",
+    "data": [
+        {
+            "id": "0001",
+            "name": {
+                "label": "Name",
+                "value": "HR Staff"
+            },
+            "tardiness": {
+                "label": "Tardiness",
+                "value": "0111"
+            },
+            "undertime": {
+                "label": "Undertime",
+                "value": "0222"
+            },
+            "overtime": {
+                "label": "Overtime",
+                "value": "0333"
+            },
+            "leaves": {
+                "label": "Leaves",
+                "value": "0444"
+            },
+            "benefits": {
+                "label": "Benefits",
+                "value": "0555"
+            }
+        }
+    ]
+}
+

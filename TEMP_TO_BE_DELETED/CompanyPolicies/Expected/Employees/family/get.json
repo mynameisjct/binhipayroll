@@ -1,0 +1,15 @@
+{
+    "flagno": "1",
+    "message": "Success",
+    "employee": {
+        "spouse": {
+            "title": "SPOUSE INFO",
+            "name": {
+                "label": "Name of Spouse",
+                "work": {
+                    
+                }
+            }
+        }
+    }
+}

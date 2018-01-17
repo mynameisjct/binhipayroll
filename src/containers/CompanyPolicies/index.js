@@ -23,6 +23,7 @@ import Overtime from './Rules/overtime';
 import Leaves from './Rules/leaves';
 import Benefits from './Rules/benefits';
 import Bonus from './Rules/bonus';
+import Ranks from './ranks';
 
 //API
 import * as workshiftAPI from './data/workshift/api';
@@ -40,11 +41,11 @@ import * as overtimeActions from './data/overtime/actions';
 import * as leavesActions from './data/leaves/actions';
 import * as benefitsActions from './data/benefits/actions';
 import * as bonusActions from './data/bonus/actions';
+import * as ranksActions from './ranks/data/actions';
 
 //Custom Components
 import * as StatusLoader from '../../components/ScreenLoadStatus';
 import Header2 from '../Headers/header2';
-import { Ranks } from './Rules/ranks';
 
 //Constants
 const btnActive = 'rgba(255, 255, 255, 0.3);'
@@ -542,7 +543,36 @@ export class CompanyPolicies extends Component {
     }
 
     _getRanksRule = () => {
+        let curStatus = [2, 'Loading...'];
+        this.setState({
+            _ranksStatus: curStatus
+        });
 
+        let oInput = {
+            companyid: this.state._objActiveCompany.id,
+            username: this.state._objLoginInfo.resUsername,
+            transtype: 'get',
+            accesstoken: '',
+            clientid: '',
+        }
+        
+        this.props.actions.ranks.get(oInput)
+        .then(() => {
+            console.log('this.props.ranks: ' + JSON.stringify(this.props.ranks));
+            let oRanks  = {...this.props.ranks};
+            let oStatus = [oRanks.flagno, oRanks.message];
+            this.setState({
+                _bonusStatus: oStatus
+            });
+		})
+		.catch((exception) => {
+            console.log('oInput: ' + JSON.stringify(oInput));
+            console.log('exception: ' + exception);
+            let oStatus = [0, 'Application error was encountered. \n Please contact BINHI-MeDFI'];
+			this.setState({
+                _ranksStatus: oStatus
+            })
+		}); 
     }
 
     _setActiveChild = (oItem) => {
@@ -733,7 +763,8 @@ function mapStateToProps (state) {
         overtime: state.companyPoliciesReducer.overtime,
         leaves: state.companyPoliciesReducer.leaves,
         benefits: state.companyPoliciesReducer.benefits,
-        bonus: state.companyPoliciesReducer.bonus
+        bonus: state.companyPoliciesReducer.bonus,
+        ranks: state.companyPoliciesReducer.ranks
 
     }
 }
@@ -750,6 +781,7 @@ function mapDispatchToProps (dispatch) {
             leaves: bindActionCreators(leavesActions, dispatch),
             benefits: bindActionCreators(benefitsActions, dispatch),
             bonus: bindActionCreators(bonusActions, dispatch),
+            ranks: bindActionCreators(ranksActions, dispatch),
         },
     }
 }
