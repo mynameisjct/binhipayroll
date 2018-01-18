@@ -31,7 +31,8 @@ export default {
         minHeight: 60,
         justifyContent: 'center',
       },
-      txtTitle: {
+
+    txtTitle: {
         fontSize: 16,
         fontFamily: 'Helvetica-Bold',
         textAlign: 'center',
@@ -40,7 +41,7 @@ export default {
         color: '#fff',
         backgroundColor: 'transparent',
         textShadowColor: '#EEB843'
-      },
+    },
 
     profileCont: {
         minHeight: 70,

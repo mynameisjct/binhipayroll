@@ -737,7 +737,6 @@ _setActiveChild = (oItem) => {
                                         </View>
                                     </TouchableNativeFeedback>
                                 }
-                                
                             />
                         </View>
                     </LinearGradient>

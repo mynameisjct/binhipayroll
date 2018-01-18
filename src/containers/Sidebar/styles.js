@@ -43,7 +43,7 @@ export default {
     shadowOffset: { width: 2, height: 2 },
     shadowOpacity: 0.8,
     shadowRadius: 100,
-    elevation: 10,
+    elevation: 3,
   },
   
   companyPicker:{

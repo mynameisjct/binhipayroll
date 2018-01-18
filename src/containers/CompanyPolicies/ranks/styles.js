@@ -17,6 +17,16 @@ export default {
         flex:1
     },
 
+    contContent: {
+        flex: 1,
+        flexDirection: 'column'
+    },
+
+    contForm: {
+        height: 165,
+        backgroundColor: 'transparent'
+    },
+
     contRootTabs: {
         flex: 1,
         backgroundColor: 'transparent'

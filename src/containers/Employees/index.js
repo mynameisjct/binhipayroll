@@ -3,9 +3,11 @@ import React, { Component } from 'react';
 import {
     View,
     Text,
-    Button
+    Button,
+    FlatList,
+    TouchableNativeFeedback
 } from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import LinearGradient from 'react-native-linear-gradient';
 
 //Styles Properties
@@ -21,108 +23,114 @@ import * as oHelper from '../../helper';
 //Redux
 import { connect } from 'react-redux';
 
+//constants
+//Constants
+const btnActive = 'rgba(255, 255, 255, 0.3);'
+const btnInactive = 'transparent';
+
 export class Employees extends Component {
+        //List of Children
     constructor(props){
         super(props);
         this.state = {
-            _status: 2,
-            _activeChild: '',
-            _list: []
-        }
-    }
-        
-    static navigationOptions = {
-        headerTitle : 
-            <Header2
-                title= 'MY EMPLOYEES'
-            />,
-        headerLeft: null,
-        headerStyle : 
-            {backgroundColor: '#fff'},
-    }
-
-    componentDidMount = () => {
-        this._initComponent(this.props);
-    }
-
-    componentWillReceiveProps(nextProps){
-        let objActiveCompany = {...nextProps.activecompany};
-        if (this.props.activecompany.id !== objActiveCompany.id){
-            this.setState({
-                _status: 2
-            },
-                () => {
-                    this._initComponent(nextProps);
+            _list: [
+                {
+                    key: "0001",
+                    name: "Asin, Jose Protacio",
+                    position: "Auditor",
+                    branch: "Yacapin branch"
+                },
+                {
+                    key: "0002",
+                    name: "Asinero, Lourdes",
+                    position: "Utility",
+                    branch: "Yacapin branch"
+                },
+                {
+                    key: "0003",
+                    name: "Bagares, Lyn",
+                    position: "Utility",
+                    branch: "Yacapin branch"
+                },
+                {
+                    key: "0004",
+                    name: "Rizal, Delilah",
+                    position: "HR Staff",
+                    branch: "Yacapin branch"
+                },
+                {
+                    key: "0005",
+                    name: "Zamora, Israel",
+                    position: "HR Staff",
+                    branch: "Yacapin branch"
                 }
-            )
-            
+            ]
         }
     }
 
-    _initComponent = (oProps) => {
-
+    static navigationOptions = {
+        header : 
+            <Header2 title= 'MY EMPLOYEES'/>
     }
 
     render(){
-        if(this.state._status == 0){
-            return(<StatusLoader.PromptError title={'Unable to load Company Policies.\n Please Contact BINHI-MeDFI.'}/>)
-        }
-        else if(this.state._status == 2){
-            return(<StatusLoader.PromptLoading title='Loading...'/>)
-        }
-        else{
-            let childComponent = null;
-
-            const headerComponent = (
-                <LinearGradient 
-                    colors={['#a1a1a3', '#6a6a6d', '#303033']}
-                    style={styles.contTitle}>
-                    <Text style={styles.txtTitle}>
-                        {this.props.activecompany.name.toUpperCase()}
-                    </Text>
-                </LinearGradient>
-            )
-
-            return(
-                <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-                    <Text>This will display REPORTS</Text>
-                </View>
-                /* <View style={styles.container}>
-                    <LinearGradient 
-                        colors={['#818489', '#3f4144', '#202626']}
-                        style={styles.leftCont}>
-                        
-                        <View style={styles.optionsCont}>
-                            <FlatList
-                                ListHeaderComponent={headerComponent}
-                                data={this.state._list}
-                                renderItem={({item}) => 
-                                    <TouchableNativeFeedback 
-                                        onPress={() => {this._setActiveChild(item)}}
-                                        background={TouchableNativeFeedback.SelectableBackground()}>
-                                        <View style={[styles.btnCont, {backgroundColor: item.btnColor}]}>
-                                            <View style={styles.iconCont}>
-                                                <View style={styles.iconPlaceholder}>
-                                                    <Icon name={item.iconName} size={20} color='#fff'/>
-                                                </View>
-                                            </View>
-                                            <View style={styles.labelCont}>
-                                                <Text style={styles.txtLabel}>{item.name}</Text>
-                                            </View>
+        return(
+            <View style={styles.container}>
+                <View 
+                    /* colors={['#0c0c0c', '#302e2e', '#0c0c0c']} */
+                    style={styles.leftCont}>
+                    
+                    <View style={styles.optionsCont}>
+                        <LinearGradient 
+                            colors={['#4c669f', '#3b5998', '#192f6a']}
+                            style={styles.contTitle}>
+                            <Text style={styles.txtTitle}>
+                                {this.props.activecompany.name.toUpperCase()}
+                            </Text>
+                        </LinearGradient>
+                        <FlatList
+                            /* getItemLayout={this._getItemLayout} */
+                            ref={(ref) => { this.flatListRef = ref; }}
+                            data={this.state._list}
+                            renderItem={({item}) => 
+                                <TouchableNativeFeedback 
+                                    onPress={() => {/* this._setActiveChild(item) */}}
+                                    background={TouchableNativeFeedback.SelectableBackground()}>
+                                    <View style={[styles.btnCont]}>
+                                        <View style={styles.labelCont}>
+                                            <Text style={styles.txtLabelTitle}>{item.name}</Text>
+                                            <Text style={styles.txtLabel}>{item.position}</Text>
+                                            <Text style={styles.txtLabel}>{item.branch}</Text>
                                         </View>
-                                    </TouchableNativeFeedback>
-                                }
-                                
-                            />
-                        </View>
-                    </LinearGradient>
-                        
-                    <View style={styles.rightCont}>
-                        {childComponent}
+                                    </View>
+                                </TouchableNativeFeedback>
+                            }
+                        />
                     </View>
-                </View> */
-            );
-        }
+                </View>
+                    
+                <View style={[styles.rightCont, {justifyContent: 'center', alignItems: 'center'}]}>
+                    <View style={{height: 100,
+                        width: 100, 
+                        backgroundColor: 'green', 
+                        justifyContent: 'center', 
+                        alignItems: 'center',
+
+                        /* borderRadius: 10,
+                        borderColor: 'transparent',
+                        borderWidth: 1, */
+                        /* borderRadius: 50,
+                        shadowColor: '#000',
+                        shadowOpacity: 1,
+                        shadowRadius: 6, */
+                        borderRadius: 50,
+                        elevation: 30
+                    }}>
+                        <Text>HI!</Text>
+                    </View>
+                </View>
+            </View>
+        )
     }
 }
 

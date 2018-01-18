@@ -29,7 +29,7 @@ export const remove = () => ({
 
 //MOCK DATA
 const mockJSON = {
-	sucess: 'http://www.mocky.io/v2/5a5327ec300000ca121ebe0c',
+	sucess: 'http://www.mocky.io/v2/5a5f01342e0000a1090a81f7',
 }
 
 export const get = payload =>

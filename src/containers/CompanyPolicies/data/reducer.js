@@ -19,5 +19,6 @@ export const reducer = combineReducers({
 	overtime: overtimeReducer,
 	leaves: leavesReducer,
 	benefits: benefitsReducer,
-	bonus: bonusReducer
+	bonus: bonusReducer,
+	ranks: ranksReducer
 });

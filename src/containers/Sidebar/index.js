@@ -295,6 +295,7 @@ export class EmpeSidebarSidebar extends Component {
     setPickerValue = async(compId, index) => {
         let strName = this.state._activeUser.resCompany[index].name;
         this._showLoadingPrompt('Swithing to ' + strName.toUpperCase() + '. Please wait...');
+        
         await this._updateActiveCompany(compId, index);
         this._hideLoadingPrompt();
     }
