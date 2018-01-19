@@ -23,11 +23,13 @@ export default {
         maxWidth: 240,
         backgroundColor: '#ECECEC',
         flexDirection: 'column',
-        elevation: 20
+        elevation: 20,
+        borderRightWidth: 2,
+        borderColor: '#1d1e1e'
     },
 
-    contTitle:{
-        minHeight: 60,
+    contTitle: {
+        minHeight: 100,
         justifyContent: 'center',
         flexDirection: 'row',
         alignItems: 'center'
@@ -72,9 +74,19 @@ export default {
         backgroundColor: '#fff',
     },
 
+    titleCont:{
+        flex: 1,
+        height: 35,
+        flexDirection: 'row',
+        backgroundColor: '#fff',
+        borderTopWidth: 0.5,
+        borderColor: '#1d1e1e',
+        borderLeftWidth: 10
+    },
+
     btnCont: {
         flex: 1,
-        height: 90,
+        height: 60,
         flexDirection: 'row',
         backgroundColor: 'transparent',
         borderTopWidth: 0.5,
@@ -82,17 +94,25 @@ export default {
     },
 
     labelCont: {
-        flex: 0.7,
+        flex: 0.75,
         backgroundColor: 'transparent',
         justifyContent: 'center',
         alignItems: 'flex-start',
         marginLeft: 15  
     },
 
+    contContentTitle: {
+        flex: 1,
+        backgroundColor: 'transparent',
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+
     txtLabel:{
-        fontFamily: 'Helvetica-Light',
-        fontSize: 14,
-        color: '#fff'
+        fontFamily: 'Helvetica-Bold',
+        fontSize: 15,
+        color: '#fff',
+        fontWeight: '300'
     },
 
     txtFirstLetter:{
@@ -103,17 +123,18 @@ export default {
 
     txtLabelTitle:{
         fontFamily: 'Helvetica-Bold',
-        fontSize: 15,
-        color: '#fff',
+        fontSize: 14,
+        color: '#272828',
         fontWeight: '500'
     },
 
     contSearchBox: {
-        flex: 0.8,
+        flex: 1,
         borderRadius: 20,
         height: 37,
         width: 50,
         backgroundColor: '#fff',
+        marginLeft: 15,
         marginRight: 15
         
     },
@@ -140,8 +161,8 @@ export default {
     },
 
     iconPlaceholder: {
-        width: 50,
-        height: 50,
+        width: 35,
+        height: 35,
         backgroundColor: '#EEB843',
         borderRadius: 100,
         justifyContent: 'center',
@@ -149,10 +170,37 @@ export default {
     },
 
     iconCont: {
-        flex: 0.3,
+        flex: 0.25,
         backgroundColor: 'transparent',
         justifyContent: 'center',
         alignItems: 'flex-end',
+    },
+
+    contIconProfile: {
+        width: 80,
+        backgroundColor: 'transparent',
+        justifyContent: 'center',
+        alignItems: 'flex-end'
+    },
+
+    contInfoProfile: {
+        flex: 1,
+        backgroundColor: 'transparent',
+        paddingLeft: 10,
+        flexDirection: 'column'
+    },
+
+    txtProfileLabel:{
+        fontFamily: 'Helvetica-Bold',
+        fontSize: 11,
+        color: '#fff',
+    },
+
+    txtProfileTitle:{
+        fontFamily: 'Helvetica-Bold',
+        fontSize: 14,
+        color: '#fff',
+        fontWeight: '500'
     },
 }
    

@@ -32,12 +32,12 @@ export class Header2 extends Component {
                   <Text style={styles.headerTitle}>{this.props.title}</Text>
                 </View>
 
-                <View style={styles.headerRight}>
-                    <TouchableOpacity
-                        onPress={() => {navigation.navigate('DrawerToggle')}}>
+                <TouchableOpacity
+                    onPress={() => {navigation.navigate('DrawerToggle')}}>
+                    <View style={styles.headerRight}>
                         <Icon name='md-menu' style={{color: '#EEB843', fontSize: 35}} />
-                    </TouchableOpacity>
-                </View>
+                    </View>
+                </TouchableOpacity>
             </View>
         );
     }

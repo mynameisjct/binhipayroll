@@ -16,7 +16,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import styles from './styles';
 
 //Custom Components
-import * as StatusLoader from '../../../components/ScreenLoadStatus'
+import * as StatusLoader from '../../../../components/ScreenLoadStatus'
 import CustomCard, 
 {
     Description,
@@ -24,10 +24,10 @@ import CustomCard,
     PropLevel1, 
     PropLevel2
 }
-from '../../../components/CustomCards';
+from '../../../../components/CustomCards';
 
 //Helper
-import * as oHelper from '../../../helper';
+import * as oHelper from '../../../../helper';
 
 //Redux
 import { connect } from 'react-redux';
@@ -36,8 +36,8 @@ import { connect } from 'react-redux';
 //Constants
 const btnActive = 'rgba(255, 255, 255, 0.3);'
 const btnInactive = 'transparent';
-const TITLE = 'Employee Profile Summary'
-export class Summary extends Component {
+const TITLE = 'Basic and Contact Information'
+export class BasicInfo extends Component {
     render(){
         const navigation = this.props.logininfo.navigation;
         return(
@@ -45,68 +45,66 @@ export class Summary extends Component {
                 <View style={styles.contCard}>
                     <CustomCard title={TITLE} oType='Text'>
 
-                            <View style={{marginTop: -30}}>
-                                <PropTitle name='Personal Information'/>
+                            <View style={{marginTop: -20}}>
+                                <PropTitle name='Basic Information'/>
 
                                 <PropLevel2 
-                                    name={'Name'}
+                                    name={'First Name'}
                                     content={
                                         <Text style={styles.txtDefault}>
-                                            Asin, Jose Proctacio
+                                            Jose
                                         </Text>
                                     }
                                     contentStyle={{width: 500}}
-                                    placeHolderStyle={{width: 500, height: 30}}
+                                    placeHolderStyle={{width: 500, height: 40}}
                                     hideBorder={true}
                                 />
 
                                 <PropLevel2 
-                                    name={'Age'}
+                                    name={'Middle Name'}
                                     content={
                                         <Text style={styles.txtDefault}>
-                                            25
+                                            Protacio
                                         </Text>
                                     }
                                     contentStyle={{width: 500}}
-                                    placeHolderStyle={{width: 500, height: 30}}
+                                    placeHolderStyle={{width: 500, height: 40}}
                                     hideBorder={true}
                                 />
 
                                 <PropLevel2 
-                                    name={'Birthday'}
+                                    name={'Last Name'}
                                     content={
                                         <Text style={styles.txtDefault}>
-                                            January 1, 1993
+                                            Asin
                                         </Text>
                                     }
                                     contentStyle={{width: 500}}
-                                    placeHolderStyle={{width: 500, height: 30}}
-                                    hideBorder={true}
-                                />
-
-                                <PropTitle name='Employment Information'/>
-
-                                <PropLevel2 
-                                    name={'ID Code'}
-                                    content={
-                                        <Text style={styles.txtDefault}>
-                                            00132
-                                        </Text>
-                                    }
-                                    contentStyle={{width: 500}}
-                                    placeHolderStyle={{width: 500, height: 30}}
+                                    placeHolderStyle={{width: 500, height: 40}}
                                     hideBorder={true}
                                 />
 
                                 <PropLevel2 
-                                    name={'Employment Status'}
+                                    name={'Nick Name'}
                                     content={
                                         <Text style={styles.txtDefault}>
-                                            Regular
+                                            Jose
                                         </Text>
                                     }
                                     contentStyle={{width: 500}}
-                                    placeHolderStyle={{width: 500, height: 30}}
+                                    placeHolderStyle={{width: 500, height: 40}}
+                                    hideBorder={true}
+                                />
+
+                                <PropLevel2 
+                                    name={'Date of Birth'}
+                                    content={
+                                        <Text style={styles.txtDefault}>
+                                            January 15, 2017
+                                        </Text>
+                                    }
+                                    contentStyle={{width: 500}}
+                                    placeHolderStyle={{width: 500, height: 40}}
                                     hideBorder={true}
                                 />
 
@@ -118,45 +116,35 @@ export class Summary extends Component {
                                         </Text>
                                     }
                                     contentStyle={{width: 500}}
-                                    placeHolderStyle={{width: 500, height: 30}}
+                                    placeHolderStyle={{width: 500, height: 40}}
                                     hideBorder={true}
                                 />
                                 <PropLevel2 
-                                    name={'Position'}
+                                    name={'Gender'}
                                     content={
                                         <Text style={styles.txtDefault}>
-                                            Auditor
+                                            Male
                                         </Text>
                                     }
                                     contentStyle={{width: 500}}
-                                    placeHolderStyle={{width: 500, height: 30}}
+                                    placeHolderStyle={{width: 500, height: 40}}
                                     hideBorder={true}
                                 />
-                                <PropLevel2 
-                                    name={'Branch'}
+                                <PropLevel2
+                                    name={'Civil Status'}
                                     content={
                                         <Text style={styles.txtDefault}>
-                                            Yacapin Branch
+                                            Divorced
                                         </Text>
                                     }
                                     contentStyle={{width: 500}}
-                                    placeHolderStyle={{width: 500, height: 30}}
+                                    placeHolderStyle={{width: 500, height: 40}}
                                     hideBorder={true}
                                 />
                             </View>
 
                     </CustomCard>
                 </View>
-                <TouchableNativeFeedback 
-                    onPress={() => {navigation.navigate('EmployeeProfile')}}
-                    background={TouchableNativeFeedback.SelectableBackground()}>
-
-                    <View style={styles.contFooter}>
-                        <Text style={styles.txtLabel}>View Complete Profile</Text>
-                    </View>
-
-                </TouchableNativeFeedback>
-
             </View>
         );
     }
@@ -176,4 +164,4 @@ function mapDispatchToProps (dispatch) {
 export default connect(
     mapStateToProps,
     mapDispatchToProps
-)(Summary)
+)(BasicInfo)

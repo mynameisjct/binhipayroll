@@ -5,7 +5,8 @@ import {
     Text,
     Button,
     FlatList,
-    TouchableNativeFeedback
+    TouchableNativeFeedback,
+    TextInput
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import LinearGradient from 'react-native-linear-gradient';
@@ -17,13 +18,15 @@ import styles from './styles';
 import Header2 from '../Headers/header2';
 import * as StatusLoader from '../../components/ScreenLoadStatus'
 
+//Children Components
+import Summary from './summary';
+
 //Helper
 import * as oHelper from '../../helper';
 
 //Redux
 import { connect } from 'react-redux';
 
-//constants
 //Constants
 const btnActive = 'rgba(255, 255, 255, 0.3);'
 const btnInactive = 'transparent';
@@ -74,22 +77,46 @@ export class Employees extends Component {
     }
 
     render(){
+        const oListHeader = (
+            <View style={styles.contSearch}>
+                <View style={styles.iconFilter}>
+                    <Icon name='filter' size={20} color='#fff' />
+                </View>
+                
+                <View style={styles.contSearchBox}>
+                    <Icon name='magnify' size={22} color='#000' style={styles.iconSearch}/>
+                    <TextInput 
+                        style={styles.textinputField}
+                        placeholder='Search'
+                        onChangeText={txtInput => {}}
+                        value={''}
+                        ref='_ref_emp_search'
+                        returnKeyType="search"
+                        underlineColorAndroid='transparent'
+                    />
+                </View>
+            </View>
+        )
         return(
             <View style={styles.container}>
-                <View 
-                    /* colors={['#0c0c0c', '#302e2e', '#0c0c0c']} */
+                <LinearGradient 
+                    colors={['#818489', '#3f4144', '#202626']}
                     style={styles.leftCont}>
                     
+                    <LinearGradient 
+                        colors={['#818489', '#3f4144', '#202626']}
+                        style={styles.contTitle}>
+
+                        <Text style={styles.txtTitle}>
+                            {this.props.activecompany.name.toUpperCase()}
+                        </Text>
+
+                    </LinearGradient>
+
                     <View style={styles.optionsCont}>
-                        <LinearGradient 
-                            colors={['#4c669f', '#3b5998', '#192f6a']}
-                            style={styles.contTitle}>
-                            <Text style={styles.txtTitle}>
-                                {this.props.activecompany.name.toUpperCase()}
-                            </Text>
-                        </LinearGradient>
                         <FlatList
                             /* getItemLayout={this._getItemLayout} */
+                            ListHeaderComponent={oListHeader}
                             ref={(ref) => { this.flatListRef = ref; }}
                             data={this.state._list}
                             renderItem={({item}) => 
@@ -97,6 +124,11 @@ export class Employees extends Component {
                                     onPress={() => {/* this._setActiveChild(item) */}}
                                     background={TouchableNativeFeedback.SelectableBackground()}>
                                     <View style={[styles.btnCont]}>
+                                        <View style={styles.iconCont}>
+                                            <View style={styles.iconPlaceholder}>
+                                                <Text style={styles.txtFirstLetter}>{item.name.charAt(0)}</Text>
+                                            </View>
+                                        </View>
                                         <View style={styles.labelCont}>
                                             <Text style={styles.txtLabelTitle}>{item.name}</Text>
                                             <Text style={styles.txtLabel}>{item.position}</Text>
@@ -107,27 +139,10 @@ export class Employees extends Component {
                             }
                         />
                     </View>
-                </View>
+                </LinearGradient>
                     
-                <View style={[styles.rightCont, {justifyContent: 'center', alignItems: 'center'}]}>
-                    <View style={{height: 100,
-                        width: 100, 
-                        backgroundColor: 'green', 
-                        justifyContent: 'center', 
-                        alignItems: 'center',
-
-                        /* borderRadius: 10,
-                        borderColor: 'transparent',
-                        borderWidth: 1, */
-                        /* borderRadius: 50,
-                        shadowColor: '#000',
-                        shadowOpacity: 1,
-                        shadowRadius: 6, */
-                        borderRadius: 50,
-                        elevation: 30
-                    }}>
-                        <Text>HI!</Text>
-                    </View>
+                <View style={styles.rightCont}>
+                    <Summary/>
                 </View>
             </View>
         )

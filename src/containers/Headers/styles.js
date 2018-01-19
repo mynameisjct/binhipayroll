@@ -42,6 +42,7 @@ export default {
   },
 
   headerLeft:{
+    height: '100%',
     width: 60,
     backgroundColor: 'transparent',
     justifyContent: 'center',
