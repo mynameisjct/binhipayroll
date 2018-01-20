@@ -44,6 +44,12 @@ export default {
         fontSize: 14,
         color: '#212223',
         fontFamily: 'Helvetica-Light',
-    }
+    },
+
+    rightCont: {
+        flex: 1,
+        backgroundColor: '#fff',
+    },
+
 }
    

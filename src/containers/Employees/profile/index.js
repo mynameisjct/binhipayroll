@@ -46,6 +46,7 @@ export class Profile extends Component {
     constructor(props){
         super(props);
         this.state = {
+            _refreshing: false,
             _list: [
                 {
                     key: "0001",
@@ -238,7 +239,7 @@ export class Profile extends Component {
                     <View style={styles.optionsCont}>
                         <FlatList
                             /* getItemLayout={this._getItemLayout} */
-                            ListHeaderComponent={oListHeader}
+                            ListHeaderComonent={oListHeader}
                             ref={(ref) => { this.flatListRef = ref; }}
                             data={this.state._list}
                             renderItem={({item}) => 

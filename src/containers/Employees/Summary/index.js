@@ -41,7 +41,7 @@ export class Summary extends Component {
     render(){
         const navigation = this.props.logininfo.navigation;
         return(
-            <View style={styles.container}>
+            <View style={styles.rightCont}>
                 <View style={styles.contCard}>
                     <CustomCard title={TITLE} oType='Text'>
 

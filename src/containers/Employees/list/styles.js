@@ -23,15 +23,26 @@ export default {
         maxWidth: 240,
         backgroundColor: '#ECECEC',
         flexDirection: 'column',
-        elevation: 20,
-        borderRightWidth: 2,
-        borderColor: '#1d1e1e'
+        elevation: 20
     },
 
-    contTitle: {
-        minHeight: 100,
+    contTitle:{
+        minHeight: 60,
         justifyContent: 'center',
         flexDirection: 'row',
+        alignItems: 'center'
+    },
+
+    contTitleName:{
+        flex:1,
+        backgroundColor: 'transparent'
+    },
+
+    contTitleHide:{
+        width: 30,
+        minHeight: 60,
+        backgroundColor: 'transparent',
+        justifyContent: 'center',
         alignItems: 'center'
     },
 
@@ -74,18 +85,9 @@ export default {
         backgroundColor: '#fff',
     },
 
-    titleCont:{
-        flex: 1,
-        height: 35,
-        flexDirection: 'row',
-        backgroundColor: '#fff',
-        borderTopWidth: 0.5,
-        borderColor: '#1d1e1e'
-    },
-
     btnCont: {
         flex: 1,
-        height: 60,
+        height: 90,
         flexDirection: 'row',
         backgroundColor: 'transparent',
         borderTopWidth: 0.5,
@@ -93,25 +95,17 @@ export default {
     },
 
     labelCont: {
-        flex: 0.75,
+        flex: 0.7,
         backgroundColor: 'transparent',
         justifyContent: 'center',
         alignItems: 'flex-start',
         marginLeft: 15  
     },
 
-    contContentTitle: {
-        flex: 1,
-        backgroundColor: 'transparent',
-        justifyContent: 'center',
-        alignItems: 'center'
-    },
-
     txtLabel:{
-        fontFamily: 'Helvetica-Bold',
-        fontSize: 15,
-        color: '#fff',
-        fontWeight: '300'
+        fontFamily: 'Helvetica-Light',
+        fontSize: 14,
+        color: '#fff'
     },
 
     txtFirstLetter:{
@@ -122,21 +116,12 @@ export default {
 
     txtLabelTitle:{
         fontFamily: 'Helvetica-Bold',
-        fontSize: 14,
-        color: '#434646',
+        fontSize: 15,
+        color: '#fff',
         fontWeight: '500'
     },
 
-    contSearchBox: {
-        flex: 1,
-        borderRadius: 20,
-        height: 37,
-        width: 50,
-        backgroundColor: '#fff',
-        marginLeft: 15,
-        marginRight: 15
-        
-    },
+
 
     iconFilter: {
         flex: 0.2,
@@ -144,24 +129,13 @@ export default {
         justifyContent: 'center'
     },
 
-    iconSearch: {
-        position: 'absolute',
-        top: 5,
-        bottom: 0,
-        left: 7,
-        right: 0
-    },
 
-      //Text field Style
-    textinputField:{
-        height: '100%',
-        paddingLeft: 35,
-        fontSize: 14
-    },
+
+
 
     iconPlaceholder: {
-        width: 35,
-        height: 35,
+        width: 50,
+        height: 50,
         backgroundColor: '#EEB843',
         borderRadius: 100,
         justifyContent: 'center',
@@ -169,37 +143,10 @@ export default {
     },
 
     iconCont: {
-        flex: 0.25,
+        flex: 0.3,
         backgroundColor: 'transparent',
         justifyContent: 'center',
         alignItems: 'flex-end',
-    },
-
-    contIconProfile: {
-        width: 80,
-        backgroundColor: 'transparent',
-        justifyContent: 'center',
-        alignItems: 'flex-end'
-    },
-
-    contInfoProfile: {
-        flex: 1,
-        backgroundColor: 'transparent',
-        paddingLeft: 10,
-        flexDirection: 'column'
-    },
-
-    txtProfileLabel:{
-        fontFamily: 'Helvetica-Bold',
-        fontSize: 11,
-        color: '#fff',
-    },
-
-    txtProfileTitle:{
-        fontFamily: 'Helvetica-Bold',
-        fontSize: 14,
-        color: '#fff',
-        fontWeight: '500'
     },
 }
    

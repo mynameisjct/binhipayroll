@@ -33,6 +33,19 @@ export default {
         alignItems: 'center'
     },
 
+    contTitleName:{
+        flex:1,
+        backgroundColor: 'transparent'
+    },
+
+    contTitleHide:{
+        width: 30,
+        minHeight: 60,
+        backgroundColor: 'transparent',
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+
     contSearch: {
         minHeight: 60,
         justifyContent: 'center',
@@ -67,10 +80,6 @@ export default {
         backgroundColor: 'transparent',
     },
 
-    rightCont: {
-        flex: 1,
-        backgroundColor: '#fff',
-    },
 
     btnCont: {
         flex: 1,
