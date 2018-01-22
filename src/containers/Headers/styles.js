@@ -43,7 +43,7 @@ export default {
 
   headerLeft:{
     height: '100%',
-    width: 60,
+    width: 70,
     backgroundColor: 'transparent',
     justifyContent: 'center',
     alignItems: 'center'
@@ -51,7 +51,7 @@ export default {
 
   headerRight:{
     height: '100%',
-    width: 80,
+    width: 70,
     backgroundColor: 'transparent',
     justifyContent: 'center',
     alignItems: 'center'

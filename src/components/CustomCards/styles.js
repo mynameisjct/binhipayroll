@@ -216,4 +216,37 @@ export default {
         fontSize: 15,
         color: '#434646'
     },
+
+    //FormCard
+    contFormCard: {
+        flex: 1,
+        flexDirection: 'column',
+        margin: 25,
+        backgroundColor: 'yellow'
+    },
+
+    contFormCardError:{
+        height: 30,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'orange'
+    },
+
+    contFormCardContent: {
+        flex:1,
+        paddingTop:15,
+        justifyContent: 'flex-start',
+        alignItems: 'center',
+        backgroundColor: 'indigo'
+    },
+
+    txtFormCardError: {
+        color: '#FF0000',
+        fontSize: 14,
+        fontFamily: 'Helvetica-Light'
+    },
+
+    contFormCardFooter: {
+        height: 50
+    }
 };

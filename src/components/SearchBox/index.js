@@ -1,5 +1,5 @@
 //Packages
-import React, { Component } from 'react';
+import React, { Component, PureComponent } from 'react';
 import {
     View,
     TextInput
@@ -9,7 +9,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 //Styles
 import styles from './styles';
 
-export default class SearchBox extends Component{
+export default class SearchBox extends PureComponent{
     render(){
         return(
             <View style={styles.container}>

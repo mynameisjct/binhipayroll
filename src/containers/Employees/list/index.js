@@ -18,6 +18,7 @@ import styles from './styles';
 import Header2 from '../../Headers/header2';
 import * as StatusLoader from '../../../components/ScreenLoadStatus'
 import SearchBox from '../../../components/SearchBox';
+import ActionButton from '../../../components/ActionButton';
 
 //Redux
 import { connect } from 'react-redux';
@@ -69,6 +70,10 @@ export class List extends Component {
 
     _doNothing = () => {
 
+    }
+
+    _addNewEmployee = () => {
+        this.props.logininfo.navigation.navigate('AddEmployeeForm');
     }
     
     render(){
@@ -140,7 +145,9 @@ export class List extends Component {
                             </TouchableNativeFeedback>
                         }
                     />
+                    <ActionButton onPress={this._addNewEmployee}/>
                 </View>
+                
             </LinearGradient>
         )
     }

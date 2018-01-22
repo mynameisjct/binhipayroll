@@ -95,7 +95,7 @@ export default {
     },
 
     labelCont: {
-        flex: 0.7,
+        flex: 1,
         backgroundColor: 'transparent',
         justifyContent: 'center',
         alignItems: 'flex-start',
@@ -111,7 +111,8 @@ export default {
     txtFirstLetter:{
         fontFamily: 'Helvetica-Light',
         fontSize: 17,
-        color: '#fff'
+        color: '#fff',
+        fontWeight: '400'
     },
 
     txtLabelTitle:{
@@ -134,8 +135,8 @@ export default {
 
 
     iconPlaceholder: {
-        width: 50,
-        height: 50,
+        width: 40,
+        height: 40,
         backgroundColor: '#EEB843',
         borderRadius: 100,
         justifyContent: 'center',
@@ -143,7 +144,7 @@ export default {
     },
 
     iconCont: {
-        flex: 0.3,
+        width: 55,
         backgroundColor: 'transparent',
         justifyContent: 'center',
         alignItems: 'flex-end',

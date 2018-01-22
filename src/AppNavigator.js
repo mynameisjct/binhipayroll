@@ -11,6 +11,7 @@
 **************************************************************/
 import React from "react";
 import { StackNavigator } from "react-navigation";
+import { Easing, Animated } from 'react-native';
 
 import Login from './containers/Login';
 import EmpeDTR from './containers/DTR';
@@ -20,12 +21,24 @@ import ChangePassword from './containers/ChangePassword';
 import BranchForm from './containers/CompanyProfile/forms/branch';
 import CompanyIdForm from './containers/CompanyProfile/forms/companyid';
 
+//Employee
+import AddEmployeeForm from './containers/Employees/addEmployeeForm';
+
 const BranchFormNav = StackNavigator({
     BranchForm: {screen: BranchForm},
     
     },
     {
         headerMode: 'screen',
+    }
+);
+
+const AddEmployeeFormNav = StackNavigator({
+    AddEmployeeForm: {screen: AddEmployeeForm},
+    
+    },
+    {
+        headerMode: 'screen'
     }
 );
 
@@ -44,12 +57,43 @@ const AppNavigator = StackNavigator(
         Login: {screen: Login},
         ChangePassword: {screen: ChangePassword},
         BranchFormNav: {screen: BranchFormNav},
-        CompanyIdFormNav: {screen: CompanyIdFormNav}
+        CompanyIdFormNav: {screen: CompanyIdFormNav},
+
+        //Employee
+        AddEmployeeForm: {screen: AddEmployeeFormNav}
     },
 
     {
         initialRouteName: 'Login',
-        headerMode: 'none'
+        headerMode: 'none',
+        mode: 'modal',
+        navigationOptions: {
+          gesturesEnabled: false,
+        },
+        transitionConfig: () => ({
+          transitionSpec: {
+            duration: 500,
+            easing: Easing.out(Easing.poly(4)),
+            timing: Animated.timing,
+          },
+          screenInterpolator: sceneProps => {
+            const { layout, position, scene } = sceneProps;
+            const { index } = scene;
+     
+            const height = layout.initHeight;
+            const translateY = position.interpolate({
+              inputRange: [index - 1, index, index + 1],
+              outputRange: [height, 0, 0],
+            });
+     
+            const opacity = position.interpolate({
+              inputRange: [index - 1, index - 0.1, index],
+              outputRange: [0, 1, 1],
+            });
+     
+            return { opacity/* , transform: [{ translateY }]  */};
+          },
+        }),
     }
 );
 

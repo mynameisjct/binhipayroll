@@ -223,3 +223,30 @@ export class PropLevel2 extends Component{
         )
     }
 }
+
+export class FormCard extends PureComponent{
+    render(){
+        return(
+            <View style={styles.contFormCard}>
+                <View style={styles.contFormCardError}>
+
+                    <Text style={styles.txtFormCardError}>
+                        {this.props.errorMessage || ''}
+                    </Text>
+
+                </View>
+                <View style={styles.contFormCardContent}>
+                    {this.props.children}
+                </View>
+                <View style={styles.contFormCardFooter}>
+                    <Button
+                        onPress={() => this.props.onSubmit()}
+                        title={this.props.btnLabel}
+                        color="#841584"
+                        accessibilityLabel={this.props.btnLabel}
+                    />
+                </View>
+            </View>
+        )
+    }
+}
