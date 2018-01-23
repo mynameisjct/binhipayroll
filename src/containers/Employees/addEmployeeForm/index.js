@@ -15,8 +15,8 @@ import LinearGradient from 'react-native-linear-gradient';
 
 //Styles Properties
 import styles from './styles';
-
-import TabsRoot from './tabs';
+import TabsFooter from './footer';
+import PersonalInfo from './personalinfo';
 
 //Custom Components
 import Header4 from '../../Headers/header4';
@@ -31,7 +31,7 @@ export default class AddEmployeeForm extends Component {
 
         return(
             <View style={styles.container}>
-                <TabsRoot/>
+                <TabsFooter/>
             </View>
         )
     }

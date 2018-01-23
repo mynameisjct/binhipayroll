@@ -90,12 +90,12 @@ export class Profile extends Component {
                 },
                 {
                     key: "0008",
-                    name: "EMPLOYMENT",
+                    name: "EMPLOYMENT INFORMATION",
                     type: "title"
                 },
                 {
                     key: "0009",
-                    name: "Employment Info",
+                    name: "Employment Details",
                     icon: "file-document",
                     type: "content"
                 },

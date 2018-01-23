@@ -2,16 +2,17 @@ import React, { Component } from 'react';
 import { TabNavigator } from 'react-navigation';
 import Icon from 'react-native-vector-icons/Ionicons';
 
-import Basic from './basic';
-import Address from './address';
-import Dependents from './dependents';
-import Background from './background';
+//Children Components
+import PersonalInfo from '../personalinfo';
+import BankInfo from '../bankinfo';
+import EmploymentInfo from '../employmentinfo';
 
-const TabsRoot = TabNavigator({
-    Tardiness: {
-      screen: Basic,
+
+const TabsFooter = TabNavigator({
+    PersonalInfo: {
+      screen: PersonalInfo,
       navigationOptions: {
-        tabBarLabel: 'Basic & Contact Info',
+        tabBarLabel: 'Personal Information',
         tabBarIcon: ({ tintColor, focused }) => (
           <Icon
             name={focused ? 'ios-person' : 'ios-person-outline'}
@@ -21,39 +22,26 @@ const TabsRoot = TabNavigator({
         ),
       },
     },
-    Undertime: {
-      screen: Address,
+    BankInfo: {
+      screen: BankInfo,
       navigationOptions: {
-        tabBarLabel: 'Address Info',
+        tabBarLabel: 'Bank Information',
         tabBarIcon: ({ tintColor, focused }) => (
           <Icon
-            name={focused ? 'ios-person' : 'ios-person-outline'}
+            name={focused ? 'ios-card' : 'ios-card-outline'}
             size={26}
             style={{ color: tintColor }}
           />
         ),
       },
     },
-    Overtime: {
-      screen: Dependents,
+    EmploymentInfo: {
+      screen: EmploymentInfo,
       navigationOptions: {
-        tabBarLabel: 'Family & Dependents',
+        tabBarLabel: 'Employment Information',
         tabBarIcon: ({ tintColor, focused }) => (
           <Icon
-            name={focused ? 'ios-person' : 'ios-person-outline'}
-            size={26}
-            style={{ color: tintColor }}
-          />
-        ),
-      },
-    },
-    Leaves: {
-      screen: Background,
-      navigationOptions: {
-        tabBarLabel: 'Work & Education',
-        tabBarIcon: ({ tintColor, focused }) => (
-          <Icon
-            name={focused ? 'ios-person' : 'ios-person-outline'}
+            name={focused ? 'ios-paper' : 'ios-paper-outline'}
             size={26}
             style={{ color: tintColor }}
           />
@@ -62,20 +50,30 @@ const TabsRoot = TabNavigator({
     }
 },
     {
-        swipeEnabled: true,
+        swipeEnabled: false,
+        animationEnabled: false,
+        tabBarPosition: 'bottom',
         tabBarOptions: {
+          showIcon: true,
+          showLabel: false,
           scrollEnabled: false,
-          activeTintColor: '#EEB843',
+          activeTintColor: '#d69200',
+          inactiveTintColor: '#434646',
           tabStyle: { height: 40},
           labelStyle: {
             fontSize: 12,
+            fontWeight: '500'
           },
           style: {
-            backgroundColor: '#2C5C36',
+            backgroundColor: '#ecf0f1',
           },
+          indicatorStyle: {
+            backgroundColor: '#ecf0f1',
+            height: 0
+          }
         }
         
     }
 );
 
-export default TabsRoot;
+export default TabsFooter;
