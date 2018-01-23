@@ -18,74 +18,25 @@ export default {
         flexDirection: 'row',
     },
 
-    
-    headerCont: {
-        flexDirection: 'row',
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#fff',
-        height: 55,
-        shadowColor: '#000',
-        shadowOffset: { width: 2, height: 2 },
-        shadowOpacity: 0.4,
-        shadowRadius: 1,
-        elevation: 3,
+    title: {
+        fontSize: 30,
+        alignSelf: 'center',
+        marginBottom: 30
     },
-
-    formCont: {
-        marginLeft: 30,
-        marginRight: 30,
-        marginTop: 20,
-        flexDirection: 'column',
-        flex: 1,
-        backgroundColor: 'transparent'
-  },
-
-    fieldCont: {
-        paddingTop: 5
+    buttonText: {
+        fontSize: 18,
+        color: 'white',
+        alignSelf: 'center'
     },
-
-    timeFieldCont: {
-        backgroundColor: 'transparent',
-        height: 80,
-        justifyContent: 'flex-end',
-        alignItems: 'flex-start',
-        borderBottomWidth: 1.7,
-        borderColor: '#D1D4D6'
-    },
-
-    txtNameLabel: {
-        fontFamily: 'Helvetica-Light',
-        fontSize: 13,
-        width: 300,
-        color: '#838383',
-        paddingLeft: 5
-
-    },
-
-    txtLabel: {
-        fontFamily: 'Helvetica-Light',
-        fontSize: 15,
-        width: 100,
-        marginBottom: 22,
-        color: '#838383'
-    },
-    
-    txtTime: {
-        fontFamily: 'Helvetica-Light',
-        fontSize: 15,
-        width: 500,
-        marginBottom: 2,
-        color: '#434646'
-
-    },
-
-    textinputField:{
-        fontFamily: 'Helvetica-Light',
-        fontSize: 15,
-        color: '#434646',
-        marginBottom: 15,
-        marginTop: -10
+    button: {
+        height: 36,
+        backgroundColor: '#48BBEC',
+        borderColor: '#48BBEC',
+        borderWidth: 1,
+        borderRadius: 8,
+        marginBottom: 10,
+        alignSelf: 'stretch',
+        justifyContent: 'center'
     }
 }
    

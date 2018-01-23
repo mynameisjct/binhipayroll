@@ -1,6 +1,6 @@
 export default {
 	clientId: '8puWuJWZYls1Ylawxm6CMiYREhsGGSyw',
-	url: 'http://192.168.1.8:8080/payroll/',
+	url: 'http://192.168.1.7:8080/payroll/',
 };
 
 export const endPoints = {
