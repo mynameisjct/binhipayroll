@@ -10,7 +10,7 @@
 
 **************************************************************/
 import React from "react";
-import { StackNavigator } from "react-navigation";
+import { StackNavigator, TabNavigator } from "react-navigation";
 import { Easing, Animated } from 'react-native';
 
 import Login from './containers/Login';
@@ -21,36 +21,33 @@ import ChangePassword from './containers/ChangePassword';
 import BranchForm from './containers/CompanyProfile/forms/branch';
 import CompanyIdForm from './containers/CompanyProfile/forms/companyid';
 
-//Employee
-import AddEmployeeForm from './containers/Employees/addEmployeeForm';
+//TabNavigators
+import {AddEmployeeForm} from './TabNavigatorEmployeeForm';
 
+/******CHILD NAVIGATORS******/
 const BranchFormNav = StackNavigator({
     BranchForm: {screen: BranchForm},
-    
     },
     {
         headerMode: 'screen',
     }
 );
 
+const CompanyIdFormNav = StackNavigator({
+    CompanyIdForm: {
+        screen: CompanyIdForm
+    }}
+);
+
 const AddEmployeeFormNav = StackNavigator({
     AddEmployeeForm: {screen: AddEmployeeForm},
-    
     },
     {
         headerMode: 'screen'
     }
 );
 
-const CompanyIdFormNav = StackNavigator({
-    CompanyIdForm: {screen: CompanyIdForm},
-    
-    },
-    {
-        headerMode: 'screen',
-    }
-);
-
+/******APP NAVIGATOR******/
 const AppNavigator = StackNavigator(
     {
         RootDrawer: { screen: RootDrawer },

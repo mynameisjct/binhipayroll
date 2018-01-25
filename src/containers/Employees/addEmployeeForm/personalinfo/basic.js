@@ -14,6 +14,9 @@ import moment from "moment";
 //Styles
 import stylesheet from '../../../../global/globalFormStyle';
 
+//Redux
+import { connect } from 'react-redux';
+
 //Custom Component
 import {FormCard, PropTitle} from '../../../../components/CustomCards';
 import * as CustomForm from '../../../../components/CustomForm';
@@ -54,24 +57,53 @@ const EMPLOYEE_GOVID = t.struct({
 });
 
 
-export default class Basic extends Component {
+export class Basic extends Component {
   constructor(props){
     super(props);
     this.state={
-      _value: null,
-      _thumbColor: 'blue'
+      _oBasicInfo: {
+        fName: 'test',
+        mName: 'test',
+        lName: 'test',
+        nName: 'test',
+        bDay: 'test',
+        gender: 'M',
+        civilStatus: 'Married'
+      },
+      _oContactInfo:{
+        mobile: ['0919900116', '091990333336', '0919900116'],
+        telephone: ['888-42424'],
+        email: ['test@gmail.com', 'hello@yahoo.com']
+      },
+      _oGovID:{
+        tin: '11111',
+        sss: '22222',
+        philhealth: '333333',
+        pagibig: '444444'
+      }
     }
   }
 
   _onPress = () => {
-    let value = this.refs.basic_form.getValue();
-    console.log(value);
-    if (value) { // if validation fails, value will be null
-      console.log(value); // value here is an instance of Person
+    let aMobile = this.mobileList.getValue();
+    let aTelephone = this.telephoneList.getValue();
+    let aEmail = this.emailList.getValue();
+
+    let oBasicForm = this.refs.basic_form.getValue();
+    let oGovForm = this.refs.govid_form.getValue();
+
+    if (oBasicForm && oGovForm) {
+      console.log('oBasicForm: ' + JSON.stringify(oBasicForm));
+      console.log('oGovForm: ' + JSON.stringify(oGovForm));
+      console.log('aMobile: ' + aMobile);
+      console.log('aTelephone: ' + aTelephone);
+      console.log('aEmail: ' + aEmail);
     }
   }
 
   render() {
+    const navigation = this.props.logininfo.navigation;
+    
     //This is put into render method to allow direct access to class properties
     let myFormatFunction = (format,date) => {
       return moment(date).format(format);
@@ -161,26 +193,45 @@ export default class Basic extends Component {
             <Form 
               ref='basic_form'
               type={EMPLOYEE_BASICINFO} 
-              value={this.state._value}
-              onChange={this._onChange}
+              value={this.state._oBasicInfo}
+              onChange={this._onChangeBasicInfo}
               options={OPTIONS_BASICINFO}/>
 
             { /********** Contact Information **********/ }
             <View style={{marginTop: -25, marginBottom: 15, marginLeft: -20}}><PropTitle name='CONTACT INFORMATION'/></View>
-            <CustomForm.DynamicList label='MOBILE NO' value={['11111', '22222']}/>
+            
+            <CustomForm.DynamicList 
+              ref={(oInstance) => {this.mobileList = oInstance;}}
+              label='MOBILE NO' 
+              value={this.state._oContactInfo.mobile}
+              /* onChange={(value) => this._onChange('MOBILE', value)} */
+              keyboardType='phone-pad'/>
+
+            <CustomForm.DynamicList 
+              ref={(oInstance) => {this.telephoneList = oInstance;}}
+              label='TELEPHONE NO' 
+              value={this.state._oContactInfo.telephone}
+              keyboardType='phone-pad'/>
+
+            <CustomForm.DynamicList 
+              ref={(oInstance) => {this.emailList = oInstance;}}
+              label='EMAIL ADDRESS' 
+              value={this.state._oContactInfo.email}
+              keyboardType='email-address'/>
 
             { /********** GOV ID Information **********/ }
             <View style={{marginTop: -25, marginBottom: 15, marginLeft: -20}}><PropTitle name='GOVERNMENT IDS'/></View>
             <Form 
               ref='govid_form'
               type={EMPLOYEE_GOVID} 
-              value={this.state._value}
+              value={this.state._oGovID}
               onChange={this._onChange}
               options={OPTIONS_GOVID}/>
 
             <View style={{flex:1, paddingBottom: 15, paddingTop: 30}}>
               <Button
-                onPress={() => {this._onPress()}}
+                /* onPress={() => {this._onPress()}} */
+                onPress={() => {navigation.navigate('Address')}}
                 title='Next'
                 color="#3b5998"
                 accessibilityLabel='Next'
@@ -199,3 +250,14 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
   },
 });
+
+function mapStateToProps (state) {
+  return {
+      logininfo: state.loginReducer.logininfo,
+      activecompany: state.activeCompanyReducer.activecompany
+  }
+}
+
+export default connect(
+  mapStateToProps,
+)(Basic)

@@ -160,7 +160,7 @@ const stylesheet = Object.freeze({
   pickerValue: {
     normal: {
       fontSize: FONT_SIZE,
-      paddingLeft: 7
+      marginLeft: 7
     },
     error: {
       fontSize: FONT_SIZE,
@@ -185,13 +185,19 @@ const stylesheet = Object.freeze({
       color: INPUT_COLOR,
       fontSize: FONT_SIZE,
       padding: 7,
-      marginBottom: 5
+      marginBottom: 5,
+/*       borderWidth: 1,
+      borderColor: BORDER_COLOR,
+      borderRadius: 4 */
     },
     error: {
       color: ERROR_COLOR,
       fontSize: FONT_SIZE,
       padding: 7,
-      marginBottom: 5
+      marginBottom: 5,
+/*       borderWidth: 1,
+      borderColor: BORDER_COLOR,
+      borderRadius: 4 */
     }
   },
   buttonText: {

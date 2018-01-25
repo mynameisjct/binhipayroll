@@ -40,7 +40,7 @@ export default {
         flex:1,
         borderWidth: 1,
         borderRadius: 4,
-        marginBottom: 8,
+        marginBottom: 15,
         height: stylesheet.textbox.normal.height,
         borderColor: BORDER_COLOR,
     },
@@ -84,8 +84,8 @@ export default {
     },
 
     contIcon: {
-        width: 25,
-        alignItems: 'center',
+        width: 36,
+        alignItems: 'flex-start',
         justifyContent: 'center',
         height: '100%'
     }

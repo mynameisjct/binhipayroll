@@ -15,7 +15,8 @@ import {
     Text,
     TextInput,
     TouchableOpacity,
-    Button
+    Button,
+    Alert
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import styles from './styles';
@@ -42,6 +43,22 @@ export class DynamicList extends Component{
                 _value: aList
             })
         }
+    }
+
+    getValue = () => {
+        return this.state._value;
+    }
+
+    _requestRemoveRow = (index) => {
+        Alert.alert(
+            'Confirm to Delete',
+            'Removing a data is an irreversible action. Are you sure you want to proceed?',
+            [
+              {text: 'Cancel', onPress: () => {}},
+              {text: 'YES', onPress: () => this._removeRow(index)},
+            ],
+            { cancelable: false }
+          )
     }
 
     _removeRow = (index) => {
@@ -71,6 +88,7 @@ export class DynamicList extends Component{
                         <View style={styles.contInput} key={index}>
                             <TextInput 
                                 ref={(input) => { this._textInput= input; }}
+                                keyboardType={this.props.keyboardType || 'default'}
                                 style={styles.textinputField}
                                 onChangeText={inputTxt => {this._updateInput(index, inputTxt)}}
                                 value={data}
@@ -78,13 +96,18 @@ export class DynamicList extends Component{
                                 autoCorrect={false}
                                 autoCapitalize='none'
                             />
-                            <TouchableOpacity
-                                activeOpacity={0.7}
-                                onPress={() => {this._removeRow(index)}}
-                                style={{paddingRight: 10, position: 'absolute', top: 0, right: 0, bottom: 0, alignItems: 'flex-end', justifyContent: 'center', width: 70}}
-                                >
-                                <Icon size={25} name='close-circle' color='#EEB843' />
-                            </TouchableOpacity>
+                            {
+                                this.state._value.length !== 1 ?
+                                    <TouchableOpacity
+                                        activeOpacity={0.7}
+                                        onPress={() => {this._requestRemoveRow(index)}}
+                                        style={{paddingRight: 10, position: 'absolute', top: 0, right: 0, bottom: 0, alignItems: 'flex-end', justifyContent: 'center', width: 70}}
+                                        >
+                                        <Icon size={25} name='close-circle' color='#EEB843' />
+                                    </TouchableOpacity>
+                                :
+                                    null
+                            }
                         </View>
                     )
                 }
@@ -102,16 +125,9 @@ export class DynamicList extends Component{
                         </Text>
                     </View>
                     <View style={styles.contIcon}>
-                        <Icon name='plus-circle-outline' size={25} color='#EEB843'/>
+                        <Icon name='plus-circle-outline' onPress={() => this._addNewRow()} size={25} color='#EEB843'/>
                     </View>
-                </View>
-                <View style={{flex:1, paddingBottom: 15, paddingTop: 30}}>
-                    <Button
-                        onPress={() => {this._addNewRow()}}
-                        title='TEST!'
-                        color="#3b5998"
-                        accessibilityLabel='TEST!'
-                    />
+
                 </View>
             </View>
         );
