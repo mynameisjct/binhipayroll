@@ -685,6 +685,12 @@ export class Bonus extends Component{
         });
     }
 
+    _closeMsgBox = () => {
+        this.setState({
+            _msgBoxShow: false
+        })
+    }
+
     _hideLoadingPrompt = () => {
         this.setState({
             _promptShow: false

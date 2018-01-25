@@ -27,20 +27,18 @@ import stylesheet, {
 
 export default {
     container: {
-        flex: 1,
         flexDirection: 'column',
     },
 
     contLabel: {
-        flex:1,
         paddingBottom: 10
     },
 
     contInput: {
-        flex:1,
-        borderWidth: 1,
-        borderRadius: 4,
+        borderWidth: stylesheet.textbox.normal.borderWidth,
+        borderRadius: stylesheet.textbox.normal.borderRadius,
         marginBottom: 15,
+        paddingVertical: stylesheet.textbox.normal.paddingVertical,
         height: stylesheet.textbox.normal.height,
         borderColor: BORDER_COLOR,
     },
@@ -54,7 +52,6 @@ export default {
     },
 
     contInfoLabel: {
-        flex: 1,
         flexDirection: 'row',
         backgroundColor: 'transparent'
     },
@@ -71,7 +68,6 @@ export default {
         justifyContent: 'center',
         /* paddingTop: 5, */
         paddingRight: 5,
-        height: '100%',
         backgroundColor: 'transparent'
     },
 
@@ -86,8 +82,7 @@ export default {
     contIcon: {
         width: 36,
         alignItems: 'flex-start',
-        justifyContent: 'center',
-        height: '100%'
+        justifyContent: 'center'
     }
 
 

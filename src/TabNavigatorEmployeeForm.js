@@ -112,7 +112,7 @@ export const AddEmployeeForm = TabNavigator({
 },
     {
         navigationOptions: ({navigation}) => ({
-            header: <Header4 title='MY EMPLOYEES'/>
+            header: <Header4 title='EMPLOYEE PROFILE FORM'/>
         }),
         swipeEnabled: false,
         animationEnabled: false,

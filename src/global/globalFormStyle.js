@@ -1,13 +1,15 @@
 import { Platform } from "react-native";
+import { ERROR } from "../containers/CompanyPolicies/data/tax/actionTypes";
 
 export const LABEL_COLOR = "#838383";
 export const INPUT_COLOR = "#434646";
 export const ERROR_COLOR = "#a94442";
 export const HELP_COLOR = "#999999";
-export const BORDER_COLOR = "#cccccc";
+export const BORDER_COLOR = "#8E929A";
+export const BORDER_WIDTH = 0.9;
 export const DISABLED_COLOR = "#777777";
 export const DISABLED_BACKGROUND_COLOR = "#eeeeee";
-export const FONT_SIZE = 14;
+export const FONT_SIZE = 15;
 export const FONT_WEIGHT = "400";
 export const FONT_FAMILY = "Helvetica-Light"
 
@@ -27,6 +29,7 @@ const stylesheet = Object.freeze({
       color: LABEL_COLOR,
       fontSize: FONT_SIZE,
       marginBottom: 7,
+      paddingLeft: 2,
       fontWeight: FONT_WEIGHT
     },
     // the style applied when a validation error occours
@@ -66,10 +69,10 @@ const stylesheet = Object.freeze({
       fontSize: FONT_SIZE,
       height: 36,
       paddingVertical: Platform.OS === "ios" ? 7 : 0,
-      paddingHorizontal: 7,
+      paddingHorizontal: 10,
       borderRadius: 4,
       borderColor: BORDER_COLOR,
-      borderWidth: 1,
+      borderWidth: BORDER_WIDTH,
       marginBottom: 5
     },
     // the style applied when a validation error occours
@@ -81,7 +84,7 @@ const stylesheet = Object.freeze({
       paddingHorizontal: 7,
       borderRadius: 4,
       borderColor: ERROR_COLOR,
-      borderWidth: 1,
+      borderWidth: BORDER_WIDTH,
       marginBottom: 5
     },
     // the style applied when the textbox is not editable
@@ -92,7 +95,7 @@ const stylesheet = Object.freeze({
       paddingHorizontal: 7,
       borderRadius: 4,
       borderColor: BORDER_COLOR,
-      borderWidth: 1,
+      borderWidth: BORDER_WIDTH,
       marginBottom: 5,
       color: DISABLED_COLOR,
       backgroundColor: DISABLED_BACKGROUND_COLOR
@@ -107,27 +110,37 @@ const stylesheet = Object.freeze({
       marginBottom: 4
     }
   },
-  pickerContainer: {
+
+  specialPickerWrapper: {
     normal: {
-      marginBottom: 4,
+      height: 36,
       borderRadius: 4,
       borderColor: BORDER_COLOR,
-      borderWidth: 1
+      borderWidth: BORDER_WIDTH
     },
+    // the style applied when a validation error occours
     error: {
-      marginBottom: 4,
+      height: 36,
       borderRadius: 4,
       borderColor: ERROR_COLOR,
-      borderWidth: 1
+      borderWidth: BORDER_WIDTH
+    },
+  },
+
+  pickerContainer: {
+    normal: {
+    },
+    error: {
     },
     open: {
       // Alter styles when select container is open
     }
   },
+  
   select: {
     normal: Platform.select({
       android: {
-        paddingLeft: 7,
+        flex: 1,
         color: INPUT_COLOR
       },
       ios: {}
@@ -135,7 +148,7 @@ const stylesheet = Object.freeze({
     // the style applied when a validation error occours
     error: Platform.select({
       android: {
-        paddingLeft: 7,
+        flex: 1,
         color: ERROR_COLOR
       },
       ios: {}
@@ -153,18 +166,16 @@ const stylesheet = Object.freeze({
       alignItems: "center"
     },
     active: {
-      borderBottomWidth: 1,
+      borderWidth: BORDER_WIDTH,
       borderColor: BORDER_COLOR
     }
   },
   pickerValue: {
     normal: {
-      fontSize: FONT_SIZE,
-      marginLeft: 7
+      fontSize: FONT_SIZE
     },
     error: {
-      fontSize: FONT_SIZE,
-      paddingLeft: 7
+      fontSize: FONT_SIZE
     }
   },
   datepicker: {
@@ -185,19 +196,20 @@ const stylesheet = Object.freeze({
       color: INPUT_COLOR,
       fontSize: FONT_SIZE,
       padding: 7,
+      paddingLeft: 10,
       marginBottom: 5,
-/*       borderWidth: 1,
+      borderWidth: BORDER_WIDTH,
       borderColor: BORDER_COLOR,
-      borderRadius: 4 */
+      borderRadius: 4
     },
     error: {
       color: ERROR_COLOR,
       fontSize: FONT_SIZE,
       padding: 7,
       marginBottom: 5,
-/*       borderWidth: 1,
+      borderWidth: BORDER_WIDTH,
       borderColor: BORDER_COLOR,
-      borderRadius: 4 */
+      borderRadius: 4
     }
   },
   buttonText: {
@@ -209,7 +221,7 @@ const stylesheet = Object.freeze({
     height: 36,
     backgroundColor: "#48BBEC",
     borderColor: "#48BBEC",
-    borderWidth: 1,
+    borderWidth: BORDER_WIDTH,
     borderRadius: 8,
     marginBottom: 10,
     alignSelf: "stretch",

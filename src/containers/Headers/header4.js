@@ -37,6 +37,7 @@ export class Header4 extends Component {
                 </View>
 
                 <View style={styles.headerRight}>
+                    <Text>NEXT</Text>
                 </View>
             </View>
         );

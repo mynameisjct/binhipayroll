@@ -15,14 +15,43 @@ const { StyleSheet } = React;
 export default {
     container: {
         flex:1,
-        flexDirection: 'row',
+        backgroundColor: '#FFF'
     },
 
-    title: {
-        fontSize: 30,
-        alignSelf: 'center',
-        marginBottom: 30
+    contDivider: {
+        flex: 1,
+        flexDirection: 'row'
     },
+
+    contFormLeft: {
+        flex: 1, 
+        paddingLeft: 40,
+        paddingRight: 20,
+        paddingBottom: 30,
+        marginTop: -20
+    },
+
+    contFormRight: {
+        flex: 1, 
+        paddingLeft: 20,
+        paddingRight: 40,
+        paddingBottom: 30,
+        marginTop: -20
+    },
+    
+    contTitle: {
+        alignItems: 'center',
+        marginTop: 15, 
+        marginBottom: 15, 
+        marginLeft: 20
+    },
+
+    contButton: {
+        flex:1, 
+        paddingBottom: 15, 
+        paddingTop: 30
+    },
+
     buttonText: {
         fontSize: 18,
         color: 'white',
@@ -38,5 +67,6 @@ export default {
         alignSelf: 'stretch',
         justifyContent: 'center'
     }
+
 }
    

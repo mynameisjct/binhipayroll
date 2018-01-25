@@ -1,18 +1,24 @@
 import React, { Component } from 'react';
-import { 
-  View, 
-  StyleSheet, 
+import {
+  View,
+  StyleSheet,
   ScrollView,
   TouchableHighlight,
   Text,
   DatePickerAndroid,
-  Button
+  Button,
+  TextInput,
+  Alert
 } from 'react-native';
 import t from 'tcomb-form-native'; // 0.6.9
 import moment from "moment";
 
 //Styles
+import styles from './styles';
 import stylesheet from '../../../../global/globalFormStyle';
+
+//Form Template 
+import { customPickerTemplate } from '../../../../global/tcomb-customTemplate';
 
 //Redux
 import { connect } from 'react-redux';
@@ -20,8 +26,7 @@ import { connect } from 'react-redux';
 //Custom Component
 import {FormCard, PropTitle} from '../../../../components/CustomCards';
 import * as CustomForm from '../../../../components/CustomForm';
-
-//Form Employee Basic Information
+  
 const Form = t.form.Form;
 
 const Gender = t.enums({
@@ -35,7 +40,6 @@ const CivilStatus = t.enums({
   Divorced: 'Divorced',
   Separated: 'Separated',
   Widowed: 'Widowed'
-
 });
 
 const EMPLOYEE_BASICINFO = t.struct({
@@ -62,13 +66,13 @@ export class Basic extends Component {
     super(props);
     this.state={
       _oBasicInfo: {
-        fName: 'test',
-        mName: 'test',
-        lName: 'test',
-        nName: 'test',
-        bDay: 'test',
+        fName: 'Jose',
+        mName: 'Protacio',
+        lName: 'Rizal',
+        nName: 'Prot-prot',
+        bDay: '1990-06-01',
         gender: 'M',
-        civilStatus: 'Married'
+        civilStatus: 'Divorced'
       },
       _oContactInfo:{
         mobile: ['0919900116', '091990333336', '0919900116'],
@@ -76,15 +80,16 @@ export class Basic extends Component {
         email: ['test@gmail.com', 'hello@yahoo.com']
       },
       _oGovID:{
-        tin: '11111',
-        sss: '22222',
-        philhealth: '333333',
-        pagibig: '444444'
+        tin: '111-11',
+        sss: '222-22',
+        philhealth: '3333-33',
+        pagibig: '4444-44'
       }
     }
   }
 
   _onPress = () => {
+    const navigation = this.props.logininfo.navigation;
     let aMobile = this.mobileList.getValue();
     let aTelephone = this.telephoneList.getValue();
     let aEmail = this.emailList.getValue();
@@ -98,12 +103,21 @@ export class Basic extends Component {
       console.log('aMobile: ' + aMobile);
       console.log('aTelephone: ' + aTelephone);
       console.log('aEmail: ' + aEmail);
+      navigation.navigate('Address');
+    }
+    else{
+      Alert.alert(
+        'Error',
+        'One of the inputs is invalid. Check the highlighted fields.',
+        [
+          {text: 'Review Form', onPress: () => {}},
+        ],
+        { cancelable: false }
+      )
     }
   }
 
   render() {
-    const navigation = this.props.logininfo.navigation;
-    
     //This is put into render method to allow direct access to class properties
     let myFormatFunction = (format,date) => {
       return moment(date).format(format);
@@ -113,8 +127,9 @@ export class Basic extends Component {
         label: 'BIRTH DATE',
         mode:'date',
         config:{
-            format:(date) => myFormatFunction("DD MMM YYYY",date)
-        }
+            format:(date) => myFormatFunction("MMMM DD YYYY",date)
+        },
+        error: '*Select birth date'
     };
 
     { /********** Basic Information **********/ }
@@ -143,17 +158,21 @@ export class Basic extends Component {
           returnKeyType: 'next'
         },
         gender:{ 
-          label: 'GENDER'
+          template: customPickerTemplate,
+          label: 'GENDER',
+          error: '*Select a gender'
         },
         bday: birthDate,
         civilStatus:{
+          template: customPickerTemplate,
           label: 'CIVIL STATUS',
+          error: '*Select Civil Status'
         }
       },
       stylesheet: stylesheet
     };
 
-    { /********** Basic Information **********/ }
+    { /********** GOV IDS **********/ }
     const OPTIONS_GOVID = {
       fields: {
         tin:{ 
@@ -175,7 +194,7 @@ export class Basic extends Component {
           error: '*Last Name should not be empty'
         },
         pagibig:{ 
-          label: 'PAGIBIG NO)',
+          label: 'PAGIBIG NO',
           returnKeyType: 'done'
         }
       },
@@ -186,70 +205,64 @@ export class Basic extends Component {
     return (
       <View style={styles.container}>
         <ScrollView>
-          <View style={{flex: 1, padding:30}}>
+          <View style={styles.contDivider}>
+            <View style={styles.contFormLeft}>
+              { /********** Basic Information **********/ }
+              <View style={styles.contTitle}>
+                <PropTitle name='BASIC INFORMATION'/>
+              </View>
+              <Form 
+                ref='basic_form'
+                type={EMPLOYEE_BASICINFO} 
+                value={this.state._oBasicInfo}
+                onChange={this._onChangeBasicInfo}
+                options={OPTIONS_BASICINFO}/>
 
-            { /********** Basic Information **********/ }
-            <View style={{marginTop: -25, marginBottom: 15, marginLeft: -20}}><PropTitle name='BASIC INFORMATION'/></View>
-            <Form 
-              ref='basic_form'
-              type={EMPLOYEE_BASICINFO} 
-              value={this.state._oBasicInfo}
-              onChange={this._onChangeBasicInfo}
-              options={OPTIONS_BASICINFO}/>
-
-            { /********** Contact Information **********/ }
-            <View style={{marginTop: -25, marginBottom: 15, marginLeft: -20}}><PropTitle name='CONTACT INFORMATION'/></View>
-            
-            <CustomForm.DynamicList 
-              ref={(oInstance) => {this.mobileList = oInstance;}}
-              label='MOBILE NO' 
-              value={this.state._oContactInfo.mobile}
-              /* onChange={(value) => this._onChange('MOBILE', value)} */
-              keyboardType='phone-pad'/>
-
-            <CustomForm.DynamicList 
-              ref={(oInstance) => {this.telephoneList = oInstance;}}
-              label='TELEPHONE NO' 
-              value={this.state._oContactInfo.telephone}
-              keyboardType='phone-pad'/>
-
-            <CustomForm.DynamicList 
-              ref={(oInstance) => {this.emailList = oInstance;}}
-              label='EMAIL ADDRESS' 
-              value={this.state._oContactInfo.email}
-              keyboardType='email-address'/>
-
-            { /********** GOV ID Information **********/ }
-            <View style={{marginTop: -25, marginBottom: 15, marginLeft: -20}}><PropTitle name='GOVERNMENT IDS'/></View>
-            <Form 
-              ref='govid_form'
-              type={EMPLOYEE_GOVID} 
-              value={this.state._oGovID}
-              onChange={this._onChange}
-              options={OPTIONS_GOVID}/>
-
-            <View style={{flex:1, paddingBottom: 15, paddingTop: 30}}>
-              <Button
-                /* onPress={() => {this._onPress()}} */
-                onPress={() => {navigation.navigate('Address')}}
-                title='Next'
-                color="#3b5998"
-                accessibilityLabel='Next'
-              />
+              { /********** Basic Information **********/ }
+              <View style={styles.contTitle}>
+                <PropTitle name='GOVERNMENT IDS'/>
+              </View>
+              <Form 
+                ref='govid_form'
+                type={EMPLOYEE_GOVID} 
+                value={this.state._oGovID}
+                onChange={this._onChange}
+                options={OPTIONS_GOVID}/>
+              
             </View>
-        </View>
+
+            <View style={styles.contFormRight}>
+              { /********** Contact Information **********/ }
+              <View style={styles.contTitle}>
+                <PropTitle name='CONTACT INFORMATION'/>
+              </View>
+              
+              <CustomForm.DynamicList 
+                ref={(oInstance) => {this.mobileList = oInstance;}}
+                label='MOBILE NO' 
+                value={this.state._oContactInfo.mobile}
+                /* onChange={(value) => this._onChange('MOBILE', value)} */
+                keyboardType='phone-pad'/>
+
+              <CustomForm.DynamicList 
+                ref={(oInstance) => {this.telephoneList = oInstance;}}
+                label='TELEPHONE NO' 
+                value={this.state._oContactInfo.telephone}
+                keyboardType='phone-pad'/>
+
+              <CustomForm.DynamicList 
+                ref={(oInstance) => {this.emailList = oInstance;}}
+                label='EMAIL ADDRESS' 
+                value={this.state._oContactInfo.email}
+                keyboardType='email-address'/>
+              
+            </View>
+          </View>
         </ScrollView>
       </View>
     );
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: 'transparent',
-  },
-});
 
 function mapStateToProps (state) {
   return {

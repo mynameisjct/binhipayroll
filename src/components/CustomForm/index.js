@@ -127,7 +127,6 @@ export class DynamicList extends Component{
                     <View style={styles.contIcon}>
                         <Icon name='plus-circle-outline' onPress={() => this._addNewRow()} size={25} color='#EEB843'/>
                     </View>
-
                 </View>
             </View>
         );
