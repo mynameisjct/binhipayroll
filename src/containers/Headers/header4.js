@@ -36,8 +36,8 @@ export class Header4 extends Component {
                   <Text style={styles.headerTitle}>{this.props.title}</Text>
                 </View>
 
-                <View style={styles.headerRight}>
-                    <Text>NEXT</Text>
+                <View style={[styles.headerRight, {width: 120}]}>
+                    <Text>SAVE AS DRAFT</Text>
                 </View>
             </View>
         );

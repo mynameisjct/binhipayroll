@@ -22,6 +22,8 @@ import { customPickerTemplate } from '../../../../global/tcomb-customTemplate';
 
 //Redux
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import * as employeeActions from '../../profile/data/actions';
 
 //Custom Component
 import {FormCard, PropTitle} from '../../../../components/CustomCards';
@@ -103,7 +105,8 @@ export class Basic extends Component {
       console.log('aMobile: ' + aMobile);
       console.log('aTelephone: ' + aTelephone);
       console.log('aEmail: ' + aEmail);
-      navigation.navigate('Address');
+      this.props.actions.employee.updateBasicInfo({basicinfo: oBasicForm});
+      navigation.navigate('Benefits');
     }
     else{
       Alert.alert(
@@ -127,7 +130,7 @@ export class Basic extends Component {
         label: 'BIRTH DATE',
         mode:'date',
         config:{
-            format:(date) => myFormatFunction("MMMM DD YYYY",date)
+            format:(date) => myFormatFunction("MMMM DD, YYYY",date)
         },
         error: '*Select birth date'
     };
@@ -203,8 +206,8 @@ export class Basic extends Component {
     
 
     return (
-      <View style={styles.container}>
-        <ScrollView>
+      <ScrollView>
+        <View style={styles.container}>
           <View style={styles.contDivider}>
             <View style={styles.contFormLeft}>
               { /********** Basic Information **********/ }
@@ -258,8 +261,16 @@ export class Basic extends Component {
               
             </View>
           </View>
-        </ScrollView>
-      </View>
+          <View style={{flex:1, padding: 40}}>
+            <Button
+                onPress={() => {this._onPress()}}
+                title='Next'
+                color="#3b5998"
+                accessibilityLabel='Next'
+            />
+        </View>
+        </View>
+      </ScrollView>
     );
   }
 }
@@ -271,6 +282,15 @@ function mapStateToProps (state) {
   }
 }
 
+function mapDispatchToProps (dispatch) {
+  return {
+      actions: {
+          employee: bindActionCreators(employeeActions, dispatch),
+      },
+  }
+}
+
 export default connect(
   mapStateToProps,
+  mapDispatchToProps
 )(Basic)

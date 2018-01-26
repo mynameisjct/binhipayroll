@@ -31,6 +31,7 @@ import * as oHelper from '../../../../helper';
 
 //Redux
 import { connect } from 'react-redux';
+import * as employeeActions from '../data/actions';
 
 //constants
 //Constants
@@ -158,6 +159,9 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
     return {
+        actions: {
+            employee: bindActionCreators(employeeActions, dispatch),
+        },
     }
 }
 

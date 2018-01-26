@@ -19,7 +19,7 @@ export default {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#ecf0f1',
+    backgroundColor: '#fff',
     height: 55,
     shadowColor: '#000',
     shadowOffset: { width: 2, height: 2 },

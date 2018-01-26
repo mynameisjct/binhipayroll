@@ -9,56 +9,56 @@ import Dependents from './dependents';
 import Background from './background';
 
 const PersonalInfo = TabNavigator({
-    Basic: {
-      screen: Basic,
-      navigationOptions: {
-        tabBarLabel: 'Basic & Contact Info'
-      }
-    },
-    Address: {
-      screen: Address,
-      navigationOptions: {
-        tabBarLabel: 'Address Info'
-      }
-    },
-    Dependents: {
-      screen: Dependents,
-      navigationOptions: {
-        tabBarLabel: 'Family & Dependents'
-      }
-    },
-    Background: {
-      screen: Background,
-      navigationOptions: {
-        tabBarLabel: 'Work & Education'
-      }
+  Basic: {
+    screen: Basic,
+    navigationOptions: {
+      tabBarLabel: 'Basic & Contact Info'
     }
+  },
+  Address: {
+    screen: Address,
+    navigationOptions: {
+      tabBarLabel: 'Address Info'
+    }
+  },
+  Dependents: {
+    screen: Dependents,
+    navigationOptions: {
+      tabBarLabel: 'Family & Dependents'
+    }
+  },
+  Background: {
+    screen: Background,
+    navigationOptions: {
+      tabBarLabel: 'Work & Education'
+    }
+  }
 },
-    {
-        tabBarPosition: 'top',
-        swipeEnabled: true,
-        tabBarOptions: {
-          showIcon: false,
-          showLabel: true,
-          scrollEnabled: false,
-          activeTintColor: '#d69200',
-          inactiveTintColor: '#434646',
-          tabStyle: { height: 40},
-          labelStyle: {
-            fontSize: 12,
-            fontWeight: '500'
-          },
-          style: {
-            backgroundColor: '#ecf0f1',
-            zIndex: 999
-          },
-          indicatorStyle: {
-            backgroundColor: '#EEB843',
-            height: 3
-          }
-        }
-        
+  {
+    animationEnabled: false,
+    tabBarPosition: 'top',
+    swipeEnabled: true,
+    tabBarOptions: {
+      showIcon: false,
+      showLabel: true,
+      scrollEnabled: false,
+      activeTintColor: '#d69200',
+      inactiveTintColor: '#434646',
+      tabStyle: { height: 40},
+      labelStyle: {
+        fontSize: 12,
+        fontWeight: '500'
+      },
+      style: {
+        backgroundColor: '#fff',
+        zIndex: 999
+      },
+      indicatorStyle: {
+        backgroundColor: '#EEB843',
+        height: 5
+      }
     }
+  }
 );
 
 export default PersonalInfo;

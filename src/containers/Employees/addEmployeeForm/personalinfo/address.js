@@ -133,7 +133,6 @@ export class Address extends Component {
                 error: '*Last Name should not be empty'
             },
             street:{ 
-                template: customPickerTemplate,
                 label: 'ENTER STREET',
                 returnKeyType: 'done'
             }
@@ -164,11 +163,11 @@ export class Address extends Component {
                 <View style={styles.contTitle}>
                     <PropTitle name='PERMANENT ADDRESS'/>
                 </View>
-{/*                 <Form 
+                <Form 
                     ref='permanentadd_form'
                     type={EMPLOYEE_PERMANENTADD} 
                     value={this.state._oPermanentAdd}
-                    options={OPTIONS_PM}/> */}
+                    options={OPTIONS_PM}/>
               
             </View>
           </View>

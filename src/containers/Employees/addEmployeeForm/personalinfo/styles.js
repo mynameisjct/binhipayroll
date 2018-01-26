@@ -15,7 +15,12 @@ const { StyleSheet } = React;
 export default {
     container: {
         flex:1,
-        backgroundColor: '#FFF'
+        backgroundColor: '#f9f9f9',
+        margin: 10,
+        marginBottom: 0,
+        borderTopRightRadius: 4,
+        borderTopLeftRadius: 4,
+        elevation: 20
     },
 
     contDivider: {
@@ -28,7 +33,7 @@ export default {
         paddingLeft: 40,
         paddingRight: 20,
         paddingBottom: 30,
-        marginTop: -20
+        marginTop: -10
     },
 
     contFormRight: {
@@ -36,7 +41,7 @@ export default {
         paddingLeft: 20,
         paddingRight: 40,
         paddingBottom: 30,
-        marginTop: -20
+        marginTop: -10
     },
     
     contTitle: {

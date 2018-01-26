@@ -18,6 +18,7 @@ import stylesheet, {
     ERROR_COLOR,
     HELP_COLOR,
     BORDER_COLOR,
+    BORDER_WIDTH,
     DISABLED_COLOR,
     DISABLED_BACKGROUND_COLOR,
     FONT_SIZE,
@@ -31,29 +32,30 @@ export default {
     },
 
     contLabel: {
-        paddingBottom: 10
     },
 
     contInput: {
-        borderWidth: stylesheet.textbox.normal.borderWidth,
-        borderRadius: stylesheet.textbox.normal.borderRadius,
-        marginBottom: 15,
-        paddingVertical: stylesheet.textbox.normal.paddingVertical,
-        height: stylesheet.textbox.normal.height,
-        borderColor: BORDER_COLOR,
+        marginBottom: 7,
     },
 
     textinputField: {
-        /* backgroundColor: 'red', */
         flex: 1,
         color: INPUT_COLOR,
         fontSize: FONT_SIZE,
-        padding: 8
+        height: stylesheet.textbox.normal.height,
+        borderWidth: BORDER_WIDTH,
+        borderRadius: stylesheet.textbox.normal.borderRadius,
+        marginBottom: 15,
+        paddingVertical: stylesheet.textbox.normal.paddingVertical,
+        paddingHorizontal: stylesheet.textbox.normal.paddingHorizontal,
+        height: stylesheet.textbox.normal.height,
+        borderColor: BORDER_COLOR
     },
 
     contInfoLabel: {
+        marginTop: -10,
         flexDirection: 'row',
-        backgroundColor: 'transparent'
+        backgroundColor: 'transparent',
     },
 
     contError: {

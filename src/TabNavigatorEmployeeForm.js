@@ -7,6 +7,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import Header4 from './containers/Headers/header4';
 
 //Add-Modify Employee Components
+import PersonalInfo from './containers/Employees/addEmployeeForm/personalinfo';
 import BankInfo from './containers/Employees/addEmployeeForm/bankinfo';
 import EmploymentInfo from './containers/Employees/addEmployeeForm/employmentinfo';
 import Basic from './containers/Employees/addEmployeeForm/personalinfo/basic';
@@ -16,58 +17,7 @@ import Background from './containers/Employees/addEmployeeForm/personalinfo/back
 
 //Employee
 
-const PersonalInfo = TabNavigator({
-    Basic: {
-      screen: Basic,
-      navigationOptions: {
-        tabBarLabel: 'Basic & Contact Info'
-      }
-    },
-    Address: {
-      screen: Address,
-      navigationOptions: {
-        tabBarLabel: 'Address Info'
-      }
-    },
-    Dependents: {
-      screen: Dependents,
-      navigationOptions: {
-        tabBarLabel: 'Family & Dependents'
-      }
-    },
-    Background: {
-      screen: Background,
-      navigationOptions: {
-        tabBarLabel: 'Work & Education'
-      }
-    }
-},
-    {
-        tabBarPosition: 'top',
-        swipeEnabled: true,
-        tabBarOptions: {
-          showIcon: false,
-          showLabel: true,
-          scrollEnabled: false,
-          activeTintColor: '#d69200',
-          inactiveTintColor: '#434646',
-          tabStyle: { height: 40},
-          labelStyle: {
-            fontSize: 12,
-            fontWeight: '500'
-          },
-          style: {
-            backgroundColor: '#ecf0f1',
-            zIndex: 999
-          },
-          indicatorStyle: {
-            backgroundColor: '#EEB843',
-            height: 3
-          }
-        }
-        
-    }
-);
+
 
 export const AddEmployeeForm = TabNavigator({
     PersonalInfo: {
@@ -129,7 +79,7 @@ export const AddEmployeeForm = TabNavigator({
             fontWeight: '500'
           },
           style: {
-            backgroundColor: '#ecf0f1',
+            backgroundColor: '#fff',
           },
           indicatorStyle: {
             backgroundColor: '#ecf0f1',

@@ -70,7 +70,7 @@ const EmploymentInfo = TabNavigator({
             tabBarLabel: 'TAX POLICY'
         }
     },
-  },
+},
     {
         animationEnabled: false,
         tabBarPosition: 'top',
@@ -81,20 +81,21 @@ const EmploymentInfo = TabNavigator({
             scrollEnabled: true,
             activeTintColor: '#d69200',
             inactiveTintColor: '#434646',
-            tabStyle: { width: 180, height: 40},
+            tabStyle:  { width: 180, height: 40},
             labelStyle: {
-            fontSize: 12,
-            fontWeight: '500'
-        },
-        style: {
-            backgroundColor: '#ecf0f1',
-            zIndex: 999
-        },
-        indicatorStyle: {
-            backgroundColor: '#EEB843',
-            height: 3
+                fontSize: 12,
+                fontWeight: '500'
+            },
+            style: {
+                backgroundColor: '#fff',
+                zIndex: 999
+            },
+            indicatorStyle: {
+                backgroundColor: '#EEB843',
+                height: 5
+            }
         }
-      }
+        
     }
 );
 

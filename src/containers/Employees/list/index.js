@@ -19,6 +19,7 @@ import Header2 from '../../Headers/header2';
 import * as StatusLoader from '../../../components/ScreenLoadStatus'
 import SearchBox from '../../../components/SearchBox';
 import ActionButton from '../../../components/ActionButton';
+import * as PromptScreen from '../../../components/ScreenLoadStatus';
 
 //Redux
 import { connect } from 'react-redux';
@@ -32,6 +33,8 @@ export class List extends Component {
     constructor(props){
         super(props);
         this.state = {
+            _promptShow: false,
+            _promptMsg: '',
             _refreshing: false,
             _list: [
                 {
@@ -73,7 +76,25 @@ export class List extends Component {
     }
 
     _addNewEmployee = () => {
-        this.props.logininfo.navigation.navigate('AddEmployeeForm');
+        this._showLoadingPrompt('Loading required forms. Please wait...');
+        requestAnimationFrame(() => {
+            this._hideLoadingPrompt();
+            this.props.logininfo.navigation.navigate('AddEmployeeForm');
+            
+        })
+    }
+
+    _hideLoadingPrompt = () => {
+        this.setState({
+            _promptShow: false
+        })
+    }
+
+    _showLoadingPrompt = (msg) => {
+        this.setState({
+            _promptMsg: msg,
+            _promptShow: true
+        })
     }
     
     render(){
@@ -148,6 +169,10 @@ export class List extends Component {
                     <ActionButton onPress={this._addNewEmployee}/>
                 </View>
                 
+                <PromptScreen.PromptGeneric 
+                    show= {this.state._promptShow} 
+                    title={this.state._promptMsg}/>
+
             </LinearGradient>
         )
     }
