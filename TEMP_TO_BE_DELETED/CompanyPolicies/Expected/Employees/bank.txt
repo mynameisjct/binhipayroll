@@ -1,0 +1,27 @@
+Good day Maam Tammy.
+We would like to confirm following items related to bank info:
+1. Nature of Work
+    *Is this a Job Title? Example, Marketing Staff
+2. Source of Funds
+    *Are below examples correct?
+    a. Business
+    b. Work
+    c. Remittance from Son
+3. Beneficial Owner
+    *Are below examples correct? No need to specify how much is the client's share?
+    a. Binhi-MeDFI
+    b. JCA Hotel
+4. Three(3) similar Specimen Signatures
+    *Neglect, for now.
+
+DONE --- True and Full Name
+DONE --- Present Address
+DONE --- Permanent Address
+DONE --- Date of Birth
+TO ADD IN ADDRESS INFO --- Place of Birth
+TO ADD IN BASIC INFO --- Nationality
+DONE (EXCEPT GSIS) --- SSS, TIN, GSIS Numbers
+TO ADD --- Nature of Work
+TO ADD --- Source of Funds
+TO ADD --- Beneficial Owner
+NEGLECT --- Three(3) similar Specimen Signatures

@@ -1,0 +1,188 @@
+{
+    "flagno": "1",
+    "message": "Success",
+    "employee": {
+        "personalinfo":{
+            "basicinfo":{
+                "title": "BASIC INFORMATION",
+                "firstname": "Juan",
+                "middlename": "Perez",
+                "lastname": "Dela Cruz",
+                "nickname": "Juan",
+                "birthday": "06/01/1990",
+                "gender": {
+                    "value": "Male",
+                    "options": ["Male", "Female"]
+                },
+                "civilstatus": {
+                    "value": "Married",
+                    "options": ["Single", "Married", "Divorced", "Separated", "Widowed"]
+                }
+            },
+            "contactinfo":{
+                "title": "CONTACT INFORMATION",
+                "mobile": [
+                    "0907 321 4567",
+                    "0917 231 4567",
+                    "0927 123 4567",
+                    "0937 312 4567"
+                ],
+                "telephone": [
+                    "851 - 2354",
+                    "852 - 2354",
+                    "853 - 2354",
+                    "854 - 2354"
+                ],
+                "email": [
+                    "hello@yahoo.com",
+                    "hi@gmail.com",
+                    "world@binhi.com"
+                ]
+            },
+            "ids": {
+                "title": "GOVERNMENT IDS",
+                "tin": {
+                    "label": "Personal TIN",
+                    "value": "123-345-678"
+                },
+                "sss": {
+                    "label": "SSS No.",
+                    "value": "123-345-678"
+                },
+                "philhealth": {
+                    "label": "Phil Health No.",
+                    "value": "123-345-678"
+                },
+                "pagibig": {
+                    "label": "Pag - IBI No.",
+                    "value": "123-345-678"
+                }
+            },
+
+            "addressinfo": {
+                "present":{
+                    "title": "PRESENT ADDRESS",
+                    "province": {
+                        "label": "Province",
+                        "id": "001",
+                        "value": "Misamis Oriental"
+                    },
+                    "city": {
+                        "label": "City",
+                        "id": "011",
+                        "value": "Cagayan de Oro City"
+                    },
+                    "barangay": {
+                        "label": "Barangay",
+                        "id": "022",
+                        "value": "Consolacion"
+                    },
+                    "street": {
+                        "label": "street",
+                        "value": "Zone 1, Bahaon Street"
+                    }
+                },
+        
+                "permanent":{
+                    "title": "PERMANENT ADDRESS",
+                    "province": {
+                        "label": "Province",
+                        "id": "001",
+                        "value": "Misamis Oriental"
+                    },
+                    "city": {
+                        "label": "City",
+                        "id": "011",
+                        "value": "Cagayan de Oro City"
+                    },
+                    "barangay": {
+                        "label": "Barangay",
+                        "id": "022",
+                        "value": "Consolacion"
+                    },
+                    "street": {
+                        "label": "street",
+                        "value": "Zone 1, Bahaon Street"
+                    }
+                }
+            },
+
+            "family": {
+                "spouse": {
+                    "title": "SPOUSE",
+                    "name": "Josephine Bracken",
+                    "work":{
+                        "jobtitle":"Teacher",
+                        "company":"MOGCHS"
+                    }
+                },
+
+                "dependents": {
+                    "title": "DEPENDENTS",
+                    "data": [
+                        {
+                            "id": "0001",
+                            "name": "Maria G. Rizal",
+                            "birthdate": "06/23/1993",
+                            "relationship": "Daughter"
+                        },
+                        {
+                            "id": "0002",
+                            "name": "Ryan G. Rizal",
+                            "birthdate": "06/23/2005",
+                            "relationship": "Son"
+                        },
+                        {
+                            "id": "0003",
+                            "name": "Josephine Bracken",
+                            "birthdate": "06/23/1985",
+                            "relationship": "Spouse"
+                        }
+                    ]
+                }
+            }
+        },
+        
+        "bankinfo": {
+            "title": "BANK ACCOUNT INFORMATION",
+            "bankname": "BPI",
+            "accountnumber": "0459-84994-53"
+        },
+
+        "employmentinfo": {
+            "details":{
+                "title": "EMPLOYMENT DETAILS",
+                "employmenttype": "Regular",
+                "datehired": "06/01/2016",
+                "dateend": "-",
+                "data": [
+                    {
+                        "id": "0001",
+                        "current": false,
+                        "position": "Staff",
+                        "branch": "Yacapin Branch",
+                        "effectivedate": "06/15/2016 - 10/14/2017",
+                        "Remarks": ""
+                    },
+
+                    {
+                        "id": "0002",
+                        "current": true,
+                        "position": "Head Staff",
+                        "branch": "Yacapin Branch",
+                        "effectivedate": "10/15/2017 - Present",
+                        "Remarks": "Promoted"
+                    }
+                ]
+            },
+
+            "workshift": {
+                "title": "WORK SHIFT",
+                "data": [
+                    "id": "0001",
+                    "effectivedate": "06/01/2016"
+                ]
+            }
+        }
+    }
+}

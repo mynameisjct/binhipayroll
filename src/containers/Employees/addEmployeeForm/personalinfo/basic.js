@@ -106,7 +106,7 @@ export class Basic extends Component {
       console.log('aTelephone: ' + aTelephone);
       console.log('aEmail: ' + aEmail);
       this.props.actions.employee.updateBasicInfo({basicinfo: oBasicForm});
-      navigation.navigate('Benefits');
+      navigation.navigate('Address');
     }
     else{
       Alert.alert(
