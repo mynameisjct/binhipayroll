@@ -32,8 +32,8 @@ import * as oHelper from '../../../../helper';
 //Redux
 import { connect } from 'react-redux';
 import * as employeeActions from '../data/actions';
+import { bindActionCreators } from 'redux';
 
-//constants
 //Constants
 const btnActive = 'rgba(255, 255, 255, 0.3);'
 const btnInactive = 'transparent';

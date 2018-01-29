@@ -78,7 +78,7 @@ export default {
         flex: 1,
         height: 35,
         flexDirection: 'row',
-        backgroundColor: '#fff',
+        backgroundColor: '#818489',
         borderTopWidth: 0.5,
         borderColor: '#1d1e1e'
     },
@@ -122,8 +122,8 @@ export default {
 
     txtLabelTitle:{
         fontFamily: 'Helvetica-Bold',
-        fontSize: 14,
-        color: '#434646',
+        fontSize: 13,
+        color: '#fff',
         fontWeight: '500'
     },
 

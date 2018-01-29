@@ -59,7 +59,7 @@
                 }
             },
 
-            "addressinfo": {
+            "address": {
                 "present":{
                     "title": "PRESENT ADDRESS",
                     "province": {
@@ -179,8 +179,10 @@
             "workshift": {
                 "title": "WORK SHIFT",
                 "data": [
-                    "id": "0001",
-                    "effectivedate": "06/01/2016"
+                    {
+                        "id": "0001",
+                        "effectivedate": "06/01/2016"
+                    }
                 ]
             }
         }

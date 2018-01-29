@@ -45,13 +45,13 @@ const CivilStatus = t.enums({
 });
 
 const EMPLOYEE_BASICINFO = t.struct({
-  fName: t.String,
-  mName: t.String,
-  lName: t.String,
-  nName: t.maybe(t.String),
-  bday: t.Date,
+  firstname: t.String,
+  middlename: t.String,
+  lastname: t.String,
+  nickname: t.maybe(t.String),
+  birthday: t.Date,
   gender: Gender,
-  civilStatus: CivilStatus
+  civilstatus: CivilStatus
 });
 
 //Form - Employee Government IDs
@@ -68,13 +68,13 @@ export class Basic extends Component {
     super(props);
     this.state={
       _oBasicInfo: {
-        fName: 'Jose',
-        mName: 'Protacio',
-        lName: 'Rizal',
-        nName: 'Prot-prot',
-        bDay: '1990-06-01',
+        firstname: 'Jose',
+        middlename: 'Protacio',
+        lastname: 'Rizal',
+        nickname: 'Prot-prot',
+        /* birthday: '06/23/1993', */
         gender: 'M',
-        civilStatus: 'Divorced'
+        civilstatus: 'Divorced'
       },
       _oContactInfo:{
         mobile: ['0919900116', '091990333336', '0919900116'],
@@ -105,13 +105,21 @@ export class Basic extends Component {
       console.log('aMobile: ' + aMobile);
       console.log('aTelephone: ' + aTelephone);
       console.log('aEmail: ' + aEmail);
-      this.props.actions.employee.updateBasicInfo({basicinfo: oBasicForm});
+      this.props.actions.employee.updateBasicInfo(oBasicForm);
+      this.props.actions.employee.updateIDS(oGovForm);
+      this.props.actions.employee.updateContactInfo(
+        {
+          mobile: aMobile, 
+          telephone: aTelephone, 
+          email: aEmail
+        }
+      );
       navigation.navigate('Address');
     }
     else{
       Alert.alert(
         'Error',
-        'One of the inputs is invalid. Check the highlighted fields.',
+        'One of the inputs is invalid. Please check the highlighted fields.',
         [
           {text: 'Review Form', onPress: () => {}},
         ],
@@ -126,11 +134,11 @@ export class Basic extends Component {
       return moment(date).format(format);
     }
     
-    let birthDate = {
-        label: 'BIRTH DATE',
+    let oBday = {
+        label: 'BIRTHDAY',
         mode:'date',
         config:{
-            format:(date) => myFormatFunction("MMMM DD, YYYY",date)
+            format:(date) => myFormatFunction("MMMM DD YYYY",date)
         },
         error: '*Select birth date'
     };
@@ -138,25 +146,25 @@ export class Basic extends Component {
     { /********** Basic Information **********/ }
     const OPTIONS_BASICINFO = {
       fields: {
-        fName:{ 
+        firstname:{ 
           label: 'FIRST NAME' ,
           returnKeyType: 'next',
-          onSubmitEditing: (event) => {this.refs.basic_form.getComponent('mName').refs.input.focus()},
+          onSubmitEditing: (event) => {this.refs.basic_form.getComponent('middlename').refs.input.focus()},
           error: '*First Name should not be empty'
         },
-        mName:{ 
+        middlename:{ 
           label: 'MIDDLE NAME',
           returnKeyType: 'next',
-          onSubmitEditing: (event) => {this.refs.basic_form.getComponent('lName').refs.input.focus()},
+          onSubmitEditing: (event) => {this.refs.basic_form.getComponent('lastname').refs.input.focus()},
           error: '*Middle Name should not be empty'
         },
-        lName:{ 
+        lastname:{ 
           label: 'LAST NAME',
           returnKeyType: 'next',
-          onSubmitEditing: (event) => {this.refs.basic_form.getComponent('nName').refs.input.focus()},
+          onSubmitEditing: (event) => {this.refs.basic_form.getComponent('nickname').refs.input.focus()},
           error: '*Last Name should not be empty'
         },
-        nName:{ 
+        nickname:{ 
           label: 'NICK NAME (Optional)',
           returnKeyType: 'next'
         },
@@ -165,8 +173,9 @@ export class Basic extends Component {
           label: 'GENDER',
           error: '*Select a gender'
         },
-        bday: birthDate,
-        civilStatus:{
+        birthday: oBday,
+
+        civilstatus:{
           template: customPickerTemplate,
           label: 'CIVIL STATUS',
           error: '*Select Civil Status'
@@ -263,12 +272,12 @@ export class Basic extends Component {
           </View>
           <View style={{flex:1, padding: 40}}>
             <Button
-                onPress={() => {this._onPress()}}
+                onPress={this._onPress}
                 title='Next'
                 color="#3b5998"
                 accessibilityLabel='Next'
             />
-        </View>
+          </View>
         </View>
       </ScrollView>
     );

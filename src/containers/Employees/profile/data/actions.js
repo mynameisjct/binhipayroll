@@ -6,30 +6,47 @@ export const updateAllInfo = payload => ({
 	payload,
 });
 
+/******************** Personal Info ********************/
+export const updatePersonalInfo = payload => ({
+	type: actionTypes.UPDATE_PERSONALINFO,
+	payload,
+});
+
+//Basic Info
 export const updateBasicInfo = payload => ({
 	type: actionTypes.UPDATE_BASICINFO,
 	payload,
 });
 
+//Contact Info
+export const updateContactInfo = payload => ({
+	type: actionTypes.UPDATE_CONTACTINFO,
+	payload,
+});
+
+//IDS
+export const updateIDS = payload => ({
+	type: actionTypes.UPDATE_IDS,
+	payload,
+});
+
+//Address Info
 export const updateAddress = payload => ({
 	type: actionTypes.UPDATE_ADDRESS,
 	payload,
 });
 
+//Dependents Info
 export const updateDependents = () => ({
     type: actionTypes.UPDATE_DEPENDENTS,
     payload,
 });
 
-export const updateBackground = () => ({
-    type: actionTypes.UPDATE_BACKGROUND,
+/******************** Personal Info ********************/
+export const updateBankInfo = () => ({
+    type: actionTypes.UPDATE_BANKINFO,
     payload,
 });
-
-export const status = () => ({
-	type: actionTypes.UPDATE_BACKGROUND,
-    payload,
-})
 
 export const get = payload =>
 	dispatch =>

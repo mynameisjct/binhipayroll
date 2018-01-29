@@ -27,12 +27,12 @@ const PersonalInfo = TabNavigator({
       tabBarLabel: 'Family & Dependents'
     }
   },
-  Background: {
+/*   Background: {
     screen: Background,
     navigationOptions: {
       tabBarLabel: 'Work & Education'
     }
-  }
+  } */
 },
   {
     animationEnabled: false,
