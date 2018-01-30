@@ -11,12 +11,12 @@ const initialState = {
 			nickname: "",
 			birthday: "06/01/1990",
 			gender: {
-				value: "-",
+				value: "",
 				options: ["-", "Male", "Female"]
 			},
 			civilstatus: {
-				value: "-",
-				options: ["-", "Single", "Married", "Divorced", "Separated", "Widowed"]
+				value: "",
+				options: ["", "Single", "Married", "Divorced", "Separated", "Widowed"]
 			}
 		},
 		contactinfo:{
@@ -181,9 +181,17 @@ export const employee = (state = initialState, action) => {
 			break;
 		
 		case actionTypes.UPDATE_ADDRESS:
+			oState.personalinfo.address.present.province.id = action.payload.present.province;
+			oState.personalinfo.address.present.city.id = action.payload.present.city;
+			oState.personalinfo.address.present.barangay.id = action.payload.present.barangay;
+			oState.personalinfo.address.present.street.value = action.payload.present.street;
+
+			oState.personalinfo.address.permanent.province.id = action.payload.permanent.province;
+			oState.personalinfo.address.permanent.city.id = action.payload.permanent.city;
+			oState.personalinfo.address.permanent.barangay.id = action.payload.permanent.barangay;
+			oState.personalinfo.address.permanent.street.value = action.payload.permanent.street;
 			return {
-				...state.personalinfo.address,
-				...action.payload
+				...oState
 			}
 			break;
 		
@@ -194,8 +202,16 @@ export const employee = (state = initialState, action) => {
 			}
 			break;
 
+		case actionTypes.UPDATE_BANKINFO:
+			oState.bankinfo.bankname = action.payload.bankname;
+			oState.bankinfo.accountnumber = action.payload.accountnumber;
+			return {
+				...oState
+			}
+			break;
+
 		case actionTypes.EMPTY:
-			return action.payload;
+			return initialState;
 			break;
 
 		default:

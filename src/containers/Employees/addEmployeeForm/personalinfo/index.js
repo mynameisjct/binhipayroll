@@ -9,7 +9,7 @@ import Dependents from './dependents';
 import Background from './background';
 
 const PersonalInfo = TabNavigator({
-  Basic: {
+  BasicInfo: {
     screen: Basic,
     navigationOptions: {
       tabBarLabel: 'Basic & Contact Info'

@@ -15,12 +15,14 @@ const { StyleSheet } = React;
 export default {
     container: {
         flex:1,
+        height: '100%',
         backgroundColor: '#f9f9f9',
         margin: 10,
         marginBottom: 0,
         borderTopRightRadius: 4,
         borderTopLeftRadius: 4,
-        elevation: 20
+        elevation: 20,
+        flexDirection: 'column'
     },
 
     contDivider: {
@@ -71,6 +73,13 @@ export default {
         marginBottom: 10,
         alignSelf: 'stretch',
         justifyContent: 'center'
+    },
+
+    contFormBankInfo: {
+        flex: 1,
+        alignSelf: 'center',
+        marginTop: 50,
+        width: 400
     }
 
 }

@@ -16,55 +16,55 @@ import Tax from './tax';
 
 
 const EmploymentInfo = TabNavigator({
-    Details: {
+    EmplomentDetails: {
             screen: Details,
             navigationOptions: {
             tabBarLabel: 'EMPLOYMENT DETAILS'
         }
     },
-    WorkShift: {
+    EmployeeWorkShift: {
             screen: WorkShift,
             navigationOptions: {
             tabBarLabel: 'WORK SHIFT'
         }
     },
-    Payroll: {
+    EmployeePayroll: {
             screen: Payroll,
             navigationOptions: {
             tabBarLabel: 'PAYROLL SCHEDULE'
         }
     },
-    Tardiness: {
+    EmployeeTardiness: {
             screen: Tardiness,
             navigationOptions: {
             tabBarLabel: 'TARDINESS POLICY'
         }
     },
-    Undertime: {
+    EmployeeUndertime: {
             screen: Undertime,
             navigationOptions: {
             tabBarLabel: 'UNDERTIME POLICY'
         }
     },
-    Overtime: {
+    EmployeeOvertime: {
             screen: Overtime,
             navigationOptions: {
             tabBarLabel: 'OVERTIME POLICY'
         }
     },
-    Leaves: {
+    EmployeeLeaves: {
             screen: Leaves,
             navigationOptions: {
             tabBarLabel: 'LEAVES POLICY'
         }
     },
-    Benefits: {
+    EmployeeBenefits: {
             screen: Benefits,
             navigationOptions: {
             tabBarLabel: 'BENEFITS'
         }
     },
-    Tax: {
+    EmployeeTax: {
             screen: Tax,
             navigationOptions: {
             tabBarLabel: 'TAX POLICY'

@@ -68,24 +68,24 @@ export class Basic extends Component {
     super(props);
     this.state={
       _oBasicInfo: {
-        firstname: 'Jose',
-        middlename: 'Protacio',
-        lastname: 'Rizal',
-        nickname: 'Prot-prot',
+        firstname: this.props.employee.personalinfo.basicinfo.firstname,
+        middlename: this.props.employee.personalinfo.basicinfo.middlename,
+        lastname: this.props.employee.personalinfo.basicinfo.lastname,
+        nickname: this.props.employee.personalinfo.basicinfo.nickname,
         /* birthday: '06/23/1993', */
-        gender: 'M',
-        civilstatus: 'Divorced'
+        gender: this.props.employee.personalinfo.basicinfo.gender.value,
+        civilstatus: this.props.employee.personalinfo.basicinfo.civilstatus.value,
       },
       _oContactInfo:{
-        mobile: ['0919900116', '091990333336', '0919900116'],
-        telephone: ['888-42424'],
-        email: ['test@gmail.com', 'hello@yahoo.com']
+        mobile: this.props.employee.personalinfo.contactinfo.mobile,
+        telephone: this.props.employee.personalinfo.contactinfo.telephone,
+        email: this.props.employee.personalinfo.contactinfo.email
       },
       _oGovID:{
-        tin: '111-11',
-        sss: '222-22',
-        philhealth: '3333-33',
-        pagibig: '4444-44'
+        tin: this.props.employee.personalinfo.ids.tin.value,
+        sss: this.props.employee.personalinfo.ids.sss.value,
+        philhealth: this.props.employee.personalinfo.ids.philhealth.value,
+        pagibig: this.props.employee.personalinfo.ids.pagibig.value,
       }
     }
   }
@@ -100,20 +100,26 @@ export class Basic extends Component {
     let oGovForm = this.refs.govid_form.getValue();
 
     if (oBasicForm && oGovForm) {
-      console.log('oBasicForm: ' + JSON.stringify(oBasicForm));
+/*       console.log('oBasicForm: ' + JSON.stringify(oBasicForm));
       console.log('oGovForm: ' + JSON.stringify(oGovForm));
       console.log('aMobile: ' + aMobile);
       console.log('aTelephone: ' + aTelephone);
-      console.log('aEmail: ' + aEmail);
+      console.log('aEmail: ' + aEmail); */
+      let oContactInfo = {
+        mobile: aMobile, 
+        telephone: aTelephone, 
+        email: aEmail
+      }
       this.props.actions.employee.updateBasicInfo(oBasicForm);
       this.props.actions.employee.updateIDS(oGovForm);
-      this.props.actions.employee.updateContactInfo(
-        {
-          mobile: aMobile, 
-          telephone: aTelephone, 
-          email: aEmail
-        }
-      );
+      this.props.actions.employee.updateContactInfo(oContactInfo);
+
+      this.setState({
+        _oBasicInfo: {...oBasicForm},
+        _oContactInfo: {...oContactInfo},
+        _oGovID: {...oGovForm},
+      });
+
       navigation.navigate('Address');
     }
     else{
@@ -287,7 +293,8 @@ export class Basic extends Component {
 function mapStateToProps (state) {
   return {
       logininfo: state.loginReducer.logininfo,
-      activecompany: state.activeCompanyReducer.activecompany
+      activecompany: state.activeCompanyReducer.activecompany,
+      employee: state.employeeProfile.employee
   }
 }
 

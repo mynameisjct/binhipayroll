@@ -22,6 +22,8 @@ import { customPickerTemplate } from '../../../../global/tcomb-customTemplate';
 
 //Redux
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import * as employeeActions from '../../profile/data/actions';
 
 //API
 import * as employeeApi from '../../profile/data/api';
@@ -29,15 +31,21 @@ import * as employeeApi from '../../profile/data/api';
 //Custom Component
 import {FormCard, PropTitle} from '../../../../components/CustomCards';
 import * as CustomForm from '../../../../components/CustomForm';
-  
+import * as PromptScreen from '../../../../components/ScreenLoadStatus';
+import { validate } from 'tcomb-validation';
+
 const Form = t.form.Form;
 
-export class Address extends Component {
+class AddressForm extends Component {
     constructor(props){
         super(props);
         this.state={
-            _oPresentAdd: null,
-            _oPermanentAdd: null,
+            _oAddress: {
+                province: this.props.initialValue.province,
+                city: this.props.initialValue.city,
+                barangay: this.props.initialValue.barangay,
+                street: this.props.initialValue.street
+            },
             _oProvinces: {},
             _oCities: {},
             _oBarangay: {}
@@ -45,10 +53,24 @@ export class Address extends Component {
     }
 
     componentDidMount = async() => {
-        this._getProvinces();
+        let oProvince = this.state._oAddress.province;
+        let oCity = this.state._oAddress.city;
+        let oBarangay = this.state._oAddress.barangay;
+
+        this._getProvinces(true);
+        if(oCity != ''){
+            this._getCities(oProvince, true);
+
+            if(oBarangay != ''){
+                this._getBarangays(oProvince, oCity, true);
+            }
+        }
     }
 
-    _getProvinces = async() => {
+    _getProvinces = async(bHideLoading) => {
+        
+        bHideLoading ? null : this.props.setLoadingStatus(true);
+
         employeeApi.getProvinces()
         .then((response) => response.json())
         .then((res) => {
@@ -56,45 +78,59 @@ export class Address extends Component {
                 
             }
             else{
-                console.log('PROVINCE: ' + JSON.stringify(res))
+                /* console.log('PROVINCE: ' + JSON.stringify(res)) */
                 this._updateList('PROVINCE', res.province);
             }
+            bHideLoading ? null : this.props.setLoadingStatus(false);
         })
         .catch((exception) => {
-            console.log('exception: ' + exception.message)
+            console.log('exception: ' + exception.message);
+            bHideLoading ? this.props.setLoadingStatus(false) : null;
         });
     }
 
-    _getCities = async(provinceID) => {
+    _getCities = async(provinceID, bHideLoading) => {
+ 
+        bHideLoading ? null : this.props.setLoadingStatus(true);
+
         employeeApi.getCities({province: provinceID})
         .then((response) => response.json())
         .then((res) => {
+            /* console.log('_getCities: ' + JSON.stringify(res)) */
             if(res.flagno != 1){
                 
             }
             else{
                 this._updateList('CITY', res.city)
             }
+            bHideLoading ? null : this.props.setLoadingStatus(false);
         })
         .catch((exception) => {
             console.log('exception: ' + exception.message)
+            bHideLoading ? null : this.props.setLoadingStatus(false);
         });
     }
 
-    _getBarangays = async(provinceID, cityID) => {
+    _getBarangays = async(provinceID, cityID, bHideLoading) => {
+
+        bHideLoading ? null : this.props.setLoadingStatus(true);
+
         employeeApi.getBarangays({province: provinceID, city: cityID})
         .then((response) => response.json())
         .then((res) => {
-            console.log('_getBarangays: ' + JSON.stringify(res))
+            /* console.log('_getBarangays: ' + JSON.stringify(res)) */
             if(res.flagno != 1){
                 
             }
             else{
                 this._updateList('BARANGAY', res.barangay)
             }
+
+            bHideLoading ? null : this.props.setLoadingStatus(false);
         })
         .catch((exception) => {
             console.log('exception: ' + exception.message)
+            bHideLoading ? null : this.props.setLoadingStatus(false);
         });
     }
 
@@ -132,34 +168,105 @@ export class Address extends Component {
     }
 
     _onChangePS = (value) => {
-        //Update List of Cities
-        if(!isNaN(value.province) && value.province != ''){
-            this._getCities(value.province)
-            //Update List of Barangays
-        }
-        else{
-        }
+        if((value.province != '') && this.state._oAddress.province !== value.province){
+            this._getCities(value.province);
+            value.city = ''
+            value.barangay = '';
+            this.setState({_oCities: {}})
+            this.setState({_oBarangay: {}})
+        }else if((value.city != '') && (this.state._oAddress.city !== value.city)){
+            this._getBarangays(value.province, value.city);
+            value.barangay = '';
+            this.setState({_oBarangay: {}})
+        }else {
 
-        if(!isNaN(value.city) && value.city != ''){
-            this._getBarangays(value.province, value.city)
         }
-        else{
-            value.barangay = '-';
-        }
-
         this.setState({
-            _oPresentAdd: value
+            _oAddress: value
         })
     }
 
+    getValue = () => {
+        return this.refs.form_address.getValue();
+    }
+
+    render(){
+        const Province = t.enums(this.state._oProvinces);
+        const City = t.enums(this.state._oCities);
+
+        const Barangay = t.enums(this.state._oBarangay);
+        
+        const EMPLOYEE_PRESENTADD = t.struct({
+            province: Province,
+            city: City,
+            barangay: Barangay,
+            street: t.String
+        });
+
+        const OPTIONS = {
+            fields: {
+                province:{ 
+                    template: customPickerTemplate,
+                    label: 'SELECT PROVINCE' ,
+                    error: '*Required field'
+                },
+                city:{ 
+                    template: customPickerTemplate,
+                    label: 'SELECT CITY',
+                    error: '*Required field'
+                },
+                barangay:{ 
+                    template: customPickerTemplate,
+                    label: 'SELECT BARANGAY',
+                    error: '*Required field'
+                },
+                street:{ 
+                    label: 'ENTER STREET',
+                    returnKeyType: 'done',
+                    error: '*Required field'
+                }
+            },
+            stylesheet: stylesheet
+        };
+
+        return(
+            <Form 
+                ref='form_address'
+                type={EMPLOYEE_PRESENTADD} 
+                value={this.state._oAddress}
+                onChange={this._onChangePS}
+                options={OPTIONS}/>
+        );        
+    }
+}
+
+export class Address extends Component {
+    constructor(props){
+        super(props);
+        this.state={
+            _promptMsg: 'Populating Address List. Please wait...',
+            _promptShow: false
+        }
+    }
+
+    _updateLoadingStatus = (value) => {
+        this.setState({ _promptShow: value })
+    }
+
     _onPress = () => {
+        
         const navigation = this.props.logininfo.navigation;
+        let bPermanentAdd = this.permanent_address.getValue();
+        let bPresentAdd = this.present_address.getValue();
+        console.log('bPresentAdd: ' + JSON.stringify(bPresentAdd));
+        console.log('bPermanentAdd: ' + JSON.stringify(bPermanentAdd));
 
-        let oPresentAdd = this.refs.presentadd_form.getValue();
-        let oPermanentAdd = this.refs.permanentadd_form.getValue();
-
-        if (oPresentAdd && oPermanentAdd) {
-            navigation.navigate('Family');
+        if (bPresentAdd && bPermanentAdd) {
+            this.props.actions.employee.updateAddress({
+                present: { ...bPresentAdd },
+                permanent: { ...bPermanentAdd }
+            });
+            navigation.navigate('Dependents');
         }
         else{
             Alert.alert(
@@ -175,122 +282,57 @@ export class Address extends Component {
 
     render() {
         //This is put into render method to allow direct access to class properties
-
-        { /********** Present Address **********/ }
-        const Province = t.enums(this.state._oProvinces);
-
-        const City = t.enums(this.state._oCities);
-        
-        const Barangay = t.enums(this.state._oBarangay);
-        
-        const EMPLOYEE_PRESENTADD = t.struct({
-            province: Province,
-            city: City,
-            barangay: Barangay,
-            street: t.String
-        });
-        
-        const EMPLOYEE_PERMANENTADD = t.struct({
-            province: Province,
-            city: City,
-            barangay: Barangay,
-            street: t.String
-        });
-        
-        const OPTIONS_PS = {
-            fields: {
-                province:{ 
-                    template: customPickerTemplate,
-                    label: 'SELECT PROVINCE' ,
-                    error: '*Required field'
-                },
-                city:{ 
-                    template: customPickerTemplate,
-                    label: 'SELECT CITY',
-                    error: '*Required field'
-                },
-                barangay:{ 
-                    template: customPickerTemplate,
-                    label: 'SELECT BARANGAY',
-                    error: '*Required field'
-                },
-                street:{ 
-                    label: 'ENTER STREET',
-                    returnKeyType: 'done',
-                    error: '*Required field'
-                }
-            },
-            stylesheet: stylesheet
-        };
-
-        const OPTIONS_PM = {
-            fields: {
-                province:{ 
-                    template: customPickerTemplate,
-                    label: 'SELECT PROVINCE' ,
-                    error: '*Required field'
-                },
-                city:{ 
-                    template: customPickerTemplate,
-                    label: 'SELECT CITY',
-                    error: '*Required field'
-                },
-                barangay:{ 
-                    template: customPickerTemplate,
-                    label: 'SELECT BARANGAY',
-                    error: '*Required field'
-                },
-                street:{ 
-                    label: 'ENTER STREET',
-                    returnKeyType: 'done',
-                    error: '*Required field'
-                }
-            },
-            stylesheet: stylesheet
-        };
-
-    
-
         return (
-        <ScrollView>
-            <View style={styles.container}>
-                <View style={styles.contDivider}>
-                    <View style={styles.contFormLeft}>
-                        { /********** Basic Information **********/ }
-                        <View style={styles.contTitle}>
-                            <PropTitle name='PRESENT ADDRESS'/>
-                        </View>
-                        <Form 
-                            ref='presentadd_form'
-                            type={EMPLOYEE_PRESENTADD} 
-                            value={this.state._oPresentAdd}
-                            onChange={this._onChangePS}
-                            options={OPTIONS_PS}/>
-                    </View>
+            <View style={{flex: 1}}>
+                <ScrollView>
+                    <View style={styles.container}>
+                        <View style={styles.contDivider}>
+                            <View style={styles.contFormLeft}>
+                                { /********** Present Address **********/ }
+                                <View style={styles.contTitle}>
+                                    <PropTitle name='PRESENT ADDRESS'/>
+                                </View>
+                                <AddressForm 
+                                    initialValue={{
+                                        province: this.props.employee.personalinfo.address.present.province.id,
+                                        city: this.props.employee.personalinfo.address.present.city.id,
+                                        barangay: this.props.employee.personalinfo.address.present.barangay.id,
+                                        street: this.props.employee.personalinfo.address.present.street.value
+                                    }}
+                                    ref={(oInstance) => { this.present_address = oInstance; }}
+                                    setLoadingStatus={this._updateLoadingStatus}/>
+                            </View>
 
-                    <View style={styles.contFormRight}>
-                    { /********** Contact Information **********/ }
-                        <View style={styles.contTitle}>
-                            <PropTitle name='PERMANENT ADDRESS'/>
+                            <View style={styles.contFormRight}>
+                                { /********** PERMANENT Information **********/ }
+                                <View style={styles.contTitle}>
+                                    <PropTitle name='PERMANENT ADDRESS'/>
+                                </View>
+                                <AddressForm 
+                                    initialValue={{
+                                        province: this.props.employee.personalinfo.address.permanent.province.id,
+                                        city: this.props.employee.personalinfo.address.permanent.city.id,
+                                        barangay: this.props.employee.personalinfo.address.permanent.barangay.id,
+                                        street: this.props.employee.personalinfo.address.permanent.street.value
+                                    }}
+                                    ref={(oInstance) => { this.permanent_address = oInstance; }}
+                                    setLoadingStatus={this._updateLoadingStatus}/>
+                            </View>
                         </View>
-                        <Form 
-                            ref='permanentadd_form'
-                            type={EMPLOYEE_PERMANENTADD} 
-                            value={this.state._oPermanentAdd}
-                            options={OPTIONS_PM}/>
-                    
+                        <View style={{flex:1, padding: 40}}>
+                            <Button
+                                onPress={this._onPress}
+                                title='Next'
+                                color="#3b5998"
+                                accessibilityLabel='Next'
+                            />
+                        </View>
                     </View>
-                </View>
-                <View style={{flex:1, padding: 40}}>
-                    <Button
-                        onPress={this._onPress}
-                        title='Next'
-                        color="#3b5998"
-                        accessibilityLabel='Next'
-                    />
-                </View>
+                </ScrollView>
+                <PromptScreen.PromptGeneric 
+                    show= {this.state._promptShow} 
+                    title={this.state._promptMsg}/>
             </View>
-        </ScrollView>
         );
     }
 }
@@ -298,10 +340,20 @@ export class Address extends Component {
 function mapStateToProps (state) {
   return {
       logininfo: state.loginReducer.logininfo,
-      activecompany: state.activeCompanyReducer.activecompany
+      activecompany: state.activeCompanyReducer.activecompany,
+      employee: state.employeeProfile.employee
   }
 }
 
+function mapDispatchToProps (dispatch) {
+    return {
+        actions: {
+            employee: bindActionCreators(employeeActions, dispatch),
+        },
+    }
+  }
+  
 export default connect(
-  mapStateToProps,
+    mapStateToProps,
+    mapDispatchToProps
 )(Address)

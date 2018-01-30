@@ -82,7 +82,7 @@ export default {
 
     childTitleCont: {
         backgroundColor: 'transparent',
-        width: 200,
+        width: 250,
         justifyContent: 'center'
     },
 

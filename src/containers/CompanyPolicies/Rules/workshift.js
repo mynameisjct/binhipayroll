@@ -176,8 +176,6 @@ export class WorkShift extends Component {
                 _status: [...this.props.status]
             });
         }
-
-        
     }
 
     componentWillReceiveProps(nextProps) {

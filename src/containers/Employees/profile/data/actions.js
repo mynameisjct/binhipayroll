@@ -37,13 +37,13 @@ export const updateAddress = payload => ({
 });
 
 //Dependents Info
-export const updateDependents = () => ({
+export const updateDependents = payload => ({
     type: actionTypes.UPDATE_DEPENDENTS,
     payload,
 });
 
 /******************** Personal Info ********************/
-export const updateBankInfo = () => ({
+export const updateBankInfo = payload => ({
     type: actionTypes.UPDATE_BANKINFO,
     payload,
 });

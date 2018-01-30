@@ -240,6 +240,18 @@ export class Dynamic2DListType1 extends Component{
                                 :
                                     null
                             }
+                            <TextInput 
+                                ref={(input) => { this._textInput= input; }}
+                                keyboardType={this.props.keyboardType || 'default'}
+                                placeholder={this.props.placeholder || ''}
+                                placeholderTextColor='#DAE0E6'
+                                style={styles.textinputField}
+                                onChangeText={inputTxt => {this._updateInput(index, inputTxt)}}
+                                value={data.textVal}
+                                returnKeyType='next'
+                                autoCorrect={false}
+                                autoCapitalize='none'
+                            />
                             <View style={[formStyles.specialPickerWrapper.normal, {marginBottom: 15}]}>
                                 <Picker
                                     ref={(input) => { this._picker = input; }}
