@@ -15,7 +15,7 @@ export default class Overtime extends Component {
     render(){
         return(
             <View style={styles.container}>
-                <OvertimePolicy status={[1, 'Success']} triggerRefresh={this._triggerRefresh}/>
+                {/* <OvertimePolicy status={[1, 'Success']} triggerRefresh={this._triggerRefresh}/> */}
             </View>
         )
     }

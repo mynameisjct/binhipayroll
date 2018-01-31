@@ -15,7 +15,7 @@ export default class Tax extends Component {
     render(){
         return(
             <View style={styles.container}>
-                <TaxPolicy status={[1, 'Success']} triggerRefresh={this._triggerRefresh}/>
+                {/* <TaxPolicy status={[1, 'Success']} triggerRefresh={this._triggerRefresh}/> */}
             </View>
         )
     }

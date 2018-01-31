@@ -98,4 +98,6 @@ export const fetchApi = (endPoint, payload = {}, strMethod = 'post', headers = {
 		}
 	});
 } */
+
+
 		

@@ -21,8 +21,11 @@ import SearchBox from '../../../components/SearchBox';
 import ActionButton from '../../../components/ActionButton';
 import * as PromptScreen from '../../../components/ScreenLoadStatus';
 
+
 //Redux
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import * as employeeListActions from './data/actions';
 
 //Constants
 const btnActive = 'rgba(255, 255, 255, 0.3);'
@@ -71,6 +74,10 @@ export class List extends Component {
         }
     }
 
+    componentDidMount = () => {
+        this.props.actions.employeelist.get();
+    }
+
     _doNothing = () => {
 
     }
@@ -98,6 +105,7 @@ export class List extends Component {
     }
     
     render(){
+        console.log('this.props.employeelist')
         const oListHeader = (
             <View style={styles.contSearch}>
                 <View style={styles.iconFilter}>
@@ -132,18 +140,11 @@ export class List extends Component {
                         /* getItemLayout={this._getItemLayout} */
                         refreshing={this.state._refreshing}
                         onRefresh={() => {
-                            this.setState({_refreshing: true},
-                            () => {
-                                setTimeout(() => {
-                                    this.setState({_refreshing: false});
-                                }, 5000);
-                            }
-                            
-                        )
+                            this.props.actions.employeelist.get();
                         }}
                         ListHeaderComponent={oListHeader}
                         ref={(ref) => { this.flatListRef = ref; }}
-                        data={this.state._list}
+                        data={this.props.employeelist.data}
                         renderItem={({item}) => 
                             <TouchableNativeFeedback 
                                 onPress={() => {/* this._setActiveChild(item) */}}
@@ -159,8 +160,8 @@ export class List extends Component {
                                     </View>
                                     <View style={styles.labelCont}>
                                         <Text style={styles.txtLabelTitle}>{item.name}</Text>
-                                        <Text style={styles.txtLabel}>{item.position}</Text>
-                                        <Text style={styles.txtLabel}>{item.branch}</Text>
+                                        <Text style={styles.txtLabel}>{item.position || 'Not Available'}</Text>
+                                        <Text style={styles.txtLabel}>{item.branch || 'Not Available'}</Text>
                                     </View>
                                 </View>
                             </TouchableNativeFeedback>
@@ -181,16 +182,20 @@ export class List extends Component {
 function mapStateToProps (state) {
     return {
         logininfo: state.loginReducer.logininfo,
-        activecompany: state.activeCompanyReducer.activecompany
+        activecompany: state.activeCompanyReducer.activecompany,
+        employeelist: state.employeeList
     }
 }
 
 function mapDispatchToProps (dispatch) {
     return {
+        actions: {
+            employeelist: bindActionCreators(employeeListActions, dispatch),
+        },
     }
-}
-
-export default connect(
+  }
+  
+  export default connect(
     mapStateToProps,
     mapDispatchToProps
 )(List)

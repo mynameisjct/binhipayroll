@@ -54,7 +54,7 @@ export class WorkShift extends Component {
     render(){
         return(
             <View style={styles.container}>
-                <WorkShiftPolicy status={this.state._workShiftStatus} triggerRefresh={this._triggerRefresh}/>
+                {/* <WorkShiftPolicy status={this.state._workShiftStatus} triggerRefresh={this._triggerRefresh}/> */}
             </View>
         )
     }

@@ -15,7 +15,7 @@ export default class Undertime extends Component {
     render(){
         return(
             <View style={styles.container}>
-                <UndertimePolicy status={[1, 'Success']} triggerRefresh={this._triggerRefresh}/>
+                {/* <UndertimePolicy status={[1, 'Success']} triggerRefresh={this._triggerRefresh}/> */}
             </View>
         )
     }

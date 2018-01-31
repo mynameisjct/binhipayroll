@@ -1,6 +1,6 @@
 import * as actionTypes from './actionTypes';
 
-const initialState = null;
+const initialState = {data: []}
 const initialStatusState=2;
 
 export const reducer = (state = initialState, action) => {

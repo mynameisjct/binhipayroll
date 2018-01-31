@@ -55,7 +55,7 @@ export class Payroll extends Component {
     render(){
         return(
             <View style={styles.container}>
-                <PayrollPolicy status={this.state._payrollStatus} triggerRefresh={this._triggerRefresh}/>
+                {/* <PayrollPolicy status={this.state._payrollStatus} triggerRefresh={this._triggerRefresh}/> */}
             </View>
         )
     }

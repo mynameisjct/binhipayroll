@@ -162,10 +162,53 @@ class AddressForm extends Component {
     }
 
     _arrayToEnums = async(aList, oList) => {
+        /* console.log("aList: " + JSON.stringify(aList)); */
         await aList.map(data => {
+            console.log("data: " + JSON.stringify(data));
             oList[String(data.id)]=data.name;
         })
+        /* console.log("oList: " + JSON.stringify(oList)); */
     }
+
+    /* _arrayToEnums = (aList, oList) => {
+        for(i=0; i < aList.length; i++) {
+            console.log('[aList[i].id]: ' + [aList[i].id] );
+            console.log('aList[i].name: ' + aList[i].name );
+            oList[aList[i].id] = aList[i].name;
+        }
+
+        console.log("oList: " + JSON.stringify(oList));
+    } */
+
+/*     _arrayToEnums = (aList, oList) => {
+        let strList = '';
+        aList.map(data => {
+            if (strList==''){
+                strList = strList + '"' + data.id + '":"' +  data.name + '"';
+            }
+            else{
+                strList = strList + ',' + '"' + data.id + '":"' +  data.name + '"';
+            }
+        })
+        strList = '{' + strList + '}'
+        console.log("FINALLIST: " + strList);
+        oList = JSON.parse(strList);
+        console.log("=========oList: " + JSON.stringify(oList));
+    } */
+
+/*     _arrayToEnums = async(aList, oList) => {
+        let ordered = {};
+        console.log("aList: " + JSON.stringify(aList));
+        await aList.map(data => {
+            console.log("data: " + JSON.stringify(data));
+            oList[(data.id)]=data.name;
+        })
+
+        Object.keys(oList).sort().forEach(function(key) {
+            ordered[key] = oList[key];
+        });
+        console.log("ordered: " + JSON.stringify(ordered));
+    } */
 
     _onChangePS = (value) => {
         if((value.province != '') && this.state._oAddress.province !== value.province){
@@ -191,6 +234,7 @@ class AddressForm extends Component {
     }
 
     render(){
+        /* console.log('this.state._oProvinces:' + JSON.stringify(this.state._oProvinces)); */
         const Province = t.enums(this.state._oProvinces);
         const City = t.enums(this.state._oCities);
 
@@ -258,8 +302,8 @@ export class Address extends Component {
         const navigation = this.props.logininfo.navigation;
         let bPermanentAdd = this.permanent_address.getValue();
         let bPresentAdd = this.present_address.getValue();
-        console.log('bPresentAdd: ' + JSON.stringify(bPresentAdd));
-        console.log('bPermanentAdd: ' + JSON.stringify(bPermanentAdd));
+        /* console.log('bPresentAdd: ' + JSON.stringify(bPresentAdd));
+        console.log('bPermanentAdd: ' + JSON.stringify(bPermanentAdd)); */
 
         if (bPresentAdd && bPermanentAdd) {
             this.props.actions.employee.updateAddress({

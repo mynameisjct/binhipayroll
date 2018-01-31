@@ -15,7 +15,7 @@ export default class Benefits extends Component {
     render(){
         return(
             <View style={styles.container}>
-                <BenefitsPolicy status={[1, 'Success']} triggerRefresh={this._triggerRefresh}/>
+                {/* <BenefitsPolicy status={[1, 'Success']} triggerRefresh={this._triggerRefresh}/> */}
             </View>
         )
     }

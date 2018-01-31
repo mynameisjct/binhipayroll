@@ -13,6 +13,10 @@ const React = require('react-native');
 const { StyleSheet } = React;
 
 export default {
+    genericContainer: {
+        flex:1
+    },
+
     container: {
         flex:1,
         height: '100%',
@@ -80,7 +84,60 @@ export default {
         alignSelf: 'center',
         marginTop: 50,
         width: 400
+    },
+
+    txtGroupLabel: {
+        fontSize: 14,
+        color: '#EEB843',
+        fontStyle: 'italic',
+        fontWeight: '500'
+    },
+
+    txtNoteLabel: {
+        fontSize: 14,
+        color: '#EEB843',
+        fontStyle: 'italic',
+    },
+
+    contLabel: {
+        marginTop: 5,
+        marginBottom: 5,
+        alignItems: 'flex-end'
+    },
+
+    contNote: {
+        marginTop: 5,
+        marginBottom: 5,
+        alignItems: 'flex-start'
+    },
+
+    contIcon: {
+        flex: 1,
+        flexDirection: 'row',
+        alignItems: 'flex-end',
+        width: 100,
+        alignSelf: 'flex-end',
+    },
+
+    contAddLabel: {
+        width: 60,
+        height: '100%',
+        justifyContent: 'center',
+    },
+
+    
+    txtAddLabel: {
+        fontSize: 14,
+        color: '#EEB843',
+        fontWeight: '500'
+    },
+
+    contGroupWrapper: {
+        flex: 1,
+        marginBottom: 5
+        
     }
+
 
 }
    

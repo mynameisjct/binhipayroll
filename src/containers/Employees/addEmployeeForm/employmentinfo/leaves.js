@@ -15,7 +15,7 @@ export default class Leaves extends Component {
     render(){
         return(
             <View style={styles.container}>
-                <LeavesPolicy status={[1, 'Success']} triggerRefresh={this._triggerRefresh}/>
+                {/* <LeavesPolicy status={[1, 'Success']} triggerRefresh={this._triggerRefresh}/> */}
             </View>
         )
     }

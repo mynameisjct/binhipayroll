@@ -6,6 +6,7 @@ import activeBranchReducer from './activeBranch';
 import dataActionTriggerReducer  from './dataActionTrigger';
 import {reducer as companyPoliciesReducer} from './../containers/CompanyPolicies/data/reducer';
 import {employeeProfile} from './../containers/Employees/profile/data/reducer';
+import {reducer as employeeList} from './../containers/Employees/list/data/reducer';
 
 const rootReducer= combineReducers({
     loginReducer,
@@ -14,7 +15,8 @@ const rootReducer= combineReducers({
     activeBranchReducer,
     dataActionTriggerReducer,
     companyPoliciesReducer,
-    employeeProfile
+    employeeProfile,
+    employeeList
 });
 
 export default rootReducer;

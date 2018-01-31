@@ -15,7 +15,7 @@ export default class Tardiness extends Component {
     render(){
         return(
             <View style={styles.container}>
-                <TardinessPolicy status={[1, 'Success']} triggerRefresh={this._triggerRefresh}/>
+                {/* <TardinessPolicy status={[1, 'Success']} triggerRefresh={this._triggerRefresh}/> */}
             </View>
         )
     }
