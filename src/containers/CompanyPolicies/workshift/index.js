@@ -186,9 +186,6 @@ export class WorkShift extends Component {
             (JSON.stringify(this.state._curWorkShiftObj) !== JSON.stringify(nextProps.workshift.data)) &&
             (nextProps.workshift.status[0] == 1)
         ){
-            console.log('===componentWillReceiveProps: _initValues');
-            console.log('JSON.stringify(this.state._curWorkShiftObj): ' +  JSON.stringify(this.state._curWorkShiftObj));
-            console.log('JSON.stringify(nextProps.workshift.data): ' + JSON.stringify(nextProps.workshift.data));
             this._initValues();
         }
     }

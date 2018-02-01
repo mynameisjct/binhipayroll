@@ -1,7 +1,9 @@
 import * as actionTypes from './actionTypes';
 import { combineReducers } from 'redux';
+import  { CONSTANTS } from '../../../../constants';
 
 const initialState = null;
+const initialStatus = CONSTANTS.STATUS.LOADING;
 const initialActiveRule = '';
 
 const data = (state = initialState, action) => {
@@ -19,6 +21,20 @@ const data = (state = initialState, action) => {
 	}
 };
 
+const status = (state = initialStatus, action) => {
+	switch (action.type) {
+		case actionTypes.STATUS:
+			return action.payload;
+			break;
+
+		case actionTypes.EMPTY:
+			return {};
+			break;
+
+		default:
+			return state;
+	}
+};
 
 const activeRule = (state = initialActiveRule, action) => {
 	switch (action.type) {
@@ -34,6 +50,7 @@ const activeRule = (state = initialActiveRule, action) => {
 
 export const reducer = combineReducers({
 	data: data,
+	status: status,
 	activeRule: activeRule
 });
 

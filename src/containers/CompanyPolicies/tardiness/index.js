@@ -144,32 +144,72 @@ export class Tardiness extends Component{
     }
 
     componentDidMount(){
-        if(this.props.status[0]==1){
+        if(this.props.tardiness.data){
             this._initValues();
+            this.setState({_status: [1,'']})
         }
-        else if(this.props.status[0]==3){
-            this.props.triggerRefresh(true);
+        else{
+            this._getDataFromDB();
         }
-        else;
-
-        this.setState({
-            _status: [...this.props.status]
-        });
     }
 
     componentWillReceiveProps(nextProps) {
-        if(this.state._status[0] != nextProps.status[0]){
-            if(nextProps.status[0]==1){
-                this._initValues();
-            }
-            else{
-                this.setState({
-                    _status: nextProps.status
-                })
-            }
-
-            
+        if(this.state._status[0] != nextProps.tardiness.status[0]){
+                this.setState({ _status: nextProps.tardiness.status })
         }
+
+        if(
+            (JSON.stringify(this.state._tardinessData) !== JSON.stringify(nextProps.tardiness.data)) &&
+            (nextProps.tardiness.status[0] == 1)
+        ){
+            this._initValues();
+        }
+    }
+
+    _getDataFromDB = () => {
+        this.props.actions.tardiness.get({...this._requiredInputs(), transtype:'get'});
+    }
+
+    _initValues = () => {
+        try{
+            let bFlag = true;
+            let oActiveTardiness = JSON.parse(JSON.stringify(
+                this.props.tardiness.activeRule == '' ||  isNaN(this.props.tardiness.activeRule) ? 
+                tardinessSelector.getDefaultActiveTardiness() : tardinessSelector.getActiveTardinessFromID(this.props.tardiness.activeRule)
+            ));
+            if (!oActiveTardiness){
+                oActiveTardiness = JSON.parse(JSON.stringify(tardinessSelector.getDefaultTardiness()));
+                bFlag = false;
+            }
+            /* console.log('oActiveTardiness: ' + JSON.stringify(oActiveTardiness));
+            console.log('bFlag: ' + bFlag); */
+
+            this.setState({
+                _tardinessData: JSON.parse(JSON.stringify(tardinessSelector.getTardinessData())),
+                _activeTardiness: oActiveTardiness,
+                _disabledMode: bFlag
+            },
+                () => {
+                    /* console.log('_activeTardiness: ' + JSON.stringify(this.state._activeTardiness));
+                    console.log('_tardinessData: ' + JSON.stringify(this.state._tardinessData)); */
+                }
+            )
+
+            this.props.actions.tardiness.setActiveRule(oActiveTardiness.id);
+        }
+        catch(exception){
+            console.log('exception: ' + exception.message);
+            this.setState({_status: [0,CONSTANTS.ERROR.SERVER]})
+        }
+    }
+
+    _requiredInputs = () => {
+        return({
+            companyid: this.props.activecompany.id,
+            username: this.props.logininfo.resUsername,
+            accesstoken: '',
+            clientid: ''
+        })
     }
 
     _saveRule = () => {
@@ -400,40 +440,6 @@ export class Tardiness extends Component{
         });
     }
 
-    _initValues = () => {
-        try{
-            let bFlag = true;
-            let oActiveTardiness = JSON.parse(JSON.stringify(
-                this.props.tardiness.activeRule == '' ||  isNaN(this.props.tardiness.activeRule) ? 
-                tardinessSelector.getDefaultActiveTardiness() : tardinessSelector.getActiveTardinessFromID(this.props.tardiness.activeRule)
-            ));
-            if (!oActiveTardiness){
-                oActiveTardiness = JSON.parse(JSON.stringify(tardinessSelector.getDefaultTardiness()));
-                bFlag = false;
-            }
-            /* console.log('oActiveTardiness: ' + JSON.stringify(oActiveTardiness));
-            console.log('bFlag: ' + bFlag); */
-
-            this.setState({
-                _tardinessData: JSON.parse(JSON.stringify(tardinessSelector.getTardinessData())),
-                _activeTardiness: oActiveTardiness,
-                _disabledMode: bFlag,
-                _status: [1,'']
-            },
-                () => {
-                    /* console.log('_activeTardiness: ' + JSON.stringify(this.state._activeTardiness));
-                    console.log('_tardinessData: ' + JSON.stringify(this.state._tardinessData)); */
-                }
-            )
-
-            this.props.actions.tardiness.setActiveRule(oActiveTardiness.id);
-        }
-        catch(exception){
-            console.log('exception: ' + exception.message);
-            this.setState({_status: [0,'']})
-        }
-    }
-
     _updateRuleName = (strVal) => {
         let oActiveTardiness = {...this.state._activeTardiness};
         oActiveTardiness.name = strVal;
@@ -592,10 +598,6 @@ export class Tardiness extends Component{
         })
     }
 
-    _triggerRefresh = () => {
-        this.props.triggerRefresh(true);
-    }
-
     render(){
         console.log('xxxxxxxxxxxxx______REDERING TARDINESS');
         //Loading View Status
@@ -605,7 +607,7 @@ export class Tardiness extends Component{
 
         if(pProgress==0){
             return (
-                <PromptScreen.PromptError title='Tardiness Policy' onRefresh={()=>this.props.triggerRefresh(true)}/>
+                <PromptScreen.PromptError title='Tardiness Policy' onRefresh={this._getDataFromDB}/>
             );
         }
 
@@ -727,7 +729,7 @@ export class Tardiness extends Component{
                         refreshControl={
                             <RefreshControl
                                 refreshing={this.state._refreshing}
-                                onRefresh={() => this.props.triggerRefresh(true)}
+                                onRefresh={this._getDataFromDB}
                             />
                         }
                     >

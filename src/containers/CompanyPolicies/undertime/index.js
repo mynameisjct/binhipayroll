@@ -89,27 +89,66 @@ export class Undertime extends Component{
     }
 
     componentDidMount(){
-        if(this.props.status[0]==1){
+        if(this.props.undertime.data){
             this._initValues();
+            this.setState({_status: [1,'']})
         }
-        else if(this.props.status[0]==3){
-            this.props.triggerRefresh(true);
+        else{
+            this._getDataFromDB();
         }
-        else;
     }
 
     componentWillReceiveProps(nextProps) {
-        if(this.state._status[0] != nextProps.status[0]){
-            if(nextProps.status[0]==1){
-                this._initValues();
-            }
-            else{
-                this.setState({
-                    _status: nextProps.status
-                })
+        if(this.state._status[0] != nextProps.undertime.status[0]){
+                this.setState({ _status: nextProps.undertime.status })
+        }
+
+        if(
+            (JSON.stringify(this.state._undertimeData) !== JSON.stringify(nextProps.undertime.data)) &&
+            (nextProps.undertime.status[0] == 1)
+        ){
+            this._initValues();
+        }
+    }
+
+    _getDataFromDB = () => {
+        this.props.actions.undertime.get({...this._requiredInputs(), transtype:'get'});
+    }
+
+    
+    _requiredInputs = () => {
+        return({
+            companyid: this.props.activecompany.id,
+            username: this.props.logininfo.resUsername,
+            accesstoken: '',
+            clientid: ''
+        })
+    }
+
+    _initValues = () => {
+        try{
+            let bFlag = true;
+            let oActiveUndertime = JSON.parse(JSON.stringify(
+                this.props.undertime.activeRule == '' ||  isNaN(this.props.undertime.activeRule) ? 
+                undertimeSelector.getDefaultActiveUnderTime() : undertimeSelector.getActiveUndertimeFromID(this.props.undertime.activeRule)
+            ));
+
+            if (!oActiveUndertime){
+                oActiveUndertime = JSON.parse(JSON.stringify(undertimeSelector.getDefaultUndertime()));
+                bFlag = false;
             }
 
-            
+            this.setState({
+                _undertimeData: JSON.parse(JSON.stringify(undertimeSelector.getUndertimeData())),
+                _activeUndertime: oActiveUndertime,
+                _disabledMode: bFlag
+            })
+
+            this.props.actions.undertime.setActiveRule(oActiveUndertime.id);
+        }
+        catch(exception){
+            console.log('exception: ' + exception.message);
+            this.setState({_status: [0,'']})
         }
     }
 
@@ -344,42 +383,6 @@ export class Undertime extends Component{
         });
     }
 
-    _initValues = () => {
-        try{
-            let bFlag = true;
-            let oActiveUndertime = JSON.parse(JSON.stringify(
-                this.props.undertime.activeRule == '' ||  isNaN(this.props.undertime.activeRule) ? 
-                undertimeSelector.getDefaultActiveUnderTime() : undertimeSelector.getActiveUndertimeFromID(this.props.undertime.activeRule)
-            ));
-
-            if (!oActiveUndertime){
-                oActiveUndertime = JSON.parse(JSON.stringify(undertimeSelector.getDefaultUndertime()));
-                bFlag = false;
-            }
-
-            /* console.log('oActiveUndertime: ' + JSON.stringify(oActiveUndertime));
-            console.log('bFlag: ' + bFlag); */
-
-            this.setState({
-                _undertimeData: JSON.parse(JSON.stringify(undertimeSelector.getUndertimeData())),
-                _activeUndertime: oActiveUndertime,
-                _disabledMode: bFlag,
-                _status: [1, '']
-            },
-                () => {
-                    /* console.log('_activeUndertime: ' + JSON.stringify(this.state._activeUndertime));
-                    console.log('_undertimeData: ' + JSON.stringify(this.state._undertimeData)); */
-                }
-            )
-
-            this.props.actions.undertime.setActiveRule(oActiveUndertime.id);
-        }
-        catch(exception){
-            console.log('exception: ' + exception.message);
-            this.setState({_status: [0,'']})
-        }
-    }
-
     _updateRuleName = (strVal) => {
         let oActiveUndertime = {...this.state._activeUndertime};
         oActiveUndertime.name = strVal;
@@ -481,10 +484,6 @@ export class Undertime extends Component{
         })
     }
 
-    _triggerRefresh = () => {
-        this.props.triggerRefresh(true);
-    }
-
     render(){
         console.log('xxxxxxxxxxxxx______REDERING UNDERTIME');
         //Loading View Status
@@ -494,7 +493,7 @@ export class Undertime extends Component{
 
         if(pProgress==0){
             return (
-                <PromptScreen.PromptError title='Undertime Policy' onRefresh={()=>this.props.triggerRefresh(true)}/>
+                <PromptScreen.PromptError title='Undertime Policy' onRefresh={this._getDataFromDB}/>
             );
         }
 
@@ -616,7 +615,7 @@ export class Undertime extends Component{
                         refreshControl={
                             <RefreshControl
                                 refreshing={this.state._refreshing}
-                                onRefresh={() => this.props.triggerRefresh(true)}
+                                onRefresh={this._getDataFromDB}
                             />
                         }
                     >

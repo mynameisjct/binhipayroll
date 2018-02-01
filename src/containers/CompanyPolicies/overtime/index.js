@@ -359,27 +359,39 @@ export class Overtime extends Component {
     }
 
     componentDidMount(){
-        if(this.props.status[0]==1){
+        if(this.props.overtime.data){
             this._initValues();
+            this.setState({_status: [1,'']})
         }
-        else if(this.props.status[0]==3){
-            this.props.triggerRefresh(true);
+        else{
+            this._getDataFromDB();
         }
-        else;
-
-        this.setState({
-            _status: [...this.props.status]
-        });
     }
 
     componentWillReceiveProps(nextProps) {
-        if(this.state._status[0] != nextProps.status[0]){
-            if(nextProps.status[0]==1){
-                this._initValues();
-            }else{
-                this.setState({ _status: nextProps.status })
-            }
+        if(this.state._status[0] != nextProps.overtime.status[0]){
+                this.setState({ _status: nextProps.overtime.status })
         }
+
+        if(
+            (JSON.stringify(this.state._allData) !== JSON.stringify(nextProps.overtime.data)) &&
+            (nextProps.overtime.status[0] == 1)
+        ){
+            this._initValues();
+        }
+    }
+
+    _getDataFromDB = () => {
+        this.props.actions.overtime.get({...this._requiredInputs(), transtype:'get'});
+    }
+
+    _requiredInputs = () => {
+        return({
+            companyid: this.props.activecompany.id,
+            username: this.props.logininfo.resUsername,
+            accesstoken: '',
+            clientid: ''
+        })
     }
 
     _initValues = () => {
@@ -759,7 +771,7 @@ export class Overtime extends Component {
 
         if(pProgress==0){
             return (
-                <PromptScreen.PromptError title='Overtime Policy' onRefresh={()=>this.props.triggerRefresh(true)}/>
+                <PromptScreen.PromptError title='Overtime Policy' onRefresh={this._getDataFromDB}/>
             );
         }
 
@@ -770,7 +782,7 @@ export class Overtime extends Component {
                         refreshControl={
                             <RefreshControl
                                 refreshing={this.state._refreshing}
-                                onRefresh={() => this.props.triggerRefresh(true)}
+                                onRefresh={this._getDataFromDB}
                             />
                         }
                     >

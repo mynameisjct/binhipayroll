@@ -31,9 +31,6 @@ import { bindActionCreators } from 'redux';
 import {SetLoginInfo, SetActiveCompany} from '../../actions';
 import * as payrollActions from './data/payroll/actions';
 import * as taxActions from './data/tax/actions';
-import * as tardinessActions from './data/tardiness/actions';
-import * as undertimeActions from './data/undertime/actions';
-import * as overtimeActions from './data/overtime/actions';
 import * as leavesActions from './data/leaves/actions';
 import * as benefitsActions from './data/benefits/actions';
 import * as bonusActions from './data/bonus/actions';
@@ -61,9 +58,6 @@ export class CompanyPolicies extends Component {
             //Error-0, Success-1, Loading-2,  Handler
             _payrollStatus: ['3', 'Loading...'],
             _taxStatus: ['3','Loading...'],
-            _tardinessStatus: ['3', 'Loading...'],
-            _undertimeStatus: ['3', 'Loading...'],
-            _overtimeStatus: ['3', 'Loading...'],
             _leaveStatus: ['3', 'Loading...'],
             _benefitsStatus: ['3', 'Loading...'],
             _bonusStatus: ['3', 'Loading...'],
@@ -205,9 +199,6 @@ export class CompanyPolicies extends Component {
                 _objActiveCompany: {...oProps.activecompany},
                 _payrollStatus: ['3', 'Loading...'],
                 _taxStatus: ['3','Loading...'],
-                _tardinessStatus: ['3', 'Loading...'],
-                _undertimeStatus: ['3', 'Loading...'],
-                _overtimeStatus: ['3', 'Loading...'],
                 _leaveStatus: ['3', 'Loading...'],
                 _benefitsStatus: ['3', 'Loading...'],
                 _bonusStatus: ['3', 'Loading...'],
@@ -293,106 +284,6 @@ export class CompanyPolicies extends Component {
                 _taxStatus: oStatus
             })
 		});
-    }
-
-    _getTardinessRule = (bForceUpdate) => {
-        let curStatus = [2, 'Loading...'];
-        this.setState({
-            _tardinessStatus: curStatus
-        });
-        
-        let oInput = {
-            companyid: this.state._objActiveCompany.id,
-            username: this.state._objLoginInfo.resUsername,
-            transtype: 'get',
-            accesstoken: '',
-            clientid: '',
-        }
-
-        this.props.actions.tardiness.get(oInput)
-        .then(() => {
-/*             console.log('this.props.tardiness: ' + JSON.stringify(this.props.tardiness)); */
-            let oTardiness  = {...this.props.tardiness};
-            let oStatus = [oTardiness.flagno, oTardiness.message];
-            this.setState({
-                _tardinessStatus: oStatus
-            });
-		})
-		.catch((exception) => {
-            /* console.log('oInput: ' + JSON.stringify(oInput));
-            console.log('exception: ' + exception); */
-            let oStatus = [0, 'Application error was encountered. \n Please contact BINHI-MeDFI'];
-			this.setState({
-                _tardinessStatus: oStatus
-            })
-		});
-    }
-
-    _getUndertimeRule = (bForceUpdate) => {
-        let curStatus = [2, 'Loading...'];
-        this.setState({
-            _undertimeStatus: curStatus
-        });
-
-        let oInput = {
-            companyid: this.state._objActiveCompany.id,
-            username: this.state._objLoginInfo.resUsername,
-            transtype: 'get',
-            accesstoken: '',
-            clientid: '',
-        }
-        
-        this.props.actions.undertime.get(oInput)
-        .then(() => {
-            /* console.log('this.props.undertime: ' + JSON.stringify(this.props.undertime)); */
-            let oUndertime  = {...this.props.undertime};
-            let oStatus = [oUndertime.flagno, oUndertime.message];
-            this.setState({
-                _undertimeStatus: oStatus
-            });
-		})
-		.catch((exception) => {
-            /* console.log('oInput: ' + JSON.stringify(oInput));
-            console.log('exception: ' + exception); */
-            let oStatus = [0, 'Application error was encountered. \n Please contact BINHI-MeDFI'];
-			this.setState({
-                _undertimeStatus: oStatus
-            })
-		}); 
-    }
-
-    _getOvertimeRule = (bForceUpdate) => {
-        let curStatus = [2, 'Loading...'];
-        this.setState({
-            _overtimeStatus: curStatus
-        });
-
-        let oInput = {
-            companyid: this.state._objActiveCompany.id,
-            username: this.state._objLoginInfo.resUsername,
-            transtype: 'get',
-            accesstoken: '',
-            clientid: '',
-        }
-        
-        this.props.actions.overtime.get(oInput)
-        .then(() => {
-            /* console.log('this.props.overtime: ' + JSON.stringify(this.props.overtime)); */
-            let oOvertime  = {...this.props.overtime};
-            let oStatus = [oOvertime.flagno, oOvertime.message];
-            this.setState({
-                _overtimeStatus: oStatus
-            });
-		})
-		.catch((exception) => {
-            console.log('======OVERTIME ERROR=======');
-            console.log('oInput: ' + JSON.stringify(oInput));
-            console.log('exception: ' + exception);
-            let oStatus = [0, 'Application error was encountered. \n Please contact BINHI-MeDFI'];
-			this.setState({
-                _overtimeStatus: oStatus
-            })
-		}); 
     }
 
     _getLeavesRule = (bForceUpdate) => {
@@ -705,9 +596,6 @@ function mapStateToProps (state) {
         activecompany: state.activeCompanyReducer.activecompany,
         payroll: state.companyPoliciesReducer.payroll,
         tax: state.companyPoliciesReducer.tax,
-        tardiness: state.companyPoliciesReducer.tardiness.data,
-        undertime: state.companyPoliciesReducer.undertime.data,
-        overtime: state.companyPoliciesReducer.overtime.data,
         leaves: state.companyPoliciesReducer.leaves,
         benefits: state.companyPoliciesReducer.benefits,
         bonus: state.companyPoliciesReducer.bonus,
@@ -721,9 +609,6 @@ function mapDispatchToProps (dispatch) {
         actions: {
             payroll: bindActionCreators(payrollActions, dispatch),
             tax: bindActionCreators(taxActions,dispatch),
-            tardiness: bindActionCreators(tardinessActions,dispatch),
-            undertime: bindActionCreators(undertimeActions,dispatch),
-            overtime: bindActionCreators(overtimeActions, dispatch),
             leaves: bindActionCreators(leavesActions, dispatch),
             benefits: bindActionCreators(benefitsActions, dispatch),
             bonus: bindActionCreators(bonusActions, dispatch),
