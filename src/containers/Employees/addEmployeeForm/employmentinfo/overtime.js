@@ -5,7 +5,7 @@ import {
 } from 'react-native';
 
 import styles from '../personalinfo/styles';
-import {Overtime as OvertimePolicy} from '../../../CompanyPolicies/Rules/overtime';
+/* import {Overtime as OvertimePolicy} from '../../../CompanyPolicies/Rules/overtime'; */
 
 export default class Overtime extends Component {
     _triggerRefresh = () => {

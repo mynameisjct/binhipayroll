@@ -134,7 +134,7 @@ export class Login extends Component {
             _curDate: moment().format("LL"),
             _curDateMDY:  moment().format("MM/DD/YYYY"),
             _curTime: moment().add(8,'hours').format("hh:mm:ss A"),
-           /*  _curTime: moment().format("hh:mm:ss A"), */
+            /* _curTime: moment().format("hh:mm:ss A"), */
             _curDay: this.getDayAbbrev(_curWeekday)
         });
     }
@@ -249,7 +249,7 @@ export class Login extends Component {
                         });
                     break; */
 
-                    this.props.navigation.navigate('AddEmployeeForm')
+                    this.props.navigation.navigate('CompanyPolicies')
                     break;
 
                 case 'TIMEIN':

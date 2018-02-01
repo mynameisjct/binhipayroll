@@ -37,3 +37,27 @@ export {
     WORKSHIFT_IS_LOADING
 };
 
+export const CONSTANTS = {
+
+    //ERROR MESSAGES
+    ERROR: {
+        SERVER: 'An Unknown Error in the server was encountered. Please contact BINHI-MeDFI.',
+        UNKNOWN: 'An Unknown Error was encountered. Please contact BINHI-MeDFI.',
+        SOMETHING: 'Something went wrong.'
+    },
+
+    //LOADING MESSAGES
+    LOADING:'Loading...',
+
+    //COMPONENT STATUS
+    STATUS: {
+        ERROR: [0, ''],
+        LOADING: [2, 'Loading...']
+    },
+
+    //SUFFIX
+    SUFFIX: {
+        CONTACT: 'Or please contact BINHI-MeDFI.',
+    }
+    
+}

@@ -3,12 +3,12 @@ import {store} from '../../../../store';
 let activeID = '';
 
 export const getUndertimeData = () => {
-	return store.getState().companyPoliciesReducer.undertime;
+	return store.getState().companyPoliciesReducer.undertime.data;
 };
 
 export const getDefaultActiveUnderTime = () => {
 	try{
-		let oData = [...store.getState().companyPoliciesReducer.undertime.data];
+		let oData = [...store.getState().companyPoliciesReducer.undertime.data.data];
 		let oSortedData = [...oData.sort(compare).reverse()];
 		let oDefaultActive = {...oSortedData[0]};
 		if (Object.keys(oDefaultActive).length === 0 ){
@@ -26,7 +26,7 @@ export const getDefaultActiveUnderTime = () => {
 export const getActiveUndertimeFromID = (value) => {
 	try{
 		activeID = value;
-		let oData = [...store.getState().companyPoliciesReducer.undertime.data];
+		let oData = [...store.getState().companyPoliciesReducer.undertime.data.data];
 		let oActiveData = oData.find(_findActive);
 		return oActiveData;
 	}
@@ -36,7 +36,7 @@ export const getActiveUndertimeFromID = (value) => {
 }
 
 export const getDefaultUndertime = () => {
-	return {...store.getState().companyPoliciesReducer.undertime.default};
+	return {...store.getState().companyPoliciesReducer.undertime.data.default};
 }
 
 

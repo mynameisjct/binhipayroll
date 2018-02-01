@@ -1,9 +1,9 @@
 import * as api from './api';
 import * as actionTypes from './actionTypes';
 
-export const update = tardiness => ({
+export const update = payload => ({
 	type: actionTypes.UPDATE,
-	tardiness,
+	payload,
 });
 
 export const empty = () => ({
@@ -14,14 +14,19 @@ export const remove = () => ({
 	type: actionTypes.REMOVE,
 });
 
+export const setActiveRule = payload => ({
+	type: actionTypes.ACTIVERULE,
+	payload
+});
+
 export const get = payload => 
 	dispatch =>
 		api.get(payload)
 		.then((response) => response.json())
 		.then((res) => {
-/* 			console.log('========================');
+			console.log('========================');
 			console.log('INPUT: ' + JSON.stringify(payload));
-			console.log('OUTPUT: ' + JSON.stringify(res)); */
+			console.log('OUTPUT: ' + JSON.stringify(res));
 			dispatch(update(res));
 		});
 

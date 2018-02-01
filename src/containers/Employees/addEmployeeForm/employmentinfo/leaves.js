@@ -5,7 +5,7 @@ import {
 } from 'react-native';
 
 import styles from '../personalinfo/styles';
-import {Leaves as LeavesPolicy} from '../../../CompanyPolicies/Rules/leaves';
+/* import {Leaves as LeavesPolicy} from '../../../CompanyPolicies/Rules/leaves'; */
 
 export default class Leaves extends Component {
     _triggerRefresh = () => {

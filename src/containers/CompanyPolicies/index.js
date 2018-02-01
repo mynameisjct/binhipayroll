@@ -14,25 +14,21 @@ import LinearGradient from 'react-native-linear-gradient';
 import styles from './styles';
 
 //Child Containers
-import WorkShift from './Rules/workshift';;
+import WorkShift from './workshift';;
 import Payroll from './Rules/payroll';
 import Tax from './Rules/tax';
-import Tardiness from './Rules/tardiness';
-import Undertime from './Rules/undertime';
-import Overtime from './Rules/overtime';
+import Tardiness from './tardiness';
+import Undertime from './undertime';
+import Overtime from './overtime';
 import Leaves from './Rules/leaves';
 import Benefits from './Rules/benefits';
 import Bonus from './Rules/bonus';
 import Ranks from './ranks';
 
-//API
-import * as workshiftAPI from './data/workshift/api';
-
 //Redux
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import {SetLoginInfo, SetActiveCompany} from '../../actions';
-import * as workshiftActions from './data/workshift/actions';
 import * as payrollActions from './data/payroll/actions';
 import * as taxActions from './data/tax/actions';
 import * as tardinessActions from './data/tardiness/actions';
@@ -63,7 +59,6 @@ export class CompanyPolicies extends Component {
             _objActiveCompany: null,
 
             //Error-0, Success-1, Loading-2,  Handler
-            _workShiftStatus: ['3', 'Loading...'],
             _payrollStatus: ['3', 'Loading...'],
             _taxStatus: ['3','Loading...'],
             _tardinessStatus: ['3', 'Loading...'],
@@ -208,7 +203,6 @@ export class CompanyPolicies extends Component {
             this.setState({
                 _objLoginInfo: {...oProps.logininfo},
                 _objActiveCompany: {...oProps.activecompany},
-                _workShiftStatus: ['3', 'Loading...'],
                 _payrollStatus: ['3', 'Loading...'],
                 _taxStatus: ['3','Loading...'],
                 _tardinessStatus: ['3', 'Loading...'],
@@ -236,48 +230,6 @@ export class CompanyPolicies extends Component {
         this.setState({
             _hasActiveTransaction: value
         })
-    }
-    
-    _getAllCompanyPolicies = () => {
-/*         this._getWorkSchedule();
-        this._getPayrollSchedule();
-        this._getTaxSettings();
-        this._getTardinessRule();
-        this._getUndertimeRule();
-        this._getOvertimeRule();
-        this._getLeavesRule();
-        this._getBenefitsRule();
-        this._getBonusRule(); */
-    }
-
-    _getWorkSchedule = (bForceUpdate) => {
-        console.log('IM IN _getWorkSchedule');
-        let curStatus = [2, 'Loading...'];
-        this.setState({
-            _workShiftStatus: curStatus
-        });
-
-        this.props.actions.workshift.get({
-            companyid: this.state._objActiveCompany.id,
-            username: this.state._objLoginInfo.resUsername,
-            transtype: 'get',
-            accesstoken: '',
-            clientid: '',
-        })
-        .then(() => {
-            let oWorkShift  = {...this.props.companyWorkShift};
-            let oStatus = [oWorkShift.flagno, oWorkShift.message];
-            this.setState({
-                _workShiftStatus: oStatus
-            });
-		})
-		.catch((exception) => {
-            console.log('exception: ' + exception);
-            let oStatus = [0, 'Application error was encountered. \n Please contact BINHI-MeDFI'];
-			this.setState({
-                _workShiftStatus: oStatus
-            })
-		});
     }
 
     _getPayrollSchedule = (bForceUpdate) => {
@@ -620,10 +572,7 @@ _setActiveChild = (oItem) => {
             switch (this.state._activeChild){
                 case '001': 
                     childComponent = (
-                        <WorkShift 
-                            hasUnsaved={this._hasActiveTransaction} 
-                            status={this.state._workShiftStatus} 
-                            triggerRefresh={this._getWorkSchedule}/>
+                        <WorkShift/>
                     );
                     break;
                 case '002':
@@ -754,12 +703,11 @@ function mapStateToProps (state) {
     return {
         logininfo: state.loginReducer.logininfo,
         activecompany: state.activeCompanyReducer.activecompany,
-        companyWorkShift: state.companyPoliciesReducer.workshift,
         payroll: state.companyPoliciesReducer.payroll,
         tax: state.companyPoliciesReducer.tax,
-        tardiness: state.companyPoliciesReducer.tardiness,
-        undertime: state.companyPoliciesReducer.undertime,
-        overtime: state.companyPoliciesReducer.overtime,
+        tardiness: state.companyPoliciesReducer.tardiness.data,
+        undertime: state.companyPoliciesReducer.undertime.data,
+        overtime: state.companyPoliciesReducer.overtime.data,
         leaves: state.companyPoliciesReducer.leaves,
         benefits: state.companyPoliciesReducer.benefits,
         bonus: state.companyPoliciesReducer.bonus,
@@ -771,7 +719,6 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
     return {
         actions: {
-            workshift: bindActionCreators(workshiftActions, dispatch),
             payroll: bindActionCreators(payrollActions, dispatch),
             tax: bindActionCreators(taxActions,dispatch),
             tardiness: bindActionCreators(tardinessActions,dispatch),

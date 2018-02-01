@@ -120,7 +120,7 @@ export class Basic extends Component {
         _oGovID: {...oGovForm},
       });
 
-      navigation.navigate('Address');
+      this._saveBasicnavigation.navigate('Address');
     }
     else{
       Alert.alert(

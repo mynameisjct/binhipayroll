@@ -3,12 +3,12 @@ import {store} from '../../../../store';
 let activeID = '';
 
 export const getTardinessData = () => {
-	return store.getState().companyPoliciesReducer.tardiness;
+	return store.getState().companyPoliciesReducer.tardiness.data;
 };
 
 export const getDefaultActiveTardiness = () => {
 	try{
-		let oData = [...store.getState().companyPoliciesReducer.tardiness.data];
+		let oData = [...store.getState().companyPoliciesReducer.tardiness.data.data];
 		let oSortedData = [...oData.sort(compare).reverse()];
 		let oDefaultActive = {...oSortedData[0]};
 		if (Object.keys(oDefaultActive).length === 0 ){
@@ -26,7 +26,7 @@ export const getDefaultActiveTardiness = () => {
 export const getActiveTardinessFromID = (value) => {
 	try{
 		activeID = value;
-		let oData = [...store.getState().companyPoliciesReducer.tardiness.data];
+		let oData = [...store.getState().companyPoliciesReducer.tardiness.data.data];
 		let oActiveData = oData.find(_findActive);
 		return oActiveData;
 	}
@@ -36,7 +36,7 @@ export const getActiveTardinessFromID = (value) => {
 }
 
 export const getDefaultTardiness = () => {
-	return {...store.getState().companyPoliciesReducer.tardiness.defaultdata};
+	return {...store.getState().companyPoliciesReducer.tardiness.data.defaultdata};
 }
 
 

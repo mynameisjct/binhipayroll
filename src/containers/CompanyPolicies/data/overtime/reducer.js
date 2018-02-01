@@ -1,8 +1,10 @@
 import * as actionTypes from './actionTypes';
+import { combineReducers } from 'redux';
 
 const initialState = null;
+const initialActiveRule = '';
 
-export const reducer = (state = initialState, action) => {
+const data = (state = initialState, action) => {
 	switch (action.type) {
 		case actionTypes.UPDATE:
 			return action.payload;
@@ -16,3 +18,22 @@ export const reducer = (state = initialState, action) => {
 			return state;
 	}
 };
+
+
+const activeRule = (state = initialActiveRule, action) => {
+	switch (action.type) {
+		case actionTypes.ACTIVERULE:
+			console.log('activeOT: ' + action.payload);
+			return action.payload;
+			break;
+
+		default:
+			return state;
+	}
+};
+
+export const reducer = combineReducers({
+	data: data,
+	activeRule: activeRule
+});
+

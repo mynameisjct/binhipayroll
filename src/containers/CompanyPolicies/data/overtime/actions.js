@@ -10,6 +10,11 @@ export const empty = () => ({
 	type: actionTypes.EMPTY,
 });
 
+export const setActiveRule = payload => ({
+	type: actionTypes.ACTIVERULE,
+	payload
+});
+
 export const get = payload =>
 	dispatch =>
 		api.get(payload)

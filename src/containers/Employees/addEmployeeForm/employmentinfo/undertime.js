@@ -5,7 +5,7 @@ import {
 } from 'react-native';
 
 import styles from '../personalinfo/styles';
-import {Undertime as UndertimePolicy} from '../../../CompanyPolicies/Rules/undertime';
+/* import {Undertime as UndertimePolicy} from '../../../CompanyPolicies/Rules/undertime'; */
 
 export default class Undertime extends Component {
     _triggerRefresh = () => {

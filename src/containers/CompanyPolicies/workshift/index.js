@@ -20,7 +20,7 @@ import moment from "moment";
 import _ from 'lodash';
 import ActionButton from 'react-native-action-button';
 
-import styles from './styles'
+import styles from '../styles';
 import CustomCard from '../../../components/CustomCards';
 import MessageBox from '../../../components/MessageBox';
 import SavePrompt from '../../../components/SavePrompt';
@@ -36,9 +36,13 @@ import * as workshiftApi from '../data/workshift/api';
 
 //Redux
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import * as workShiftSelector from '../data/workshift/selector';
 import {UpdateWorkShift} from '../../../actions/companyPolicies';
+import * as workshiftActions from '../data/workshift/actions';
 
+//Constants
+import {CONSTANTS} from '../../../constants';
 
 const category = ['', 'DAY OFF', 'TIME-IN', 'TIME-OUT'];
 const description_DefaultTime = 'The same Time-in and Time-out';
@@ -60,7 +64,7 @@ export class WorkShift extends Component {
             _activeBreakTimeIndex: '',
             _loadedStatus: '',
             _bNoWorkShift: false,
-            _status: status_loading,
+            _status: CONSTANTS.STATUS.LOADING,
             _disabledMode: true,
             _activeSchedule: null,
             _activeType: '',
@@ -158,70 +162,79 @@ export class WorkShift extends Component {
         this._onBreakTimeUpdate = this._onBreakTimeUpdate.bind(this);
     }
 
+    componentWillUnmount(){
+        this.props.actions.workshift.setActiveRule('')
+    }
+
     componentDidMount(){
-        if(this.props.status[0]==1){
-            this.setState({
-                _status: [2, 'Loading...']
-            },
-                () => {
-                    this._initValues();
-                }
-            ) 
-        }
-        else if(this.props.status[0]==3){
-            this.props.triggerRefresh(true);
+        if(this.props.workshift.data){
+            this._initValues();
+            this.setState({_status: [1,'']})
         }
         else{
-            this.setState({
-                _status: [...this.props.status]
-            });
+            console.log('componentDidMount==_getDataFromDB');
+            this._getDataFromDB();
         }
     }
 
     componentWillReceiveProps(nextProps) {
-        if(this.state._status[0] != nextProps.status[0]){
-            if(nextProps.status[0]==1){
-                this.setState({
-                    _status: [2, 'Loading...']
-                },
-                    () => {
-                        this._initValues();
-                    }
-                )    
-            }
-            else{
-                this.setState({
-                    _status: nextProps.status
-                })
-            }
+        if(this.state._status[0] != nextProps.workshift.status[0]){
+                this.setState({ _status: nextProps.workshift.status })
+        }
+
+        if(
+            (JSON.stringify(this.state._curWorkShiftObj) !== JSON.stringify(nextProps.workshift.data)) &&
+            (nextProps.workshift.status[0] == 1)
+        ){
+            console.log('===componentWillReceiveProps: _initValues');
+            console.log('JSON.stringify(this.state._curWorkShiftObj): ' +  JSON.stringify(this.state._curWorkShiftObj));
+            console.log('JSON.stringify(nextProps.workshift.data): ' + JSON.stringify(nextProps.workshift.data));
+            this._initValues();
         }
     }
 
+    _getDataFromDB = () => {
+        this.props.actions.workshift.get({...this._requiredInputs(), transtype:'get'});
+    }
+
+    _requiredInputs = () => {
+        return({
+            companyid: this.props.activecompany.id,
+            username: this.props.logininfo.resUsername,
+            accesstoken: '',
+            clientid: ''
+        })
+    }
+
     _initValues = () => {
-        let bNoWorkShift = false;
-        let oWorkShift = {...workShiftSelector.getWorkShiftObject()};
-        let oDefaultScheule = {...workShiftSelector.getDefaultActiveSchedule()};
-        let oActiveType = oDefaultScheule.id;
-        if(Object.keys(oDefaultScheule).length === 0){
-            oDefaultScheule = JSON.parse(JSON.stringify(this.state._defaultSchedule))
-            bNoWorkShift = true;
-        }
-        this.setState({
-            _curWorkShiftObj: oWorkShift,
-            _activeSchedule: oDefaultScheule,
-            _activeType: oActiveType,
-            _bNoWorkShift: bNoWorkShift,
-            _disabledMode: !bNoWorkShift,
-        },
-            () => {
-                this.setState({
-                    _status: [1, 'Success!']
-                })
-                /* console.log('_curWorkShiftObj: ' + JSON.stringify(this.state._curWorkShiftObj));
-                console.log('_activeSchedule: ' + JSON.stringify(this.state._activeSchedule));
-                console.log('_activeType: ' + JSON.stringify(this.state._activeType)); */
+        try{
+            let bNoWorkShift = false;
+            let oWorkShift = {...workShiftSelector.getWorkShiftObject()};
+            let oDefaultSchedule = this.props.workshift.activeRule == '' ||  isNaN(this.props.workshift.activeRule) ?
+                workShiftSelector.getDefaultActiveSchedule() : workShiftSelector.getScheduleFromTypeID(this.props.workshift.activeRule)
+            if(Object.keys(oDefaultSchedule).length === 0){
+                oDefaultSchedule = JSON.parse(JSON.stringify(this.state._defaultSchedule));
+                bNoWorkShift = true;
             }
-        ); 
+
+            //Initialize component values
+            this.setState({
+                _curWorkShiftObj: oWorkShift,
+                _activeSchedule: oDefaultSchedule,
+                _activeType:  oDefaultSchedule.id,
+                _bNoWorkShift: bNoWorkShift,
+                _disabledMode: !bNoWorkShift,
+            }); 
+
+            //Initialize Active Rule
+            this.props.actions.workshift.setActiveRule(oDefaultSchedule.id);
+        }
+        catch(exception){
+            this.setState({
+                _status: [0,CONSTANTS.ERROR.SERVER]
+            });
+            console.log('exception:' + exception.message);
+        }
     }
 
     _setBottomBorder = (index) => {
@@ -410,10 +423,13 @@ export class WorkShift extends Component {
     }
 
     _setActiveWorkShiftType = (itemValue) => {
+        console.log('itemValue: ' + itemValue);
+        let oNewActive = workShiftSelector.getScheduleFromTypeID(itemValue);
         this.setState({
-            _activeType: itemValue,
-            _activeSchedule: workShiftSelector.getScheduleFromTypeID(itemValue)
+            _activeType: oNewActive.id,
+            _activeSchedule: oNewActive
         })
+        this.props.actions.workshift.setActiveRule(oNewActive.id);
     }
 
     _addNewWorkShift = () => {
@@ -449,6 +465,7 @@ export class WorkShift extends Component {
             workshiftApi.create(oInput)
             .then((response) => response.json())
             .then((res) => {
+                console.log('SAVE_RES: ' + JSON.stringify(res));
                 this.setState({
                     _promptShow: false
                 });
@@ -466,7 +483,7 @@ export class WorkShift extends Component {
                         _resMsg: res.message,
                         _bNoWorkShift: false
                     },
-                        this.props.triggerRefresh(true)
+                        this._getDataFromDB()
                     )
                 }
             })
@@ -525,12 +542,13 @@ export class WorkShift extends Component {
                     _resMsg: res.message
                 });
             }else if(res.flagno==1){
+                this.props.actions.workshift.setActiveRule('');
                 this.setState({
                     _msgBoxShow: true,
                     _msgBoxType: 'success',
                     _resMsg: res.message
                 },
-                    this.props.triggerRefresh(true)
+                    this._getDataFromDB()
                 )
             }
             
@@ -652,6 +670,7 @@ export class WorkShift extends Component {
  
     render(){
         console.log('xxxxxxxxxxxxx______REDERING WORKSHIFT');
+        console.log('this.state._status: ' + this.state._status);
         //Loading View Status
         let pStatus = [...this.state._status];
         let pProgress = pStatus[0];
@@ -659,7 +678,7 @@ export class WorkShift extends Component {
 
         if(pProgress==0){
             return (
-                <PromptScreen.PromptError title='Work Shift Policy' onRefresh={()=>this.props.triggerRefresh(true)}/>
+                <PromptScreen.PromptError title='Work Shift Policy' onRefresh={this._getDataFromDB}/>
             );
         }
 
@@ -838,7 +857,7 @@ export class WorkShift extends Component {
                         refreshControl={
                             <RefreshControl
                                 refreshing={this.state._refreshing}
-                                onRefresh={() => this.props.triggerRefresh(true)}
+                                onRefresh={this._getDataFromDB}
                             />
                         }>
                         <CustomCard 
@@ -1032,7 +1051,7 @@ function mapStateToProps (state) {
     return {
         logininfo: state.loginReducer.logininfo,
         activecompany: state.activeCompanyReducer.activecompany,
-        companyWorkShift: state.companyPoliciesReducer.workshift
+        workshift: state.companyPoliciesReducer.workshift
     }
 }
 
@@ -1042,10 +1061,10 @@ function mapDispatchToProps (dispatch) {
         dispatchFetchDataFromDB: (objData) => {
             dispatch(FetchDataFromDB(objData))
         },
-        dispatchResetResponse: (response) => {
-            dispatch(UpdateWorkShift(response))
-        },
 
+        actions: {
+            workshift: bindActionCreators(workshiftActions, dispatch),
+        }
     }
 }
 

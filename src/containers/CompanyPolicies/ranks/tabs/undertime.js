@@ -4,7 +4,7 @@ import {
     Text,
 } from 'react-native';
 
-import Undertime from '../../Rules/undertime'
+import Undertime from '../../undertime';
 
 export default class UndertimeScreen extends Component {
     _triggerRefresh = () => {

@@ -5,7 +5,7 @@ import {
 } from 'react-native';
 
 import styles from '../personalinfo/styles';
-import {Benefits as BenefitsPolicy} from '../../../CompanyPolicies/Rules/benefits';
+/* import {Benefits as BenefitsPolicy} from '../../../CompanyPolicies/Rules/benefits'; */
 
 export default class Benefits extends Component {
     _triggerRefresh = () => {

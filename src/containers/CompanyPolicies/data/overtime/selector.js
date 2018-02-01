@@ -3,12 +3,12 @@ import {store} from '../../../../store';
 let activeID = '';
 
 export const getAllData = () => {
-	return store.getState().companyPoliciesReducer.overtime;
+	return store.getState().companyPoliciesReducer.overtime.data;
 };
 
 export const getDefaultActiveRule = () => {
 	try{
-		let oData = [...store.getState().companyPoliciesReducer.overtime.data];
+		let oData = [...store.getState().companyPoliciesReducer.overtime.data.data];
 		let oSortedData = [...oData.sort(compare).reverse()];
 		let oDefaultActive = {...oSortedData[0]};
 		if (Object.keys(oDefaultActive).length === 0 ){
@@ -26,7 +26,7 @@ export const getDefaultActiveRule = () => {
 export const getActiveRuleFromID = (value) => {
 	try{
 		activeID = value;
-		let oData = [...store.getState().companyPoliciesReducer.overtime.data];
+		let oData = [...store.getState().companyPoliciesReducer.overtime.data.data];
 		let oActiveData = oData.find(_findActive);
 		return oActiveData;
 	}
@@ -36,7 +36,7 @@ export const getActiveRuleFromID = (value) => {
 }
 
 export const getDefaultRule = () => {
-	return {...store.getState().companyPoliciesReducer.overtime.default};
+	return {...store.getState().companyPoliciesReducer.overtime.data.default};
 }
 
 //Local Functions

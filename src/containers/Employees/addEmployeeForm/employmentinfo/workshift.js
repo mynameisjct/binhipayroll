@@ -7,8 +7,8 @@ import {
 //Styles
 import styles from '../personalinfo/styles';
 
-import {WorkShift as WorkShiftPolicy} from '../../../CompanyPolicies/Rules/workshift';
-
+/* import {WorkShift as WorkShiftPolicy} from '../../../CompanyPolicies/Rules/workshift';
+ */
 //Redux
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';

@@ -4,7 +4,7 @@ import {
     Text,
 } from 'react-native';
 
-import Overtime from '../../Rules/overtime';
+import Overtime from '../../overtime';
 
 export default class OvertimeScreen extends Component {
     _triggerRefresh = () => {

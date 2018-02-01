@@ -5,7 +5,7 @@ import {
 } from 'react-native';
 
 import styles from '../personalinfo/styles';
-import {Tax as TaxPolicy} from '../../../CompanyPolicies/Rules/tax';
+/* import {Tax as TaxPolicy} from '../../../CompanyPolicies/Rules/tax'; */
 
 export default class Tax extends Component {
     _triggerRefresh = () => {

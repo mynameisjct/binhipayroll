@@ -15,7 +15,7 @@ import ActionButton from 'react-native-action-button';
 import Icon2 from 'react-native-vector-icons/MaterialCommunityIcons';
 
 //Styles
-import styles from './styles'
+import styles from '../styles'
 
 //Redux
 import { connect } from 'react-redux';
@@ -354,6 +354,10 @@ export class Overtime extends Component {
         this._updateThreshhold = this._updateThreshhold.bind(this);
     }
 
+    componentWillUnmount(){
+        this.props.actions.overtime.setActiveRule('');
+    }
+
     componentDidMount(){
         if(this.props.status[0]==1){
             this._initValues();
@@ -372,34 +376,44 @@ export class Overtime extends Component {
         if(this.state._status[0] != nextProps.status[0]){
             if(nextProps.status[0]==1){
                 this._initValues();
+            }else{
+                this.setState({ _status: nextProps.status })
             }
-
-            this.setState({
-                _status: nextProps.status
-            })
         }
     }
 
     _initValues = () => {
-        let bFlag = true;
-        let oActiveRule = JSON.parse(JSON.stringify(overtimeSelector.getDefaultActiveRule()));
-        
-        if (!oActiveRule){
-            oActiveRule = JSON.parse(JSON.stringify(overtimeSelector.getDefaultRule()));
-            bFlag = false;
-        }
+        try{
+            let bFlag = true;
+            let oActiveRule = JSON.parse(JSON.stringify(
+                this.props.overtime.activeRule == '' ||  isNaN(this.props.overtime.activeRule) ? 
+                overtimeSelector.getDefaultActiveRule() : overtimeSelector.getActiveRuleFromID(this.props.overtime.activeRule)
+            ));
 
-        this.setState({
-            _allData: JSON.parse(JSON.stringify(overtimeSelector.getAllData())),
-            _activeRule: oActiveRule,
-            _disabledMode: bFlag
-        },
-/*             () => {
-                console.log('======================================================================')
-                console.log('this.state._allData: ' + JSON.stringify(this.state._allData));
-                console.log('this.state._activeRule: ' + JSON.stringify(this.state._activeRule));
-            } */
-        )
+            if (!oActiveRule){
+                oActiveRule = JSON.parse(JSON.stringify(overtimeSelector.getDefaultRule()));
+                bFlag = false;
+            }
+
+            this.setState({
+                _allData: JSON.parse(JSON.stringify(overtimeSelector.getAllData())),
+                _activeRule: oActiveRule,
+                _disabledMode: bFlag,
+                _status: [1, '']
+            },
+    /*             () => {
+                    console.log('======================================================================')
+                    console.log('this.state._allData: ' + JSON.stringify(this.state._allData));
+                    console.log('this.state._activeRule: ' + JSON.stringify(this.state._activeRule));
+                } */
+            )
+
+            this.props.actions.overtime.setActiveRule(oActiveRule.id);
+        }
+        catch(exception){
+            console.log('exception: ' + exception.message);
+            this.setState({_status: [0,'']})
+        }
     }
     
     _saveRule = () => {
@@ -525,6 +539,7 @@ export class Overtime extends Component {
                     _resMsg: res.message,
                     _bNoWorkShift: false
                 })
+                this.props.actions.overtime.setActiveRule('')
                 this._popActiveRuleFromStore();
             }
             else{
@@ -616,6 +631,7 @@ export class Overtime extends Component {
         oAllData.data = oDataArray;
 
         this.props.actions.overtime.update(oAllData);
+        this.props.actions.overtime.setActiveRule(res.id);
         this._disableAll();
         this._initValues();
     }
@@ -662,9 +678,8 @@ export class Overtime extends Component {
 
     _updateActiveRule = (value) => {
         let oActiveRule = JSON.parse(JSON.stringify(overtimeSelector.getActiveRuleFromID(value)));
-        this.setState({
-            _activeRule: oActiveRule
-        })
+        this.setState({ _activeRule: oActiveRule })
+        this.props.actions.overtime.setActiveRule(oActiveRule.id);
     }
 
     _addNewRule = () => {

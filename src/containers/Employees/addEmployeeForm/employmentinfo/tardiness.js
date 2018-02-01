@@ -5,7 +5,7 @@ import {
 } from 'react-native';
 
 import styles from '../personalinfo/styles';
-import {Tardiness as TardinessPolicy} from '../../../CompanyPolicies/Rules/tardiness';
+/* import {Tardiness as TardinessPolicy} from '../../../CompanyPolicies/Rules/tardiness'; */
 
 export default class Tardiness extends Component {
     _triggerRefresh = () => {

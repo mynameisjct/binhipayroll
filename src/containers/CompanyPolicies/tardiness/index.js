@@ -15,16 +15,16 @@ import ActionButton from 'react-native-action-button';
 import Icon2 from 'react-native-vector-icons/MaterialCommunityIcons';
 
 //Styles
-import styles from './styles'
+import styles from '../styles'
 
 //Redux
 import { connect } from 'react-redux';
-import * as undertimeSelector from '../data/undertime/selector';
-import * as undertimeActions from '../data/undertime/actions';
+import * as tardinessSelector from '../data/tardiness/selector';
+import * as tardinessActions from '../data/tardiness/actions';
 import { bindActionCreators } from 'redux';
 
 //API
-import * as undertimeApi from '../data/undertime/api';
+import * as tardinessApi from '../data/tardiness/api';
 
 //Custom Components
 import MessageBox from '../../../components/MessageBox';
@@ -41,25 +41,24 @@ from '../../../components/CustomCards';
 import * as oHelper from '../../../helper';
 
 //Class Constants
-const description_undertime = 'Set Undertime Rules';
+const description_Tardiness = 'Set Tardiness Rules';
 const color_SwitchOn='#838383';
 const color_SwitchOff='#505251';
 const color_SwitchThumb='#EEB843';
 const cl_suspension = '2001';
 const cl_deduction = '2002';
-const save_loading_message = 'Saving new Undertime Rule. Please wait...';
-const switch_loading_message = 'Switching Undertime Rule. Please wait...';
+const save_loading_message = 'Saving new Tardiness Policy. Please wait...';
+const switch_loading_message = 'Switching Tardiness Policy. Please wait...';
 const delete_loading_message = 'Deleting Active Rule. Please wait...';
 
-const undertime_disabled = 'Disabled — when Undertime is turned off,' +
-" when an employee has clocked out earlier from its scheduled time-out,"  +
-" the system will NOT impose a penalty and will NOT deduct the employees' pay."
+const tardiness_disabled = "Disabled — when Tardiness is disabled, the system will NOT impose any " +
+"penalty or pay deductions on employees who clock in after their scheduled time-in."
 
-const undertime_enabled = 'Enabled — when Undertime is turned on,' +
-" when an employee has clocked out earlier from its scheduled time-out,"  +
-" the system WILL IMPOSE a penalty or WILL DEDUCT the employee's pay."
+const tardiness_enabled = "Enabled — when Tardiness is enabled, the system will impose " +
+"predefined penalties on employees who clock in after their scheduled time-in. " + 
+"Employer can add Rules and set Grace Periods and Penalties."
 
-export class Undertime extends Component{
+export class Tardiness extends Component{
     constructor(props){
         super(props);
         this.state = {
@@ -73,15 +72,75 @@ export class Undertime extends Component{
             _msgBoxType: '',
             _resMsg: '',
 
-            //Local States
+            //Penalty
             _suspensionOptions: [
                 'from the end of the grace period',
                 'from the beginning of the shift'
             ],
-            _activeUndertime:{},
-            _undertimeData: {},
-            _penalties:{}
+            _maxallowedtardiness: '6',
+            _frombegintime: 1,
+
+            //Local States
+            _activeTardiness:{
+                id: "0001",
+                name: "Default",
+                threshhold: {
+                    graceperiod: "25 mins",
+                    maxduration: "1 hour"
+                },
+                activepenalty:  {
+                    id: "2001",
+                    label: "Suspension"
+                },
+                penalties:[
+                    {
+                        id: "2001",
+                        label: "Suspension",
+                        maxallowedtardiness: "6",
+                    },
+                    {
+                        id: "2002",
+                        label: "Deduction",
+                        frombegintime: true
+                    }
+                ]
+            },
+            _tardinessData: {
+                defaultdata: {
+                    id: "",
+                    name: "",
+                    threshhold: {
+                        graceperiod: "15 mins",
+                        maxduration: "Do not mark as Leave"
+                    },
+                    activepenalty: {
+                        "id": "2001",
+                    },
+
+                    penalties:[
+                        {
+                            "id": "2001",
+                            "label": "Suspension",
+                            "maxallowedtardiness": "6"
+                        },
+                        {
+                            "id": "2002",
+                            "label": "Deduction",
+                            "frombegintime": true
+                        }
+                    ]
+                },
+                enabled: true
+            },
+            _penalties:{
+                value: 'Suspension',
+                options: ['Suspension', 'Deduction']
+            }
         }
+    }
+
+    componentWillUnmount(){
+        this.props.actions.tardiness.setActiveRule('');
     }
 
     componentDidMount(){
@@ -103,15 +162,18 @@ export class Undertime extends Component{
             if(nextProps.status[0]==1){
                 this._initValues();
             }
+            else{
+                this.setState({
+                    _status: nextProps.status
+                })
+            }
 
-            this.setState({
-                _status: nextProps.status
-            })
+            
         }
     }
 
     _saveRule = () => {
-        if(!oHelper.isStringEmptyOrSpace(this.state._activeUndertime.name)){
+        if(!oHelper.isStringEmptyOrSpace(this.state._activeTardiness.name)){
             this.setState({
                 _promptMsg: save_loading_message,
                 _promptShow: true
@@ -122,15 +184,14 @@ export class Undertime extends Component{
                 transtype: 'update',
                 accesstoken: '',
                 clientid: '',
-                data: this.state._activeUndertime,
+                data: this.state._activeTardiness,
             };
 
-            undertimeApi.create(oInput)
+            tardinessApi.create(oInput)
             .then((response) => response.json())
             .then((res) => {
-                /* console.log('===========SAVE UNDERTIME===========');
                 console.log('INPUT: ' + JSON.stringify(oInput));
-                console.log('OUTPUT: ' + JSON.stringify(res)); */
+                console.log('OUTPUT: ' + JSON.stringify(res));
                 this.setState({
                     _promptShow: false
                 });
@@ -159,7 +220,6 @@ export class Undertime extends Component{
                 }
             })
             .catch((exception) => {
-                /* console.log('INPUT: ' + JSON.stringify(oInput)); */
                 this.setState({
                     _promptShow: false,
                     _msgBoxShow: true,
@@ -178,7 +238,7 @@ export class Undertime extends Component{
         }
     }
 
-    _toggleUndertime = (value) => {
+    _toggleTardiness = (value) => {
         this.setState({
             _promptMsg: switch_loading_message,
             _promptShow: true
@@ -192,10 +252,10 @@ export class Undertime extends Component{
             enabled: value
         };
 
-        undertimeApi.toggleSwitch(oInput)
+        tardinessApi.toggleSwitch(oInput)
         .then((response) => response.json())
         .then((res) => {
-            /* console.log('INPUT: ' + JSON.stringify(oInput));
+/*             console.log('INPUT: ' + JSON.stringify(oInput));
             console.log('OUTPUT: ' + JSON.stringify(res)); */
             this.setState({
                 _promptShow: false
@@ -214,7 +274,7 @@ export class Undertime extends Component{
                     _resMsg: res.message,
                     _bNoWorkShift: false
                 })
-                this._setUndertimeSwitch(value);
+                this._setTardinessSwitch(value);
             }
             else{
                 this.setState({
@@ -224,13 +284,12 @@ export class Undertime extends Component{
                 });
             }
         })
-        .catch((exception) => {
-            /* console.log('INPUT: ' + JSON.stringify(oInput)); */
+        .catch((err) => {
             this.setState({
                 _promptShow: false,
                 _msgBoxShow: true,
                 _msgBoxType: 'error-ok',
-                _resMsg: exception.message
+                _resMsg: err.message + '. Please check you Internet Settings.'
             })
         });
     }
@@ -246,13 +305,13 @@ export class Undertime extends Component{
             transtype: 'delete',
             accesstoken: '',
             clientid: '',
-            id: this.state._activeUndertime.id
+            id: this.state._activeTardiness.id
         };
 
-        undertimeApi.remove(oInput)
+        tardinessApi.remove(oInput)
         .then((response) => response.json())
         .then((res) => {
-            /* console.log('INPUT: ' + JSON.stringify(oInput));
+/*             console.log('INPUT: ' + JSON.stringify(oInput));
             console.log('OUTPUT: ' + JSON.stringify(res)); */
             this.setState({
                 _promptShow: false
@@ -271,18 +330,19 @@ export class Undertime extends Component{
                     _resMsg: res.message,
                     _bNoWorkShift: false
                 })
+                this.props.actions.tardiness.setActiveRule('')
                 this._popActiveRuleFromStore(value);
+                
             }
             else{
                 this.setState({
                     _msgBoxShow: true,
                     _msgBoxType: 'error-ok',
-                    _resMsg: 'Unable to Delete. An Unknown Error has been encountered. Contact BINHI-MeDFI.'
+                    _resMsg: 'Unable to save. An Unknown Error has been encountered. Contact BINHI-MeDFI.'
                 });
             }
         })
         .catch((exception) => {
-            /* console.log('INPUT: ' + JSON.stringify(oInput)); */
             this.setState({
                 _promptShow: false,
                 _msgBoxShow: true,
@@ -293,40 +353,41 @@ export class Undertime extends Component{
     }
 
     _pushNewRuleToStore = (res) => {
-        let oundertimeData = {...this.state._undertimeData};
-        let oData = [...oundertimeData.data];
+        let oTardinessData = {...this.state._tardinessData};
+        let oData = [...oTardinessData.data];
 
-        let oActiveUndertime = {...this.state._activeUndertime};
-        oActiveUndertime.id = res.id
-        oData.push(oActiveUndertime);
+        let oActiveTardiness = {...this.state._activeTardiness};
+        oActiveTardiness.id = res.id
+        oData.push(oActiveTardiness);
 
-        oundertimeData.data = oData;
+        oTardinessData.data = oData;
 
-        this.props.actions.undertime.update(oundertimeData);
+        this.props.actions.tardiness.update(oTardinessData);
+        this.props.actions.tardiness.setActiveRule(res.id);
         this._disableAll();
         this._initValues();
     }
 
-    _setUndertimeSwitch = (value) => {
-        let oUndertime = {...this.state._undertimeData};
-        oUndertime.enabled = value;
-        this.props.actions.undertime.update(oUndertime);
+    _setTardinessSwitch = (value) => {
+        let oTardiness = {...this.state._tardinessData};
+        oTardiness.enabled = value;
+        this.props.actions.tardiness.update(oTardiness);
         this._initValues();
     }
 
     _popActiveRuleFromStore = () => {
-        let oundertime = {...this.state._undertimeData};
-        let aundertimeData = [...oundertime.data];
+        let oTardiness = {...this.state._tardinessData};
+        let aTardinessData = [...oTardiness.data];
         let iPopIndex;
 
-        aundertimeData.map((data,index) => {
-            if(data.id == this.state._activeUndertime.id){
-                aundertimeData.splice(index, 1);
+        aTardinessData.map((data,index) => {
+            if(data.id == this.state._activeTardiness.id){
+                aTardinessData.splice(index, 1);
             }
         });
 
-        oundertime.data = aundertimeData;
-        this.props.actions.undertime.update(oundertime);
+        oTardiness.data = aTardinessData;
+        this.props.actions.tardiness.update(oTardiness);
         this._initValues();
     }
 
@@ -340,47 +401,57 @@ export class Undertime extends Component{
     }
 
     _initValues = () => {
-        let bFlag = true;
-        let oActiveUndertime = JSON.parse(JSON.stringify(undertimeSelector.getDefaultActiveUnderTime()));
-        
-        if (!oActiveUndertime){
-            oActiveUndertime = JSON.parse(JSON.stringify(undertimeSelector.getDefaultUndertime()));
-            bFlag = false;
-        }
-
-        /* console.log('oActiveUndertime: ' + JSON.stringify(oActiveUndertime));
-        console.log('bFlag: ' + bFlag); */
-
-        this.setState({
-            _undertimeData: JSON.parse(JSON.stringify(undertimeSelector.getUndertimeData())),
-            _activeUndertime: oActiveUndertime,
-            _disabledMode: bFlag
-        },
-            () => {
-                /* console.log('_activeUndertime: ' + JSON.stringify(this.state._activeUndertime));
-                console.log('_undertimeData: ' + JSON.stringify(this.state._undertimeData)); */
+        try{
+            let bFlag = true;
+            let oActiveTardiness = JSON.parse(JSON.stringify(
+                this.props.tardiness.activeRule == '' ||  isNaN(this.props.tardiness.activeRule) ? 
+                tardinessSelector.getDefaultActiveTardiness() : tardinessSelector.getActiveTardinessFromID(this.props.tardiness.activeRule)
+            ));
+            if (!oActiveTardiness){
+                oActiveTardiness = JSON.parse(JSON.stringify(tardinessSelector.getDefaultTardiness()));
+                bFlag = false;
             }
-        )
+            /* console.log('oActiveTardiness: ' + JSON.stringify(oActiveTardiness));
+            console.log('bFlag: ' + bFlag); */
+
+            this.setState({
+                _tardinessData: JSON.parse(JSON.stringify(tardinessSelector.getTardinessData())),
+                _activeTardiness: oActiveTardiness,
+                _disabledMode: bFlag,
+                _status: [1,'']
+            },
+                () => {
+                    /* console.log('_activeTardiness: ' + JSON.stringify(this.state._activeTardiness));
+                    console.log('_tardinessData: ' + JSON.stringify(this.state._tardinessData)); */
+                }
+            )
+
+            this.props.actions.tardiness.setActiveRule(oActiveTardiness.id);
+        }
+        catch(exception){
+            console.log('exception: ' + exception.message);
+            this.setState({_status: [0,'']})
+        }
     }
 
     _updateRuleName = (strVal) => {
-        let oActiveUndertime = {...this.state._activeUndertime};
-        oActiveUndertime.name = strVal;
+        let oActiveTardiness = {...this.state._activeTardiness};
+        oActiveTardiness.name = strVal;
         this.setState({
-            _activeUndertime: oActiveUndertime
+            _activeTardiness: oActiveTardiness
         })
     }
 
     _getPenaltyValue = () => {
         let oPenaltyVal = null;
-        let oPenalties = [...this.state._activeUndertime.penalties];
+        let oPenalties = [...this.state._activeTardiness.penalties];
         oPenalties.map(a => {
-            if(a.id == this.state._activeUndertime.activepenalty.id){
+            if(a.id == this.state._activeTardiness.activepenalty.id){
                 if(a.id == cl_deduction){
-                    //no action for now
+                    oPenaltyVal = a.frombegintime;
                 }
                 else if(a.id == cl_suspension){
-                    oPenaltyVal = a.maxallowedundertime;
+                    oPenaltyVal = a.maxallowedtardiness;
                 }
             }
         });
@@ -389,10 +460,12 @@ export class Undertime extends Component{
     }
     
     _setActiveRule = (value) => {
+        let oNewActive = JSON.parse(JSON.stringify(tardinessSelector.getActiveTardinessFromID(value)));
         this.setState({
-            _activeUndertime: 
-                JSON.parse(JSON.stringify(undertimeSelector.getActiveUndertimeFromID(value)))
+            _activeTardiness: oNewActive
         })
+
+        this.props.actions.tardiness.setActiveRule(oNewActive.id);
     }
 
     _setPenalty = (value) => {
@@ -405,39 +478,93 @@ export class Undertime extends Component{
             strLabel = 'Suspension';
         }
 
-        let oActiveUndertime = {...this.state._activeUndertime};
-        oActiveUndertime.activepenalty.id=value;
-        oActiveUndertime.activepenalty.label=strLabel;
+        let oActiveTardiness = {...this.state._activeTardiness};
+        oActiveTardiness.activepenalty.id=value;
+        oActiveTardiness.activepenalty.label=strLabel;
         this.setState({
-            _activeUndertime: oActiveUndertime
+            _activeTardiness: oActiveTardiness
         })
     }
 
+    _showTimePicker = async(attribName) => {
+        let defaultTime = 0;
+
+        try {
+            const {action, hour, minute} =await TimePickerAndroid.open({
+                hour: defaultTime,
+                minute: 0,
+                is24Hour: true,
+                mode: 'spinner'
+            });
+
+            if (action !== TimePickerAndroid.dismissedAction) {
+                let strHr = '';
+                let strMin = '';
+
+                hour>1 ? strHr = 'hours' : strHr = 'hour'
+                minute>1 ? strMin = 'mins' : strMin = 'min'
+
+
+                let strTime = hour + strHr + ' ' + minute + strMin
+                if(attribName=='GP'){
+                    this._updateGracePeriod(strTime);
+                }
+                else if(attribName == 'HDL'){
+                    this._updateMaxTolerance(strTime);
+                }
+            }
+        } 
+        
+        catch ({code, message}) {
+            console.warn('Cannot open time picker', message);
+        }
+    }
+
+    _updateGracePeriod = (strTime) => {
+        let oActiveTardiness = {...this.state._activeTardiness};
+        oActiveTardiness.threshhold.graceperiod = strTime;
+        this.setState({
+            _activeTardiness: oActiveTardiness
+        })
+    }
+
+    _updateMaxTolerance = (strTime) => {
+        let oActiveTardiness = {...this.state._activeTardiness};
+        oActiveTardiness.threshhold.maxduration = strTime;
+        this.setState({
+            _activeTardiness: oActiveTardiness
+        })
+    }
+
+    _setTime = () => {
+        
+    }
+
     _setPenaltyValue = (strVal) =>{
-        let oActiveUndertime = {...this.state._activeUndertime};
-        let oPenalties = [...oActiveUndertime.penalties];
+        let oActiveTardiness = {...this.state._activeTardiness};
+        let oPenalties = [...oActiveTardiness.penalties];
         oPenalties.map((a, index) => {
-            if(a.id == this.state._activeUndertime.activepenalty.id){
+            if(a.id == this.state._activeTardiness.activepenalty.id){
                 if(a.id == cl_deduction){
-                    //No action for now
+                    oPenalties[index].frombegintime = !!+strVal;
                 }
                 else if(a.id == cl_suspension){
-                    oPenalties[index].maxallowedundertime = strVal;
+                    oPenalties[index].maxallowedtardiness = strVal;
                 }
             }
         });
 
-        oActiveUndertime.penalties = oPenalties
+        oActiveTardiness.penalties = oPenalties
         
         this.setState({
-            _activeUndertime: oActiveUndertime
+            _activeTardiness: oActiveTardiness
         })
     }
     
     //Add New Rule
     _addNewRule = () => {
         this.setState({
-            _activeUndertime: JSON.parse(JSON.stringify(undertimeSelector.getDefaultUndertime()))
+            _activeTardiness: JSON.parse(JSON.stringify(tardinessSelector.getDefaultTardiness()))
         })
         this._enableAll();
     }
@@ -446,8 +573,8 @@ export class Undertime extends Component{
     _cancelEdit = () => {
         this._initValues();
         this._disableAll();
-        if(this.state._undertimeData.data.length === 0){
-            this._toggleUndertime(false);
+        if(this.state._tardinessData.data.length === 0){
+            this._toggleTardiness(false);
         }
     }
 
@@ -470,7 +597,7 @@ export class Undertime extends Component{
     }
 
     render(){
-        console.log('xxxxxxxxxxxxx______REDERING UNDERTIME');
+        console.log('xxxxxxxxxxxxx______REDERING TARDINESS');
         //Loading View Status
         let pStatus = [...this.state._status];
         let pProgress = pStatus[0];
@@ -478,7 +605,7 @@ export class Undertime extends Component{
 
         if(pProgress==0){
             return (
-                <PromptScreen.PromptError title='Undertime Policy' onRefresh={()=>this.props.triggerRefresh(true)}/>
+                <PromptScreen.PromptError title='Tardiness Policy' onRefresh={()=>this.props.triggerRefresh(true)}/>
             );
         }
 
@@ -493,17 +620,17 @@ export class Undertime extends Component{
             let oActivePenaltyRule;
             let suspensionValue = null;
 
-            if(this.state._disabledMode || !this.state._undertimeData.enabled){
-                pTitle='Undertime';
+            if(this.state._disabledMode || !this.state._tardinessData.enabled){
+                pTitle='Tardiness';
                 pType='Switch';
                 oRightOption = (
                     <Switch
                         disabled={false}
-                        onValueChange={ (value) => {this._toggleUndertime(value)}} 
+                        onValueChange={ (value) => {this._toggleTardiness(value)}} 
                         onTintColor={color_SwitchOn}
                         thumbTintColor={color_SwitchThumb}
                         tintColor={color_SwitchOff}
-                        value={this.state._undertimeData.enabled} 
+                        value={this.state._tardinessData.enabled} 
                     />
                 );
                 oRightOptionType = 'Switch';
@@ -514,10 +641,10 @@ export class Undertime extends Component{
                     <Picker
                         mode='dropdown'
                         style={styles.pickerStyle}
-                        selectedValue={this.state._activeUndertime.id}
+                        selectedValue={this.state._activeTardiness.id}
                         onValueChange={(itemValue, itemIndex) => {this._setActiveRule(itemValue)}}>
                         {
-                            this.state._undertimeData.data.map((data, index) => (
+                            this.state._tardinessData.data.map((data, index) => (
                                 <Picker.Item key={index} label={data.name} value={data.id} />
                             ))
                         }
@@ -534,12 +661,12 @@ export class Undertime extends Component{
                             paddingLeft: 15,
                             paddingRight: 15
                         }}>
-                        {this.state._activeUndertime.activepenalty.label}
+                        {this.state._activeTardiness.activepenalty.label}
                     </Text>
                 );
             }
             else{
-                pTitle='Add New Undertime Rule';
+                pTitle='Add New Tardiness Rule';
                 pType='Text';
                 oRightOption = (
                     <View style={styles.btnRightCont}>
@@ -569,7 +696,7 @@ export class Undertime extends Component{
                         placeholder='Rule Name'
                         style={{color: '#434646', paddingLeft: 10, height: '100%'}}
                         onChangeText={(text) => {this._updateRuleName(text)}}
-                        value={this.state._undertimeData.name}
+                        value={this.state._tardinessData.name}
                         returnKeyType="done"
                         underlineColorAndroid='transparent'
                     />
@@ -578,10 +705,10 @@ export class Undertime extends Component{
                     <Picker
                         mode='dropdown'
                         style={styles.pickerStyle}
-                        selectedValue={this.state._activeUndertime.activepenalty.id}
+                        selectedValue={this.state._activeTardiness.activepenalty.id}
                         onValueChange={(itemValue, itemIndex) => {this._setPenalty(itemValue)}}>
                         {
-                            this.state._activeUndertime.penalties.map((option, index) => (
+                            this.state._activeTardiness.penalties.map((option, index) => (
                                 <Picker.Item key={index} label={option.label} value={option.id} />
                             ))
                         }
@@ -595,7 +722,7 @@ export class Undertime extends Component{
                         <PromptScreen.PromptGeneric show= {this.state._promptShow} title={this.state._promptMsg}/>
                         : null
                     }
-                    
+
                     <ScrollView
                         refreshControl={
                             <RefreshControl
@@ -606,7 +733,7 @@ export class Undertime extends Component{
                     >
                         <CustomCard 
                             title={strTitle} 
-                            description={description_undertime} 
+                            description={description_Tardiness} 
                             oType={oRightOptionType}
                             rightHeader={
                                 oRightOption
@@ -614,7 +741,7 @@ export class Undertime extends Component{
                         >
 
                         { 
-                            this.state._undertimeData.enabled ? 
+                            this.state._tardinessData.enabled ? 
                                 <View>
                                     <PropLevel1 
                                         name='Rule Name'
@@ -622,7 +749,47 @@ export class Undertime extends Component{
                                             oRuleName
                                         }
                                     />
-                                    <PropTitle name='Undertime Penalties'/>
+                                    <PropTitle name='Threshhold'/>
+                                    <PropLevel2 
+                                        name='Grace Period'
+                                        content={
+                                            <Text 
+                                                disabled={this.state._disabledMode}
+                                                onPress={() => {this._showTimePicker('GP')}}
+                                                style={{color: '#434646', height: '100%', textAlignVertical: 'center'}}>
+                                                {this.state._activeTardiness.threshhold.graceperiod}
+                                            </Text>
+                                        }
+                                        hideBorder={this.state._disabledMode}
+                                        contentStyle={{
+                                            paddingLeft: 15,
+                                            paddingRight: 15,
+                                            width: 140
+                                        }}
+                                    />
+                                    <View style={{height: 15}}>
+                                    </View>
+                                    <PropLevel2 
+                                        name={'Mark as Half Day Leave' +'\n' + 'after specified duration'}
+                                        content={
+                                            <Text 
+                                                disabled={this.state._disabledMode}
+                                                onPress={() => {this._showTimePicker('HDL')}}
+                                                style={{color: '#434646', 
+                                                height: '100%', 
+                                                textAlignVertical: 'center'}}>
+                                                {this.state._activeTardiness.threshhold.maxduration}
+                                            </Text>
+                                        }
+                                        hideBorder={this.state._disabledMode}
+                                        contentStyle={{
+                                            paddingLeft: 15,
+                                            paddingRight: 15,
+                                            width: 140
+                                        }}
+                                    />
+
+                                    <PropTitle name='Tardiness Penalties'/>
                                     <PropLevel2 
                                         name='Penalty Type'
                                         content={
@@ -634,25 +801,40 @@ export class Undertime extends Component{
                                         }}
                                     />
                                     
-                                    { this.state._activeUndertime.activepenalty.id == cl_deduction ?
+                                    { this.state._activeTardiness.activepenalty.id == cl_deduction ?
                                         <PropLevel2 
-                                            name={'A notification for undertime deduction will prompt for the employer. Deduction amount will be based on the number of minutes multiplied by the rate per minute of the employee.'}
+                                            name={'If employee clocked in\n' + 
+                                                'after the grace period,\n' + 
+                                                'make a tardiness de-\n' +
+                                                'duction based on the\n' + 
+                                                'number of minutes'}
                                             content={
-                                                null
+                                                <Picker
+                                                    enabled={!this.state._disabledMode}
+                                                    mode='dropdown'
+                                                    style={styles.pickerStyle}
+                                                    selectedValue={Number(this.state._activeTardiness.penalties[1].frombegintime)}
+                                                    onValueChange={(itemValue, itemIndex) => {this._setPenaltyValue(itemIndex)}}>
+                                                    {
+                                                        this.state._suspensionOptions.map((option, index) => (
+                                                            <Picker.Item key={index} label={option} value={index} />
+                                                        ))
+                                                    }
+                                                </Picker>
                                             }
-                                            hideBorder={true}
+                                            hideBorder={this.state._disabledMode}
                                             
                                             contentStyle={{
                                                 width: 280,
                                             }}
 
-                                            placeHolderStyle={{height: 140}}
+                                            placeHolderStyle={{height: 100}}
                                         />
                                         : null
                                     }
                                     
                                     {
-                                        this.state._activeUndertime.activepenalty.id == cl_suspension ?
+                                        this.state._activeTardiness.activepenalty.id == cl_suspension ?
                                             <PropLevel2 
                                                 name={'Notify a Suspension\n' + 
                                                     'Approval when number\n' + 
@@ -662,7 +844,7 @@ export class Undertime extends Component{
                                                         editable={!this.state._disabledMode}
                                                         autoCapitalize='none'
                                                         keyboardType='numeric'
-                                                        placeholder='Enter a Number'
+                                                        placeholder='Rule Name'
                                                         style={{color: '#434646', height: '100%'}}
                                                         onChangeText={(text)  => {this._setPenaltyValue(text)}}
                                                         value={this._getPenaltyValue()}
@@ -684,23 +866,23 @@ export class Undertime extends Component{
                                 </View>
                             : 
                             <View style={{paddingTop: 10}}>
-                                    <Text>{undertime_disabled}</Text>
-                                    <Text>{'\n' + undertime_enabled}</Text>
+                                <Text>{tardiness_disabled}</Text>
+                                <Text>{'\n' + tardiness_enabled}</Text>
                             </View>
                         }
                         </CustomCard>
                     </ScrollView>
                     { 
-                        this.state._undertimeData.enabled && this.state._disabledMode ? 
+                        this.state._tardinessData.enabled && this.state._disabledMode ? 
                             <ActionButton 
                                 buttonColor="#EEB843"
                                 spacing={10}
                             >
-                                <ActionButton.Item buttonColor='#26A65B' title="ADD NEW UNDERTIME RULE" onPress={() => {this._addNewRule()}}>
+                                <ActionButton.Item buttonColor='#26A65B' title="ADD NEW TARDINESS RULE" onPress={() => {this._addNewRule()}}>
                                     <Icon2 name="bell-plus" color='#fff' size={22} style={styles.actionButtonIcon} />
                                 </ActionButton.Item>
                                 
-                                <ActionButton.Item buttonColor='#D75450' title="DELETE CURRENT UNDERTIME RULE" onPress={() => {this._deleteActiveRule()}}>
+                                <ActionButton.Item buttonColor='#D75450' title="DELETE CURRENT TARDINESS RULE" onPress={() => {this._deleteActiveRule()}}>
                                     <Icon2 name="delete-empty" color='#fff' size={22} style={styles.actionButtonIcon} />
                                 </ActionButton.Item>
                             </ActionButton>
@@ -730,7 +912,7 @@ function mapStateToProps (state) {
     return {
         logininfo: state.loginReducer.logininfo,
         activecompany: state.activeCompanyReducer.activecompany,
-        undertime: state.companyPoliciesReducer.undertime
+        tardiness: state.companyPoliciesReducer.tardiness
         
     }
 }
@@ -738,7 +920,7 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
     return {
         actions: {
-            undertime: bindActionCreators(undertimeActions, dispatch),
+            tardiness: bindActionCreators(tardinessActions, dispatch),
         },
     }
 }
@@ -746,4 +928,4 @@ function mapDispatchToProps (dispatch) {
 export default connect(
     mapStateToProps,
     mapDispatchToProps
-)(Undertime)
+)(Tardiness)

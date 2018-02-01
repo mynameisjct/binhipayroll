@@ -4,7 +4,7 @@ import {
     Text,
 } from 'react-native';
 
-import Tardiness from '../../Rules/tardiness';
+import Tardiness from '../../tardiness';
 
 export default class TardinessScreen extends Component {
     _triggerRefresh = () => {
