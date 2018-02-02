@@ -167,6 +167,7 @@ export class WorkShift extends Component {
     }
 
     componentDidMount(){
+        console.log('this.props.workshift.data: ' + JSON.stringify(this.props.workshift.data));
         if(this.props.workshift.data){
             this._initValues();
             this.setState({_status: [1,'']})

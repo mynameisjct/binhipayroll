@@ -1,20 +1,60 @@
-//ALL INFO
-export const UPDATE_ALLINFO = 'employee/profile/UPDATE';
+const EMPLOYEEADATACTIONS = 'employee/profile/';
 
-/******************** Personal Info ********************/
-export const UPDATE_PERSONALINFO = 'employee/profile/UPDATE_PERSONALINFO';
-export const UPDATE_BASICINFO = 'employee/profile/UPDATE_BASICINFO';
-export const UPDATE_CONTACTINFO = 'employee/profile/UPDATE_CONTACTINFO';
-export const UPDATE_IDS = 'employee/profile/UPDATE_IDS';
-export const UPDATE_ADDRESS = 'employee/profile/UPDATE_ADDRESS';
-export const UPDATE_DEPENDENTS = 'employee/profile/UPDATE_DEPENDENTS';
+export const ALLINFO = {
+    UPDATE: {
+        DATA: EMPLOYEEADATACTIONS + 'UPDATE_ALLINFO',
+        STATUS: 'employee/profile/UPDATE_ALLINFO_STATUS'
+    }
+}
 
-/******************** Bank Info ********************/
-export const UPDATE_BANKINFO = 'employee/profile/UPDATE_BANKINFO';
+export const PERSONALINFO = {
+    UPDATE: {
+        DATA: EMPLOYEEADATACTIONS + 'UPDATE_PERSONALINFO',
+        STATUS: EMPLOYEEADATACTIONS + 'UPDATE_PERSONALINFO'
+    } 
+}
 
-/******************** Policies Info ********************/
-//To add later
+export const BASICINFO  = {
+    INIT: {
+        DATA: EMPLOYEEADATACTIONS + 'INIT_BASICINFO',
+    },
+    UPDATE: {
+        DATA: EMPLOYEEADATACTIONS + 'UPDATE_BASICINFO',
+        STATUS: EMPLOYEEADATACTIONS + 'UPDATE_BASICINFO_STATUS'
+    } 
+}
 
-/******************** Generic constants ********************/
-export const UPDATE_STATUS = 'employee/profile/UPDATE_STATUS';
-export const EMPTY = 'employee/profile/EMPTY';
+export const CONTACTINFO  = {
+    UPDATE: {
+        DATA: EMPLOYEEADATACTIONS + 'UPDATE_CONTACTINFO',
+        STATUS: EMPLOYEEADATACTIONS + 'UPDATE_CONTACTINFO_STATUS'
+    } 
+}
+
+export const IDS  = {
+    UPDATE: {
+        DATA: EMPLOYEEADATACTIONS + 'UPDATE_IDS',
+        STATUS: EMPLOYEEADATACTIONS + 'UPDATE_IDS_STATUS'
+    }
+}
+
+export const ADDRESS  = {
+    UPDATE: {
+        DATA: EMPLOYEEADATACTIONS + 'UPDATE_ADDRESS',
+        STATUS: EMPLOYEEADATACTIONS + 'UPDATE_ADDRESS_STATUS'
+    }
+}
+
+export const DEPENDENTS  = {
+    UPDATE: {
+        DATA: EMPLOYEEADATACTIONS + 'UPDATE_DEPENDENTS',
+        STATUS: EMPLOYEEADATACTIONS + 'UPDATE_DEPENDENTS_STATUS'
+    }
+}
+
+export const BANKINFO  = {
+    UPDATE: {
+        DATA: EMPLOYEEADATACTIONS + 'UPDATE_BANKINFO',
+        STATUS: EMPLOYEEADATACTIONS + 'UPDATE_BANKINFO_STATUS'
+    }
+}

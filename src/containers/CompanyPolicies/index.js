@@ -20,7 +20,7 @@ import Tax from './Rules/tax';
 import Tardiness from './tardiness';
 import Undertime from './undertime';
 import Overtime from './overtime';
-import Leaves from './Rules/leaves';
+import Leaves from './leaves';
 import Benefits from './Rules/benefits';
 import Bonus from './Rules/bonus';
 import Ranks from './ranks';
@@ -31,7 +31,6 @@ import { bindActionCreators } from 'redux';
 import {SetLoginInfo, SetActiveCompany} from '../../actions';
 import * as payrollActions from './data/payroll/actions';
 import * as taxActions from './data/tax/actions';
-import * as leavesActions from './data/leaves/actions';
 import * as benefitsActions from './data/benefits/actions';
 import * as bonusActions from './data/bonus/actions';
 import * as ranksActions from './ranks/data/actions';
@@ -58,7 +57,6 @@ export class CompanyPolicies extends Component {
             //Error-0, Success-1, Loading-2,  Handler
             _payrollStatus: ['3', 'Loading...'],
             _taxStatus: ['3','Loading...'],
-            _leaveStatus: ['3', 'Loading...'],
             _benefitsStatus: ['3', 'Loading...'],
             _bonusStatus: ['3', 'Loading...'],
             _ranksStatus: ['3', 'Loading...'],
@@ -199,13 +197,12 @@ export class CompanyPolicies extends Component {
                 _objActiveCompany: {...oProps.activecompany},
                 _payrollStatus: ['3', 'Loading...'],
                 _taxStatus: ['3','Loading...'],
-                _leaveStatus: ['3', 'Loading...'],
                 _benefitsStatus: ['3', 'Loading...'],
                 _bonusStatus: ['3', 'Loading...'],
                 _ranksStatus: ['3', 'Loading...']
             },
                 () => {
-                    this._setActiveChild({key:'007'});
+                    this._setActiveChild({key:'010'});
                     this.setState({_status: 1});
                 }
             )
@@ -284,39 +281,6 @@ export class CompanyPolicies extends Component {
                 _taxStatus: oStatus
             })
 		});
-    }
-
-    _getLeavesRule = (bForceUpdate) => {
-        let curStatus = [2, 'Loading...'];
-        this.setState({
-            _leaveStatus: curStatus
-        });
-
-        let oInput = {
-            companyid: this.state._objActiveCompany.id,
-            username: this.state._objLoginInfo.resUsername,
-            transtype: 'get',
-            accesstoken: '',
-            clientid: '',
-        }
-        
-        this.props.actions.leaves.get(oInput)
-        .then(() => {
-            console.log('this.props.leaves: ' + JSON.stringify(this.props.leaves));
-            let oLeaves  = {...this.props.leaves};
-            let oStatus = [oLeaves.flagno, oLeaves.message];
-            this.setState({
-                _leaveStatus: oStatus
-            });
-		})
-		.catch((exception) => {
-            console.log('oInput: ' + JSON.stringify(oInput));
-            console.log('exception: ' + exception);
-            let oStatus = [0, 'Application error was encountered. \n Please contact BINHI-MeDFI'];
-			this.setState({
-                _leaveStatus: oStatus
-            })
-		}); 
     }
 
     _getBenefitsRule = (bForceUpdate) => {
@@ -426,11 +390,13 @@ export class CompanyPolicies extends Component {
     }
 
 _setActiveChild = (oItem) => {
-    this._setButtons(oItem); //immediately trigg
-    requestAnimationFrame(() => {
-        this._setChildComponent(oItem);
-        this.flatListRef.scrollToIndex({animated: true, index: Number(oItem.key)-1});
-    })
+    if(this.state._activeChild != oItem.key){
+        this._setButtons(oItem); //immediately trigg
+        requestAnimationFrame(() => {
+            this._setChildComponent(oItem);
+            this.flatListRef.scrollToIndex({animated: true, index: Number(oItem.key)-1});
+        })
+    }
 }
 
     _setButtons = (oItem) => {
@@ -484,34 +450,22 @@ _setActiveChild = (oItem) => {
                     break;
                 case '004':
                     childComponent = (
-                        <Tardiness 
-                            hasUnsaved={this._hasActiveTransaction} 
-                            status={this.state._tardinessStatus} 
-                            triggerRefresh={this._getTardinessRule}/>
+                        <Tardiness/>
                     )
                     break;
                 case '005':
                     childComponent = (
-                        <Undertime 
-                            hasUnsaved={this._hasActiveTransaction} 
-                            status={this.state._undertimeStatus} 
-                            triggerRefresh={this._getUndertimeRule}/>
+                        <Undertime/>
                     )
                     break;
                 case '006':
                     childComponent = (
-                        <Overtime
-                            hasUnsaved={this._hasActiveTransaction} 
-                            status={this.state._overtimeStatus} 
-                            triggerRefresh={this._getOvertimeRule}/>
+                        <Overtime/>
                     );
                     break;
                 case '007':
                     childComponent = (
-                        <Leaves
-                            hasUnsaved={this._hasActiveTransaction} 
-                            status={this.state._leaveStatus} 
-                            triggerRefresh={this._getLeavesRule}/>
+                        <Leaves/>
                     );
                     break;
                 case '008':
@@ -596,7 +550,6 @@ function mapStateToProps (state) {
         activecompany: state.activeCompanyReducer.activecompany,
         payroll: state.companyPoliciesReducer.payroll,
         tax: state.companyPoliciesReducer.tax,
-        leaves: state.companyPoliciesReducer.leaves,
         benefits: state.companyPoliciesReducer.benefits,
         bonus: state.companyPoliciesReducer.bonus,
         ranks: state.companyPoliciesReducer.ranks
@@ -609,7 +562,6 @@ function mapDispatchToProps (dispatch) {
         actions: {
             payroll: bindActionCreators(payrollActions, dispatch),
             tax: bindActionCreators(taxActions,dispatch),
-            leaves: bindActionCreators(leavesActions, dispatch),
             benefits: bindActionCreators(benefitsActions, dispatch),
             bonus: bindActionCreators(bonusActions, dispatch),
             ranks: bindActionCreators(ranksActions, dispatch),

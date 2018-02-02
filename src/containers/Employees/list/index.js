@@ -21,11 +21,13 @@ import SearchBox from '../../../components/SearchBox';
 import ActionButton from '../../../components/ActionButton';
 import * as PromptScreen from '../../../components/ScreenLoadStatus';
 
-
 //Redux
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as employeeListActions from './data/actions';
+import * as employeeActions from '../profile/data/actions';
+
+import { employee } from '../profile/data/reducer';
 
 //Constants
 const btnActive = 'rgba(255, 255, 255, 0.3);'
@@ -39,38 +41,8 @@ export class List extends Component {
             _promptShow: false,
             _promptMsg: '',
             _refreshing: false,
-            _list: [
-                {
-                    key: "0001",
-                    name: "Asin, Jose Protacio",
-                    position: "Auditor",
-                    branch: "Yacapin branch"
-                },
-                {
-                    key: "0002",
-                    name: "Asinero, Lourdes",
-                    position: "Utility",
-                    branch: "Yacapin branch"
-                },
-                {
-                    key: "0003",
-                    name: "Bagares, Lyn",
-                    position: "Utility",
-                    branch: "Yacapin branch"
-                },
-                {
-                    key: "0004",
-                    name: "Rizal, Delilah",
-                    position: "HR Staff",
-                    branch: "Yacapin branch"
-                },
-                {
-                    key: "0005",
-                    name: "Zamora, Israel",
-                    position: "HR Staff",
-                    branch: "Yacapin branch"
-                }
-            ]
+            _activeKey: '84',
+            _list: []
         }
     }
 
@@ -82,6 +54,22 @@ export class List extends Component {
 
     }
 
+    componentWillReceiveProps(nextProps){
+        if(
+            (this.state._list.length === 0) &&
+            (nextProps.employeelist.data.length > 0)
+        ){
+            console.log('nextProps.employeelist.data[0].key: ' +  nextProps.employeelist.data[0].key);
+            this.setState({
+                _list: [...nextProps.employeelist.data],
+                _activeKey: nextProps.employeelist.data[0].key
+            })
+            this.setState({
+
+            })
+        }
+    }
+
     _addNewEmployee = () => {
         this._showLoadingPrompt('Loading required forms. Please wait...');
         requestAnimationFrame(() => {
@@ -89,6 +77,11 @@ export class List extends Component {
             this.props.logininfo.navigation.navigate('AddEmployeeForm');
             
         })
+    }
+
+    _setActiveChild = (oItem) => {
+        this.setState({_activeKey: oItem.key});
+        this.props.actions.employee.getBasicInfo(oItem.key);
     }
 
     _hideLoadingPrompt = () => {
@@ -140,6 +133,7 @@ export class List extends Component {
                         /* getItemLayout={this._getItemLayout} */
                         refreshing={this.state._refreshing}
                         onRefresh={() => {
+                            this.setState({_list: [], _activeKey: ''});
                             this.props.actions.employeelist.get();
                         }}
                         ListHeaderComponent={oListHeader}
@@ -147,12 +141,12 @@ export class List extends Component {
                         data={this.props.employeelist.data}
                         renderItem={({item}) => 
                             <TouchableNativeFeedback 
-                                onPress={() => {/* this._setActiveChild(item) */}}
+                                onPress={() => this._setActiveChild(item)}
                                 onLongPress={() => {
                                     alert('ALERT TEST!')
                                 }}
                                 background={TouchableNativeFeedback.SelectableBackground()}>
-                                <View style={[styles.btnCont]}>
+                                <View style={[styles.btnCont, this.state._activeKey == item.key ? {backgroundColor: 'rgba(255, 255, 255, 0.3);'} : {}]}>
                                     <View style={styles.iconCont}>
                                         <View style={styles.iconPlaceholder}>
                                             <Text style={styles.txtFirstLetter}>{item.name.charAt(0)}</Text>
@@ -191,6 +185,7 @@ function mapDispatchToProps (dispatch) {
     return {
         actions: {
             employeelist: bindActionCreators(employeeListActions, dispatch),
+            employee: bindActionCreators(employeeActions, dispatch),
         },
     }
   }

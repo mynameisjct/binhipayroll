@@ -17,7 +17,7 @@ import ActionButton from 'react-native-action-button';
 import Icon2 from 'react-native-vector-icons/MaterialCommunityIcons';
 
 //Styles
-import styles from './styles'
+import styles from '../styles'
 
 //Redux
 import { connect } from 'react-redux';
@@ -43,7 +43,8 @@ from '../../../components/CustomCards';
 //Helper
 import * as oHelper from '../../../helper';
 
-//Class Constants
+//Constants
+import {CONSTANTS} from '../../../constants';
 const title_Leaves = 'Leaves';
 const description_Leaves = 'Allow Paid Leaves';
 const color_SwitchOn='#FFF4DE';
@@ -379,53 +380,78 @@ export class Leaves extends Component{
         }
     }
 
-    componentDidMount(){
-        if(this.props.status[0]==1){
-            this._initValues();
-        }
-        else if(this.props.status[0]==3){
-            this.props.triggerRefresh(true);
-        }
-        else;
+    componentWillUnmount(){
+        this.props.actions.leaves.setActiveRule('');
+    }
 
-        this.setState({
-            _status: [...this.props.status]
-        });
+    componentDidMount(){
+        if(this.props.leaves.data){
+            this._initValues();
+            this.setState({_status: [1,'']})
+        }
+        else{
+            this._getDataFromDB();
+        }
     }
 
     componentWillReceiveProps(nextProps) {
-        if(this.state._status[0] != nextProps.status[0]){
-            if(nextProps.status[0]==1){
-                this._initValues();
-            }
+        if(this.state._status[0] != nextProps.leaves.status[0]){
+                this.setState({ _status: nextProps.leaves.status })
+        }
 
-            this.setState({
-                _status: nextProps.status
-            })
+        if(
+            (JSON.stringify(this.state._allData) !== JSON.stringify(nextProps.leaves.data)) &&
+            (nextProps.leaves.status[0] == 1)
+        ){
+            this._initValues();
         }
     }
 
-    _initValues = () => {
-        let oAllData = JSON.parse(JSON.stringify(leavesSelector.getAllData()));
-        let oActiveData = JSON.parse(JSON.stringify(leavesSelector.getDefaultActiveData()));
-        let bFlag=true;
-        
-        if(!oActiveData){
-            oActiveData = JSON.parse(JSON.stringify(leavesSelector.getDefaultData()));
-            if(oAllData.enabled==true){
-                bFlag= false
-            }
-        }
-        console.log('oActiveData: ' + JSON.stringify(oActiveData));
+    _getDataFromDB = () => {
+        this.props.actions.leaves.get({...this._requiredInputs(), transtype:'get'});
+    }
 
-        
-        this.setState({
-            _allData: oAllData,
-            _activeData: oActiveData,
-            _disabledMode: true,
-            _aDays: oHelper.getArrayOfDaysInMonth(oActiveData.expirydate.month.value),
-            _disabledMode: bFlag
+    _requiredInputs = () => {
+        return({
+            companyid: this.props.activecompany.id,
+            username: this.props.logininfo.resUsername,
+            accesstoken: '',
+            clientid: ''
         })
+    }
+
+    _initValues = () => {
+        try{
+            let bFlag=true;
+            let oAllData = JSON.parse(JSON.stringify(leavesSelector.getAllData()));
+            let oActiveData = JSON.parse(JSON.stringify(
+                this.props.leaves.activeRule == '' ||  isNaN(this.props.leaves.activeRule) ? 
+                leavesSelector.getDefaultActiveData() : leavesSelector.getRuleFromID(this.props.leaves.activeRule)
+            ));
+            
+            if(!oActiveData){
+                oActiveData = JSON.parse(JSON.stringify(leavesSelector.getDefaultData()));
+                if(oAllData.enabled==true){
+                    bFlag= false
+                }
+            }
+            console.log('oActiveData: ' + JSON.stringify(oActiveData));
+
+            
+            this.setState({
+                _allData: oAllData,
+                _activeData: oActiveData,
+                _disabledMode: true,
+                _aDays: oHelper.getArrayOfDaysInMonth(oActiveData.expirydate.month.value),
+                _disabledMode: bFlag
+            })
+
+            this.props.actions.leaves.setActiveRule(oActiveData.id);
+        }
+        catch(exception){
+            console.log('exception: ' + exception.message);
+            this.setState({_status: [0,CONSTANTS.ERROR.SERVER]})
+        }
     }
 
     _toggleSwitch = async(value) => {
@@ -542,6 +568,7 @@ export class Leaves extends Component{
 
         oAllData.data = oDataArray;
         this.props.actions.leaves.update(oAllData);
+        this.props.actions.leaves.setActiveRule(id);
         this._initValues();
     }
 
@@ -571,6 +598,7 @@ export class Leaves extends Component{
                 this._hideLoadingPrompt();
                 bFlag = this._evaluateResponse(res);
                 if(res.flagno==1){
+                    this.props.actions.leaves.setActiveRule('');
                     this._popLeaveFromStore(this.state._activeData.id)
                 }
             })
@@ -661,6 +689,7 @@ export class Leaves extends Component{
     _updateActiveRule = (value) => {
         let oActiveData = JSON.parse(JSON.stringify(leavesSelector.getRuleFromID(value)));
         this.setState({ _activeData: oActiveData });
+        this.props.actions.leaves.setActiveRule(oActiveData.id);
     }
 
     _updateLeaveCount = (value) => {
@@ -754,7 +783,7 @@ export class Leaves extends Component{
 
         if(pProgress==0){
             return (
-                <PromptScreen.PromptError title='Leave Policy' onRefresh={()=>this.props.triggerRefresh(true)}/>
+                <PromptScreen.PromptError title='Leave Policy' onRefresh={this._getDataFromDB}/>
             );
         }
 
@@ -765,7 +794,7 @@ export class Leaves extends Component{
                         refreshControl={
                             <RefreshControl
                                 refreshing={this.state._refreshing}
-                                onRefresh={() => this.props.triggerRefresh(true)}
+                                onRefresh={this._getDataFromDB}
                             />
                         }
                     >

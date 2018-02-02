@@ -3,12 +3,12 @@ import {store} from '../../../../store';
 let activeID = '';
 
 export const getAllData = () => {
-	return store.getState().companyPoliciesReducer.leaves;
+	return store.getState().companyPoliciesReducer.leaves.data;
 };
 
 
 export const getDefaultActiveData = () => {
-	let oAllData = {...store.getState().companyPoliciesReducer.leaves}
+	let oAllData = {...store.getState().companyPoliciesReducer.leaves.data}
 	let oActiveData = null;
 	let bFlag = false;
 
@@ -33,7 +33,7 @@ export const getDefaultActiveData = () => {
 };
 
 export const getDefaultData = (id) => {
-	let oAllData = {...store.getState().companyPoliciesReducer.leaves}
+	let oAllData = {...store.getState().companyPoliciesReducer.leaves.data}
 	let oActiveData = oAllData.default
 
 	console.log('oActiveData: ' + JSON.stringify(oActiveData))
@@ -41,7 +41,7 @@ export const getDefaultData = (id) => {
 };
 
 export const getRuleFromID = (id) => {
-	let oAllData = {...store.getState().companyPoliciesReducer.leaves}
+	let oAllData = {...store.getState().companyPoliciesReducer.leaves.data}
 	let oActiveData = oAllData.data[oAllData.data.findIndex((obj => obj.id == id))];
 
 	console.log('oActiveData: ' + JSON.stringify(oActiveData))

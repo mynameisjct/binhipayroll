@@ -410,8 +410,7 @@ export class Overtime extends Component {
             this.setState({
                 _allData: JSON.parse(JSON.stringify(overtimeSelector.getAllData())),
                 _activeRule: oActiveRule,
-                _disabledMode: bFlag,
-                _status: [1, '']
+                _disabledMode: bFlag
             },
     /*             () => {
                     console.log('======================================================================')

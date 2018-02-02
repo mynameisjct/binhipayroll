@@ -1,6 +1,7 @@
 import { fetchApi } from '../../../../services/api';
+import * as endPoints from '../../../../global/endpoints';
 
-const endPoints = {
+const addressEndPoints = {
 	create: 'forms/benefits/bonus.php',
 	get: 'forms/benefits/bonus.php',
 	update: 'forms/benefits/bonus.php',
@@ -11,34 +12,32 @@ const endPoints = {
 	barangays: '/barangay/',
 };
 
-export const create = payload => fetchApi(endPoints.create, payload, 'post');
-
-export const get = payload => fetchApi(endPoints.get, payload, 'post');
-
+export const getBasicInfo = payload => fetchApi(endPoints.employee.basicInfo(payload), {}, 'get');
+/* 
 export const update = payload => fetchApi(endPoints.get, payload, 'post');
 
 export const remove = payload => fetchApi(endPoints.remove, payload, 'post');
-
+ */
 //Address API
 export const getProvinces = payload => fetchApi(
-	endPoints.provinces, 
+	addressEndPoints.provinces, 
 	undefined,
 	'get'
 );
 
 export const getCities = payload => fetchApi(
-	endPoints.provinces + 
+	addressEndPoints.provinces + 
 	payload.province + 
-	endPoints.cities, 
+	addressEndPoints.cities, 
 	undefined,
 	'get');
 
 export const getBarangays = payload => fetchApi(
-	endPoints.provinces + 
+	addressEndPoints.provinces + 
 	payload.province + 
-	endPoints.cities + 
+	addressEndPoints.cities + 
 	payload.city +
-	endPoints.barangays,
+	addressEndPoints.barangays,
 	undefined,
 	'get');
 

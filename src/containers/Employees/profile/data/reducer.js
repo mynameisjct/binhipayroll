@@ -137,18 +137,28 @@ const initialStatus = 2;
 export const employee = (state = initialState, action) => {
 	let oState = {...state};
 	switch (action.type) {
-		case actionTypes.UPDATE_ALLINFO:
+		case actionTypes.ALLINFO.UPDATE.DATA:
 			return action.payload;
 			break;
 		
-		case actionTypes.UPDATE_PERSONALINFO:
+		case actionTypes.PERSONALINFO.UPDATE.DATA:
+			oState.personalinfo = action.payload;
+
 			return {
-				...state.personalinfo,
-				...action.payload
+				...oState
 			}
 			break;
 
-		case actionTypes.UPDATE_BASICINFO:
+		case actionTypes.BASICINFO.INIT.DATA:
+			oState.personalinfo.basicinfo = action.payload.employee.basicinfo;
+			oState.personalinfo.contactinfo = action.payload.employee.contactinfo;
+			oState.personalinfo.ids = action.payload.employee.ids;
+			return {
+				...oState
+			}
+			break;
+
+		case actionTypes.BASICINFO.UPDATE.DATA:
 			oState.personalinfo.basicinfo.firstname = action.payload.firstname;
 			oState.personalinfo.basicinfo.middlename = action.payload.middlename;
 			oState.personalinfo.basicinfo.lastname = action.payload.lastname;
@@ -161,7 +171,7 @@ export const employee = (state = initialState, action) => {
 			}
 			break;
 
-		case actionTypes.UPDATE_CONTACTINFO:
+		case actionTypes.CONTACTINFO.UPDATE.DATA:
 			oState.personalinfo.contactinfo.mobile = action.payload.mobile;
 			oState.personalinfo.contactinfo.telephone = action.payload.telephone;
 			oState.personalinfo.contactinfo.email = action.payload.email;
@@ -170,7 +180,7 @@ export const employee = (state = initialState, action) => {
 			}
 			break;
 		
-		case actionTypes.UPDATE_IDS:
+		case actionTypes.IDS.UPDATE.DATA:
 			oState.personalinfo.ids.tin.value = action.payload.tin;
 			oState.personalinfo.ids.sss.value = action.payload.sss;
 			oState.personalinfo.ids.philhealth.value = action.payload.philhealth;
@@ -180,7 +190,7 @@ export const employee = (state = initialState, action) => {
 			}
 			break;
 		
-		case actionTypes.UPDATE_ADDRESS:
+		case actionTypes.ADDRESS.UPDATE.DATA:
 			oState.personalinfo.address.present.province.id = action.payload.present.province;
 			oState.personalinfo.address.present.city.id = action.payload.present.city;
 			oState.personalinfo.address.present.barangay.id = action.payload.present.barangay;
@@ -195,14 +205,14 @@ export const employee = (state = initialState, action) => {
 			}
 			break;
 		
-		case actionTypes.UPDATE_DEPENDENTS:
+		case actionTypes.DEPENDENTS.UPDATE.DATA:
 			return {
-				...state.personalinfo.de,
+				...state.personalinfo.dependents,
 				...action.payload
 			}
 			break;
 
-		case actionTypes.UPDATE_BANKINFO:
+		case actionTypes.BANKINFO.UPDATE.DATA:
 			oState.bankinfo.bankname = action.payload.bankname;
 			oState.bankinfo.accountnumber = action.payload.accountnumber;
 			return {
@@ -221,7 +231,7 @@ export const employee = (state = initialState, action) => {
 
 export const status = (state = initialStatus, action) => {
 	switch (action.type) {
-		case actionTypes.UPDATE_STATUS:
+		case actionTypes.ALLINFO.BANKINFO:
 			return action.payload;
 			break;
 

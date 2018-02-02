@@ -4,7 +4,7 @@ import {
     Text,
 } from 'react-native';
 
-import Leaves from '../../Rules/leaves';
+import Leaves from '../../leaves';
 
 export default class LeavesScreen extends Component {
     _triggerRefresh = () => {

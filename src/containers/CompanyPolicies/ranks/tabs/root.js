@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { TabNavigator } from 'react-navigation';
-import Icon from 'react-native-vector-icons/Ionicons';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import TardinessScreen from './tardiness';
 import OvertimeScreen from './overtime';
@@ -12,61 +12,49 @@ const TabsRoot = TabNavigator({
       screen: TardinessScreen,
       navigationOptions: {
         tabBarLabel: 'TARDINESS',
-        tabBarIcon: ({ tintColor, focused }) => (
-          <Icon
-            name={focused ? 'ios-person' : 'ios-person-outline'}
-            size={26}
-            style={{ color: tintColor }}
-          />
-        ),
       },
     },
     Undertime: {
       screen: UndertimeScreen,
       navigationOptions: {
         tabBarLabel: 'Undertime',
-        tabBarIcon: ({ tintColor, focused }) => (
-          <Icon
-            name={focused ? 'ios-person' : 'ios-person-outline'}
-            size={26}
-            style={{ color: tintColor }}
-          />
-        ),
       },
     },
     Overtime: {
       screen: OvertimeScreen,
       navigationOptions: {
         tabBarLabel: 'Overtime',
-        tabBarIcon: ({ tintColor, focused }) => (
-          <Icon
-            name={focused ? 'ios-person' : 'ios-person-outline'}
-            size={26}
-            style={{ color: tintColor }}
-          />
-        ),
       },
     },
     Leaves: {
       screen: LeavesScreen,
       navigationOptions: {
         tabBarLabel: 'Leaves',
-        tabBarIcon: ({ tintColor, focused }) => (
-          <Icon
-            name={focused ? 'ios-person' : 'ios-person-outline'}
-            size={26}
-            style={{ color: tintColor }}
-          />
-        ),
       },
     }
 },
     {
         swipeEnabled: true,
         tabBarOptions: {
+          showIcon: false,
+          showLabel: true,
           scrollEnabled: false,
-          tabStyle: { height: 30 }
+          activeTintColor: '#d69200',
+          inactiveTintColor: '#434646',
+          tabStyle: { height: 30},
+          labelStyle: {
+            fontSize: 12,
+            fontWeight: '500'
+          },
+          style: {
+            backgroundColor: '#D1D4D6',
+          },
+          indicatorStyle: {
+            backgroundColor: '#ecf0f1',
+            height: 0
+          }
         }
+        
     }
 );
 

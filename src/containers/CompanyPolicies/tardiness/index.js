@@ -40,7 +40,9 @@ from '../../../components/CustomCards';
 //Helper
 import * as oHelper from '../../../helper';
 
-//Class Constants
+//Constants
+import {CONSTANTS} from '../../../constants';
+
 const description_Tardiness = 'Set Tardiness Rules';
 const color_SwitchOn='#838383';
 const color_SwitchOff='#505251';
@@ -370,7 +372,7 @@ export class Tardiness extends Component{
                     _resMsg: res.message,
                     _bNoWorkShift: false
                 })
-                this.props.actions.tardiness.setActiveRule('')
+                this.props.actions.tardiness.setActiveRule('');
                 this._popActiveRuleFromStore(value);
                 
             }
