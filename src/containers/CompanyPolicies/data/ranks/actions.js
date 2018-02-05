@@ -1,5 +1,6 @@
 import * as api from './api';
 import * as actionTypes from './actionTypes';
+import  { CONSTANTS } from '../../../../constants';
 
 export const update = payload => ({
 	type: actionTypes.UPDATE,
@@ -14,17 +15,42 @@ export const remove = () => ({
 	type: actionTypes.REMOVE,
 });
 
-/* export const get = payload => 
-	dispatch =>
+export const updateStatus = payload => ({
+	type: actionTypes.STATUS,
+	payload,
+});
+
+export const setActiveRule = payload => ({
+	type: actionTypes.ACTIVERULE,
+	payload
+});
+
+export const get = payload => 
+	dispatch => {
+		let objRes = {};
+		dispatch(updateStatus(CONSTANTS.STATUS.LOADING));
+
 		api.get(payload)
 		.then((response) => response.json())
 		.then((res) => {
-			console.log('==================RANKS==================');
-			console.log('INPUT: ' + JSON.stringify(payload));
-			console.log('OUTPUT: ' + JSON.stringify(res));
+			console.log('RES: ' + JSON.stringify(res))
 			dispatch(update(res));
+			objRes = {...res}
+		})
+		.then(() => {
+			dispatch(updateStatus([
+				objRes.flagno || 0, 
+				objRes.message || CONSTANTS.ERROR.SERVER
+			]));
+		})
+		.catch((exception) => {
+			dispatch(updateStatus([
+				0, 
+				exception.message + '.'
+			]));
+            console.log('exception: ' + exception.message);
 		});
- */
+	}
 
 
 //MOCK DATA
@@ -32,7 +58,7 @@ const mockJSON = {
 	sucess: 'http://www.mocky.io/v2/5a5f01342e0000a1090a81f7',
 }
 
-export const get = payload =>
+/* export const get = payload =>
 	dispatch =>
 		fetchApi(mockJSON.sucess,payload)
 		.then((response) => response.json())
@@ -66,4 +92,4 @@ export const fetchApi = (endPoint, payload = {}, strMethod = 'post', headers = {
 		}
 	});
 }
-		
+		 */

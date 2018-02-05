@@ -33,7 +33,7 @@ import * as payrollActions from './data/payroll/actions';
 import * as taxActions from './data/tax/actions';
 import * as benefitsActions from './data/benefits/actions';
 import * as bonusActions from './data/bonus/actions';
-import * as ranksActions from './ranks/data/actions';
+import * as ranksActions from './data/ranks/actions';
 
 //Custom Components
 import * as StatusLoader from '../../components/ScreenLoadStatus';

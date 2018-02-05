@@ -164,12 +164,17 @@ export class Summary extends Component {
 
 function mapStateToProps (state) {
     return {
-        logininfo: state.loginReducer.logininfo
+        logininfo: state.loginReducer.logininfo,
+        activecompany: state.activeCompanyReducer.activecompany,
+        employee: state.employeeProfile.employee
     }
 }
-
+  
 function mapDispatchToProps (dispatch) {
     return {
+        actions: {
+            employee: bindActionCreators(employeeActions, dispatch),
+        },
     }
 }
 

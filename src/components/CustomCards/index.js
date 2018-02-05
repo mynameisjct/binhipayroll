@@ -132,7 +132,8 @@ export class PropLevel1 extends Component{
             nameStyle: this.props.nameStyle || {},
             contentStyle: this.props.contentStyle || {},
             contentType: this.props.contentType || '',
-            hideBorder: this.props.hideBorder || false
+            hideBorder: this.props.hideBorder || false,
+            hideBottomBorder: this.props.hideBottomBorder || false,
         }
     }
 
@@ -142,10 +143,14 @@ export class PropLevel1 extends Component{
                 hideBorder: nextProps.hideBorder
             })
         }
+        if(this.state.hideBottomBorder !== nextProps.hideBottomBorder){
+            this.setState({
+                hideBottomBorder: nextProps.hideBottomBorder
+            })
+        }
     }
 
     _getBorder = () => {
-        console.log('this.state.hideBorder: ' + this.state.hideBorder);
         if (this.state.hideBorder){
             return({
                 borderWidth: 0
@@ -153,9 +158,17 @@ export class PropLevel1 extends Component{
         }
     }
 
+    _getBottomBorder = () => {
+        if (this.state.hideBottomBorder){
+            return({
+                borderBottomWidth: 0
+            })
+        }
+    }
+
     render(){
         return(
-            <View style={[styles.childCont, styles.customBottomBorder]}>
+            <View style={[styles.childCont, styles.customBottomBorder, this._getBottomBorder()]}>
                 <View style={[styles.childTitleCont, this.state.nameStyle]}>
                     <Text style={styles.txtPropTitle}>{this.props.name}</Text>
                 </View>

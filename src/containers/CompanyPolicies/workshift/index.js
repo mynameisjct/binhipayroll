@@ -189,6 +189,14 @@ export class WorkShift extends Component {
         ){
             this._initValues();
         }
+
+        if(
+            (this.state._activeType !== nextProps.workshift.activeRule) &&
+            (this.state._status[0] == 1)
+        ){
+            this._updateActiveRule(nextProps.workshift.activeRule);
+        }
+
     }
 
     _getDataFromDB = () => {
@@ -228,11 +236,18 @@ export class WorkShift extends Component {
             this.props.actions.workshift.setActiveRule(oDefaultSchedule.id);
         }
         catch(exception){
-            this.setState({
-                _status: [0,CONSTANTS.ERROR.SERVER]
-            });
+            this.setState({_status: [0,CONSTANTS.ERROR.SERVER]})
+            this.props.actions.workshift.updateStatus([0,CONSTANTS.ERROR.SERVER]);
             console.log('exception:' + exception.message);
         }
+    }
+
+    _updateActiveRule = (iActiveRule) => {
+        let oNewActive = workShiftSelector.getScheduleFromTypeID(iActiveRule);
+        this.setState({
+            _activeType: oNewActive.id,
+            _activeSchedule: oNewActive
+        })
     }
 
     _setBottomBorder = (index) => {
@@ -421,13 +436,7 @@ export class WorkShift extends Component {
     }
 
     _setActiveWorkShiftType = (itemValue) => {
-        console.log('itemValue: ' + itemValue);
-        let oNewActive = workShiftSelector.getScheduleFromTypeID(itemValue);
-        this.setState({
-            _activeType: oNewActive.id,
-            _activeSchedule: oNewActive
-        })
-        this.props.actions.workshift.setActiveRule(oNewActive.id);
+        this.props.actions.workshift.setActiveRule(itemValue);
     }
 
     _addNewWorkShift = () => {

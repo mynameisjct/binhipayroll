@@ -41,6 +41,7 @@ from '../../../components/CustomCards';
 import * as oHelper from '../../../helper';
 
 //Class Constants
+import {CONSTANTS} from '../../../constants';
 const title_Overtime = 'Overtime';
 const description_Overtime = 'Allow paid overtime';
 const color_SwitchOn='#FFF4DE';
@@ -342,7 +343,7 @@ export class Overtime extends Component {
 
             //Local States
             _allData: null,
-            _activeRule: null,
+            _activeRule: {id: ''},
         }
 
         this._triggerSwitch = this._triggerSwitch.bind(this);
@@ -379,6 +380,13 @@ export class Overtime extends Component {
         ){
             this._initValues();
         }
+
+        if(
+            (this.state._activeRule.id !== nextProps.overtime.activeRule) &&
+            (this.state._status[0] == 1)
+        ){
+            this._updateActiveRule(nextProps.overtime.activeRule);
+        }
     }
 
     _getDataFromDB = () => {
@@ -411,44 +419,23 @@ export class Overtime extends Component {
                 _allData: JSON.parse(JSON.stringify(overtimeSelector.getAllData())),
                 _activeRule: oActiveRule,
                 _disabledMode: bFlag
-            },
-    /*             () => {
-                    console.log('======================================================================')
-                    console.log('this.state._allData: ' + JSON.stringify(this.state._allData));
-                    console.log('this.state._activeRule: ' + JSON.stringify(this.state._activeRule));
-                } */
-            )
+            })
 
             this.props.actions.overtime.setActiveRule(oActiveRule.id);
         }
         catch(exception){
+            this.setState({_status: [0,CONSTANTS.ERROR.SERVER]})
             console.log('exception: ' + exception.message);
-            this.setState({_status: [0,'']})
+            this.props.actions.overtime.updateStatus([0,CONSTANTS.ERROR.SERVER]);
         }
+    }
+
+    _updateActiveRule = (iActiveRule) => {
+        let oNewActive = JSON.parse(JSON.stringify(overtimeSelector.getActiveRuleFromID(iActiveRule)));
+        this.setState({ _activeRule: oNewActive })
     }
     
     _saveRule = () => {
-        //Temp - To delete
-        /* console.log('this.state._activeRule.name: ' + this.state._activeRule.name); */
-        /* if(!oHelper.isStringEmptyOrSpace(this.state._activeRule.name)){
-            let res = {id: '005', message: 'Successfully Added New Rule, "' + this.state._activeRule.name + '"'}
-            this.setState({
-                _msgBoxShow: true,
-                _msgBoxType: 'success',
-                _resMsg: res.message,
-                _bNoWorkShift: false
-            })
-            this._pushNewRuleToStore(res);
-        }
-        else{
-            this.setState({
-                _msgBoxShow: true,
-                _msgBoxType: 'error-ok',
-                _resMsg: 'Unable to save. Please input Rule Name.'
-            });
-            
-        } */
-
         if(!oHelper.isStringEmptyOrSpace(this.state._activeRule.name)){
             this.setState({
                 _promptMsg: save_loading_message,
@@ -687,10 +674,8 @@ export class Overtime extends Component {
         this._toggleOvertime(value);
     }
 
-    _updateActiveRule = (value) => {
-        let oActiveRule = JSON.parse(JSON.stringify(overtimeSelector.getActiveRuleFromID(value)));
-        this.setState({ _activeRule: oActiveRule })
-        this.props.actions.overtime.setActiveRule(oActiveRule.id);
+    _setActiveRule = (value) => {
+        this.props.actions.overtime.setActiveRule(value);
     }
 
     _addNewRule = () => {
@@ -790,7 +775,7 @@ export class Overtime extends Component {
                             data={this.state._allData}
                             activeRule={this.state._activeRule}
                             triggerSwitch={this._triggerSwitch}
-                            updateActiveRule={this._updateActiveRule}
+                            updateActiveRule={this._setActiveRule}
                             cancelEdit={this._cancelEdit}
                             saveRule={this._saveRule}
                             updateRates={this._updateRates}

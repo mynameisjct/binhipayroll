@@ -1,0 +1,259 @@
+//Modules and Packages
+import React, { Component } from 'react';
+import {
+    View,
+    Text,
+    Switch,
+    Picker,
+    TimePickerAndroid,
+    ScrollView,
+    TextInput,
+    TouchableOpacity,
+    RefreshControl,
+    TouchableNativeFeedback,
+    ToastAndroid
+} from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
+
+//Redux
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import * as ranksSelector from '../data/ranks/selector';
+import * as ranksActions from '../data/ranks/actions';
+import * as tardinessActions from '../data/tardiness/actions';
+import * as undertimeActions from '../data/undertime/actions';
+import * as overtimeActions from '../data/overtime/actions';
+import * as leavesActions from '../data/leaves/actions';
+
+//Styles
+import styles from './styles';
+
+//Children Components
+import TabsRoot from './tabs/root';
+
+//Custom Components
+import CustomCard, 
+{
+    Description,
+    PropTitle,
+    PropLevel1, 
+    PropLevel2
+}
+from '../../../components/CustomCards';
+import * as PromptScreen from '../../../components/ScreenLoadStatus';
+
+//helper
+import * as oHelper from '../../../helper';
+
+//Constants
+import {CONSTANTS} from '../../../constants';
+const CARD_TITLE = 'Employee Ranks'
+
+export class Ranks extends Component{
+    constructor(props){
+        super(props);
+        this.state = {
+            _bRefreshingRules: false,
+            _disabledMode: false,
+            _status: [2, 'Loading...'],
+            _allData: {},
+            _activeData: {},
+            _defaultData: {
+                id:'',
+                name:{
+                    label:'NAME',
+                    value:''
+                },
+                tardiness:{
+                    label: 'TARDINESS',
+                    value: ''
+                },
+                undertime:{
+                    label:"UNDERTIME",
+                    value: ''
+                },
+                overtime:{
+                    label:"OVERTIME",
+                    value: ''
+                }
+            }
+        }
+    }
+
+    componentDidMount(){
+        if(this.props.ranks.data){
+            this._initValues();
+            this.setState({_status: [1,'']})
+        }
+        else{
+            this._getDataFromDB();
+        }
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if(this.state._status[0] != nextProps.ranks.status[0]){
+                this.setState({ _status: nextProps.ranks.status })
+        }
+
+        if(
+            (JSON.stringify(this.state._allData) !== JSON.stringify(nextProps.ranks.data)) &&
+            (nextProps.ranks.status[0] == 1)
+        ){
+            this._initValues();
+        }
+    }
+
+    _getDataFromDB = () => {
+        this.props.actions.ranks.get({...this._requiredInputs(), transtype:'get'});
+    }
+
+    _requiredInputs = () => {
+        return({
+            companyid: this.props.activecompany.id,
+            username: this.props.logininfo.resUsername,
+            accesstoken: '',
+            clientid: ''
+        })
+    }
+
+    _initValues = () => {
+        try{
+            let bFlag = true;
+            let oAllData = JSON.parse(JSON.stringify(ranksSelector.getAllData()));
+            let oActiveData = JSON.parse(JSON.stringify(
+                this.props.ranks.activeRule == '' ||  isNaN(this.props.ranks.activeRule) ?
+                ranksSelector.getDefaultActive() : ranksSelector.getDataFromID(this.props.ranks.activeRule)
+            ));
+            
+            if (!oActiveData){
+                oActiveData = JSON.parse(JSON.stringify(this.state._defaultData));
+                bFlag = false;
+            }
+
+            this._setActiveRules(oActiveData);
+            
+            this.setState({
+                _allData: oAllData,
+                _activeData: oActiveData,
+                _disabledMode: bFlag
+            })
+
+            this.props.actions.ranks.setActiveRule(oActiveData.id);
+        }
+        catch(exception){
+            console.log('exception: ' + exception.message);
+            this.setState({_status: [0,CONSTANTS.ERROR.SERVER]})
+        }
+    }
+
+    _setActiveData = async(value) => {
+        let oNewActive = JSON.parse(JSON.stringify(ranksSelector.getDataFromID(value)));
+        this.setState({
+            _activeData: oNewActive
+        })
+        
+        this.props.actions.ranks.setActiveRule(oNewActive.id);
+        this._setActiveRules(oNewActive);
+    }
+
+    _setActiveRules = (oActiveData) => {
+        if(!oHelper.isStringEmptyOrSpace(String(oActiveData.id))){
+            this.props.actions.tardiness.setActiveRule(oActiveData.tardiness.value);
+            this.props.actions.overtime.setActiveRule(oActiveData.overtime.value);
+            this.props.actions.undertime.setActiveRule(oActiveData.undertime.value);
+        }
+    }
+
+    render(){
+        console.log('this.props.ranks.activeRule: ' + this.props.ranks.activeRule);
+        console.log('this.props.tardiness.activeRule: ' + this.props.tardiness.activeRule);
+        console.log('this.props.overtime.activeRule: ' + this.props.overtime.activeRule);
+        console.log('this.props.undertime.activeRule: ' + this.props.undertime.activeRule);
+        let pStatus = [...this.state._status];
+        let pProgress = pStatus[0];
+        let pMessage = pStatus[1];
+
+        if(pProgress==0){
+            return (
+                <PromptScreen.PromptError title='Tardiness Policy' onRefresh={this._getDataFromDB}/>
+            );
+        }
+
+        else if(pProgress==1){
+            return(
+                <View style={styles.container}>
+                    <View style={styles.contContent}>
+                        <View style={styles.contForm}>
+                            {this.props.ranks ? 
+                                <CustomCard title={CARD_TITLE} oType='Text'>
+                                    <PropLevel1 
+                                        name='Rank Name' 
+                                        content={
+                                            <Picker
+                                                mode='dropdown'
+                                                selectedValue={this.state._activeData.id}
+                                                onValueChange={(itemValue, itemIndex) => {this._setActiveData(itemValue)}}>
+                                                {
+                                                    this.state._allData.data.map((data, index) => (
+                                                        <Picker.Item key={index} label={data.name.value} value={data.id} />
+                                                    ))
+                                                }
+                                            </Picker>
+                                        }
+                                        hideBottomBorder={true}
+                                    />
+                                </CustomCard>
+                                :
+                                null
+                            }
+                        </View>
+                        <View style={styles.contRootTabs}>
+                            {
+                                !this.state._bRefreshingRules ?
+                                    <TabsRoot/>
+                                :
+                                    <PromptScreen.PromptLoading title='Loading Rules'/>
+                            }
+                        </View>
+                    </View>
+                </View>
+            );
+        }
+
+        else{
+            return (
+                <View style={styles.container}>
+                    <PromptScreen.PromptLoading title={pMessage}/>
+                </View>
+            );
+        }
+    }
+}
+
+function mapStateToProps (state) {
+    return {
+        logininfo: state.loginReducer.logininfo,
+        activecompany: state.activeCompanyReducer.activecompany,
+        ranks: state.companyPoliciesReducer.ranks,
+        tardiness: state.companyPoliciesReducer.tardiness,
+        overtime: state.companyPoliciesReducer.overtime,
+        undertime: state.companyPoliciesReducer.undertime
+    }
+}
+
+function mapDispatchToProps (dispatch) {
+    return {
+        actions: {
+            ranks: bindActionCreators(ranksActions, dispatch),
+            tardiness: bindActionCreators(tardinessActions, dispatch),
+            overtime: bindActionCreators(overtimeActions, dispatch),
+            undertime: bindActionCreators(undertimeActions, dispatch),
+            leaves: bindActionCreators(leavesActions, dispatch)
+        }
+    }
+}
+
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(Ranks)

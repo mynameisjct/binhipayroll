@@ -166,10 +166,26 @@ export class Tardiness extends Component{
         ){
             this._initValues();
         }
+
+        if(
+            (this.state._activeTardiness.id !== nextProps.tardiness.activeRule) &&
+            (this.state._status[0] == 1)
+        ){
+            this._updateActiveRule(nextProps.tardiness.activeRule);
+        }
     }
 
     _getDataFromDB = () => {
         this.props.actions.tardiness.get({...this._requiredInputs(), transtype:'get'});
+    }
+
+        _requiredInputs = () => {
+        return({
+            companyid: this.props.activecompany.id,
+            username: this.props.logininfo.resUsername,
+            accesstoken: '',
+            clientid: ''
+        })
     }
 
     _initValues = () => {
@@ -196,21 +212,20 @@ export class Tardiness extends Component{
                     console.log('_tardinessData: ' + JSON.stringify(this.state._tardinessData)); */
                 }
             )
-
+            
             this.props.actions.tardiness.setActiveRule(oActiveTardiness.id);
         }
         catch(exception){
-            console.log('exception: ' + exception.message);
             this.setState({_status: [0,CONSTANTS.ERROR.SERVER]})
+            console.log('exception: ' + exception.message);
+            this.props.actions.tardiness.updateStatus([0,CONSTANTS.ERROR.SERVER]);
         }
     }
 
-    _requiredInputs = () => {
-        return({
-            companyid: this.props.activecompany.id,
-            username: this.props.logininfo.resUsername,
-            accesstoken: '',
-            clientid: ''
+    _updateActiveRule = (iActiveRule) => {
+        let oNewActive = JSON.parse(JSON.stringify(tardinessSelector.getActiveTardinessFromID(iActiveRule)));
+        this.setState({
+            _activeTardiness: oNewActive
         })
     }
 
@@ -248,8 +263,7 @@ export class Tardiness extends Component{
                     this.setState({
                         _msgBoxShow: true,
                         _msgBoxType: 'success',
-                        _resMsg: res.message,
-                        _bNoWorkShift: false
+                        _resMsg: res.message
                     })
                     this._pushNewRuleToStore(res);
                 }
@@ -313,8 +327,7 @@ export class Tardiness extends Component{
                 this.setState({
                     _msgBoxShow: true,
                     _msgBoxType: 'success',
-                    _resMsg: res.message,
-                    _bNoWorkShift: false
+                    _resMsg: res.message
                 })
                 this._setTardinessSwitch(value);
             }
@@ -369,8 +382,7 @@ export class Tardiness extends Component{
                 this.setState({
                     _msgBoxShow: true,
                     _msgBoxType: 'success',
-                    _resMsg: res.message,
-                    _bNoWorkShift: false
+                    _resMsg: res.message
                 })
                 this.props.actions.tardiness.setActiveRule('');
                 this._popActiveRuleFromStore(value);
@@ -468,12 +480,7 @@ export class Tardiness extends Component{
     }
     
     _setActiveRule = (value) => {
-        let oNewActive = JSON.parse(JSON.stringify(tardinessSelector.getActiveTardinessFromID(value)));
-        this.setState({
-            _activeTardiness: oNewActive
-        })
-
-        this.props.actions.tardiness.setActiveRule(oNewActive.id);
+        this.props.actions.tardiness.setActiveRule(value);
     }
 
     _setPenalty = (value) => {

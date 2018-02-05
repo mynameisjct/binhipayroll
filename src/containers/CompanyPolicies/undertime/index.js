@@ -41,6 +41,7 @@ from '../../../components/CustomCards';
 import * as oHelper from '../../../helper';
 
 //Class Constants
+import {CONSTANTS} from '../../../constants';
 const description_undertime = 'Set Undertime Rules';
 const color_SwitchOn='#838383';
 const color_SwitchOff='#505251';
@@ -109,6 +110,13 @@ export class Undertime extends Component{
         ){
             this._initValues();
         }
+        
+        if(
+            (this.state._activeUndertime.id !== nextProps.undertime.activeRule) &&
+            (this.state._status[0] == 1)
+        ){
+            this._updateActiveRule(nextProps.undertime.activeRule);
+        }
     }
 
     _getDataFromDB = () => {
@@ -147,9 +155,15 @@ export class Undertime extends Component{
             this.props.actions.undertime.setActiveRule(oActiveUndertime.id);
         }
         catch(exception){
+            this.setState({_status: [0,CONSTANTS.ERROR.SERVER]})
             console.log('exception: ' + exception.message);
-            this.setState({_status: [0,'']})
+            this.props.actions.undertime.updateStatus([0,CONSTANTS.ERROR.SERVER]);
         }
+    }
+
+    _updateActiveRule = (iActiveRule) => {
+        let oNewActive = JSON.parse(JSON.stringify(undertimeSelector.getActiveUndertimeFromID(iActiveRule)));
+        this.setState({ _activeUndertime: oNewActive })
     }
 
     _saveRule = () => {
@@ -409,9 +423,7 @@ export class Undertime extends Component{
     }
     
     _setActiveRule = (value) => {
-        let oNewActive = JSON.parse(JSON.stringify(undertimeSelector.getActiveUndertimeFromID(value)));
-        this.setState({ _activeUndertime: oNewActive })
-        this.props.actions.undertime.setActiveRule(oNewActive.id);
+        this.props.actions.undertime.setActiveRule(value);
     }
 
     _setPenalty = (value) => {
