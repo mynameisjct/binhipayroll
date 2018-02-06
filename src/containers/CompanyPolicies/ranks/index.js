@@ -12,10 +12,12 @@ import {
     RefreshControl,
     TouchableNativeFeedback,
     ToastAndroid,
-    Modal
+    Modal,
+    Button
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { Table, TableWrapper, Row, Rows, Col, Cols, Cell } from 'react-native-table-component';
 
 //Redux
 import { connect } from 'react-redux';
@@ -62,83 +64,38 @@ import {CONSTANTS} from '../../../constants';
 const CARD_TITLE = 'Employee Ranks'
 
 class LeavesTable extends Component{
-    constructor(props){
-        super(props);
-        this.state = {
-            _oData: this.props.data || []
-        }
-    }
-    render(){
-        return(
-            <ScrollView horizontal={true}>
-                <View style={styles.leavesTable.container}>
-                    <View style={[styles.leavesTable.hearderCont, styles.leavesTable.breakHeaderBorder]}>
-                        <View style={styles.leavesTable.nameCont}>
-                            <Text style={styles.leavesTable.txtName}>NAME</Text>
-                        </View>
-                        <View style={styles.leavesTable.detailsCont}>
-                            <Text style={styles.leavesTable.txtDefault}>NUMBER OF PAID DAYS</Text>
-                        </View>
-                        { 
-                            !this.props.disabledMode ?
-                                <View style={styles.leavesTable.detailsCont}>
-                                    <Text style={styles.leavesTable.txtDefault}>DELETE</Text>
-                                </View>
-                            :null
-                        }
-                            
-                    </View>
-                    
-                    {
-                        this.props.data.map((oLeave, index) => (
-                            <TouchableNativeFeedback
-                                key={index}
-                                onPress={() => {
-                                    this._requestToShowForm(oLeave)
-                                }}
-                                background={TouchableNativeFeedback.SelectableBackground()}>
-                                <View style={styles.leavesTable.hearderCont}>
-                                    <View style={styles.leavesTable.nameCont}>
-                                        <Text style={styles.leavesTable.txtName}>{oLeave.label}</Text>
-                                    </View>
-                                    <View style={styles.leavesTable.detailsCont}>
-                                        <Text style={styles.leavesTable.txtDefault}>CMT</Text>
-                                    </View>
-                                    { 
-                                        !this.props.disabledMode ?
-                                            <View style={styles.leavesTable.detailsCont}>
-                                                <TouchableOpacity
-                                                    activeOpacity={0.7}
-                                                    onPress={() => {this.props.deleteItem(oLeave.value)}}
-                                                    >
-                                                    <Icon size={30} name='md-close-circle' color='#EEB843' />
-                                                </TouchableOpacity>
-                                            </View>
-                                        : null
-                                    }
-                                </View>
-                            </TouchableNativeFeedback>
-                        ))
-                    }
-                    { 
-                        !this.props.disabledMode ?
-                            <View style={styles.leavesTable.hearderCont}>
-                                <View style={styles.leavesTable.deleteCont}>
-                                    <TouchableOpacity
-                                        style={{paddingLeft: 30, paddingTop: 10}}
-                                        activeOpacity={0.7}
-                                        onPress={() => {this.props.showLeaves()}}
-                                        >
-                                        <Icon size={30} name='md-add' color='#EEB843' />
-                                    </TouchableOpacity>
-                                </View>
-                            </View>
-                        :
-                        null
-                    }
-
+    render() {
+        const ele = (value) => (
+            <TouchableOpacity onPress={() => this._alert(value)}>
+                <View style={styles.leavesTable.contDeleteBtn}>
+                    <Icon size={25} name='md-close-circle' color='#D75450' />
                 </View>
-            </ScrollView>
+            </TouchableOpacity>
+        );
+        const tableHead = ['NAME', 'PAID DAYS', 'DELETE'];
+        const tableData = [
+            ['Multi-Purpose Leave', '2', ele('')],
+            ['Sick Leave', '5', ele('')],
+        ];
+
+        
+        return (
+            <View style={styles.leavesTable.container}>
+                <Table borderStyle={styles.leavesTable.border}>
+                    <Row data={tableHead} style={styles.leavesTable.head} flexArr={[1.5, 1, 0.5]} textStyle={styles.leavesTable.text.header}/>
+                    <Rows data={tableData} style={styles.leavesTable.row} flexArr={[1.5, 1, 0.5]} textStyle={styles.leavesTable.text.content}/>
+                </Table>
+                <View style={styles.leavesTable.contAddBtn}>
+                    <TouchableOpacity
+                        activeOpacity={0.6}
+                        style={styles.leavesTable.addBtn}
+                        onPress={() => this.props.showLeaves('LEAVES')}>
+
+                        <Text style={styles.leavesTable.txtBtn}>Add New Leave Type</Text>
+
+                    </TouchableOpacity>
+                </View>
+            </View>
         )
     }
 }
@@ -171,7 +128,7 @@ export class Ranks extends Component{
                     value: ''
                 }
             },
-
+            _leavesData: [],
             _modalVisible: false,
             _activePolicy: ''
         }
@@ -227,13 +184,14 @@ export class Ranks extends Component{
                 bFlag = false;
             }
 
-            this._setActiveRules(oActiveData);
             
+            this._setActiveRules(oActiveData);
             this.setState({
                 _allData: oAllData,
                 _activeData: oActiveData,
                 /* _disabledMode: bFlag */
             })
+            
 
             this.props.actions.ranks.setActiveRule(oActiveData.id);
         }
@@ -262,10 +220,11 @@ export class Ranks extends Component{
     }
 
     _showPolicy = (strType) => {
+        console.log('XXXX=strType: ' + strType);
         let strPolicy = strType.toUpperCase()
         this.setState({
+            _activePolicy: strPolicy,
             _modalVisible: true,
-            _activePolicy: strPolicy
         })
     }
 
@@ -313,6 +272,20 @@ export class Ranks extends Component{
                     () => this.props.actions.overtime.setActiveRule(oActiveRule.id)
                 )
                 break;
+
+            case 'LEAVES':
+                oActiveRule = JSON.parse(JSON.stringify(
+                    overtimeSelector.getActiveRuleFromID(this.props.overtime.activeRule)
+                ));
+                /* oActiveData.overtime.label = oActiveRule.name;
+                oActiveData.overtime.value = oActiveRule.id; */
+                this.setState({
+                    _activeData: oActiveData
+                },
+                    () => this.props.actions.overtime.setActiveRule(oActiveRule.id)
+                )
+                break;
+
             default:
                 break;
         }
@@ -321,6 +294,7 @@ export class Ranks extends Component{
     }
 
     render(){
+        console.log('this.state._activePolicy: ' + this.state._activePolicy);
         console.log('this.props.ranks.activeRule: ' + this.props.ranks.activeRule);
         console.log('this.props.tardiness.activeRule: ' + this.props.tardiness.activeRule);
         console.log('this.props.overtime.activeRule: ' + this.props.overtime.activeRule);
@@ -367,9 +341,9 @@ export class Ranks extends Component{
                                 <Text style={styles.modalRules.txtHeader}>
                                     {
                                         this.state._activePolicy === 'LEAVES' ?
-                                            'Select a Rule or Modify Policy'
-                                        :   
                                             'Add Leave Type'
+                                        :   
+                                            'Select a Rule or Modify Policy'
                                     }
                                 </Text>
                             </View>
@@ -461,9 +435,9 @@ export class Ranks extends Component{
                             />
                             <PropTitle name='Leave Policy'/>
                             <LeavesTable 
-                                data={this.state._activeData.leaves}
+                                data={this.state._leavesData}
                                 deleteItem={()=>{}} 
-                                showLeaves={() => this._showPolicy('LEAVES')}
+                                showLeaves={(strType) => this._showPolicy(strType)}
                                 />
                         </CustomCard>
                     </ScrollView>

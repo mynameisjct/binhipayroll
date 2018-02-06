@@ -1,5 +1,5 @@
 //Packages
-import React, { Component } from 'react';
+import React, { Component, PureComponent } from 'react';
 import {
     View,
     Text,
@@ -33,6 +33,34 @@ import { employee } from '../profile/data/reducer';
 const btnActive = 'rgba(255, 255, 255, 0.3);'
 const btnInactive = 'transparent';
 
+export class EmployeeList extends React.PureComponent{
+    render(){
+        let item = this.props.item;
+
+        return(
+            <TouchableNativeFeedback 
+                onPress={() => this.props.itemPressed(item)}
+                onLongPress={() => {
+                    alert('ALERT TEST!')
+                }}
+                background={TouchableNativeFeedback.SelectableBackground()}>
+                <View style={[styles.btnCont, this.props.activeKey == item.key ? {backgroundColor: 'rgba(255, 255, 255, 0.3);'} : {}]}>
+                    <View style={styles.iconCont}>
+                        <View style={styles.iconPlaceholder}>
+                            <Text style={styles.txtFirstLetter}>{item.name.charAt(0)}</Text>
+                        </View>
+                    </View>
+                    <View style={styles.labelCont}>
+                        <Text style={styles.txtLabelTitle}>{item.name}</Text>
+                        <Text style={styles.txtLabel}>{item.position || 'Not Available'}</Text>
+                        <Text style={styles.txtLabel}>{item.branch || 'Not Available'}</Text>
+                    </View>
+                </View>
+            </TouchableNativeFeedback>
+        )
+    }
+}
+
 export class List extends Component {
         //List of Children
     constructor(props){
@@ -59,13 +87,9 @@ export class List extends Component {
             (this.state._list.length === 0) &&
             (nextProps.employeelist.data.length > 0)
         ){
-            console.log('nextProps.employeelist.data[0].key: ' +  nextProps.employeelist.data[0].key);
             this.setState({
                 _list: [...nextProps.employeelist.data],
                 _activeKey: nextProps.employeelist.data[0].key
-            })
-            this.setState({
-
             })
         }
     }
@@ -80,8 +104,13 @@ export class List extends Component {
     }
 
     _setActiveChild = (oItem) => {
-        this.setState({_activeKey: oItem.key});
-        this.props.actions.employee.getBasicInfo(oItem.key);
+        console.log('oItem: ' + oItem.key);
+        this.setState({
+            _activeKey: oItem.key
+        },
+            this.props.actions.employee.getBasicInfo(oItem.key)
+        );
+        
     }
 
     _hideLoadingPrompt = () => {
@@ -131,6 +160,7 @@ export class List extends Component {
                 <View style={styles.optionsCont}>
                     <FlatList
                         /* getItemLayout={this._getItemLayout} */
+                        initialNumToRender={3}
                         refreshing={this.state._refreshing}
                         onRefresh={() => {
                             this.setState({_list: [], _activeKey: ''});
@@ -139,26 +169,11 @@ export class List extends Component {
                         ListHeaderComponent={oListHeader}
                         ref={(ref) => { this.flatListRef = ref; }}
                         data={this.props.employeelist.data}
-                        renderItem={({item}) => 
-                            <TouchableNativeFeedback 
-                                onPress={() => this._setActiveChild(item)}
-                                onLongPress={() => {
-                                    alert('ALERT TEST!')
-                                }}
-                                background={TouchableNativeFeedback.SelectableBackground()}>
-                                <View style={[styles.btnCont, this.state._activeKey == item.key ? {backgroundColor: 'rgba(255, 255, 255, 0.3);'} : {}]}>
-                                    <View style={styles.iconCont}>
-                                        <View style={styles.iconPlaceholder}>
-                                            <Text style={styles.txtFirstLetter}>{item.name.charAt(0)}</Text>
-                                        </View>
-                                    </View>
-                                    <View style={styles.labelCont}>
-                                        <Text style={styles.txtLabelTitle}>{item.name}</Text>
-                                        <Text style={styles.txtLabel}>{item.position || 'Not Available'}</Text>
-                                        <Text style={styles.txtLabel}>{item.branch || 'Not Available'}</Text>
-                                    </View>
-                                </View>
-                            </TouchableNativeFeedback>
+                        renderItem={({item}) =>
+                            <EmployeeList 
+                                activeKey={this.state._activeKey}
+                                item={item} 
+                                itemPressed={(pressedItem) => this._setActiveChild(pressedItem)}/>
                         }
                     />
                     <ActionButton onPress={this._addNewEmployee}/>

@@ -249,7 +249,8 @@ export class Login extends Component {
                         });
                     break; */
 
-                    this.props.navigation.navigate('CompanyPolicies')
+                    /* this.props.navigation.navigate('CompanyPolicies') */
+                    this.props.navigation.navigate('Employees')
                     break;
 
                 case 'TIMEIN':

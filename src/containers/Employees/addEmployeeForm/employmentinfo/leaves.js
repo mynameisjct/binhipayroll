@@ -5,17 +5,13 @@ import {
 } from 'react-native';
 
 import styles from '../personalinfo/styles';
-/* import {Leaves as LeavesPolicy} from '../../../CompanyPolicies/Rules/leaves'; */
+import Leaves from '../../../CompanyPolicies/leaves';
 
-export default class Leaves extends Component {
-    _triggerRefresh = () => {
-        alert('Should have refreshed');
-    }
-
+export default class EmployeeLeaves extends Component {
     render(){
         return(
             <View style={styles.container}>
-                {/* <LeavesPolicy status={[1, 'Success']} triggerRefresh={this._triggerRefresh}/> */}
+                <Leaves/>
             </View>
         )
     }

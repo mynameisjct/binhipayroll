@@ -5,9 +5,9 @@ import {
 } from 'react-native';
 
 import styles from '../personalinfo/styles';
-/* import {Tardiness as TardinessPolicy} from '../../../CompanyPolicies/Rules/tardiness'; */
+import Tardiness from '../../../CompanyPolicies/tardiness';
 
-export default class Tardiness extends Component {
+export default class EmployeeTardiness extends Component {
     _triggerRefresh = () => {
         alert('Should have refreshed');
     }
@@ -15,7 +15,7 @@ export default class Tardiness extends Component {
     render(){
         return(
             <View style={styles.container}>
-                {/* <TardinessPolicy status={[1, 'Success']} triggerRefresh={this._triggerRefresh}/> */}
+                <Tardiness/>
             </View>
         )
     }

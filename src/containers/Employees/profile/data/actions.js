@@ -56,7 +56,7 @@ export const getBasicInfo = payload =>
 		api.getBasicInfo(payload)
 		.then((response) => response.json())
 		.then((res) => {
-			console.log('res: ' + JSON.stringify(res));
+			console.log('!~!~!~!~!~res_getBasicInfo: ' + JSON.stringify(res));
 			dispatch(initBasicInfo(res));
 			objRes = {...res}
 		})

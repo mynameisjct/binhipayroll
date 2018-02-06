@@ -4,68 +4,68 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { View } from 'react-native';
 
 //Children
-import Details from './details';
-import WorkShift from './workshift';
-import Payroll from './payroll';
-import Tardiness from './tardiness';
-import Undertime from './undertime';
-import Overtime from './overtime';
-import Leaves from './leaves';
-import Benefits from './benefits';
-import Tax from './tax';
+import EmployeeDetails from './details';
+import EmployeeWorkShift from './workshift';
+import EmployeePayroll from './payroll';
+import EmployeeTardiness from './tardiness';
+import EmployeeUndertime from './undertime';
+import EmployeeOvertime from './overtime';
+import EmployeeLeaves from './leaves';
+import EmployeeBenefits from './benefits';
+import EmployeeTax from './tax';
 
 
 const EmploymentInfo = TabNavigator({
     EmplomentDetails: {
-            screen: Details,
+            screen: EmployeeDetails,
             navigationOptions: {
             tabBarLabel: 'EMPLOYMENT DETAILS'
         }
     },
     EmployeeWorkShift: {
-            screen: WorkShift,
+            screen: EmployeeWorkShift,
             navigationOptions: {
             tabBarLabel: 'WORK SHIFT'
         }
     },
     EmployeePayroll: {
-            screen: Payroll,
+            screen: EmployeePayroll,
             navigationOptions: {
             tabBarLabel: 'PAYROLL SCHEDULE'
         }
     },
     EmployeeTardiness: {
-            screen: Tardiness,
+            screen: EmployeeTardiness,
             navigationOptions: {
             tabBarLabel: 'TARDINESS POLICY'
         }
     },
     EmployeeUndertime: {
-            screen: Undertime,
+            screen: EmployeeUndertime,
             navigationOptions: {
             tabBarLabel: 'UNDERTIME POLICY'
         }
     },
     EmployeeOvertime: {
-            screen: Overtime,
+            screen: EmployeeOvertime,
             navigationOptions: {
             tabBarLabel: 'OVERTIME POLICY'
         }
     },
     EmployeeLeaves: {
-            screen: Leaves,
+            screen: EmployeeLeaves,
             navigationOptions: {
             tabBarLabel: 'LEAVES POLICY'
         }
     },
     EmployeeBenefits: {
-            screen: Benefits,
+            screen: EmployeeBenefits,
             navigationOptions: {
             tabBarLabel: 'BENEFITS'
         }
     },
     EmployeeTax: {
-            screen: Tax,
+            screen: EmployeeTax,
             navigationOptions: {
             tabBarLabel: 'TAX POLICY'
         }

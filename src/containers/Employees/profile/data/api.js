@@ -1,4 +1,5 @@
-import { fetchApi } from '../../../../services/api';
+import { fetchApi, mockFetch } from '../../../../services/api';
+import * as blackOps from '../../../../global/blackOps';
 import * as endPoints from '../../../../global/endpoints';
 
 const addressEndPoints = {
@@ -12,7 +13,12 @@ const addressEndPoints = {
 	barangays: '/barangay/',
 };
 
-export const getBasicInfo = payload => fetchApi(endPoints.employee.basicInfo(payload), {}, 'get');
+export const getBasicInfo = payload => {
+	if(blackOps){
+		fetchApi(endPoints.employee.basicInfo(payload), {}, 'get');
+	}
+}
+
 /* 
 export const update = payload => fetchApi(endPoints.get, payload, 'post');
 

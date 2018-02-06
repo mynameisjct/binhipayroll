@@ -5,9 +5,9 @@ import {
 } from 'react-native';
 
 import styles from '../personalinfo/styles';
-/* import {Overtime as OvertimePolicy} from '../../../CompanyPolicies/Rules/overtime'; */
+import Overtime from '../../../CompanyPolicies/overtime';
 
-export default class Overtime extends Component {
+export default class EmployeeOvertime extends Component {
     _triggerRefresh = () => {
         alert('Should have refreshed');
     }
@@ -15,7 +15,7 @@ export default class Overtime extends Component {
     render(){
         return(
             <View style={styles.container}>
-                {/* <OvertimePolicy status={[1, 'Success']} triggerRefresh={this._triggerRefresh}/> */}
+                <Overtime/>
             </View>
         )
     }

@@ -39,7 +39,6 @@ export default {
             color: '#434646',
             paddingLeft: 15,
             paddingRight: 15,
-            /* backgroundColor: 'red', */
             height: '100%',
             textAlignVertical: 'center'
         },
@@ -56,9 +55,10 @@ export default {
         innerCont: {
             flex: 1,
             flexDirection: 'column',
-            backgroundColor: '#fff',
+            backgroundColor: '#f9f9f9',
             margin: 30,
             borderRadius: 15,
+            elevation: 20,
         },
 
         titleCont: {
@@ -90,14 +90,15 @@ export default {
         },
 
         contentCont: {
-            flex: 1
+            flex: 1,
+            backgroundColor: '#FFF'
         },
 
         btnContLeft: {
             justifyContent: 'center',
             alignItems: 'center',
             flex: 1,
-            borderWidth: 1,
+            borderWidth: 0.7,
             borderColor: '#D1D4D6',
             borderBottomLeftRadius: 15,
         },
@@ -106,7 +107,7 @@ export default {
             justifyContent: 'center',
             alignItems: 'center',
             flex: 1,
-            borderWidth: 1,
+            borderWidth: 0.7,
             borderColor: '#D1D4D6',
             borderBottomRightRadius: 15,
         },
@@ -129,12 +130,11 @@ export default {
         contTextWrapper: {
             flex: 1,
             height: '100%',
-            width: '100%',
-            backgroundColor: 'red'
+            width: '100%'
         }
     },
 
-    leavesTable: {
+    /* leavesTable: {
         container: {
             flex: 1,
             marginTop: 10,
@@ -194,6 +194,75 @@ export default {
             backgroundColor: 'transparent',
             justifyContent: 'center',
             alignItems: 'flex-start',
+        }
+    } */
+    leavesTable: {
+        container: {
+            marginLeft: 50,
+            marginTop: 15,
+            width: 600
+        },
+
+        head: { 
+            height: 40, 
+            backgroundColor: '#ECF0F1'
+        },
+
+        border: {
+            borderWidth: 0.7, 
+            borderColor: '#D1D4D6'
+        },
+
+        text: { 
+            header:{
+                fontFamily: 'Helvetica-Light',
+                fontSize: 14,
+                color: '#434646',
+                textAlign: 'center',
+                fontWeight: '500'
+            },
+            content:{
+                fontFamily: 'Helvetica-Light',
+                fontSize: 14,
+                color: '#434646',
+                textAlign: 'center',
+                padding: 8
+            }
+        },
+
+        row: { 
+            minHeight: 30,
+            borderWidth:0
+        },
+
+        contDeleteBtn: {
+            alignItems: 'center',
+            justifyContent: 'center'
+        },
+
+        contAddBtn: {
+            height: 40,
+            marginTop: 10,
+            alignItems: 'flex-start',
+            paddingLeft: 15
+        },
+
+        addBtn: {
+            
+            borderRadius: 15,
+            width: 160,
+            backgroundColor: '#DADFE1',
+            elevation: 3,
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: 5
+        },
+
+        txtBtn: {
+            fontFamily: 'Helvetica-Light',
+            fontSize: 12,
+            color: '#434646',
+            textAlign: 'center'
         }
     }
     

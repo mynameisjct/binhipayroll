@@ -5,9 +5,9 @@ import {
 } from 'react-native';
 
 import styles from '../personalinfo/styles';
-/* import {Undertime as UndertimePolicy} from '../../../CompanyPolicies/Rules/undertime'; */
+import Undertime from '../../../CompanyPolicies/undertime';
 
-export default class Undertime extends Component {
+export default class EmployeeUndertime extends Component {
     _triggerRefresh = () => {
         alert('Should have refreshed');
     }
@@ -15,7 +15,7 @@ export default class Undertime extends Component {
     render(){
         return(
             <View style={styles.container}>
-                {/* <UndertimePolicy status={[1, 'Success']} triggerRefresh={this._triggerRefresh}/> */}
+                <Undertime/>
             </View>
         )
     }

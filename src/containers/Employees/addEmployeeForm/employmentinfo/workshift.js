@@ -7,54 +7,22 @@ import {
 //Styles
 import styles from '../personalinfo/styles';
 
-/* import {WorkShift as WorkShiftPolicy} from '../../../CompanyPolicies/Rules/workshift';
- */
+
+import WorkShift from '../../../CompanyPolicies/workshift';
+
 //Redux
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as workshiftActions from '../../../CompanyPolicies/data/workshift/actions';
 
-export class WorkShift extends Component {
-    constructor(props){
-        super(props);
-        this.state = {
-            _workShiftStatus: [3, 'Loading...']
-        }
+export class EmployeeWorkShift extends Component {
+    componentWillMount(){
+        console.log('##################this.props.workshift: ' + JSON.stringify(this.props.workshift));
     }
-    _triggerRefresh = () => {
-        console.log('IM IN _getWorkSchedule');
-        let curStatus = [2, 'Loading...'];
-        this.setState({
-            _workShiftStatus: curStatus
-        });
-
-        this.props.actions.workshift.get({
-            companyid: this.props.activecompany.id,
-            username: this.props.logininfo.resUsername,
-            transtype: 'get',
-            accesstoken: '',
-            clientid: '',
-        })
-        .then(() => {
-            let oWorkShift  = {...this.props.companyWorkShift};
-            let oStatus = [oWorkShift.flagno, oWorkShift.message];
-            this.setState({
-                _workShiftStatus: oStatus
-            });
-		})
-		.catch((exception) => {
-            console.log('exception: ' + exception);
-            let oStatus = [0, 'Application error was encountered. \n Please contact BINHI-MeDFI'];
-			this.setState({
-                _workShiftStatus: oStatus
-            })
-		});
-    }
-
     render(){
         return(
             <View style={styles.container}>
-                {/* <WorkShiftPolicy status={this.state._workShiftStatus} triggerRefresh={this._triggerRefresh}/> */}
+                <WorkShift/>
             </View>
         )
     }
@@ -64,7 +32,7 @@ function mapStateToProps (state) {
     return {
         logininfo: state.loginReducer.logininfo,
         activecompany: state.activeCompanyReducer.activecompany,
-        companyWorkShift: state.companyPoliciesReducer.workshift,
+        workshift: state.companyPoliciesReducer.workshift,
     }
 }
 
@@ -79,4 +47,4 @@ function mapDispatchToProps (dispatch) {
 export default connect(
     mapStateToProps,
     mapDispatchToProps
-)(WorkShift)
+)(EmployeeWorkShift)

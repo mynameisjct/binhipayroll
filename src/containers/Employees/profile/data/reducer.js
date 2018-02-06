@@ -132,7 +132,7 @@ const initialState = {
 	}
 };
 
-const initialStatus = 2;
+const initialStatus = [2,'Loading...'];
 
 export const employee = (state = initialState, action) => {
 	let oState = {...state};
@@ -166,6 +166,7 @@ export const employee = (state = initialState, action) => {
 			oState.personalinfo.basicinfo.birthday = action.payload.birthday;
 			oState.personalinfo.basicinfo.gender.value = action.payload.gender;
 			oState.personalinfo.basicinfo.civilstatus.value = action.payload.civilstatus;
+			
 			return {
 				...oState
 			}
@@ -231,7 +232,18 @@ export const employee = (state = initialState, action) => {
 
 export const status = (state = initialStatus, action) => {
 	switch (action.type) {
-		case actionTypes.ALLINFO.BANKINFO:
+		case actionTypes.ALLINFO.UPDATE.STATUS:
+			return action.payload;
+			break;
+
+		default:
+			return state;
+	}
+};
+
+export const basicInfoStatus = (state = initialStatus, action) => {
+	switch (action.type) {
+		case actionTypes.BASICINFO.UPDATE.STATUS:
 			return action.payload;
 			break;
 
@@ -242,5 +254,6 @@ export const status = (state = initialStatus, action) => {
 
 export const employeeProfile = combineReducers({
     employee,
-    status
+	status,
+	basicInfoStatus
 });

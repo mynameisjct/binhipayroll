@@ -162,12 +162,15 @@ export class WorkShift extends Component {
         this._onBreakTimeUpdate = this._onBreakTimeUpdate.bind(this);
     }
 
+    componentWillMount(){
+        console.log('+++++++++++++++++++++++++++++++++++++this.props.workshift: ' + JSON.stringify(this.props.workshift));
+    }
+
     componentWillUnmount(){
         this.props.actions.workshift.setActiveRule('')
     }
 
     componentDidMount(){
-        console.log('this.props.workshift.data: ' + JSON.stringify(this.props.workshift.data));
         if(this.props.workshift.data){
             this._initValues();
             this.setState({_status: [1,'']})
@@ -179,6 +182,9 @@ export class WorkShift extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
+        console.log('####################################################################################')
+        console.log('##########################this.props.workshift.data: ' + JSON.stringify(this.props.workshift.data));
+        console.log('##########################nextProps.workshift.data: ' + JSON.stringify(nextProps.workshift.data));
         if(this.state._status[0] != nextProps.workshift.status[0]){
                 this.setState({ _status: nextProps.workshift.status })
         }
@@ -742,7 +748,8 @@ export class WorkShift extends Component {
 
             //Floating Actions Buttons for A/D Work Shift Type
             const actionButton = 
-                <ActionButton 
+                <ActionButton
+                    shadowStyle={{elevation: 30}}
                     buttonColor="#EEB843"
                     spacing={10}
                 >
