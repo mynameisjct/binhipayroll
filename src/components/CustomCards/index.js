@@ -36,6 +36,20 @@ export default class CustomCard extends Component{
             return;
         }
     }
+
+    _getMarginConfig = () => {
+        try{
+            if(this.props.clearMargin){
+                return ({
+                    margin: 0
+                })
+            }
+            return;
+        }
+        catch(exception){
+            return;
+        }
+    }
     
     render(){
         let oTitle = null;
@@ -92,7 +106,7 @@ export default class CustomCard extends Component{
                     {oTitle}
                 </View>
                 <View style={styles.contentCont}>
-                    <View style={styles.detailsCont}>
+                    <View style={[styles.detailsCont, this._getMarginConfig()]}>
                         {this.props.children}
                     </View>
                 </View>
@@ -202,7 +216,7 @@ export class PropLevel2 extends Component{
     }
 
     _getBorder = () => {
-        console.log('this.state.hideBorder: ' + this.state.hideBorder);
+        /* console.log('this.state.hideBorder: ' + this.state.hideBorder); */
         if (this.state.hideBorder){
             return({
                 borderWidth: 0

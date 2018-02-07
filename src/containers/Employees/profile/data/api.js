@@ -13,11 +13,15 @@ const addressEndPoints = {
 	barangays: '/barangay/',
 };
 
-export const getBasicInfo = payload => {
-	if(blackOps){
-		fetchApi(endPoints.employee.basicInfo(payload), {}, 'get');
+export let getBasicInfo = payload => {
+	if(blackOps.mode){
+		return fetchApi(endPoints.employee.basicInfo(payload), {}, 'get');
+	}
+	else{
+		return fetchApi(endPoints.employee.basicInfo(payload), {}, 'get');
 	}
 }
+
 
 /* 
 export const update = payload => fetchApi(endPoints.get, payload, 'post');

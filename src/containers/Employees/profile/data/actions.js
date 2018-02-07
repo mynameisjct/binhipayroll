@@ -1,6 +1,29 @@
 import * as api from './api';
 import * as actionTypes from './actionTypes';
 import { CONSTANTS } from '../../../../constants';
+import { Number } from 'tcomb-validation';
+
+/******************** Employees Record ********************/
+export const insertEmployeeRecord = payload =>({
+	type: actionTypes.EMPLOYEERECORD.INSERT,
+	payload
+})
+
+export const updateEmployeeRecord = payload =>({
+	type: actionTypes.EMPLOYEERECORD.UPDATE,
+	payload
+})
+
+export const removeEmployeeRecord = payload =>({
+	type: actionTypes.EMPLOYEERECORD.REMOVE,
+	payload
+})
+
+/******************** Update Active ID ********************/
+export const updateActiveID = payload =>({
+	type: actionTypes.ALLINFO.UPDATE.ID,
+	payload
+})
 
 /******************** All Employee Info ********************/
 export const getAllInfo = payload =>
@@ -12,7 +35,9 @@ export const getAllInfo = payload =>
 		.then((response) => response.json())
 		.then((res) => {
 			console.log('res: ' + JSON.stringify(res));
-			dispatch(updateAllInfo(res));
+			if(res.flagno == 1){
+				dispatch(updateAllInfo(res));
+			}
 			objRes = {...res}
 		})
 		.then(() => {
@@ -52,12 +77,14 @@ export const getBasicInfo = payload =>
 	dispatch => {
 		let objRes = {};
 		dispatch(updateBasicInfoStatus(CONSTANTS.STATUS.LOADING));
-		console.log('payloadInAction: ' + payload);
+		/* console.log('payloadInAction: ' + payload); */
 		api.getBasicInfo(payload)
 		.then((response) => response.json())
 		.then((res) => {
-			console.log('!~!~!~!~!~res_getBasicInfo: ' + JSON.stringify(res));
-			dispatch(initBasicInfo(res));
+			/* console.log('!~!~!~!~!~res_getBasicInfo: ' + JSON.stringify(res)); */
+			if(res.flagno == 1){
+				dispatch(initBasicInfo(res));
+			}
 			objRes = {...res}
 		})
 		.then(() => {
@@ -89,7 +116,7 @@ export const updateBasicInfoStatus = payload => ({
 	type: actionTypes.BASICINFO.UPDATE.STATUS,
 	payload
 });
-
+/* 
 //Contact Info
 export const getContactInfo = payload =>
 	dispatch => {
@@ -116,7 +143,7 @@ export const getContactInfo = payload =>
 			]));
 			console.log('exception: ' + exception.message);
 		});
-	}
+	} */
 
 export const updateContactInfo = payload => ({
 	type: actionTypes.CONTACTINFO.UPDATE.DATA,
@@ -137,8 +164,11 @@ export const getIDS = payload =>
 		api.get(payload)
 		.then((response) => response.json())
 		.then((res) => {
+			if(res.flagno == 1){
+				dispatch(updateIDS(res));
+			}
 			console.log('res: ' + JSON.stringify(res));
-			dispatch(updateIDS(res));
+			
 			objRes = {...res}
 		})
 		.then(() => {
@@ -176,7 +206,9 @@ dispatch => {
 	.then((response) => response.json())
 	.then((res) => {
 		console.log('res: ' + JSON.stringify(res));
-		dispatch(updateAddress(res));
+		if(res.flagno == 1){
+			dispatch(updateAddress(res));
+		}
 		objRes = {...res}
 	})
 	.then(() => {
@@ -215,7 +247,9 @@ export const getDependents = payload =>
 		.then((response) => response.json())
 		.then((res) => {
 			console.log('res: ' + JSON.stringify(res));
-			dispatch(updateDependents(res));
+			if(res.flagno == 1){
+				dispatch(updateDependents(res));
+			}
 			objRes = {...res}
 		})
 		.then(() => {
@@ -253,7 +287,9 @@ export const getBankInfo = payload =>
 		.then((response) => response.json())
 		.then((res) => {
 			console.log('res: ' + JSON.stringify(res));
-			dispatch(updateBankInfo(res));
+			if(res.flagno == 1){
+				dispatch(updateBankInfo(res));
+			}
 			objRes = {...res}
 		})
 		.then(() => {

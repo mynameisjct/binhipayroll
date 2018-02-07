@@ -71,16 +71,18 @@ export default {
 
     rightCont: {
         flex: 1,
-        backgroundColor: '#fff',
+        backgroundColor: 'transparent',
     },
 
     titleCont:{
         flex: 1,
         height: 35,
         flexDirection: 'row',
-        backgroundColor: '#818489',
+        backgroundColor: '#202626',
         borderTopWidth: 0.5,
-        borderColor: '#1d1e1e'
+        borderColor: '#1d1e1e',
+        elevation: 30,
+        zIndex: 999
     },
 
     btnCont: {
@@ -109,8 +111,8 @@ export default {
 
     txtLabel:{
         fontFamily: 'Helvetica-Bold',
-        fontSize: 15,
-        color: '#fff',
+        fontSize: 14,
+        color: '#eaeced',
         fontWeight: '300'
     },
 
@@ -123,8 +125,9 @@ export default {
     txtLabelTitle:{
         fontFamily: 'Helvetica-Bold',
         fontSize: 13,
-        color: '#fff',
-        fontWeight: '500'
+        color: '#FFFF',
+        fontWeight: '500',
+        /* fontStyle: 'italic' */
     },
 
     contSearchBox: {
@@ -160,12 +163,14 @@ export default {
     },
 
     iconPlaceholder: {
+        elevation: 15,
         width: 35,
         height: 35,
         backgroundColor: '#EEB843',
         borderRadius: 100,
         justifyContent: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
+        
     },
 
     iconCont: {
@@ -176,7 +181,7 @@ export default {
     },
 
     contIconProfile: {
-        width: 80,
+        width: 70,
         backgroundColor: 'transparent',
         justifyContent: 'center',
         alignItems: 'flex-end'
@@ -201,5 +206,48 @@ export default {
         color: '#fff',
         fontWeight: '500'
     },
+    
+    child: {
+        container: {
+            flex:1,
+            flexDirection: 'column'
+        },
+        
+        contCard: {
+            flex:1
+        },
+    
+        floatingCard: {
+            backgroundColor: '#fff',
+            borderRadius: 2,
+            margin: 6,
+            
+            elevation: 3,
+        },
+    
+        contFooter: {
+            height: 40,
+            width: '100%',
+            backgroundColor: '#2b5876',
+            elevation: 20,
+            shadowOffset: {width: -2, height: -2},
+            justifyContent: 'center',
+            alignItems: 'center'
+        },
+    
+        txtLabel: {
+            fontSize: 15,
+            color: '#fff',
+            fontFamily: 'Helvetica-Light',
+            fontWeight: '400',
+            fontStyle: 'italic'
+        },
+    
+        txtDefault: {
+            fontSize: 14,
+            color: '#212223',
+            fontFamily: 'Helvetica-Light',
+        }
+    }
 }
    

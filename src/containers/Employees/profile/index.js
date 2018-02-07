@@ -1,5 +1,5 @@
 //Packages
-import React, { Component } from 'react';
+import React, { Component, PureComponent } from 'react';
 import {
     View,
     Text,
@@ -29,7 +29,27 @@ from '../../../components/CustomCards';
 import Header1 from '../../Headers/header1';
 
 //Children Components
-import BasicInfo from './basicinfo/';
+import EmpBasicInfo from './personalInfo/empBasicInfo';
+import EmpAddressInfo from './personalInfo/empAddressInfo';
+import EmpFamily from './personalInfo/empFamily';
+import EmpBankAccount from './bankInfo/empBankAccount';
+
+import EmpBenefits from './employmentInfo/empBenefits';
+import EmpBonus from './employmentInfo/empBonus';
+import EmpDetails from './employmentInfo/empDetails';
+import EmpLeaves from './employmentInfo/empLeaves';
+import EmpOvertime from './employmentInfo/empOvertime';
+import EmpPayroll from './employmentInfo/empPayroll';
+import EmpTardiness from './employmentInfo/empTardiness';
+import EmpTax from './employmentInfo/empTax';
+import EmpUndertime from './employmentInfo/empUndertime';
+import EmpWorkshift from './employmentInfo/empWorkshift';
+
+import EmpBenefitsReport from './reports/empBenefitsReport';
+import EmpDTR from './reports/empDTR';
+import EmpLeaveHistory from './reports/empLeaveHistory'
+import EmpPaySlip from './reports/empPaySlip'
+import EmpTimeDisputes from './reports/empTimeDisputes'
 
 //Helper
 import * as oHelper from '../../../helper';
@@ -42,6 +62,38 @@ const btnActive = 'rgba(255, 255, 255, 0.3);'
 const btnInactive = 'transparent';
 const TITLE = 'Employee Profile Summary'
 
+export class ProfileMenu extends PureComponent{
+    render(){
+        let item = this.props.item;
+        return(
+            <TouchableNativeFeedback 
+                onPress={() => this.props.itemPressed(item)}
+                background={TouchableNativeFeedback.SelectableBackground()}>
+                <View>
+                    {
+                        item.type.toUpperCase() == 'CONTENT' ?
+                        <View style={[styles.btnCont, this.props.activeItem.key == item.key ? {backgroundColor: 'rgba(255, 255, 255, 0.3);'} : {}]}>
+                                <View style={styles.iconCont}>
+                                    <View style={styles.iconPlaceholder}>
+                                        <Icon name={item.icon} size={16} color='#fff'/>
+                                    </View>
+                                </View>
+                                <View style={styles.labelCont}>
+                                    <Text style={styles.txtLabel}>{item.name}</Text>
+                                </View>
+                            </View>
+                        :
+                            <View style={styles.titleCont}>
+                                <View style={styles.contContentTitle}>
+                                    <Text style={styles.txtLabelTitle}>{item.name}</Text>
+                                </View>
+                            </View>
+                    }
+                </View>
+            </TouchableNativeFeedback>
+        )
+    }
+}
 export class Profile extends Component {
     constructor(props){
         super(props);
@@ -52,31 +104,36 @@ export class Profile extends Component {
                     key: "0001",
                     name: "PERSONAL INFORMATION",
                     type: "title"
+
                 },
                 {
                     key: "0002",
                     name: "Basic & Contact Info",
                     icon: "information-variant",
-                    type: "content"
+                    type: "content",
+                    oComponent: <EmpBasicInfo/>
                 },
                 {
                     key: "0003",
                     name: "Address Info",
                     icon: "map-marker",
-                    type: "content"
+                    type: "content",
+                    oComponent: <EmpAddressInfo/>
                 },
                 {
                     key: "0004",
                     name: "Family & Dependents",
                     icon: "account-multiple",
-                    type: "content"
+                    type: "content",
+                    oComponent: <EmpFamily/>
                 },
-                {
+                /* {
                     key: "0005",
                     name: "Work and Education",
                     icon: "briefcase",
-                    type: "content"
-                },
+                    type: "content",
+                    oComponent: <BasicInfo/>
+                }, */
                 {
                     key: "0006",
                     name: "BANK INFORMATION",
@@ -86,7 +143,8 @@ export class Profile extends Component {
                     key: "0007",
                     name: "Bank Account Info",
                     icon: "bank",
-                    type: "content"
+                    type: "content",
+                    oComponent: <EmpBankAccount/>
                 },
                 {
                     key: "0008",
@@ -97,87 +155,121 @@ export class Profile extends Component {
                     key: "0009",
                     name: "Employment Details",
                     icon: "file-document",
-                    type: "content"
+                    type: "content",
+                    oComponent: <EmpDetails/>
                 },
                 {
                     key: "0010",
                     name: "Work Shift",
                     icon: "calendar-clock",
-                    type: "content"
+                    type: "content",
+                    oComponent: <EmpWorkshift/>
                 },
                 {
                     key: "0011",
                     name: "Payroll Schedule",
                     icon: "credit-card",
-                    type: "content"
+                    type: "content",
+                    oComponent: <EmpPayroll/>
                 },
                 {
                     key: "0012",
                     name: "Tardiness Policy",
                     icon: "clock-alert",
-                    type: "content"
+                    type: "content",
+                    oComponent: <EmpTardiness/>
                 },
                 {
                     key: "0013",
                     name: "Undertime Policy",
                     icon: "timelapse",
-                    type: "content"
+                    type: "content",
+                    oComponent: <EmpUndertime/>
                 },
                 {
                     key: "0014",
                     name: "Overtime Policy",
                     icon: "clock-fast",
-                    type: "content"
+                    type: "content",
+                    oComponent: <EmpOvertime/>
                 },
                 {
                     key: "0015",
                     name: "Leaves",
                     icon: "timer-off",
-                    type: "content"
+                    type: "content",
+                    oComponent: <EmpLeaves/>
                 },
                 {
                     key: "0016",
                     name: "Benefits",
                     icon: "format-list-numbers",
-                    type: "content"
+                    type: "content",
+                    oComponent: <EmpBenefits/>
                 },
                 {
                     key: "0017",
                     name: "Tax",
                     icon: "calculator",
-                    type: "content"
+                    type: "content",
+                    oComponent: <EmpTax/>
                 },
                 {
                     key: "0018",
-                    name: "REPORTS",
-                    type: "title"
+                    name: "13th Month Pay",
+                    icon: "account-star",
+                    type: "content",
+                    oComponent: <EmpBonus/>
                 },
                 {
                     key: "0019",
-                    name: "Daily Time Record",
-                    icon: "timetable",
-                    type: "content"
+                    name: "PERSONAL REPORTS",
+                    type: "title"
                 },
                 {
                     key: "0020",
-                    name: "Leave History",
-                    icon: "file-excel",
-                    type: "content"
+                    name: "Daily Time Record",
+                    icon: "timetable",
+                    type: "content",
+                    oComponent: <EmpDTR/>
                 },
                 {
                     key: "0021",
-                    name: "Late/OT/UT History",
-                    icon: "file-delimited",
-                    type: "content"
+                    name: "Leave History",
+                    icon: "file-excel",
+                    type: "content",
+                    oComponent: <EmpLeaveHistory/>
                 },
                 {
                     key: "0022",
+                    name: "Late/OT/UT History",
+                    icon: "file-delimited",
+                    type: "content",
+                    oComponent: <EmpTimeDisputes/>
+                },
+                {
+                    key: "0023",
                     name: "Benefits",
                     icon: "file-send",
-                    type: "content"
+                    type: "content",
+                    oComponent: <EmpBenefitsReport/>
                 },
+                {
+                    key: "0024",
+                    name: "Pay Slips",
+                    icon: "file-account",
+                    type: "content",
+                    oComponent: <EmpPaySlip/>
+                },
+            ],
+            _activeItem: {
+                key: "0002",
+                name: "Basic & Contact Info",
+                icon: "information-variant",
+                type: "content",
+                oComponent: <EmpBasicInfo/>
+            },
 
-            ]
         }
     }
 
@@ -185,6 +277,28 @@ export class Profile extends Component {
         header : 
             <Header1 title= 'MY EMPLOYEES'/>
     }
+
+    _setActiveChild = (oItem) => {
+        let oActiveItem = {...this.state._activeItem}
+        oActiveItem.key=oItem.key;
+        oActiveItem.name=oItem.name;
+        oActiveItem.icon=oItem.Icon;
+        oActiveItem.type=oItem.type;
+        oActiveItem.oComponent=oItem.oComponent;
+        this.setState({
+            _activeItem: oActiveItem
+        })
+    }
+
+/*     _setActiveChild = (oItem) => {
+        if(this.state._activeChild != oItem.key){
+            this._setButtons(oItem); //immediately trigg
+            requestAnimationFrame(() => {
+                this._setChildComponent(oItem);
+                this.flatListRef.scrollToIndex({animated: true, index: Number(oItem.key)-1});
+            })
+        }
+    } */
 
     render(){
         const oListHeader = (
@@ -216,7 +330,9 @@ export class Profile extends Component {
                         style={styles.contTitle}>
 
                         <View style={styles.contIconProfile}>
-                            <Icon name='account' size={70} color='#EEB843'/>
+                            {/* <View style={{width: 65, height: 65, backgroundColor: 'red', borderWidth: 1, borderColor: '#EEB843', borderRadius: 100, justifyContent: 'center', alignItems: 'center'}}> */}
+                                <Icon name='account-circle' size={67} color='#fff'/>
+                            {/* </View> */}
                         </View>
 
                         <View style={styles.contInfoProfile}>
@@ -243,38 +359,17 @@ export class Profile extends Component {
                             ref={(ref) => { this.flatListRef = ref; }}
                             data={this.state._list}
                             renderItem={({item}) => 
-                                <TouchableNativeFeedback 
-                                    onPress={() => {/* this._setActiveChild(item) */}}
-                                    background={TouchableNativeFeedback.SelectableBackground()}>
-                                    <View>
-                                        {
-                                            item.type.toUpperCase() == 'CONTENT' ?
-                                                <View style={[styles.btnCont]}>
-                                                    <View style={styles.iconCont}>
-                                                        <View style={styles.iconPlaceholder}>
-                                                            <Icon name={item.icon} size={16} color='#404242'/>
-                                                        </View>
-                                                    </View>
-                                                    <View style={styles.labelCont}>
-                                                        <Text style={styles.txtLabel}>{item.name}</Text>
-                                                    </View>
-                                                </View>
-                                            :
-                                                <View style={styles.titleCont}>
-                                                    <View style={styles.contContentTitle}>
-                                                        <Text style={styles.txtLabelTitle}>{item.name}</Text>
-                                                    </View>
-                                                </View>
-                                        }
-                                    </View>
-                                </TouchableNativeFeedback>
+                                <ProfileMenu
+                                    activeItem={this.state._activeItem}
+                                    item={item} 
+                                    itemPressed={(pressedItem) => this._setActiveChild(pressedItem)}/>
                             }
                         />
                     </View>
                 </LinearGradient>
                     
                 <View style={styles.rightCont}>
-                    <BasicInfo/>
+                    {this.state._activeItem.oComponent}
                 </View>
             </View>
         );
@@ -284,7 +379,8 @@ export class Profile extends Component {
 
 function mapStateToProps (state) {
     return {
-        logininfo: state.loginReducer.logininfo
+        logininfo: state.loginReducer.logininfo,
+        myEmployees: state.employeeProfile
     }
 }
 

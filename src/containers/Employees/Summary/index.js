@@ -40,14 +40,14 @@ const btnInactive = 'transparent';
 const TITLE = 'Employee Profile Summary'
 export class Summary extends Component {
     render(){
-        console.log('%%%%%%%%%%%%%%%%%%%%%%%%this.props.employeeProfile: ' + JSON.stringify(this.props.employeeProfile));
-        let pStatus = [...this.props.employeeProfile.status]
+        /* console.log('%%%%%%%%%%%%%%%%%%%%%%%%this.props.employeeProfile: ' + JSON.stringify(this.props.employeeProfile)); */
+        let pStatus = [...this.props.employeeProfile.basicInfoStatus]
         let pProgress = pStatus[0];
         let pMessage = pStatus[1];
 
         if(pProgress==0){
             return (
-                <PromptScreen.PromptError title='13th Month Policy' onRefresh={()=>this.props.triggerRefresh(true)}/>
+                <PromptScreen.PromptError title={TITLE} onRefresh={()=>this.props.triggerRefresh(true)}/>
             );
         }
 
@@ -65,7 +65,11 @@ export class Summary extends Component {
                                     name={'Name'}
                                     content={
                                         <Text style={styles.txtDefault}>
-                                            Asin, Jose Proctacio
+                                            {
+                                                this.props.employeeProfile.employee.personalinfo.basicinfo.lastname +
+                                                ', ' + 
+                                                this.props.employeeProfile.employee.personalinfo.basicinfo.firstname
+                                            }
                                         </Text>
                                     }
                                     contentStyle={{width: 500}}
@@ -77,7 +81,7 @@ export class Summary extends Component {
                                     name={'Age'}
                                     content={
                                         <Text style={styles.txtDefault}>
-                                            25
+                                            CMT
                                         </Text>
                                     }
                                     contentStyle={{width: 500}}
@@ -89,7 +93,9 @@ export class Summary extends Component {
                                     name={'Birthday'}
                                     content={
                                         <Text style={styles.txtDefault}>
-                                            January 1, 1993
+                                            {
+                                                this.props.employeeProfile.employee.personalinfo.basicinfo.birthday
+                                            }
                                         </Text>
                                     }
                                     contentStyle={{width: 500}}

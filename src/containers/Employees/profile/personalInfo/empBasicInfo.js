@@ -13,7 +13,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import LinearGradient from 'react-native-linear-gradient';
 
 //Styles Properties
-import styles from './styles';
+import styles from '../styles';
 
 //Custom Components
 import * as StatusLoader from '../../../../components/ScreenLoadStatus'
@@ -38,21 +38,21 @@ import { bindActionCreators } from 'redux';
 const btnActive = 'rgba(255, 255, 255, 0.3);'
 const btnInactive = 'transparent';
 const TITLE = 'Basic and Contact Information'
-export class BasicInfo extends Component {
+export class EmpBasicInfo extends Component {
     render(){
         const navigation = this.props.logininfo.navigation;
         return(
-            <View style={styles.container}>
-                <View style={styles.contCard}>
-                    <CustomCard title={TITLE} oType='Text'>
+            <View style={styles.child.container}>
+                <View style={styles.child.contCard}>
+                    <CustomCard clearMargin={true} title={TITLE} oType='Text'>
 
-                            <View style={{marginTop: -20}}>
+                            <View style={styles.child.floatingCard}>
                                 <PropTitle name='Basic Information'/>
 
                                 <PropLevel2 
                                     name={'First Name'}
                                     content={
-                                        <Text style={styles.txtDefault}>
+                                        <Text style={styles.child.txtDefault}>
                                             Jose
                                         </Text>
                                     }
@@ -64,7 +64,7 @@ export class BasicInfo extends Component {
                                 <PropLevel2 
                                     name={'Middle Name'}
                                     content={
-                                        <Text style={styles.txtDefault}>
+                                        <Text style={styles.child.txtDefault}>
                                             Protacio
                                         </Text>
                                     }
@@ -76,7 +76,7 @@ export class BasicInfo extends Component {
                                 <PropLevel2 
                                     name={'Last Name'}
                                     content={
-                                        <Text style={styles.txtDefault}>
+                                        <Text style={styles.child.txtDefault}>
                                             Asin
                                         </Text>
                                     }
@@ -88,7 +88,7 @@ export class BasicInfo extends Component {
                                 <PropLevel2 
                                     name={'Nick Name'}
                                     content={
-                                        <Text style={styles.txtDefault}>
+                                        <Text style={styles.child.txtDefault}>
                                             Jose
                                         </Text>
                                     }
@@ -100,7 +100,7 @@ export class BasicInfo extends Component {
                                 <PropLevel2 
                                     name={'Date of Birth'}
                                     content={
-                                        <Text style={styles.txtDefault}>
+                                        <Text style={styles.child.txtDefault}>
                                             January 15, 2017
                                         </Text>
                                     }
@@ -112,7 +112,7 @@ export class BasicInfo extends Component {
                                 <PropLevel2 
                                     name={'Date Hired'}
                                     content={
-                                        <Text style={styles.txtDefault}>
+                                        <Text style={styles.child.txtDefault}>
                                             January 15, 2017
                                         </Text>
                                     }
@@ -123,7 +123,7 @@ export class BasicInfo extends Component {
                                 <PropLevel2 
                                     name={'Gender'}
                                     content={
-                                        <Text style={styles.txtDefault}>
+                                        <Text style={styles.child.txtDefault}>
                                             Male
                                         </Text>
                                     }
@@ -134,7 +134,7 @@ export class BasicInfo extends Component {
                                 <PropLevel2
                                     name={'Civil Status'}
                                     content={
-                                        <Text style={styles.txtDefault}>
+                                        <Text style={styles.child.txtDefault}>
                                             Divorced
                                         </Text>
                                     }
@@ -168,4 +168,4 @@ function mapDispatchToProps (dispatch) {
 export default connect(
     mapStateToProps,
     mapDispatchToProps
-)(BasicInfo)
+)(EmpBasicInfo)

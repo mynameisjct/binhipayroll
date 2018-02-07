@@ -69,7 +69,7 @@ export class List extends Component {
             _promptShow: false,
             _promptMsg: '',
             _refreshing: false,
-            _activeKey: '84',
+            _activeKey: '',
             _list: []
         }
     }
@@ -84,12 +84,12 @@ export class List extends Component {
 
     componentWillReceiveProps(nextProps){
         if(
-            (this.state._list.length === 0) &&
-            (nextProps.employeelist.data.length > 0)
+            JSON.stringify(nextProps.employeelist.data) !== JSON.stringify(this.props.employeelist.data)
+            
         ){
+            this._setActiveChild(nextProps.employeelist.data[0]);
             this.setState({
-                _list: [...nextProps.employeelist.data],
-                _activeKey: nextProps.employeelist.data[0].key
+                _list: [...nextProps.employeelist.data]
             })
         }
     }
@@ -103,14 +103,32 @@ export class List extends Component {
         })
     }
 
-    _setActiveChild = (oItem) => {
-        console.log('oItem: ' + oItem.key);
-        this.setState({
-            _activeKey: oItem.key
-        },
-            this.props.actions.employee.getBasicInfo(oItem.key)
-        );
-        
+    _setActiveChild = async(oItem) => {
+        if(this.state._activeKey != oItem.key){
+            console.log('oItem: ' + oItem.key);
+            await this.props.actions.employee.updateActiveID(oItem.key);
+            this.setState({
+                _activeKey: oItem.key
+            },
+                async() => {
+                    await this.props.actions.employee.getBasicInfo(oItem.key);
+                    this._updateEmployeeRecord(oItem.key);
+                }
+            );
+        }
+    }
+
+    _updateEmployeeRecord = (key) => {
+        let newArray = this.props.myEmployees.employeeRecord.slice();
+        let iData = newArray.findIndex(obj => obj.id == key);
+        if(this.props.myEmployees.employee.basicInfoStatus == 1){
+            if(iData >= 0){
+                this.props.actions.employee.updateEmployeeRecord(this.props.myEmployees.employee);
+            }
+            else{
+                this.props.actions.employee.insertEmployeeRecord(this.props.myEmployees.employee);
+            }
+        }
     }
 
     _hideLoadingPrompt = () => {
@@ -127,7 +145,11 @@ export class List extends Component {
     }
     
     render(){
-        console.log('this.props.employeelist')
+        console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@');
+        console.log('this.props.myEmployees.employeeRecord: ' + JSON.stringify(this.props.myEmployees.employeeRecord));
+        this.props.myEmployees.employeeRecord.map(data => {
+            console.log('@@@data.id: ' + data.id);
+        })
         const oListHeader = (
             <View style={styles.contSearch}>
                 <View style={styles.iconFilter}>
@@ -192,7 +214,8 @@ function mapStateToProps (state) {
     return {
         logininfo: state.loginReducer.logininfo,
         activecompany: state.activeCompanyReducer.activecompany,
-        employeelist: state.employeeList
+        employeelist: state.employeeList,
+        myEmployees: state.employeeProfile
     }
 }
 

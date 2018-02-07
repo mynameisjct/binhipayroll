@@ -1,7 +1,11 @@
 import { combineReducers } from 'redux';
 import * as actionTypes from './actionTypes';
 
+initialEmployeesRecord = [];
+const initialCollectionStatus = [];
+const initialStatus = [2,'Loading...'];
 const initialState = {
+	id: '',
 	personalinfo:{
 		basicinfo:{
 			title: "BASIC INFORMATION",
@@ -132,11 +136,17 @@ const initialState = {
 	}
 };
 
-const initialStatus = [2,'Loading...'];
 
 export const employee = (state = initialState, action) => {
 	let oState = {...state};
 	switch (action.type) {
+		case actionTypes.ALLINFO.UPDATE.ID:
+			oState.id = action.payload;
+			return {
+				...oState
+			}
+			break;
+
 		case actionTypes.ALLINFO.UPDATE.DATA:
 			return action.payload;
 			break;
@@ -252,8 +262,46 @@ export const basicInfoStatus = (state = initialStatus, action) => {
 	}
 };
 
+
+export const employeeRecord  = (state = initialEmployeesRecord, action) => {
+	let newArray = state.slice();
+	let iData = -1;
+	switch (action.type) {
+		case actionTypes.EMPLOYEERECORD.INSERT:
+			newArray.splice(0, 0, action.payload);
+			return newArray;
+			break;
+
+		case actionTypes.EMPLOYEERECORD.UPDATE:
+			iData = newArray.findIndex(obj => obj.id == action.payload.id);
+			if(iData < 0) {
+				return state;
+			}
+			else{
+				newArray.splice(iData, 1, action.payload);
+				return newArray;
+			}
+			break;
+
+		case actionTypes.EMPLOYEERECORD.REMOVE:
+			iData = newArray.findIndex(obj => obj.id == action.payload.id);
+			if(iData < 0) {
+				return state;
+			}
+			else{
+				newArray.splice(iData, 1);
+				return newArray;
+			}
+			break;
+
+		default:
+			return state;
+	}
+};
+
 export const employeeProfile = combineReducers({
+	employeeRecord,
     employee,
 	status,
 	basicInfoStatus
-});
+}); 

@@ -36,3 +36,9 @@ export let policy = {
 		)
  	}
 }
+
+export let mock = {
+	employee: {
+		basicInfo: ''
+	}
+}
