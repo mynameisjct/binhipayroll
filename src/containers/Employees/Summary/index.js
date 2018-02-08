@@ -41,7 +41,7 @@ const TITLE = 'Employee Profile Summary'
 export class Summary extends Component {
     render(){
         /* console.log('%%%%%%%%%%%%%%%%%%%%%%%%this.props.employeeProfile: ' + JSON.stringify(this.props.employeeProfile)); */
-        let pStatus = [...this.props.employeeProfile.basicInfoStatus]
+        let pStatus = [...this.props.employeeProfile.status]
         let pProgress = pStatus[0];
         let pMessage = pStatus[1];
 
@@ -90,11 +90,14 @@ export class Summary extends Component {
                                 />
 
                                 <PropLevel2 
-                                    name={'Birthday'}
+                                    name={'Birth Date'}
                                     content={
                                         <Text style={styles.txtDefault}>
                                             {
-                                                this.props.employeeProfile.employee.personalinfo.basicinfo.birthday
+                                                oHelper.convertDateToString(
+                                                    this.props.employeeProfile.employee.personalinfo.basicinfo.birthdate.value,
+                                                    this.props.employeeProfile.employee.personalinfo.basicinfo.birthdate.format
+                                                ) || ''
                                             }
                                         </Text>
                                     }

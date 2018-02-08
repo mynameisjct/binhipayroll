@@ -31,7 +31,7 @@ export const getAllInfo = payload =>
 		let objRes = {};
 		dispatch(updateAllInfoStatus(CONSTANTS.STATUS.LOADING));
 
-		api.get(payload)
+		api.getAllInfo(payload)
 		.then((response) => response.json())
 		.then((res) => {
 			console.log('res: ' + JSON.stringify(res));

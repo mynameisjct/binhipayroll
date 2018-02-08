@@ -13,7 +13,7 @@ const initialState = {
 			middlename: "",
 			lastname: "",
 			nickname: "",
-			birthday: "06/01/1990",
+			birthdate: "06/01/1990",
 			gender: {
 				value: "",
 				options: ["-", "Male", "Female"]
@@ -133,12 +133,16 @@ const initialState = {
 			title: "WORK SHIFT",
 			data: []
 		}
+	},
+
+	reports: {
+
 	}
 };
 
 
 export const employee = (state = initialState, action) => {
-	let oState = {...state};
+	let oState = JSON.parse(JSON.stringify(state));
 	switch (action.type) {
 		case actionTypes.ALLINFO.UPDATE.ID:
 			oState.id = action.payload;
@@ -148,7 +152,10 @@ export const employee = (state = initialState, action) => {
 			break;
 
 		case actionTypes.ALLINFO.UPDATE.DATA:
-			return action.payload;
+			oState.personalinfo = action.payload.employee.personalinfo;
+			oState.bankinfo = action.payload.employee.bankinfo;
+			oState.employmentinfo = action.payload.employee.employmentinfo;
+			return {...oState};
 			break;
 		
 		case actionTypes.PERSONALINFO.UPDATE.DATA:
@@ -163,6 +170,8 @@ export const employee = (state = initialState, action) => {
 			oState.personalinfo.basicinfo = action.payload.employee.basicinfo;
 			oState.personalinfo.contactinfo = action.payload.employee.contactinfo;
 			oState.personalinfo.ids = action.payload.employee.ids;
+			oState.personalinfo.address = action.payload.employee.address;
+			oState.personalinfo.family = action.payload.employee.family;
 			return {
 				...oState
 			}
@@ -173,7 +182,7 @@ export const employee = (state = initialState, action) => {
 			oState.personalinfo.basicinfo.middlename = action.payload.middlename;
 			oState.personalinfo.basicinfo.lastname = action.payload.lastname;
 			oState.personalinfo.basicinfo.nickname = action.payload.nickname;
-			oState.personalinfo.basicinfo.birthday = action.payload.birthday;
+			oState.personalinfo.basicinfo.birthdate = action.payload.birthdate;
 			oState.personalinfo.basicinfo.gender.value = action.payload.gender;
 			oState.personalinfo.basicinfo.civilstatus.value = action.payload.civilstatus;
 			

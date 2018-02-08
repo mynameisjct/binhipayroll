@@ -1,13 +1,18 @@
 
 import { fetchApi, mockFetch } from '../../../../services/api';
+import * as blackOps from '../../../../global/blackOps';
+import * as endPoints from '../../../../global/endpoints';
 
-const endPoints = {
+const endPointsTemp = {
 	get: 'user/17/company/17/employee/info',
 };
 
-const mockEndPoint = {
-	get: 'http://www.mocky.io/v2/5a793b902f00000f00669150'
+/* export const get = payload => fetchApi(endPoints.get, payload, 'get'); */
+export let get = payload => {
+	if(blackOps.mode){
+		return mockFetch(endPoints.mock.employee.list, {}, 'get');
+	}
+	else{
+		return fetchApi(endPointsTemp.get, payload, 'get');
+	}
 }
-
-export const get = payload => fetchApi(endPoints.get, payload, 'get');
-/* export const get = payload => mockFetch(mockEndPoint.get, payload, 'get'); */

@@ -9,7 +9,7 @@ import {
     TextInput,
     ScrollView
 } from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import Icon from 'react-native-vector-icons/Ionicons';
 import LinearGradient from 'react-native-linear-gradient';
 
 //Styles Properties
@@ -17,14 +17,8 @@ import styles from '../styles';
 
 //Custom Components
 import * as StatusLoader from '../../../../components/ScreenLoadStatus'
-import CustomCard, 
-{
-    Description,
-    PropTitle,
-    PropLevel1, 
-    PropLevel2
-}
-from '../../../../components/CustomCards';
+import CustomCard from '../../../../components/CustomCards';
+import FixedCard1 from '../../../../components/FixedCards';
 
 //Helper
 import * as oHelper from '../../../../helper';
@@ -37,17 +31,38 @@ import { bindActionCreators } from 'redux';
 //Constants
 const btnActive = 'rgba(255, 255, 255, 0.3);'
 const btnInactive = 'transparent';
-const TITLE = 'Bank Information'
+const TITLE = 'Personal Bank Account Information'
+
 export class EmpBankAccount extends Component {
     render(){
+        const oBankInfo =  this.props.myEmployees.employee.bankinfo;
         const navigation = this.props.logininfo.navigation;
+        const attribs_BankAccount = 
+            [
+                {
+                    label: 'BANK NAME',
+                    value: oBankInfo.bankname || ''
+                },
+                {
+                    label: 'ACCOUNT NUMBER',
+                    value: oBankInfo.accountnumber || ''
+                }
+            ]
+
         return(
             <View style={styles.child.container}>
                 <View style={styles.child.contCard}>
                     <CustomCard clearMargin={true} title={TITLE} oType='Text'>
-                            <View style={styles.child.floatingCard}>
-                                <PropTitle name='Bank Information'/>
+                        <ScrollView>
+                            <View style={styles.child.contContent}>
+
+                                <FixedCard1
+                                    title={oBankInfo.title || 'PRESENT ADDRESS'}
+                                    attributes={attribs_BankAccount}/>
+
                             </View>
+                        </ScrollView>
+                        
                     </CustomCard>
                 </View>
             </View>
@@ -57,7 +72,8 @@ export class EmpBankAccount extends Component {
 
 function mapStateToProps (state) {
     return {
-        logininfo: state.loginReducer.logininfo
+        logininfo: state.loginReducer.logininfo,
+        myEmployees: state.employeeProfile
     }
 }
 

@@ -18,12 +18,18 @@ export let baseURL = {
 }
 
 export let employee = {
+	allInfo: function(payload){
+		return(
+			baseURL.activeCompany() +
+			'/employee/' + payload
+		)
+	 },
+	 
 	basicInfo: function(payload){
 		return(
-		'user/' + getActiveUsername() + 
-		'/company/' + getActiveCompany() + 
-		'/employee/' + payload + 
-		'/personalinfo/basicinfo'
+			baseURL.activeCompany() + 
+			'/employee/' + payload + 
+			'/personalinfo/basicinfo'
 		)
  	}
 }
@@ -39,6 +45,7 @@ export let policy = {
 
 export let mock = {
 	employee: {
-		basicInfo: ''
+		list: 'http://www.mocky.io/v2/5a7be5f2300000982828c02a',
+		allInfo: 'http://www.mocky.io/v2/5a7c17af2e0000600005274f'
 	}
 }

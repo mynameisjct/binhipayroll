@@ -9,7 +9,7 @@ import {
     TextInput,
     ScrollView
 } from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import Icon from 'react-native-vector-icons/Ionicons';
 import LinearGradient from 'react-native-linear-gradient';
 
 //Styles Properties
@@ -17,14 +17,8 @@ import styles from '../styles';
 
 //Custom Components
 import * as StatusLoader from '../../../../components/ScreenLoadStatus'
-import CustomCard, 
-{
-    Description,
-    PropTitle,
-    PropLevel1, 
-    PropLevel2
-}
-from '../../../../components/CustomCards';
+import CustomCard from '../../../../components/CustomCards';
+import FixedCard1 from '../../../../components/FixedCards';
 
 //Helper
 import * as oHelper from '../../../../helper';
@@ -38,16 +32,73 @@ import { bindActionCreators } from 'redux';
 const btnActive = 'rgba(255, 255, 255, 0.3);'
 const btnInactive = 'transparent';
 const TITLE = 'Family and Dependents'
+
 export class EmpFamily extends Component {
+
+    _generateDependents = (oDependents) => {
+        let arrDependents = [];
+        oDependents.data.map((oData, index) => 
+            arrDependents.push({
+                label: "DEPENDENT " + (index+1),
+                value: [
+                    oData.name, 
+                    oHelper.convertDateToString(
+                        oData.birthdate.value,
+                        oData.birthdate.format
+                        ) || '', 
+                    oData.relationship],
+                hasTitle: true
+            })
+        )
+        console.log('arrDependents: ' + JSON.stringify(arrDependents));
+        return arrDependents;
+    }
+
     render(){
+        const oSpouse = this.props.myEmployees.employee.personalinfo.family.spouse;
+        const oDependents =  this.props.myEmployees.employee.personalinfo.family.dependents;
         const navigation = this.props.logininfo.navigation;
+        let attribs_dependents = this._generateDependents(oDependents);
+        const attribs_spouse = 
+            [
+                {
+                    label: 'NAME',
+                    value: oSpouse.name || ''
+                },
+                {
+                    label: 'BIRTHDATE',
+                    value: oHelper.convertDateToString(
+                        oSpouse.birthdate.value,
+                        oSpouse.birthdate.format
+                    ) || ''
+                },
+                {
+                    label: 'WORK',
+                    value: [oSpouse.work.jobtitle || '', oSpouse.work.company || ''],
+                    hasTitle: true
+                }
+            ]
+
+        
+        console.log ('attribs_dependents: ' + JSON.stringify(attribs_dependents));
         return(
             <View style={styles.child.container}>
                 <View style={styles.child.contCard}>
                     <CustomCard clearMargin={true} title={TITLE} oType='Text'>
-                            <View style={styles.child.floatingCard}>
-                                <PropTitle name='Family and Dependents'/>
+                        <ScrollView>
+                            <View style={styles.child.contContent}>
+
+                                <FixedCard1
+                                    title={oSpouse.title || 'SPOUSE'}
+                                    attributes={attribs_spouse}/>
+                                
+                                <FixedCard1
+                                    title={oDependents.title || 'DEPENDENTS'}
+                                    attributes={attribs_dependents}/>
+
                             </View>
+                        </ScrollView>
+                        
                     </CustomCard>
                 </View>
             </View>
@@ -57,7 +108,8 @@ export class EmpFamily extends Component {
 
 function mapStateToProps (state) {
     return {
-        logininfo: state.loginReducer.logininfo
+        logininfo: state.loginReducer.logininfo,
+        myEmployees: state.employeeProfile
     }
 }
 

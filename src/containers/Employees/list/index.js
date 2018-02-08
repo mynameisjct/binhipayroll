@@ -16,7 +16,6 @@ import styles from './styles';
 
 //Custom Components
 import Header2 from '../../Headers/header2';
-import * as StatusLoader from '../../../components/ScreenLoadStatus'
 import SearchBox from '../../../components/SearchBox';
 import ActionButton from '../../../components/ActionButton';
 import * as PromptScreen from '../../../components/ScreenLoadStatus';
@@ -28,6 +27,7 @@ import * as employeeListActions from './data/actions';
 import * as employeeActions from '../profile/data/actions';
 
 import { employee } from '../profile/data/reducer';
+import { CONSTANTS } from '../../../constants/index';
 
 //Constants
 const btnActive = 'rgba(255, 255, 255, 0.3);'
@@ -66,6 +66,7 @@ export class List extends Component {
     constructor(props){
         super(props);
         this.state = {
+            _status: CONSTANTS.STATUS.SUCCESS,
             _promptShow: false,
             _promptMsg: '',
             _refreshing: false,
@@ -111,7 +112,7 @@ export class List extends Component {
                 _activeKey: oItem.key
             },
                 async() => {
-                    await this.props.actions.employee.getBasicInfo(oItem.key);
+                    await this.props.actions.employee.getAllInfo(oItem.key);
                     this._updateEmployeeRecord(oItem.key);
                 }
             );
@@ -119,7 +120,7 @@ export class List extends Component {
     }
 
     _updateEmployeeRecord = (key) => {
-        let newArray = this.props.myEmployees.employeeRecord.slice();
+        /* let newArray = this.props.myEmployees.employeeRecord.slice();
         let iData = newArray.findIndex(obj => obj.id == key);
         if(this.props.myEmployees.employee.basicInfoStatus == 1){
             if(iData >= 0){
@@ -128,7 +129,7 @@ export class List extends Component {
             else{
                 this.props.actions.employee.insertEmployeeRecord(this.props.myEmployees.employee);
             }
-        }
+        } */
     }
 
     _hideLoadingPrompt = () => {
@@ -145,68 +146,91 @@ export class List extends Component {
     }
     
     render(){
-        console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@');
-        console.log('this.props.myEmployees.employeeRecord: ' + JSON.stringify(this.props.myEmployees.employeeRecord));
-        this.props.myEmployees.employeeRecord.map(data => {
-            console.log('@@@data.id: ' + data.id);
-        })
-        const oListHeader = (
-            <View style={styles.contSearch}>
-                <View style={styles.iconFilter}>
-                    <Icon name='filter' size={20} color='#fff' />
-                </View>
-                
-                <SearchBox value={'TEST'} 
-                    onChangeText={this._doNothing} 
-                    onSubmit={this._doNothing}/>
+        let pStatus = [...this.state._status]
+        let pProgress = pStatus[0];
+        let pMessage = pStatus[1];
 
-            </View>
-        )
-        return(
-            <LinearGradient 
-                colors={['#818489', '#3f4144', '#202626']}
-                style={styles.leftCont}>
-                
+        if(pProgress==0){
+            return (
+                <PromptScreen.PromptError title={TITLE} onRefresh={()=>this.props.triggerRefresh(true)}/>
+            );
+        }
+
+        else if(pProgress==1){
+            const navigation = this.props.logininfo.navigation;
+            
+
+            console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@');
+            console.log('this.props.myEmployees.employeeRecord: ' + JSON.stringify(this.props.myEmployees.employeeRecord));
+            this.props.myEmployees.employeeRecord.map(data => {
+                console.log('@@@data.id: ' + data.id);
+            })
+            const oListHeader = (
+                <View style={styles.contSearch}>
+                    <View style={styles.iconFilter}>
+                        <Icon name='filter' size={20} color='#fff' />
+                    </View>
+                    
+                    <SearchBox value={'TEST'} 
+                        onChangeText={this._doNothing} 
+                        onSubmit={this._doNothing}/>
+
+                </View>
+            )
+            return(
                 <LinearGradient 
                     colors={['#818489', '#3f4144', '#202626']}
-                    style={styles.contTitle}>
-
+                    style={styles.leftCont}>
                     
-                    <View style={styles.contTitleName}>
-                        <Text style={styles.txtTitle}>
-                            {this.props.activecompany.name.toUpperCase()}
-                        </Text>
+                    <LinearGradient 
+                        colors={['#818489', '#3f4144', '#202626']}
+                        style={styles.contTitle}>
+
+                        
+                        <View style={styles.contTitleName}>
+                            <Text style={styles.txtTitle}>
+                                {this.props.activecompany.name.toUpperCase()}
+                            </Text>
+                        </View>
+                    </LinearGradient>
+
+                    <View style={styles.optionsCont}>
+                        <FlatList
+                            /* getItemLayout={this._getItemLayout} */
+                            initialNumToRender={3}
+                            refreshing={this.state._refreshing}
+                            onRefresh={() => {
+                                this.setState({_list: [], _activeKey: ''});
+                                this.props.actions.employeelist.get();
+                            }}
+                            ListHeaderComponent={oListHeader}
+                            ref={(ref) => { this.flatListRef = ref; }}
+                            data={this.props.employeelist.data}
+                            renderItem={({item}) =>
+                                <EmployeeList 
+                                    activeKey={this.state._activeKey}
+                                    item={item} 
+                                    itemPressed={(pressedItem) => this._setActiveChild(pressedItem)}/>
+                            }
+                        />
+                        <ActionButton onPress={this._addNewEmployee}/>
                     </View>
+                    
+                    <PromptScreen.PromptGeneric 
+                        show= {this.state._promptShow} 
+                        title={this.state._promptMsg}/>
+
                 </LinearGradient>
+            )
+        }
 
-                <View style={styles.optionsCont}>
-                    <FlatList
-                        /* getItemLayout={this._getItemLayout} */
-                        initialNumToRender={3}
-                        refreshing={this.state._refreshing}
-                        onRefresh={() => {
-                            this.setState({_list: [], _activeKey: ''});
-                            this.props.actions.employeelist.get();
-                        }}
-                        ListHeaderComponent={oListHeader}
-                        ref={(ref) => { this.flatListRef = ref; }}
-                        data={this.props.employeelist.data}
-                        renderItem={({item}) =>
-                            <EmployeeList 
-                                activeKey={this.state._activeKey}
-                                item={item} 
-                                itemPressed={(pressedItem) => this._setActiveChild(pressedItem)}/>
-                        }
-                    />
-                    <ActionButton onPress={this._addNewEmployee}/>
+        else{
+            return (
+                <View style={styles.container}>
+                    <PromptScreen.PromptLoading title={pMessage}/>
                 </View>
-                
-                <PromptScreen.PromptGeneric 
-                    show= {this.state._promptShow} 
-                    title={this.state._promptMsg}/>
-
-            </LinearGradient>
-        )
+            );
+        }
     }
 }
 

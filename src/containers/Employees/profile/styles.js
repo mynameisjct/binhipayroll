@@ -111,7 +111,7 @@ export default {
 
     txtLabel:{
         fontFamily: 'Helvetica-Bold',
-        fontSize: 14,
+        fontSize: 15,
         color: '#eaeced',
         fontWeight: '300'
     },
@@ -196,13 +196,13 @@ export default {
 
     txtProfileLabel:{
         fontFamily: 'Helvetica-Bold',
-        fontSize: 11,
+        fontSize: 12,
         color: '#fff',
     },
 
     txtProfileTitle:{
         fontFamily: 'Helvetica-Bold',
-        fontSize: 14,
+        fontSize: 15,
         color: '#fff',
         fontWeight: '500'
     },
@@ -216,11 +216,15 @@ export default {
         contCard: {
             flex:1
         },
+
+        contContent: {
+            paddingBottom: 30
+        },
     
         floatingCard: {
             backgroundColor: '#fff',
             borderRadius: 2,
-            margin: 6,
+            margin: 50,
             
             elevation: 3,
         },

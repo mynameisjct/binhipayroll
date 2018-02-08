@@ -337,10 +337,13 @@ export class Profile extends Component {
 
                         <View style={styles.contInfoProfile}>
                             <Text style={styles.txtProfileTitle}>
-                                Asin, Jose Protacio
+                                {
+                                    this.props.myEmployees.employee.personalinfo.basicinfo.lastname + ', ' +
+                                    this.props.myEmployees.employee.personalinfo.basicinfo.firstname 
+                                }
                             </Text>
                             <Text style={styles.txtProfileLabel}>
-                                Binhi-Medfi
+                                {this.props.activecompany.name}
                             </Text>
                             <Text style={styles.txtProfileLabel}>
                                 Auditor
@@ -380,6 +383,8 @@ export class Profile extends Component {
 function mapStateToProps (state) {
     return {
         logininfo: state.loginReducer.logininfo,
+        activecompany: state.activeCompanyReducer.activecompany,
+        employeelist: state.employeeList,
         myEmployees: state.employeeProfile
     }
 }

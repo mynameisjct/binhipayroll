@@ -55,7 +55,7 @@ export default {
     },
 
     txtTitle: {
-        fontSize: 15,
+        fontSize: 20,
         fontFamily: 'Helvetica-Bold',
         textAlign: 'center',
         margin: 10,

@@ -41,7 +41,8 @@ export default class CustomCard extends Component{
         try{
             if(this.props.clearMargin){
                 return ({
-                    margin: 0
+                    margin: 0,
+                    marginBottom: 30
                 })
             }
             return;

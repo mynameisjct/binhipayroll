@@ -52,7 +52,8 @@ export const CONSTANTS = {
     //COMPONENT STATUS
     STATUS: {
         ERROR: [0, ''],
-        LOADING: [2, 'Loading...']
+        LOADING: [2, 'Loading...'],
+        SUCCESS: [1, 'Success!']
     },
 
     //SUFFIX

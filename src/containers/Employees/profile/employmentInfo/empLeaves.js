@@ -15,6 +15,9 @@ import LinearGradient from 'react-native-linear-gradient';
 //Styles Properties
 import styles from '../styles';
 
+//Children Components
+import Leaves from '../../../CompanyPolicies/leaves';
+
 //Custom Components
 import * as StatusLoader from '../../../../components/ScreenLoadStatus'
 import CustomCard, 
@@ -43,13 +46,7 @@ export class EmpLeaves extends Component {
         const navigation = this.props.logininfo.navigation;
         return(
             <View style={styles.child.container}>
-                <View style={styles.child.contCard}>
-                    <CustomCard clearMargin={true} title={TITLE} oType='Text'>
-                            <View style={styles.child.floatingCard}>
-                                <PropTitle name='Employee Leaves Information'/>
-                            </View>
-                    </CustomCard>
-                </View>
+                <Leaves/>
             </View>
         );
     }

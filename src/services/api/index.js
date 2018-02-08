@@ -43,11 +43,6 @@ export const mockFetch = (endPoint, payload = {}, strMethod = 'post', headers = 
             payload)
     }
 
-    console.log('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX_API_REQUEST');
-    console.log('endPoint: ' + endPoint);
-    console.log('payload: ' + oBody);
-    console.log('strMethod: ' + strMethod);
-
     return fetch(endPoint,{
         method: strMethod,
         headers: {

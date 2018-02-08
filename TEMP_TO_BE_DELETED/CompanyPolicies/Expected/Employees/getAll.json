@@ -2,14 +2,18 @@
     "flagno": "1",
     "message": "Success",
     "employee": {
+        "id": "2",
         "personalinfo":{
             "basicinfo":{
                 "title": "BASIC INFORMATION",
-                "firstname": "Juan",
-                "middlename": "Perez",
-                "lastname": "Dela Cruz",
-                "nickname": "Juan",
-                "birthday": "06/01/1990",
+                "firstname": "Jose",
+                "middlename": "Proticio",
+                "lastname": "Rizal",
+                "nickname": "Jose",
+                "birthdate": {
+                    "value": "1985-06-23",
+                    "format": "MMMM DD, YYYY"
+                },
                 "gender": {
                     "value": "Male",
                     "options": ["Male", "Female"]
@@ -42,19 +46,19 @@
             "ids": {
                 "title": "GOVERNMENT IDS",
                 "tin": {
-                    "label": "Personal TIN",
+                    "label": "TIN NO",
                     "value": "123-345-678"
                 },
                 "sss": {
-                    "label": "SSS No.",
+                    "label": "SSS NO",
                     "value": "123-345-678"
                 },
                 "philhealth": {
-                    "label": "Phil Health No.",
+                    "label": "PHILHEALTH NO",
                     "value": "123-345-678"
                 },
                 "pagibig": {
-                    "label": "Pag - IBI No.",
+                    "label": "PAGIBIG NO",
                     "value": "123-345-678"
                 }
             },
@@ -63,22 +67,22 @@
                 "present":{
                     "title": "PRESENT ADDRESS",
                     "province": {
-                        "label": "Province",
+                        "label": "PROVINCE",
                         "id": "001",
                         "value": "Misamis Oriental"
                     },
                     "city": {
-                        "label": "City",
+                        "label": "CITY",
                         "id": "011",
                         "value": "Cagayan de Oro City"
                     },
                     "barangay": {
-                        "label": "Barangay",
+                        "label": "BARANGAY",
                         "id": "022",
                         "value": "Consolacion"
                     },
                     "street": {
-                        "label": "street",
+                        "label": "STREET",
                         "value": "Zone 1, Bahaon Street"
                     }
                 },
@@ -86,7 +90,7 @@
                 "permanent":{
                     "title": "PERMANENT ADDRESS",
                     "province": {
-                        "label": "Province",
+                        "label": "PROVINCE",
                         "id": "001",
                         "value": "Misamis Oriental"
                     },
@@ -96,13 +100,13 @@
                         "value": "Cagayan de Oro City"
                     },
                     "barangay": {
-                        "label": "Barangay",
+                        "label": "BARANGAY",
                         "id": "022",
-                        "value": "Consolacion"
+                        "value": "Balulang"
                     },
                     "street": {
-                        "label": "street",
-                        "value": "Zone 1, Bahaon Street"
+                        "label": "STREET",
+                        "value": "Itom Puti Street"
                     }
                 }
             },
@@ -111,9 +115,13 @@
                 "spouse": {
                     "title": "SPOUSE",
                     "name": "Josephine Bracken",
+                    "birthdate": {
+                        "value": "1987-03-21",
+                        "format": "MMMM DD, YYYY"
+                    },
                     "work":{
                         "jobtitle":"Teacher",
-                        "company":"MOGCHS"
+                        "company":"Misamis Oriental General Comprehensive High School"
                     }
                 },
 
@@ -123,20 +131,20 @@
                         {
                             "id": "0001",
                             "name": "Maria G. Rizal",
-                            "birthdate": "06/23/1993",
+                            "birthdate": {
+                                "value": "1990-01-02",
+                                "format": "MMMM DD, YYYY"
+                            },
                             "relationship": "Daughter"
                         },
                         {
                             "id": "0002",
                             "name": "Ryan G. Rizal",
-                            "birthdate": "06/23/2005",
+                            "birthdate": {
+                                "value": "1990-02-03",
+                                "format": "MMMM DD, YYYY"
+                            },
                             "relationship": "Son"
-                        },
-                        {
-                            "id": "0003",
-                            "name": "Josephine Bracken",
-                            "birthdate": "06/23/1985",
-                            "relationship": "Spouse"
                         }
                     ]
                 }
@@ -153,25 +161,48 @@
             "details":{
                 "title": "EMPLOYMENT DETAILS",
                 "employmenttype": "Regular",
-                "datehired": "06/01/2016",
-                "dateend": "-",
+                "datehired": {
+                    "value": "2016-01-16",
+                    "format": "MMMM DD, YYYY"
+                },
+                "dateend": {
+                    "value": "-",
+                    "format": "MMMM DD, YYYY"
+                },
                 "data": [
-                    {
-                        "id": "0001",
-                        "current": false,
-                        "position": "Staff",
-                        "branch": "Yacapin Branch",
-                        "effectivedate": "06/15/2016 - 10/14/2017",
-                        "Remarks": ""
-                    },
-
                     {
                         "id": "0002",
                         "current": true,
                         "position": "Head Staff",
                         "branch": "Yacapin Branch",
-                        "effectivedate": "10/15/2017 - Present",
-                        "Remarks": "Promoted"
+                        "effectivedate": {
+                            "from": {
+                                "value": "2000-12-31",
+                                "format": "MMM DD, YYYY"
+                            },
+                            "to": {
+                                "value": "PRESENT",
+                                "format": "MMM DD, YYYY"
+                            }
+                        },
+                        "remarks": "Promoted"
+                    },
+                    {
+                        "id": "0001",
+                        "current": false,
+                        "position": "Staff",
+                        "branch": "Yacapin Branch",
+                        "effectivedate": {
+                            "from": {
+                                "value": "1990-02-03",
+                                "format": "MMM DD, YYYY"
+                            },
+                            "to": {
+                                "value": "2000-12-31",
+                                "format": "MMM DD, YYYY"
+                            }
+                        },
+                        "remarks": ""
                     }
                 ]
             },

@@ -38,6 +38,12 @@ export const convertDateToString = (strDate, format) => {
     return moment(strDate).format(format);
 }
 
+export const isValidDate = (strDate) => {
+    console.log('strDate: ' + strDate);
+    console.log('moment(strDate, "YYYY-MM-DD", true).isValid(): ' + moment(strDate, "YYYY-MM-DD", true).isValid());
+    return moment(strDate, "YYYY-MM-DD", true).isValid();
+}
+
 export const getDayAbbrev = (_strDay) => {
     let _curAbbrev = _strDay=='SUNDAY' ? 'SUN':
     _strDay=='MONDAY' ? 'MON':

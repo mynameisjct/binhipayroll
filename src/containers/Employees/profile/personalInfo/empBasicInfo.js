@@ -9,7 +9,7 @@ import {
     TextInput,
     ScrollView
 } from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import Icon from 'react-native-vector-icons/Ionicons';
 import LinearGradient from 'react-native-linear-gradient';
 
 //Styles Properties
@@ -17,14 +17,8 @@ import styles from '../styles';
 
 //Custom Components
 import * as StatusLoader from '../../../../components/ScreenLoadStatus'
-import CustomCard, 
-{
-    Description,
-    PropTitle,
-    PropLevel1, 
-    PropLevel2
-}
-from '../../../../components/CustomCards';
+import CustomCard from '../../../../components/CustomCards';
+import FixedCard1 from '../../../../components/FixedCards';
 
 //Helper
 import * as oHelper from '../../../../helper';
@@ -41,109 +35,98 @@ const TITLE = 'Basic and Contact Information'
 export class EmpBasicInfo extends Component {
     render(){
         const navigation = this.props.logininfo.navigation;
+        const attribs_BasicInfo = 
+            [
+                {
+                    label: 'FIRST NAME',
+                    value: this.props.myEmployees.employee.personalinfo.basicinfo.firstname || ''
+                },
+                {
+                    label: 'MIDDLE NAME',
+                    value: this.props.myEmployees.employee.personalinfo.basicinfo.middlename || ''
+                },
+                {
+                    label: 'LAST NAME',
+                    value: this.props.myEmployees.employee.personalinfo.basicinfo.lastname || ''
+                },
+                {
+                    label: 'NICK NAME',
+                    value: this.props.myEmployees.employee.personalinfo.basicinfo.nickname || ''
+                },
+                {
+                    label: 'BIRTH DATE',
+                    value: oHelper.convertDateToString(
+                        this.props.myEmployees.employee.personalinfo.basicinfo.birthdate.value,
+                        this.props.myEmployees.employee.personalinfo.basicinfo.birthdate.format
+                    ) || ''
+                },
+                {
+                    label: 'GENDER',
+                    value: this.props.myEmployees.employee.personalinfo.basicinfo.gender.value || ''
+                },
+                {
+                    label: 'CIVIL STATUS',
+                    value: this.props.myEmployees.employee.personalinfo.basicinfo.civilstatus.value || ''
+                }
+            ]
+
+        const attribs_ContactInfo = 
+            [
+                {
+                    label: 'MOBIE NUMBER',
+                    value: this.props.myEmployees.employee.personalinfo.contactinfo.mobile || ''
+                },
+                {
+                    label: 'TELEPHONE NUMBER',
+                    value: this.props.myEmployees.employee.personalinfo.contactinfo.telephone || ''                },
+                {
+                    label: 'EMAIL ADDRESS',
+                    value: this.props.myEmployees.employee.personalinfo.contactinfo.email || ''
+                }
+            ]
+
+        const attribs_IDS = 
+            [
+                {
+                    label: this.props.myEmployees.employee.personalinfo.ids.tin.label || '',
+                    value: this.props.myEmployees.employee.personalinfo.ids.tin.value || ''
+                },
+                {
+                    label: this.props.myEmployees.employee.personalinfo.ids.sss.label || '',
+                    value: this.props.myEmployees.employee.personalinfo.ids.sss.value || ''
+                },
+                {
+                    label: this.props.myEmployees.employee.personalinfo.ids.philhealth.label || '',
+                    value: this.props.myEmployees.employee.personalinfo.ids.philhealth.value || ''
+                },
+                {
+                    label: this.props.myEmployees.employee.personalinfo.ids.pagibig.label || '',
+                    value: this.props.myEmployees.employee.personalinfo.ids.pagibig.value || ''
+                },
+            ]
+
         return(
             <View style={styles.child.container}>
                 <View style={styles.child.contCard}>
                     <CustomCard clearMargin={true} title={TITLE} oType='Text'>
+                        <ScrollView>
+                            <View style={styles.child.contContent}>
 
-                            <View style={styles.child.floatingCard}>
-                                <PropTitle name='Basic Information'/>
+                                <FixedCard1
+                                    title={this.props.myEmployees.employee.personalinfo.basicinfo.title}
+                                    attributes={attribs_BasicInfo}/>
+                                
+                                <FixedCard1
+                                    title={this.props.myEmployees.employee.personalinfo.contactinfo.title}
+                                    attributes={attribs_ContactInfo}/>
 
-                                <PropLevel2 
-                                    name={'First Name'}
-                                    content={
-                                        <Text style={styles.child.txtDefault}>
-                                            Jose
-                                        </Text>
-                                    }
-                                    contentStyle={{width: 500}}
-                                    placeHolderStyle={{width: 500, height: 40}}
-                                    hideBorder={true}
-                                />
+                                <FixedCard1
+                                    title={this.props.myEmployees.employee.personalinfo.ids.title}
+                                    attributes={attribs_IDS}/>
 
-                                <PropLevel2 
-                                    name={'Middle Name'}
-                                    content={
-                                        <Text style={styles.child.txtDefault}>
-                                            Protacio
-                                        </Text>
-                                    }
-                                    contentStyle={{width: 500}}
-                                    placeHolderStyle={{width: 500, height: 40}}
-                                    hideBorder={true}
-                                />
-
-                                <PropLevel2 
-                                    name={'Last Name'}
-                                    content={
-                                        <Text style={styles.child.txtDefault}>
-                                            Asin
-                                        </Text>
-                                    }
-                                    contentStyle={{width: 500}}
-                                    placeHolderStyle={{width: 500, height: 40}}
-                                    hideBorder={true}
-                                />
-
-                                <PropLevel2 
-                                    name={'Nick Name'}
-                                    content={
-                                        <Text style={styles.child.txtDefault}>
-                                            Jose
-                                        </Text>
-                                    }
-                                    contentStyle={{width: 500}}
-                                    placeHolderStyle={{width: 500, height: 40}}
-                                    hideBorder={true}
-                                />
-
-                                <PropLevel2 
-                                    name={'Date of Birth'}
-                                    content={
-                                        <Text style={styles.child.txtDefault}>
-                                            January 15, 2017
-                                        </Text>
-                                    }
-                                    contentStyle={{width: 500}}
-                                    placeHolderStyle={{width: 500, height: 40}}
-                                    hideBorder={true}
-                                />
-
-                                <PropLevel2 
-                                    name={'Date Hired'}
-                                    content={
-                                        <Text style={styles.child.txtDefault}>
-                                            January 15, 2017
-                                        </Text>
-                                    }
-                                    contentStyle={{width: 500}}
-                                    placeHolderStyle={{width: 500, height: 40}}
-                                    hideBorder={true}
-                                />
-                                <PropLevel2 
-                                    name={'Gender'}
-                                    content={
-                                        <Text style={styles.child.txtDefault}>
-                                            Male
-                                        </Text>
-                                    }
-                                    contentStyle={{width: 500}}
-                                    placeHolderStyle={{width: 500, height: 40}}
-                                    hideBorder={true}
-                                />
-                                <PropLevel2
-                                    name={'Civil Status'}
-                                    content={
-                                        <Text style={styles.child.txtDefault}>
-                                            Divorced
-                                        </Text>
-                                    }
-                                    contentStyle={{width: 500}}
-                                    placeHolderStyle={{width: 500, height: 40}}
-                                    hideBorder={true}
-                                />
                             </View>
-
+                        </ScrollView>
+                        
                     </CustomCard>
                 </View>
             </View>
@@ -153,7 +136,8 @@ export class EmpBasicInfo extends Component {
 
 function mapStateToProps (state) {
     return {
-        logininfo: state.loginReducer.logininfo
+        logininfo: state.loginReducer.logininfo,
+        myEmployees: state.employeeProfile
     }
 }
 
