@@ -212,7 +212,16 @@
                 "data": [
                     {
                         "id": "0001",
-                        "effectivedate": "06/01/2016"
+                        "effectivedate": {
+                            "from": {
+                                "value": "1990-02-03",
+                                "format": "MMM DD, YYYY"
+                            },
+                            "to": {
+                                "value": "2000-12-31",
+                                "format": "MMM DD, YYYY"
+                            }
+                        }
                     }
                 ]
             }

@@ -7,6 +7,11 @@ export const update = payload => ({
 	payload,
 });
 
+export const updateElement = payload => ({
+	type: actionTypes.UPDATE,
+	payload,
+});
+
 export const empty = () => ({
 	type: actionTypes.EMPTY,
 });

@@ -264,6 +264,43 @@ export default {
             color: '#434646',
             textAlign: 'center'
         }
-    }
+    },
+
+    btnRightCont: {
+        flex: 1,
+        height: '100%',
+        flexDirection: 'row',
+        alignItems: 'center'
+        
+    },
+
+    btnSave: {
+        width: 120,
+        height: 35,
+        backgroundColor: '#4CAF50',
+        borderRadius: 100,
+        borderWidth: 0.7,
+        borderColor: '#D1D4D6',
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+
+    btnCancel: {
+        width: 100,
+        height: 35,
+        backgroundColor: '#D75450',
+        borderRadius: 100,
+        borderWidth: 0.7,
+        borderColor: '#D1D4D6',
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+
+    txtBtn: {
+        fontFamily: 'Helvetica-Light',
+        fontSize: 15,
+        color: '#fff'
+    },
+    
     
 }

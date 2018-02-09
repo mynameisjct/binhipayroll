@@ -15,8 +15,8 @@ import styles from './styles';
 
 //Child Containers
 import WorkShift from './workshift';;
-import Payroll from './Rules/payroll';
-import Tax from './Rules/tax';
+import Payroll from './payroll';
+import Tax from './tax';
 import Tardiness from './tardiness';
 import Undertime from './undertime';
 import Overtime from './overtime';

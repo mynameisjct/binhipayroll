@@ -10,7 +10,7 @@ export const isStringOnlySpace = (strValue)  => {
 }
 
 export const isStringEmptyOrSpace = (strValue) => {
-    return (isStringEmpty(strValue) || isStringOnlySpace(strValue));
+    return (isStringEmpty(String(strValue)) || isStringOnlySpace(String(strValue)));
 }
 
 export const capitalizeFirstLetter = (string) => {

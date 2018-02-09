@@ -14,7 +14,7 @@ import ActionButton from 'react-native-action-button';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Icon2 from 'react-native-vector-icons/MaterialCommunityIcons';
 
-//styles
+//Styles
 import styles from './styles'
 
 //Custom Components

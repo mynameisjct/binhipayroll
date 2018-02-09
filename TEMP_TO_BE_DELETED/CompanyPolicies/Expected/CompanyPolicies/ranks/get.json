@@ -1,35 +1,68 @@
 {
-    "flagno": "1",
-    "message": "Success!",
-    "description": "<DESCRIPTION HERE>",
+    "flagno": 1,
+    "message": "Success",
+    "description": "description here",
     "data": [
         {
-            "id": "0001",
+            "id": 2,
+            "name": {
+                "label": "Name",
+                "value": "ADMIN MANAGER"
+            },
+            "tardiness": {
+                "label": "Test Rule",
+                "value": 62
+            },
+            "undertime": {
+                "label": "VNX4",
+                "value": 21
+            },
+            "overtime": {
+                "label": "New Overtime policy",
+                "value": 8
+            },
+            "leaves": {
+                "data": [
+                    {
+                        "value": 40,
+                        "name": "ZZ",
+                        "paiddays": "5"
+                    },
+                    {
+                        "value": 7,
+                        "name": "Vacation Leave",
+                        "paiddays": "27"
+                    }
+                ]
+            }
+        },
+        {
+            "id": 5,
             "name": {
                 "label": "Name",
                 "value": "HR Staff"
             },
             "tardiness": {
-                "label": "Tardiness",
-                "value": "0111"
+                "label": "HHAAHAH",
+                "value": 64
             },
             "undertime": {
-                "label": "Undertime",
-                "value": "0222"
+                "label": "VNX-UT1",
+                "value": 24
             },
             "overtime": {
-                "label": "Overtime",
-                "value": "0333"
+                "label": "JCA-OT1",
+                "value": 20
             },
             "leaves": {
-                "label": "Leaves",
-                "value": "0444"
-            },
-            "benefits": {
-                "label": "Benefits",
-                "value": "0555"
+                "data": [
+                    {
+                        "value": 40,
+                        "name": "ZZ",
+                        "paiddays": "5"
+                    }
+                ]
             }
         }
     ]
 }
-

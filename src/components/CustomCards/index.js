@@ -14,6 +14,7 @@ import {
     View,
     Text,
     Button,
+    ScrollView,
 } from 'react-native';
 
 import styles from './styles';
@@ -101,16 +102,30 @@ export default class CustomCard extends Component{
                 </View>
         }
 
+        const oChildContent = 
+            <View style={[styles.detailsCont, this._getMarginConfig()]}>
+                {this.props.children}
+            </View>
+            
+
         return(
+            
             <View style={styles.container}>
                 <View style={[styles.titleCont, this._getTitleBgColor()]}>
                     {oTitle}
                 </View>
-                <View style={styles.contentCont}>
-                    <View style={[styles.detailsCont, this._getMarginConfig()]}>
-                        {this.props.children}
-                    </View>
-                </View>
+                {
+                    this.props.isScrollable ? 
+                        <View style={styles.contentCont}>
+                            <ScrollView>
+                                {oChildContent}
+                            </ScrollView>
+                        </View>
+                    :
+                        <View style={styles.contentCont}>
+                            {oChildContent}
+                        </View>
+                }
             </View>
         );
     }

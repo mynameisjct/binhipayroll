@@ -11,6 +11,10 @@ export const data = (state = initialState, action) => {
 		case actionTypes.UPDATE:
 			return action.payload;
 			break;
+		
+		case actionTypes.UPDATE_ELEMENT:
+			
+			break;
 
 		case actionTypes.EMPTY:
 			return {};
@@ -50,5 +54,6 @@ const activeRule = (state = initialActiveRule, action) => {
 
 export const reducer = combineReducers({
 	data: data,
+	activeRule: activeRule,
 	status: status
 });

@@ -47,5 +47,8 @@ export let mock = {
 	employee: {
 		list: 'http://www.mocky.io/v2/5a7be5f2300000982828c02a',
 		allInfo: 'http://www.mocky.io/v2/5a7c17af2e0000600005274f'
+	},
+	policies: {
+		ranks: 'http://www.mocky.io/v2/5a7d50b83100002b00cd0811'
 	}
 }
