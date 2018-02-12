@@ -52,14 +52,14 @@ export let policy = {
 		remove: function(payload){
 			return(
 				policy.ranks.get() + 
-				payload.id
+				payload.data.id
 			)
 		},
 
 		update: function(payload){
 			return(
 				policy.ranks.get() + 
-				payload.id
+				payload.data.id
 			)
 		},
  	}

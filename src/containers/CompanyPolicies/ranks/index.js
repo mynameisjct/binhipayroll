@@ -75,6 +75,7 @@ const CARD_TITLE = 'Employee Ranks'
 
 const add_loading_message = 'Saving New Rank. Please wait...';
 const update_loading_message = 'Updating Existing Rank. Please wait...';
+const delete_loading_message = 'Updating Existing Rank. Please wait...';
 
 class LeavesTable extends Component{
     constructor(props){
@@ -463,7 +464,7 @@ export class Ranks extends Component{
 
     _saveRule = async() => {
         if(oHelper.isStringEmptyOrSpace(this.state._activeData.id)){
-            if(blackOps.mode == 1){
+            if(blackOps.mode){
                 let oAllData = {...this.state._allData};
                 let maxid = 0;
                 oAllData.data.map(oData => {
@@ -471,13 +472,18 @@ export class Ranks extends Component{
                         maxid = oData.id;    
                     }
                 });
-                this._pushNewLeaveType(maxid+1, this.state._activeData);
+                this._pushNewRule(maxid+1, this.state._activeData);
             }
             else{
                 this._saveRuleToDB(this.state._activeData);
             }
         }else{
-            this._updateLeaveType(this.state._activeData);
+            if(blackOps.mode){
+                this._updateRule(this.state._activeData);
+            }
+            else{
+                this._updateRuleToDB(this.state._activeData);
+            }
         }
     }
 
@@ -493,7 +499,7 @@ export class Ranks extends Component{
                 this._hideLoadingPrompt();
                 bFlag = this._evaluateResponse(res);
                 if(res.flagno==1){
-                    this._pushNewLeaveType(res.id,value);
+                    this._pushNewRule(res.id,value);
                 }
                 
             })
@@ -505,7 +511,30 @@ export class Ranks extends Component{
         return bFlag;
     }
 
-    _pushNewLeaveType = async (id, value) => {
+    _updateRuleToDB = async(value) => {
+        this._showLoadingPrompt(update_loading_message);
+
+        let bFlag = false;
+        let oInput = {data: value};
+
+        await ranksApi.update(oInput)
+            .then((response) => response.json())
+            .then((res) => {
+                this._hideLoadingPrompt();
+                bFlag = this._evaluateResponse(res);
+                if(res.flagno==1){
+                    this._updateRule(value);
+                }
+            })
+            .catch((exception) => {
+                this._hideLoadingPrompt();
+                this._showMsgBox('error-ok', exception.message);
+            });
+
+        return bFlag;
+    }
+
+    _pushNewRule = async (id, value) => {
         await this.props.actions.ranks.setActiveRule(id);
         let oAllData = {...this.state._allData};
         let oDataArray = [...oAllData.data];
@@ -519,7 +548,7 @@ export class Ranks extends Component{
         this._initValues();
     }
 
-    _updateLeaveType = (value) => {
+    _updateRule = (value) => {
         let oAllData = {...this.state._allData}; 
         let objIndex = oAllData.data.findIndex((obj => obj.id == value.id));
         
@@ -544,9 +573,41 @@ export class Ranks extends Component{
     }
 
     _deleteActiveRule = async() => {
+        if(blackOps.mode){
+            this._deleteRuleFromStore(this.state._activeData)
+        }
+        else{
+            this._deleteRuleFromDB(this.state._activeData)
+        }
+    }
+
+    _deleteRuleFromDB = async(value) => {
+        this._showLoadingPrompt(delete_loading_message);
+        
+        let bFlag = false;
+        let oInput = {data: value};
+
+        await ranksApi.remove(oInput)
+            .then((response) => response.json())
+            .then((res) => {
+                this._hideLoadingPrompt();
+                bFlag = this._evaluateResponse(res);
+                if(res.flagno==1){
+                    this._deleteRuleFromStore(value);
+                }
+            })
+            .catch((exception) => {
+                this._hideLoadingPrompt();
+                this._showMsgBox('error-ok', exception.message);
+            });
+
+        return bFlag;
+    }
+
+    _deleteRuleFromStore = async(oActiveData) => {
         await this.props.actions.ranks.setActiveRule('');
         let oAllData = {...this.state._allData}; 
-        let indexActive = oAllData.data.findIndex((obj => obj.id == this.state._activeData.id));
+        let indexActive = oAllData.data.findIndex((obj => obj.id == oActiveData.id));
         oAllData.data = oHelper.removeElementByIndex(oAllData.data, indexActive);
         this.props.actions.ranks.update(oAllData);
         this._initValues();
