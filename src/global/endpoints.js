@@ -35,12 +35,33 @@ export let employee = {
 }
 
 export let policy = {
-	ranks: function(payload){
-		return(
-			baseURL.activeCompany() +
-			'/policies/ranks/' +
-			payload.id
-		)
+	ranks: {
+		get: function(payload){
+			return(
+				baseURL.activeCompany() +
+				'/policies/ranks/'
+			)
+		},
+
+		create: function(payload){
+			return(
+				policy.ranks.get()
+			)
+		},
+
+		remove: function(payload){
+			return(
+				policy.ranks.get() + 
+				payload.id
+			)
+		},
+
+		update: function(payload){
+			return(
+				policy.ranks.get() + 
+				payload.id
+			)
+		},
  	}
 }
 

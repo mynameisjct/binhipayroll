@@ -73,6 +73,9 @@ import * as blackOps from '../../../global/blackOps';
 import {CONSTANTS} from '../../../constants';
 const CARD_TITLE = 'Employee Ranks'
 
+const add_loading_message = 'Saving New Rank. Please wait...';
+const update_loading_message = 'Updating Existing Rank. Please wait...';
+
 class LeavesTable extends Component{
     constructor(props){
         super(props);
@@ -479,7 +482,7 @@ export class Ranks extends Component{
     }
 
     _saveRuleToDB = async(value) => {
-        this._showLoadingPrompt(strLoading);
+        this._showLoadingPrompt(add_loading_message);
 
         let bFlag = false;
         let oInput = {data: value};

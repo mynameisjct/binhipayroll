@@ -10,7 +10,7 @@ export const fetchApi = (endPoint, payload = {}, strMethod = 'post', headers = {
     }
 
     console.log('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX_API_REQUEST');
-    console.log('endPoint: ' + endPoint);
+    console.log('endPoint: ' + apiConfig.url + endPoint);
     console.log('payload: ' + oBody);
     console.log('strMethod: ' + strMethod);
 

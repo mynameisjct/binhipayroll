@@ -7,10 +7,10 @@ export let get = payload => {
 		return mockFetch(endPoints.mock.policies.ranks, {}, 'get');
 	}
 	else{
-		return fetchApi(endPoints.policy.ranks(payload), payload, 'get');
+		return fetchApi(endPoints.policy.ranks.get(payload), payload, 'get');
 	}
 }
 
-export let update = payload => fetchApi(endPoints.policy.ranks(payload), payload, 'put');
-export let create = payload => fetchApi(endPoints.policy.ranks(payload), payload, 'post');
-export let remove = payload => fetchApi(endPoints.policy.ranks(payload), payload, 'delete');
+export let update = payload => fetchApi(endPoints.policy.ranks.update(payload), payload, 'put');
+export let create = payload => fetchApi(endPoints.policy.ranks.create({id: ''}), payload, 'post');
+export let remove = payload => fetchApi(endPoints.policy.ranks.remove(payload), payload, 'delete');
