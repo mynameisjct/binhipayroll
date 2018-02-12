@@ -7,10 +7,25 @@ export const update = payload => ({
 	payload,
 });
 
-export const updateElement = payload => ({
-	type: actionTypes.UPDATE,
-	payload,
-});
+export const updateLeaves = payload => ({
+	type: actionTypes.UPDATE_LEAVES,
+	payload
+})
+
+export const updateOvertime = payload => ({
+	type: actionTypes.UPDATE_OVERTIME,
+	payload
+})
+
+export const updateUndertime = payload => ({
+	type: actionTypes.UPDATE_UNDERTIME,
+	payload
+})
+
+export const updateTardiness = payload => ({
+	type: actionTypes.UPDATE_TARDINESS,
+	payload
+})
 
 export const empty = () => ({
 	type: actionTypes.EMPTY,
@@ -29,6 +44,8 @@ export const setActiveRule = payload => ({
 	type: actionTypes.ACTIVERULE,
 	payload
 });
+
+
 
 export const get = payload => 
 	dispatch => {

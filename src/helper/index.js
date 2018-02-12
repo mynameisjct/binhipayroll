@@ -44,6 +44,12 @@ export const isValidDate = (strDate) => {
     return moment(strDate, "YYYY-MM-DD", true).isValid();
 }
 
+export const removeElementByIndex = (arrData, index) => {
+    let curData = [...arrData]
+    curData.splice(index, 1);
+    return curData;
+}
+
 export const getDayAbbrev = (_strDay) => {
     let _curAbbrev = _strDay=='SUNDAY' ? 'SUN':
     _strDay=='MONDAY' ? 'MON':

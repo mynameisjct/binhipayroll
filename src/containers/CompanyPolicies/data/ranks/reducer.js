@@ -7,13 +7,30 @@ const initialStatus = CONSTANTS.STATUS.LOADING;
 const initialActiveRule = '';
 
 export const data = (state = initialState, action) => {
+	let oState = JSON.parse(JSON.stringify(state));
 	switch (action.type) {
 		case actionTypes.UPDATE:
 			return action.payload;
 			break;
 		
-		case actionTypes.UPDATE_ELEMENT:
-			
+		case actionTypes.UPDATE_LEAVES:	
+			oState.data.leaves = action.payload;
+			return oState;
+			break;
+
+		case actionTypes.UPDATE_OVERTIME:	
+			oState.data.overtime = action.payload;
+			return oState;
+			break;
+
+		case actionTypes.UPDATE_UNDERTIME:	
+			oState.data.undertime = action.payload;
+			return oState;
+			break;
+
+		case actionTypes.UPDATE_TARDINESS:	
+			oState.data.tardiness = action.payload;
+			return oState;
 			break;
 
 		case actionTypes.EMPTY:

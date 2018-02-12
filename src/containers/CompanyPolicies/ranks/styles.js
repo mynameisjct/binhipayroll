@@ -32,6 +32,13 @@ export default {
         backgroundColor: 'transparent'
     },
 
+    contEmpty: {
+        flex: 1,
+        height: 300,
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+
     level2Styles: {
         txt: {
             fontFamily: 'Helvetica-Bold',
@@ -263,7 +270,25 @@ export default {
             fontSize: 12,
             color: '#434646',
             textAlign: 'center'
-        }
+        },
+
+        emptyLeavesBtn: {
+            height: 25,
+            borderRadius: 15,
+            paddingLeft: 20,
+            paddingRight: 20,
+            backgroundColor: '#DADFE1',
+            elevation: 3,
+            alignItems: 'center',
+            justifyContent: 'center'
+        },
+
+        emptyContAddBtn: {
+            height: 40,
+            marginTop: 15,
+            marginBottom: 30,
+            alignItems: 'center'
+        },
     },
 
     btnRightCont: {

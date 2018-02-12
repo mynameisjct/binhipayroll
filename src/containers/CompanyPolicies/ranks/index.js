@@ -13,7 +13,8 @@ import {
     TouchableNativeFeedback,
     ToastAndroid,
     Modal,
-    Button
+    Button,
+    ActivityIndicator
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -24,18 +25,23 @@ import Icon2 from 'react-native-vector-icons/MaterialCommunityIcons';
 //Redux
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+
 //Selectors
 import * as ranksSelector from '../data/ranks/selector';
 import * as tardinessSelector from '../data/tardiness/selector';
 import * as undertimeSelector from '../data/undertime/selector';
 import * as overtimeSelector from '../data/overtime/selector';
 import * as leavesSelector from '../data/leaves/selector';
+
 //Actions
 import * as ranksActions from '../data/ranks/actions';
 import * as tardinessActions from '../data/tardiness/actions';
 import * as undertimeActions from '../data/undertime/actions';
 import * as overtimeActions from '../data/overtime/actions';
 import * as leavesActions from '../data/leaves/actions';
+
+//API
+import * as ranksApi from '../data/ranks/api';
 
 //Styles
 import styles from './styles';
@@ -57,9 +63,11 @@ import CustomCard,
 }
 from '../../../components/CustomCards';
 import * as PromptScreen from '../../../components/ScreenLoadStatus';
+import MessageBox from '../../../components/MessageBox';
 
 //helper
 import * as oHelper from '../../../helper';
+import * as blackOps from '../../../global/blackOps';
 
 //Constants
 import {CONSTANTS} from '../../../constants';
@@ -89,7 +97,7 @@ class LeavesTable extends Component{
         }
     }
 
-    componentDidMount = () => {
+    componentDidMount = () => {  
         console.log('DID MOUNT');
         this._initValues(this.props.data, this.props.disabledMode); 
     }
@@ -108,7 +116,7 @@ class LeavesTable extends Component{
     _generateLeavesArray = async(oLeave, disabledMode) => {
         console.log('disabledMode: ' + disabledMode);
         const ele = (value) => (
-            <TouchableOpacity onPress={() => this._alert(value)}>
+            <TouchableOpacity onPress={() => this.props.deleteItem(value)}>
                 <View style={styles.leavesTable.contDeleteBtn}>
                     <Icon size={25} name='md-close-circle' color='#D75450' />
                 </View>
@@ -133,36 +141,76 @@ class LeavesTable extends Component{
     } */
 
     render() {
-        console.log('rending leaves table')
+        if(this.state._bDidMount){
+            if(this.state._arrTableData.length > 0){
+                console.log('rending leaves table')
 
-        let tableHead = ['NAME', 'PAID DAYS'];
-        if(!this.props.disabledMode){
-            tableHead = ['NAME', 'PAID DAYS', 'DELETE'];
-        }
-        console.log('this.state._arrTableData: ' + this.state._arrTableData);
-
-        return (
-            <View style={styles.leavesTable.container}>
-                <Table borderStyle={styles.leavesTable.border}>
-                    <Row data={tableHead} style={styles.leavesTable.head} flexArr={[1.5, 1, 0.5]} textStyle={styles.leavesTable.text.header}/>
-                    <Rows data={this.state._arrTableData} style={styles.leavesTable.row} flexArr={[1.5, 1, 0.5]} textStyle={styles.leavesTable.text.content}/>
-                </Table>
-                {
-                    !this.props.disabledMode ?
-                        <View style={styles.leavesTable.contAddBtn}>
-                            <TouchableOpacity
-                                activeOpacity={0.6}
-                                style={styles.leavesTable.addBtn}
-                                onPress={() => this.props.showLeaves('LEAVES')}>
-
-                                <Text style={styles.leavesTable.txtBtn}>Add New Leave Type</Text>
-
-                            </TouchableOpacity>
-                        </View>
-                    : null
+                let tableHead = ['NAME', 'PAID DAYS'];
+                if(!this.props.disabledMode){
+                    tableHead = ['NAME', 'PAID DAYS', 'DELETE'];
                 }
-            </View>
-        )
+                console.log('this.state._arrTableData: ' + this.state._arrTableData);
+
+                return(
+                    <View style={styles.leavesTable.container}>
+                        <Table borderStyle={styles.leavesTable.border}>
+                            <Row data={tableHead} style={styles.leavesTable.head} flexArr={[1.5, 1, 0.5]} textStyle={styles.leavesTable.text.header}/>
+                            <Rows data={this.state._arrTableData} style={styles.leavesTable.row} flexArr={[1.5, 1, 0.5]} textStyle={styles.leavesTable.text.content}/>
+                        </Table>
+                        {
+                            !this.props.disabledMode ?
+                                <View style={styles.leavesTable.contAddBtn}>
+                                    <TouchableOpacity
+                                        activeOpacity={0.6}
+                                        style={styles.leavesTable.addBtn}
+                                        onPress={() => this.props.showLeaves('LEAVES')}>
+
+                                        <Text style={styles.leavesTable.txtBtn}>Add New Leave Type</Text>
+
+                                    </TouchableOpacity>
+                                </View>
+                            : null
+                        }
+                    </View>
+                )
+            }
+            else{
+                return(
+                        <View>
+                            {
+                                !this.props.disabledMode ?
+                                    <View style={styles.leavesTable.emptyContAddBtn}>
+                                        <TouchableOpacity
+                                            activeOpacity={0.6}
+                                            style={styles.leavesTable.emptyLeavesBtn}
+                                            onPress={() => this.props.showLeaves('LEAVES')}>
+
+                                            <Text style={styles.leavesTable.txtBtn}>No Leaves assigned for the current rank. Press this button to add a Leave Type.</Text>
+
+                                        </TouchableOpacity>
+                                    </View>
+                                :
+                                    <PropLevel2 
+                                        name='No Assigned Leaves'
+                                        content={null}
+                                        hideBorder={true}
+                                    />
+                            }
+                        </View>
+                    
+                )
+            }
+        }
+        else{
+            return (
+                <View style={styles.leavesTable.container}>
+                    <ActivityIndicator
+                        animating = {!this.state._bDidMount}
+                        color = '#EEB843'
+                        size = "small"/>
+                </View>
+            )
+        }
     }
 }
 
@@ -170,9 +218,16 @@ export class Ranks extends Component{
     constructor(props){
         super(props);
         this.state = {
+            //Gereric States
+            _promptShow: false,
+            _promptMsg: '',
+            _msgBoxShow: false,
+            _msgBoxType: '',
+            _resMsg: '',
             _refreshing: false,
             _disabledMode: true,
             _status: [2, 'Loading...'],
+
             _allData: {},
             _activeData: {},
             _defaultData: {
@@ -321,7 +376,10 @@ export class Ranks extends Component{
                 this.setState({
                     _activeData: oActiveData
                 },
-                    () => this.props.actions.tardiness.setActiveRule(oActiveRule.id)
+                    () =>{
+                        this.props.actions.tardiness.setActiveRule(oActiveRule.id);
+                        this.props.actions.ranks.updateTardiness(oActiveData.tardiness);
+                    }
                 )
                 break;
             case 'UNDERTIME':
@@ -333,7 +391,10 @@ export class Ranks extends Component{
                 this.setState({
                     _activeData: oActiveData
                 },
-                    () => this.props.actions.undertime.setActiveRule(oActiveRule.id)
+                    () => {
+                        this.props.actions.undertime.setActiveRule(oActiveRule.id);
+                        this.props.actions.ranks.updateUndertime(oActiveData.undertime);
+                    }
                 )
                 break;
             case 'OVERTIME':
@@ -345,21 +406,31 @@ export class Ranks extends Component{
                 this.setState({
                     _activeData: oActiveData
                 },
-                    () => this.props.actions.overtime.setActiveRule(oActiveRule.id)
+                    () => {
+                        this.props.actions.overtime.setActiveRule(oActiveRule.id);
+                        this.props.actions.ranks.updateOvertime(oActiveData.overtime);
+                    }
                 )
                 break;
 
             case 'LEAVES':
                 oActiveRule = JSON.parse(JSON.stringify(
-                    overtimeSelector.getActiveRuleFromID(this.props.overtime.activeRule)
+                    leavesSelector.getRuleFromID(this.props.leaves.activeRule)
                 ));
-                /* oActiveData.overtime.label = oActiveRule.name;
-                oActiveData.overtime.value = oActiveRule.id; */
+                let obj = {
+                    value: oActiveRule.id,
+                    label: oActiveRule.name,
+                    paiddays: oActiveRule.allowablecount.value
+                }
+                oActiveData.leaves.data.push(obj);
+
                 this.setState({
                     _activeData: oActiveData
                 },
-                    () => this.props.actions.overtime.setActiveRule(oActiveRule.id)
-                )
+                    () => {
+                        this.props.actions.ranks.updateLeaves(oActiveData.leaves);
+                    }
+                );
                 break;
 
             default:
@@ -369,26 +440,70 @@ export class Ranks extends Component{
         this.setState({ _modalVisible: false })
     }
 
+    _deleteLeaveItem = async(index) => {
+        console.log('index:' + index)
+        let oActiveData = {...this.state._activeData};
+        oActiveData.leaves.data = oHelper.removeElementByIndex(oActiveData.leaves.data, index);
+
+        this.setState({ _activeData: oActiveData });
+    }
+
     _updateActiveName = (value) => {
         oActiveData = {...this.state._activeData};
         oActiveData.name.value = value;
-        this.setState({ _activeData: oActiveData })
+        this.setState({ _activeData: oActiveData });
     }
 
     _cancelEdit = () => {
         this._initValues();
     }
 
-    _saveRule = () => {
+    _saveRule = async() => {
         if(oHelper.isStringEmptyOrSpace(this.state._activeData.id)){
-        
-        }
-        else{
+            if(blackOps.mode == 1){
+                let oAllData = {...this.state._allData};
+                let maxid = 0;
+                oAllData.data.map(oData => {
+                    if (oData.id > maxid) {
+                        maxid = oData.id;    
+                    }
+                });
+                this._pushNewLeaveType(maxid+1, this.state._activeData);
+            }
+            else{
+                this._saveRuleToDB(this.state._activeData);
+            }
+        }else{
             this._updateLeaveType(this.state._activeData);
         }
     }
 
-    _pushNewLeaveType = (id, value) => {
+    _saveRuleToDB = async(value) => {
+        this._showLoadingPrompt(strLoading);
+
+        let bFlag = false;
+        let oInput = {data: value};
+
+        await ranksApi.create(oInput)
+            .then((response) => response.json())
+            .then((res) => {
+                this._hideLoadingPrompt();
+                bFlag = this._evaluateResponse(res);
+                if(res.flagno==1){
+                    this._pushNewLeaveType(res.id,value);
+                }
+                
+            })
+            .catch((exception) => {
+                this._hideLoadingPrompt();
+                this._showMsgBox('error-ok', exception.message);
+            });
+
+        return bFlag;
+    }
+
+    _pushNewLeaveType = async (id, value) => {
+        await this.props.actions.ranks.setActiveRule(id);
         let oAllData = {...this.state._allData};
         let oDataArray = [...oAllData.data];
 
@@ -397,8 +512,7 @@ export class Ranks extends Component{
         oDataArray.push(oActiveType);
 
         oAllData.data = oDataArray;
-        this.props.actions.leaves.update(oAllData);
-        this.props.actions.leaves.setActiveRule(id);
+        this.props.actions.ranks.update(oAllData);
         this._initValues();
     }
 
@@ -412,32 +526,29 @@ export class Ranks extends Component{
         this._initValues();
     }
 
-
-    
     _addRule = () => {
         this.setState({ 
             _activeData: JSON.parse(JSON.stringify(this.state._defaultData)),
-            _disabledMode: false 
-        })
+            _disabledMode: false
+        },
+            () => this._setActiveRules(this.state._activeData)
+        )
+        
     }
 
     _modifyRule = () => {
         this.setState({ _disabledMode: false })
     }
 
-    _deleteActiveRule = () => {
-
+    _deleteActiveRule = async() => {
+        await this.props.actions.ranks.setActiveRule('');
+        let oAllData = {...this.state._allData}; 
+        let indexActive = oAllData.data.findIndex((obj => obj.id == this.state._activeData.id));
+        oAllData.data = oHelper.removeElementByIndex(oAllData.data, indexActive);
+        this.props.actions.ranks.update(oAllData);
+        this._initValues();
     }
 
-    //DEDAULT FUNCTIONS
-    _requiredInputs = () => {
-        return({
-            companyid: this.props.activecompany.id,
-            username: this.props.logininfo.resUsername,
-            accesstoken: '',
-            clientid: ''
-        })
-    }
     _evaluateResponse = (res) => {
         switch (res.flagno){
             case 0:
@@ -495,8 +606,9 @@ export class Ranks extends Component{
     }
 
     render(){
+        console.log('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX');
         console.log('_allData: ' + JSON.stringify(this.state._allData));
-        console.log('this.state._activePolicy: ' + this.state._activePolicy);
+        console.log('this.state._activeData: ' + JSON.stringify(this.state._activeData));
         console.log('this.props.ranks.activeRule: ' + this.props.ranks.activeRule);
         console.log('this.props.tardiness.activeRule: ' + this.props.tardiness.activeRule);
         console.log('this.props.overtime.activeRule: ' + this.props.overtime.activeRule);
@@ -512,6 +624,7 @@ export class Ranks extends Component{
         }
 
         else if(pProgress==1){
+            let bIsEmpty = this.state._allData.data.length < 1 ? true : false;
             let oActivePolicy = null;
             switch(this.state._activePolicy){
                 case 'TARDINESS':
@@ -611,86 +724,98 @@ export class Ranks extends Component{
                                 </View>
                             }
                         >
-                            <PropLevel1 
-                                name='Rank Name' 
-                                content={
-                                    this.state._disabledMode ?
-                                        <Picker
-                                            mode='dropdown'
-                                            selectedValue={this.state._activeData.id}
-                                            onValueChange={(itemValue, itemIndex) => {this._setActiveData(itemValue)}}>
-                                            {
-                                                this.state._allData.data.map((data, index) => (
-                                                    <Picker.Item key={index} label={data.name.value} value={data.id} />
-                                                ))
+                            {
+                                bIsEmpty && this.state._disabledMode ? 
+                                    <TouchableOpacity 
+                                        activeOpacity={0.6}
+                                        style={styles.contEmpty}
+                                        onPress={() => {this._addRule()}}>
+                                        <Text>No Existing Ranks. Tap here to add.</Text>
+                                    </TouchableOpacity>
+                                :
+                                    <View>
+                                        <PropLevel1 
+                                            name='Rank Name' 
+                                            content={
+                                                this.state._disabledMode ?
+                                                    <Picker
+                                                        mode='dropdown'
+                                                        selectedValue={this.state._activeData.id}
+                                                        onValueChange={(itemValue, itemIndex) => {this._setActiveData(itemValue)}}>
+                                                        {
+                                                            this.state._allData.data.map((data, index) => (
+                                                                <Picker.Item key={index} label={data.name.value} value={data.id} />
+                                                            ))
+                                                        }
+                                                    </Picker>
+                                                :
+                                                <TextInput 
+                                                    autoCapitalize='none'
+                                                    placeholder='Leave Type Name'
+                                                    style={{color: '#434646', paddingLeft: 15, paddingRight: 15, height: '100%'}}
+                                                    onChangeText={(text) => this._updateActiveName(text)}
+                                                    value={this.state._activeData.name.value}
+                                                    returnKeyType="done"
+                                                    underlineColorAndroid='transparent'
+                                                />
                                             }
-                                        </Picker>
-                                    :
-                                    <TextInput 
-                                        autoCapitalize='none'
-                                        placeholder='Leave Type Name'
-                                        style={{color: '#434646', paddingLeft: 15, paddingRight: 15, height: '100%'}}
-                                        onChangeText={(text) => this._updateActiveName(text)}
-                                        value={this.state._activeData.name.value}
-                                        returnKeyType="done"
-                                        underlineColorAndroid='transparent'
-                                    />
-                                }
-                                
-                            />
-                            <PropTitle name='Time Policies'/>
-                            <PropLevel2 
-                                name='Tardiness Rule'
-                                content={
-                                    <Text 
-                                        style={styles.level2Styles.txt}
-                                        disabled={this.state._disabledMode}
-                                        onPress={() => this._showPolicy('TARDINESS')}>
-                                        {this.state._activeData.tardiness.label}
-                                    </Text>
-                                }
-                                hideBorder={this.state._disabledMode}
-                                contentStyle={styles.level2Styles.cont}
-                            />
-                            <PropLevel2 
-                                name='Undertime Rule'
-                                content={
-                                    <Text 
-                                        style={styles.level2Styles.txt}
-                                        disabled={this.state._disabledMode}
-                                        onPress={() => this._showPolicy('UNDERTIME')}>
-                                        {this.state._activeData.undertime.label}
-                                    </Text>
-                                }
-                                hideBorder={this.state._disabledMode}
-                                contentStyle={styles.level2Styles.cont}
-                            />
-                            <PropLevel2 
-                                name='Overtime Rule'
-                                content={
-                                    <Text 
-                                        style={styles.level2Styles.txt}
-                                        disabled={this.state._disabledMode}
-                                        onPress={() => this._showPolicy('OVERTIME')}>
-                                        {this.state._activeData.overtime.label}
-                                    </Text>
-                                }
-                                hideBorder={this.state._disabledMode}
-                                contentStyle={styles.level2Styles.cont}
-                            />
-                            <PropTitle name='Leave Policy'/>
-                            <LeavesTable 
-                                data={this.state._activeData.leaves}
-                                deleteItem={()=>{}} 
-                                showLeaves={(strType) => this._showPolicy(strType)}
-                                disabledMode={this.state._disabledMode}
-                                />
+                                            
+                                        />
+                                        <PropTitle name='Time Policies'/>
+                                        <PropLevel2 
+                                            name='Tardiness Rule'
+                                            content={
+                                                <Text 
+                                                    style={styles.level2Styles.txt}
+                                                    disabled={this.state._disabledMode}
+                                                    onPress={() => this._showPolicy('TARDINESS')}>
+                                                    {this.state._activeData.tardiness.label}
+                                                </Text>
+                                            }
+                                            hideBorder={this.state._disabledMode}
+                                            contentStyle={styles.level2Styles.cont}
+                                        />
+                                        <PropLevel2 
+                                            name='Undertime Rule'
+                                            content={
+                                                <Text 
+                                                    style={styles.level2Styles.txt}
+                                                    disabled={this.state._disabledMode}
+                                                    onPress={() => this._showPolicy('UNDERTIME')}>
+                                                    {this.state._activeData.undertime.label}
+                                                </Text>
+                                            }
+                                            hideBorder={this.state._disabledMode}
+                                            contentStyle={styles.level2Styles.cont}
+                                        />
+                                        <PropLevel2 
+                                            name='Overtime Rule'
+                                            content={
+                                                <Text 
+                                                    style={styles.level2Styles.txt}
+                                                    disabled={this.state._disabledMode}
+                                                    onPress={() => this._showPolicy('OVERTIME')}>
+                                                    {this.state._activeData.overtime.label}
+                                                </Text>
+                                            }
+                                            hideBorder={this.state._disabledMode}
+                                            contentStyle={styles.level2Styles.cont}
+                                        />
+                                        <PropTitle name='Leave Policy'/>
+                                        <LeavesTable 
+                                            data={this.state._activeData.leaves}
+                                            deleteItem={(index) => this._deleteLeaveItem(index) } 
+                                            showLeaves={(strType) => this._showPolicy(strType)}
+                                            disabledMode={this.state._disabledMode}
+                                            />
+                                    </View>
+                            }
                         </CustomCard>
                     </ScrollView>
 
                     {vPolicy}
                     { 
-                        this.state._disabledMode ?
+                        this.state._disabledMode && !bIsEmpty?
                             <ActionButton 
                                 buttonColor="#EEB843"
                                 spacing={10}>
@@ -705,7 +830,19 @@ export class Ranks extends Component{
                                 </ActionButton.Item>
                             </ActionButton>
                             : null
-                    }     
+                    }
+                    <PromptScreen.PromptGeneric 
+                        show= {this.state._promptShow} 
+                        title={this.state._promptMsg}/>
+
+                    <MessageBox
+                        promptType={this.state._msgBoxType}
+                        show={this.state._msgBoxShow}
+                        onClose={this._closeMsgBox}
+                        onWarningContinue={this._continueActionOnWarning}
+                        message={this.state._resMsg}
+                    /> 
+
                 </View>
             );
         }
@@ -727,7 +864,8 @@ function mapStateToProps (state) {
         ranks: state.companyPoliciesReducer.ranks,
         tardiness: state.companyPoliciesReducer.tardiness,
         overtime: state.companyPoliciesReducer.overtime,
-        undertime: state.companyPoliciesReducer.undertime
+        undertime: state.companyPoliciesReducer.undertime,
+        leaves: state.companyPoliciesReducer.leaves
     }
 }
 

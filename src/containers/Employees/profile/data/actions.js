@@ -26,6 +26,10 @@ export const updateActiveID = payload =>({
 })
 
 /******************** All Employee Info ********************/
+export const clearActiveData = () =>({
+	type: actionTypes.ALLINFO.REMOVE.ACTIVEDATA
+})
+
 export const getAllInfo = payload =>
 	dispatch => {
 		let objRes = {};

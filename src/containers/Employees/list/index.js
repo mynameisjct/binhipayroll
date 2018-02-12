@@ -99,6 +99,7 @@ export class List extends Component {
         this._showLoadingPrompt('Loading required forms. Please wait...');
         requestAnimationFrame(() => {
             this._hideLoadingPrompt();
+            this.props.actions.employee.clearActiveData();
             this.props.logininfo.navigation.navigate('AddEmployeeForm');
             
         })

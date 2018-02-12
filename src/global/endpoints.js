@@ -37,8 +37,9 @@ export let employee = {
 export let policy = {
 	ranks: function(payload){
 		return(
-		baseURL.activeCompany() +
-		'/policies/ranks'
+			baseURL.activeCompany() +
+			'/policies/ranks/' +
+			payload.id
 		)
  	}
 }

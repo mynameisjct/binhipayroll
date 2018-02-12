@@ -240,7 +240,7 @@ export const employee = (state = initialState, action) => {
 			}
 			break;
 
-		case actionTypes.EMPTY:
+		case actionTypes.ALLINFO.REMOVE.ACTIVEDATA:
 			return initialState;
 			break;
 
