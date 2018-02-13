@@ -33,7 +33,7 @@ import {FormCard, PropTitle} from '../../../../components/CustomCards';
 import * as CustomForm from '../../../../components/CustomForm';
   
 const Form = t.form.Form;
-const DEFAULT_DEPENDENT = {name: '', birthday: '', relationship: ''};
+const DEFAULT_DEPENDENT = {name: '', birthdate: '1990-01-01', relationship: ''};
 
 const RELATIONSHIPS = t.enums({
     Spouse:'Spouse',
@@ -51,10 +51,19 @@ class DependentsFields extends Component {
         this.state={
             _oDependent: {
                 name: this.props.value.name,
-                birthdate: this.props.value.date,
+                birthdate: new Date(this.props.value.birthdate) || null,
                 relationship: this.props.value.relationship,
             }
         }
+    }
+
+    _onChange = (curData) => {
+        this.setState({_oDependent: curData})
+        this.props.onChange(curData, this.props.formIndex);
+    }
+
+    _onSubmit = () => {
+
     }
 
     render(){
@@ -64,7 +73,7 @@ class DependentsFields extends Component {
         }
           
         let oBday = {
-            label: 'BIRTHDAY',
+            label: 'BIRTHDATE',
             mode:'date',
             config:{
                 format:(date) => myFormatFunction("MMMM DD YYYY",date)
@@ -99,7 +108,8 @@ class DependentsFields extends Component {
                     ref='dependent_form'
                     type={EMPLOYEEE_DEPENDENT} 
                     value={this.state._oDependent}
-                    options={OPTIONS}/>
+                    options={OPTIONS}
+                    onChange={this._onChange}/>
             </View>
         )
     }
@@ -114,15 +124,26 @@ class DependentsForm extends Component{
         }
     }
 
+    _updateData = (curData, curIndex) => {
+        console.log('curData: ' + JSON.stringify(curData));
+        console.log('curIndex: ' + curIndex);
+        let arrData = [...this.state._value];
+        arrData[curIndex].name = curData.name;
+        arrData[curIndex].birthdate = curData.birthdate;
+        arrData[curIndex].relationship = curData.relationship;
+        this.setState({_value: arrData})
+    }
+
     _addNewRow = () => {
         let aList = [...this.state._value];
         let oLastRow = aList.slice(-1)[0];
+        console.log
         if(oHelper.isStringEmptyOrSpace(oLastRow.name)){
             /* this._textInput.focus(); */
-            aList.push(DEFAULT_DEPENDENT);
+            /* aList.push(DEFAULT_DEPENDENT);
             this.setState({
                 _value: aList
-            })
+            }) */
         }
         else{
             aList.push(DEFAULT_DEPENDENT);
@@ -161,9 +182,13 @@ class DependentsForm extends Component{
                             <View style={styles.contLabel}>
                                 <Text style={styles.txtGroupLabel}>{this.props.label + ' ' + (index+1) || 'ROW ' + (index+1)}</Text>
                             </View>
+                            {console.log('data: ' + JSON.stringify(data))}
                             <DependentsFields 
-                                ref={(oInstance) => {this.dependentField_Form = oInstance;}}
-                                value={data}/>
+                                isSubmitted={this.props.isSubmitted}
+                                formIndex = {index}
+                                value={data}
+                                onChange = {(curData, curIndex) => this._updateData(curData, curIndex)}
+                                />
                             {
                                 this.state._value.length !== 1 ?
                                     <TouchableOpacity
@@ -208,7 +233,7 @@ export class Dependents extends Component {
         }
     }
 
-    _onPress = () => {
+    _onSubmitForm = () => {
         const navigation = this.props.logininfo.navigation;
 
         let oPresentAdd = this.refs.presentadd_form.getValue();
@@ -258,33 +283,40 @@ export class Dependents extends Component {
     return (
       <View style={styles.container}>
         <ScrollView>
-          <View style={styles.contDivider}>
-            <View style={styles.contFormLeft}>
-                { /********** SPOUSE Information **********/ }
-                <View style={styles.contTitle}>
-                    <PropTitle name='SPOUSE INFORMATION'/>
+            <View style={styles.contDivider}>
+                <View style={styles.contFormLeft}>
+                    { /********** SPOUSE Information **********/ }
+                    <View style={styles.contTitle}>
+                        <PropTitle name='SPOUSE INFORMATION'/>
+                    </View>
+                    <View style={styles.contNote}>
+                        <Text style={styles.txtNoteLabel}>Note: There is no need to add a spouse in the dependents.</Text>
+                    </View>
+                    <Form 
+                        ref='presentadd_form'
+                        type={EMPLOYEE_SPOUSE} 
+                        value={this.state._oSpouse}
+                        options={OPTIONS_SPOUSE}/>
                 </View>
-                <View style={styles.contNote}>
-                    <Text style={styles.txtNoteLabel}>Note: There is no need to add a spouse in the dependents.</Text>
-                </View>
-                <Form 
-                    ref='presentadd_form'
-                    type={EMPLOYEE_SPOUSE} 
-                    value={this.state._oSpouse}
-                    options={OPTIONS_SPOUSE}/>
-            </View>
 
-            <View style={styles.contFormRight}>
-                { /********** Dependents Information **********/ }
-                
-                <View style={styles.contTitle}>
-                    <PropTitle name='DEPENDENTS INFORMATION'/>
+                <View style={styles.contFormRight}>
+                    { /********** Dependents Information **********/ }
+                        
+                    <View style={styles.contTitle}>
+                        <PropTitle name='DEPENDENTS INFORMATION'/>
+                    </View>
+                    <DependentsForm 
+                        label='DEPENDENT'
+                        value={[]}/>
                 </View>
-                <DependentsForm 
-                    label='DEPENDENT'
-                    value={[]}/>
             </View>
-          </View>
+            <View style={{flex:1, padding: 40}}>
+                <Button
+                    onPress={this._onSubmitForm}
+                    title='Next'
+                    color="#3b5998"
+                    accessibilityLabel='Next'/>
+            </View>
         </ScrollView>
       </View>
     );

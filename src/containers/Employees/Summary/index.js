@@ -31,7 +31,7 @@ import * as oHelper from '../../../helper';
 
 //Redux
 import { connect } from 'react-redux';
-import * as employeeActions from '../profile/data/actions';
+import * as employeeActions from '../data/activeProfile/actions';
 import { bindActionCreators } from 'redux';
 
 //constants
@@ -39,19 +39,25 @@ const btnActive = 'rgba(255, 255, 255, 0.3);'
 const btnInactive = 'transparent';
 const TITLE = 'Employee Profile Summary'
 export class Summary extends Component {
+
+    _triggerRefresh = () => {
+        this.props.actions.employee.getAllInfo(this.props.employees.activeProfile.data.id);
+    }
+
     render(){
         /* console.log('%%%%%%%%%%%%%%%%%%%%%%%%this.props.employeeProfile: ' + JSON.stringify(this.props.employeeProfile)); */
-        let pStatus = [...this.props.employeeProfile.status]
+        let pStatus = [...this.props.employees.activeProfile.status]
         let pProgress = pStatus[0];
         let pMessage = pStatus[1];
 
         if(pProgress==0){
             return (
-                <PromptScreen.PromptError title={TITLE} onRefresh={()=>this.props.triggerRefresh(true)}/>
+                <PromptScreen.PromptError title={TITLE} onRefresh={()=>this._triggerRefresh()}/>
             );
         }
 
         else if(pProgress==1){
+            const activeProfile = this.props.employees.activeProfile.data;
             const navigation = this.props.logininfo.navigation;
             return(
                 <View style={styles.rightCont}>
@@ -66,9 +72,9 @@ export class Summary extends Component {
                                     content={
                                         <Text style={styles.txtDefault}>
                                             {
-                                                this.props.employeeProfile.employee.personalinfo.basicinfo.lastname +
+                                                activeProfile.personalinfo.basicinfo.lastname +
                                                 ', ' + 
-                                                this.props.employeeProfile.employee.personalinfo.basicinfo.firstname
+                                                activeProfile.personalinfo.basicinfo.firstname
                                             }
                                         </Text>
                                     }
@@ -95,8 +101,8 @@ export class Summary extends Component {
                                         <Text style={styles.txtDefault}>
                                             {
                                                 oHelper.convertDateToString(
-                                                    this.props.employeeProfile.employee.personalinfo.basicinfo.birthdate.value,
-                                                    this.props.employeeProfile.employee.personalinfo.basicinfo.birthdate.format
+                                                    activeProfile.personalinfo.basicinfo.birthdate.value,
+                                                    activeProfile.personalinfo.basicinfo.birthdate.format
                                                 ) || ''
                                             }
                                         </Text>
@@ -197,7 +203,7 @@ function mapStateToProps (state) {
     return {
         logininfo: state.loginReducer.logininfo,
         activecompany: state.activeCompanyReducer.activecompany,
-        employeeProfile: state.employeeProfile
+        employees: state.employees
     }
 }
   

@@ -25,10 +25,16 @@ export let getBasicInfo = payload => {
 
 export let getAllInfo = payload => {
 	if(blackOps.mode){
-		return mockFetch(endPoints.mock.employee.allInfo, {}, 'get');
+		if(payload == 1){
+			return mockFetch(endPoints.mock.employee.allInfo1, {}, 'get');
+		}
+		else{
+			return mockFetch(endPoints.mock.employee.allInfo2, {}, 'get');
+		}
+		
 	}
 	else{
-		return fetchApi(endPoints.employee.basicInfo(payload), {}, 'get');
+		return fetchApi(endPoints.employee.allInfo(payload), {}, 'get');
 	}
 }
 

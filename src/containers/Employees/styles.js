@@ -163,5 +163,6 @@ export default {
         justifyContent: 'center',
         alignItems: 'flex-end',
     },
+    
 }
    

@@ -1,25 +1,24 @@
 import { combineReducers } from 'redux';
 import * as actionTypes from './actionTypes';
+import { CONSTANTS } from '../../../../constants';
 
-initialEmployeesRecord = [];
-const initialCollectionStatus = [];
-const initialStatus = [2,'Loading...'];
+const initialStatus = CONSTANTS.STATUS.LOADING;
 const initialState = {
 	id: '',
 	personalinfo:{
 		basicinfo:{
 			title: "BASIC INFORMATION",
-			firstname: "",
-			middlename: "",
-			lastname: "",
-			nickname: "",
-			birthdate: "06/01/1990",
+			firstname: "FNAME_TEST",
+			middlename: "MNAME_TEST",
+			lastname: "LNAME_TEST",
+			nickname: "NNAME_TEST",
+			birthdate: "1900-01-01",
 			gender: {
-				value: "",
+				value: "Male",
 				options: ["-", "Male", "Female"]
 			},
 			civilstatus: {
-				value: "",
+				value: "Single",
 				options: ["", "Single", "Married", "Divorced", "Separated", "Widowed"]
 			}
 		},
@@ -101,6 +100,10 @@ const initialState = {
 			spouse: {
 				title: "SPOUSE",
 				name: "",
+				birthdate: {
+					value: "",
+					format: "MMMM DD, YYYY"
+				},
 				work:{
 					jobtitle:"",
 					company:""
@@ -141,7 +144,7 @@ const initialState = {
 };
 
 
-export const employee = (state = initialState, action) => {
+export const data = (state = initialState, action) => {
 	let oState = JSON.parse(JSON.stringify(state));
 	switch (action.type) {
 		case actionTypes.ALLINFO.UPDATE.ID:
@@ -182,7 +185,7 @@ export const employee = (state = initialState, action) => {
 			oState.personalinfo.basicinfo.middlename = action.payload.middlename;
 			oState.personalinfo.basicinfo.lastname = action.payload.lastname;
 			oState.personalinfo.basicinfo.nickname = action.payload.nickname;
-			oState.personalinfo.basicinfo.birthdate = action.payload.birthdate;
+			oState.personalinfo.basicinfo.birthdate.value = action.payload.birthdate;
 			oState.personalinfo.basicinfo.gender.value = action.payload.gender;
 			oState.personalinfo.basicinfo.civilstatus.value = action.payload.civilstatus;
 			
@@ -260,57 +263,7 @@ export const status = (state = initialStatus, action) => {
 	}
 };
 
-export const basicInfoStatus = (state = initialStatus, action) => {
-	switch (action.type) {
-		case actionTypes.BASICINFO.UPDATE.STATUS:
-			return action.payload;
-			break;
-
-		default:
-			return state;
-	}
-};
-
-
-export const employeeRecord  = (state = initialEmployeesRecord, action) => {
-	let newArray = state.slice();
-	let iData = -1;
-	switch (action.type) {
-		case actionTypes.EMPLOYEERECORD.INSERT:
-			newArray.splice(0, 0, action.payload);
-			return newArray;
-			break;
-
-		case actionTypes.EMPLOYEERECORD.UPDATE:
-			iData = newArray.findIndex(obj => obj.id == action.payload.id);
-			if(iData < 0) {
-				return state;
-			}
-			else{
-				newArray.splice(iData, 1, action.payload);
-				return newArray;
-			}
-			break;
-
-		case actionTypes.EMPLOYEERECORD.REMOVE:
-			iData = newArray.findIndex(obj => obj.id == action.payload.id);
-			if(iData < 0) {
-				return state;
-			}
-			else{
-				newArray.splice(iData, 1);
-				return newArray;
-			}
-			break;
-
-		default:
-			return state;
-	}
-};
-
-export const employeeProfile = combineReducers({
-	employeeRecord,
-    employee,
-	status,
-	basicInfoStatus
+export const activeProfile = combineReducers({
+    data,
+	status
 }); 

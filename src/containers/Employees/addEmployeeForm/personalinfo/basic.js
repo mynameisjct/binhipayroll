@@ -23,7 +23,7 @@ import { customPickerTemplate } from '../../../../global/tcomb-customTemplate';
 //Redux
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import * as employeeActions from '../../profile/data/actions';
+import * as employeeActions from '../../data/activeProfile/actions';
 
 //Custom Component
 import {FormCard, PropTitle} from '../../../../components/CustomCards';
@@ -68,24 +68,24 @@ export class Basic extends Component {
     super(props);
     this.state={
       _oBasicInfo: {
-        firstname: this.props.employee.personalinfo.basicinfo.firstname,
-        middlename: this.props.employee.personalinfo.basicinfo.middlename,
-        lastname: this.props.employee.personalinfo.basicinfo.lastname,
-        nickname: this.props.employee.personalinfo.basicinfo.nickname,
-        /* birthday: '06/23/1993', */
-        gender: this.props.employee.personalinfo.basicinfo.gender.value,
-        civilstatus: this.props.employee.personalinfo.basicinfo.civilstatus.value,
+        firstname: this.props.employeePersonalInfo.basicinfo.firstname,
+        middlename: this.props.employeePersonalInfo.basicinfo.middlename,
+        lastname: this.props.employeePersonalInfo.basicinfo.lastname,
+        nickname: this.props.employeePersonalInfo.basicinfo.nickname,
+        birthday: this.props.employeePersonalInfo.basicinfo.birthdate ? new Date(this.props.employeePersonalInfo.basicinfo.birthdate) : null,
+        gender: this.props.employeePersonalInfo.basicinfo.gender.value,
+        civilstatus: this.props.employeePersonalInfo.basicinfo.civilstatus.value,
       },
       _oContactInfo:{
-        mobile: this.props.employee.personalinfo.contactinfo.mobile,
-        telephone: this.props.employee.personalinfo.contactinfo.telephone,
-        email: this.props.employee.personalinfo.contactinfo.email
+        mobile: this.props.employeePersonalInfo.contactinfo.mobile,
+        telephone: this.props.employeePersonalInfo.contactinfo.telephone,
+        email: this.props.employeePersonalInfo.contactinfo.email
       },
       _oGovID:{
-        tin: this.props.employee.personalinfo.ids.tin.value,
-        sss: this.props.employee.personalinfo.ids.sss.value,
-        philhealth: this.props.employee.personalinfo.ids.philhealth.value,
-        pagibig: this.props.employee.personalinfo.ids.pagibig.value,
+        tin: this.props.employeePersonalInfo.ids.tin.value,
+        sss: this.props.employeePersonalInfo.ids.sss.value,
+        philhealth: this.props.employeePersonalInfo.ids.philhealth.value,
+        pagibig: this.props.employeePersonalInfo.ids.pagibig.value,
       }
     }
   }
@@ -136,15 +136,15 @@ export class Basic extends Component {
 
   render() {
     //This is put into render method to allow direct access to class properties
-    let myFormatFunction = (format,date) => {
-      return moment(date).format(format);
+    let myFormatFunction = (format,strDate) => {
+      return moment(strDate).format(format);
     }
     
     let oBday = {
-        label: 'BIRTHDAY',
+        label: 'BIRTHDATE',
         mode:'date',
         config:{
-            format:(date) => myFormatFunction("MMMM DD YYYY",date)
+            format: (strDate) => myFormatFunction("MMMM DD YYYY", strDate)
         },
         error: '*Select birth date'
     };
@@ -294,7 +294,7 @@ function mapStateToProps (state) {
   return {
       logininfo: state.loginReducer.logininfo,
       activecompany: state.activeCompanyReducer.activecompany,
-      employee: state.employeeProfile.employee
+      employeePersonalInfo: state.employees.activeProfile.data.personalinfo
   }
 }
 

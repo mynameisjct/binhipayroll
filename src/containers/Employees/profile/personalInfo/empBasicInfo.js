@@ -25,7 +25,7 @@ import * as oHelper from '../../../../helper';
 
 //Redux
 import { connect } from 'react-redux';
-import * as employeeActions from '../data/actions';
+import * as employeeActions from '../../data/activeProfile/actions';
 import { bindActionCreators } from 'redux';
 
 //Constants
@@ -34,39 +34,42 @@ const btnInactive = 'transparent';
 const TITLE = 'Basic and Contact Information'
 export class EmpBasicInfo extends Component {
     render(){
+        let oBasicInfo = this.props.employees.activeProfile.data.personalinfo.basicinfo;
+        let oContactInfo = this.props.employees.activeProfile.data.personalinfo.contactinfo;
+        let oIDS = this.props.employees.activeProfile.data.personalinfo.ids;
         const navigation = this.props.logininfo.navigation;
         const attribs_BasicInfo = 
             [
                 {
                     label: 'FIRST NAME',
-                    value: this.props.myEmployees.employee.personalinfo.basicinfo.firstname || ''
+                    value: oBasicInfo.firstname || ''
                 },
                 {
                     label: 'MIDDLE NAME',
-                    value: this.props.myEmployees.employee.personalinfo.basicinfo.middlename || ''
+                    value: oBasicInfo.middlename || ''
                 },
                 {
                     label: 'LAST NAME',
-                    value: this.props.myEmployees.employee.personalinfo.basicinfo.lastname || ''
+                    value: oBasicInfo.lastname || ''
                 },
                 {
                     label: 'NICK NAME',
-                    value: this.props.myEmployees.employee.personalinfo.basicinfo.nickname || ''
+                    value: oBasicInfo.nickname || ''
                 },
                 {
                     label: 'BIRTH DATE',
                     value: oHelper.convertDateToString(
-                        this.props.myEmployees.employee.personalinfo.basicinfo.birthdate.value,
-                        this.props.myEmployees.employee.personalinfo.basicinfo.birthdate.format
+                        oBasicInfo.birthdate.value,
+                        oBasicInfo.birthdate.format
                     ) || ''
                 },
                 {
                     label: 'GENDER',
-                    value: this.props.myEmployees.employee.personalinfo.basicinfo.gender.value || ''
+                    value: oBasicInfo.gender.value || ''
                 },
                 {
                     label: 'CIVIL STATUS',
-                    value: this.props.myEmployees.employee.personalinfo.basicinfo.civilstatus.value || ''
+                    value: oBasicInfo.civilstatus.value || ''
                 }
             ]
 
@@ -74,34 +77,34 @@ export class EmpBasicInfo extends Component {
             [
                 {
                     label: 'MOBIE NUMBER',
-                    value: this.props.myEmployees.employee.personalinfo.contactinfo.mobile || ''
+                    value: oContactInfo.mobile || ''
                 },
                 {
                     label: 'TELEPHONE NUMBER',
-                    value: this.props.myEmployees.employee.personalinfo.contactinfo.telephone || ''                },
+                    value: oContactInfo.telephone || ''                },
                 {
                     label: 'EMAIL ADDRESS',
-                    value: this.props.myEmployees.employee.personalinfo.contactinfo.email || ''
+                    value: oContactInfo.email || ''
                 }
             ]
 
         const attribs_IDS = 
             [
                 {
-                    label: this.props.myEmployees.employee.personalinfo.ids.tin.label || '',
-                    value: this.props.myEmployees.employee.personalinfo.ids.tin.value || ''
+                    label: oIDS.tin.label || '',
+                    value: oIDS.tin.value || ''
                 },
                 {
-                    label: this.props.myEmployees.employee.personalinfo.ids.sss.label || '',
-                    value: this.props.myEmployees.employee.personalinfo.ids.sss.value || ''
+                    label: oIDS.sss.label || '',
+                    value: oIDS.sss.value || ''
                 },
                 {
-                    label: this.props.myEmployees.employee.personalinfo.ids.philhealth.label || '',
-                    value: this.props.myEmployees.employee.personalinfo.ids.philhealth.value || ''
+                    label: oIDS.philhealth.label || '',
+                    value: oIDS.philhealth.value || ''
                 },
                 {
-                    label: this.props.myEmployees.employee.personalinfo.ids.pagibig.label || '',
-                    value: this.props.myEmployees.employee.personalinfo.ids.pagibig.value || ''
+                    label: oIDS.pagibig.label || '',
+                    value: oIDS.pagibig.value || ''
                 },
             ]
 
@@ -113,15 +116,15 @@ export class EmpBasicInfo extends Component {
                             <View style={styles.child.contContent}>
 
                                 <FixedCard1
-                                    title={this.props.myEmployees.employee.personalinfo.basicinfo.title}
+                                    title={oBasicInfo.title}
                                     attributes={attribs_BasicInfo}/>
                                 
                                 <FixedCard1
-                                    title={this.props.myEmployees.employee.personalinfo.contactinfo.title}
+                                    title={oContactInfo.title}
                                     attributes={attribs_ContactInfo}/>
 
                                 <FixedCard1
-                                    title={this.props.myEmployees.employee.personalinfo.ids.title}
+                                    title={oContactInfo.title}
                                     attributes={attribs_IDS}/>
 
                             </View>
@@ -137,7 +140,7 @@ export class EmpBasicInfo extends Component {
 function mapStateToProps (state) {
     return {
         logininfo: state.loginReducer.logininfo,
-        myEmployees: state.employeeProfile
+        employees: state.employees
     }
 }
 

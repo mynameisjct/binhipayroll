@@ -301,6 +301,7 @@ export class Profile extends Component {
     } */
 
     render(){
+        let oProfile = this.props.employees.activeProfile.data;
         const oListHeader = (
             <View style={styles.contSearch}>
                 <View style={styles.contSearchBox}>
@@ -338,8 +339,8 @@ export class Profile extends Component {
                         <View style={styles.contInfoProfile}>
                             <Text style={styles.txtProfileTitle}>
                                 {
-                                    this.props.myEmployees.employee.personalinfo.basicinfo.lastname + ', ' +
-                                    this.props.myEmployees.employee.personalinfo.basicinfo.firstname 
+                                    oProfile.personalinfo.basicinfo.lastname + ', ' +
+                                    oProfile.personalinfo.basicinfo.firstname 
                                 }
                             </Text>
                             <Text style={styles.txtProfileLabel}>
@@ -384,8 +385,7 @@ function mapStateToProps (state) {
     return {
         logininfo: state.loginReducer.logininfo,
         activecompany: state.activeCompanyReducer.activecompany,
-        employeelist: state.employeeList,
-        myEmployees: state.employeeProfile
+        employees: state.employees
     }
 }
 

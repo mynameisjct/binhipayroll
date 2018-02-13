@@ -89,10 +89,10 @@ class LeavesTable extends Component{
     }
 
     componentWillReceiveProps(nextProps){
-        console.log('JSON.stringify(nextProps.data): ' + JSON.stringify(nextProps.data))
+        /* console.log('JSON.stringify(nextProps.data): ' + JSON.stringify(nextProps.data))
         console.log('JSON.stringify((this.state._curData): ' + JSON.stringify(this.state._curData))
         console.log('this.state._curDisabledMode: ' + this.state._curDisabledMode)
-        console.log('nextProps.disabledMode: ' + nextProps.disabledMode)
+        console.log('nextProps.disabledMode: ' + nextProps.disabledMode) */
         if(
             (JSON.stringify(this.state._curData) !== JSON.stringify(nextProps.data)) || 
             (this.state._curDisabledMode !== nextProps.disabledMode)
@@ -102,12 +102,12 @@ class LeavesTable extends Component{
     }
 
     componentDidMount = () => {  
-        console.log('DID MOUNT');
+        /* console.log('DID MOUNT'); */
         this._initValues(this.props.data, this.props.disabledMode); 
     }
 
     _initValues = async(oData, oDisabledMode) => {
-        console.log('INIT LEAVES TABLE!');
+        /* console.log('INIT LEAVES TABLE!'); */
         let arrLeaves = await this._generateLeavesArray(oData, oDisabledMode);
         this.setState({
             _arrTableData: [...arrLeaves],
@@ -118,7 +118,7 @@ class LeavesTable extends Component{
     }
 
     _generateLeavesArray = async(oLeave, disabledMode) => {
-        console.log('disabledMode: ' + disabledMode);
+        /* console.log('disabledMode: ' + disabledMode); */
         const ele = (value) => (
             <TouchableOpacity onPress={() => this.props.deleteItem(value)}>
                 <View style={styles.leavesTable.contDeleteBtn}>
@@ -136,7 +136,7 @@ class LeavesTable extends Component{
             }
             arrLeaves.push(arrTemp);
         })
-        console.log('arrLeaves: ' + JSON.stringify(arrLeaves));
+        /* console.log('arrLeaves: ' + JSON.stringify(arrLeaves)); */
         return arrLeaves;
     }
 
@@ -147,13 +147,13 @@ class LeavesTable extends Component{
     render() {
         if(this.state._bDidMount){
             if(this.state._arrTableData.length > 0){
-                console.log('rending leaves table')
-
+                /* console.log('rending leaves table')
+ */
                 let tableHead = ['NAME', 'PAID DAYS'];
                 if(!this.props.disabledMode){
                     tableHead = ['NAME', 'PAID DAYS', 'DELETE'];
                 }
-                console.log('this.state._arrTableData: ' + this.state._arrTableData);
+               /*  console.log('this.state._arrTableData: ' + this.state._arrTableData); */
 
                 return(
                     <View style={styles.leavesTable.container}>
@@ -330,7 +330,7 @@ export class Ranks extends Component{
             this.props.actions.ranks.setActiveRule(oActiveData.id);
         }
         catch(exception){
-            console.log('exception: ' + exception.message);
+            /* console.log('exception: ' + exception.message); */
             this.setState({_status: [0,CONSTANTS.ERROR.SERVER]})
         }
     }
@@ -355,7 +355,7 @@ export class Ranks extends Component{
     }
 
     _showPolicy = (strType) => {
-        console.log('XXXX=strType: ' + strType);
+        /* console.log('XXXX=strType: ' + strType); */
         let strPolicy = strType.toUpperCase()
         this.setState({
             _activePolicy: strPolicy,
@@ -445,7 +445,7 @@ export class Ranks extends Component{
     }
 
     _deleteLeaveItem = async(index) => {
-        console.log('index:' + index)
+        /* console.log('index:' + index) */
         let oActiveData = {...this.state._activeData};
         oActiveData.leaves.data = oHelper.removeElementByIndex(oActiveData.leaves.data, index);
 
@@ -496,6 +496,8 @@ export class Ranks extends Component{
         await ranksApi.create(oInput)
             .then((response) => response.json())
             .then((res) => {
+                console.log('XXXXXXXXXXXXXXXXXXXXXXXXXXXX');
+                console.log('res: ' + JSON.stringify(res));
                 this._hideLoadingPrompt();
                 bFlag = this._evaluateResponse(res);
                 if(res.flagno==1){
@@ -624,7 +626,7 @@ export class Ranks extends Component{
                 return true;
                 break;
             default:
-                this._showMsgBox('error-ok', UNKNOWNERROR);
+                this._showMsgBox('error-ok', CONSTANTS.ERROR.UNKNOWN);
                 return false
                 break;
         }
@@ -670,13 +672,13 @@ export class Ranks extends Component{
     }
 
     render(){
-        console.log('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX');
+        /* console.log('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX');
         console.log('_allData: ' + JSON.stringify(this.state._allData));
         console.log('this.state._activeData: ' + JSON.stringify(this.state._activeData));
         console.log('this.props.ranks.activeRule: ' + this.props.ranks.activeRule);
         console.log('this.props.tardiness.activeRule: ' + this.props.tardiness.activeRule);
         console.log('this.props.overtime.activeRule: ' + this.props.overtime.activeRule);
-        console.log('this.props.undertime.activeRule: ' + this.props.undertime.activeRule);
+        console.log('this.props.undertime.activeRule: ' + this.props.undertime.activeRule); */
         let pStatus = [...this.state._status];
         let pProgress = pStatus[0];
         let pMessage = pStatus[1];

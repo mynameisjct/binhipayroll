@@ -1,23 +1,7 @@
 import * as api from './api';
 import * as actionTypes from './actionTypes';
 import { CONSTANTS } from '../../../../constants';
-import { Number } from 'tcomb-validation';
-
-/******************** Employees Record ********************/
-export const insertEmployeeRecord = payload =>({
-	type: actionTypes.EMPLOYEERECORD.INSERT,
-	payload
-})
-
-export const updateEmployeeRecord = payload =>({
-	type: actionTypes.EMPLOYEERECORD.UPDATE,
-	payload
-})
-
-export const removeEmployeeRecord = payload =>({
-	type: actionTypes.EMPLOYEERECORD.REMOVE,
-	payload
-})
+import {insert} from '../../data/allProfiles/actions';
 
 /******************** Update Active ID ********************/
 export const updateActiveID = payload =>({
@@ -41,6 +25,7 @@ export const getAllInfo = payload =>
 			console.log('res: ' + JSON.stringify(res));
 			if(res.flagno == 1){
 				dispatch(updateAllInfo(res));
+				dispatch(insert(res.employee));
 			}
 			objRes = {...res}
 		})

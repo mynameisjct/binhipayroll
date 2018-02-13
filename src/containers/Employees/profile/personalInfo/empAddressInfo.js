@@ -25,7 +25,7 @@ import * as oHelper from '../../../../helper';
 
 //Redux
 import { connect } from 'react-redux';
-import * as employeeActions from '../data/actions';
+import * as employeeActions from '../../data/activeProfile/actions';
 import { bindActionCreators } from 'redux';
 
 //Constants
@@ -35,7 +35,7 @@ const TITLE = 'Address Information'
 
 export class EmpAddressInfo extends Component {
     render(){
-        const oAddress =  this.props.myEmployees.employee.personalinfo.address;
+        const oAddress =  this.props.employees.activeProfile.data.personalinfo.address;
         const navigation = this.props.logininfo.navigation;
         const attribs_PresentAddress = 
             [
@@ -105,7 +105,7 @@ export class EmpAddressInfo extends Component {
 function mapStateToProps (state) {
     return {
         logininfo: state.loginReducer.logininfo,
-        myEmployees: state.employeeProfile
+        employees: state.employees
     }
 }
 

@@ -25,7 +25,7 @@ import * as oHelper from '../../../../helper';
 
 //Redux
 import { connect } from 'react-redux';
-import * as employeeActions from '../data/actions';
+import * as employeeActions from '../../data/activeProfile/actions';
 import { bindActionCreators } from 'redux';
 
 //Constants
@@ -42,10 +42,11 @@ export class EmpFamily extends Component {
                 label: "DEPENDENT " + (index+1),
                 value: [
                     oData.name, 
+                    (oHelper.isValidDate(oData.birthdate.value) ?
                     oHelper.convertDateToString(
                         oData.birthdate.value,
                         oData.birthdate.format
-                        ) || '', 
+                    ) : oData.birthdate.value),
                     oData.relationship],
                 hasTitle: true
             })
@@ -55,8 +56,8 @@ export class EmpFamily extends Component {
     }
 
     render(){
-        const oSpouse = this.props.myEmployees.employee.personalinfo.family.spouse;
-        const oDependents =  this.props.myEmployees.employee.personalinfo.family.dependents;
+        const oSpouse = this.props.employees.activeProfile.data.personalinfo.family.spouse;
+        const oDependents =  this.props.employees.activeProfile.data.personalinfo.family.dependents;
         const navigation = this.props.logininfo.navigation;
         let attribs_dependents = this._generateDependents(oDependents);
         const attribs_spouse = 
@@ -67,10 +68,11 @@ export class EmpFamily extends Component {
                 },
                 {
                     label: 'BIRTHDATE',
-                    value: oHelper.convertDateToString(
+                    value: (oHelper.isValidDate(oSpouse.birthdate.value) ?
+                    oHelper.convertDateToString(
                         oSpouse.birthdate.value,
                         oSpouse.birthdate.format
-                    ) || ''
+                    ) : oSpouse.birthdate.value)
                 },
                 {
                     label: 'WORK',
@@ -109,7 +111,7 @@ export class EmpFamily extends Component {
 function mapStateToProps (state) {
     return {
         logininfo: state.loginReducer.logininfo,
-        myEmployees: state.employeeProfile
+        employees: state.employees
     }
 }
 

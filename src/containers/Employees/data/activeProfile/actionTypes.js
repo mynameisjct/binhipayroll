@@ -1,4 +1,4 @@
-const EMPLOYEEDATACTIONS = 'employee/profile/';
+const EMPLOYEEDATACTIONS = 'employees/activeProfile/';
 
 export const EMPLOYEERECORD = {
     INSERT: EMPLOYEEDATACTIONS + 'INSERT_EMPLOYEERECORD',

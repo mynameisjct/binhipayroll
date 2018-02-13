@@ -23,7 +23,7 @@ import { customPickerTemplate } from '../../../../global/tcomb-customTemplate';
 //Redux
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import * as employeeActions from '../../profile/data/actions';
+import * as employeeActions from '../../data/activeProfile/actions';
 
 //Custom Component
 import {FormCard, PropTitle} from '../../../../components/CustomCards';
@@ -132,7 +132,7 @@ function mapStateToProps (state) {
   return {
         logininfo: state.loginReducer.logininfo,
         activecompany: state.activeCompanyReducer.activecompany,
-        employee: state.employeeProfile.employee
+        oEmployeeBankInfo: state.employees.activeProfile.data.bakinfo
   }
 }
 

@@ -25,7 +25,7 @@ import * as oHelper from '../../../../helper';
 
 //Redux
 import { connect } from 'react-redux';
-import * as employeeActions from '../data/actions';
+import * as employeeActions from '../../data/activeProfile/actions';
 import { bindActionCreators } from 'redux';
 
 //Constants
@@ -62,7 +62,7 @@ export class EmpDetails extends Component {
     }
 
     render(){
-        const oDetails =  this.props.myEmployees.employee.employmentinfo.details;
+        const oDetails =  this.props.employees.activeProfile.data.employmentinfo.details;
         const navigation = this.props.logininfo.navigation;
 
         const attribs_PositionHistory = this._generatePositionHistory(oDetails)
@@ -118,7 +118,7 @@ export class EmpDetails extends Component {
 function mapStateToProps (state) {
     return {
         logininfo: state.loginReducer.logininfo,
-        myEmployees: state.employeeProfile
+        employees: state.employees
     }
 }
 

@@ -31,7 +31,7 @@ import * as oHelper from '../../../../helper';
 
 //Redux
 import { connect } from 'react-redux';
-import * as employeeActions from '../data/actions';
+import * as employeeActions from '../../data/activeProfile/actions';
 import { bindActionCreators } from 'redux';
 
 //Constants

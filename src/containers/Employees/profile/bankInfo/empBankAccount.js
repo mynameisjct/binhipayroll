@@ -25,7 +25,7 @@ import * as oHelper from '../../../../helper';
 
 //Redux
 import { connect } from 'react-redux';
-import * as employeeActions from '../data/actions';
+import * as employeeActions from '../../data/activeProfile/actions';
 import { bindActionCreators } from 'redux';
 
 //Constants
@@ -35,7 +35,7 @@ const TITLE = 'Personal Bank Account Information'
 
 export class EmpBankAccount extends Component {
     render(){
-        const oBankInfo =  this.props.myEmployees.employee.bankinfo;
+        const oBankInfo =  this.props.employees.activeProfile.data.bankinfo;
         const navigation = this.props.logininfo.navigation;
         const attribs_BankAccount = 
             [
@@ -73,7 +73,7 @@ export class EmpBankAccount extends Component {
 function mapStateToProps (state) {
     return {
         logininfo: state.loginReducer.logininfo,
-        myEmployees: state.employeeProfile
+        employees: state.employees
     }
 }
 

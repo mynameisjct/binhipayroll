@@ -23,13 +23,12 @@ import * as PromptScreen from '../../../components/ScreenLoadStatus';
 //Redux
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import * as employeeListActions from './data/actions';
-import * as employeeActions from '../profile/data/actions';
-
-import { employee } from '../profile/data/reducer';
-import { CONSTANTS } from '../../../constants/index';
+import * as employeeListActions from '../data/list/actions';
+import * as employeeActions from '../data/activeProfile/actions';
+import * as allProfilesActions from '../data/allProfiles/actions';
 
 //Constants
+import { CONSTANTS } from '../../../constants/index';
 const btnActive = 'rgba(255, 255, 255, 0.3);'
 const btnInactive = 'transparent';
 
@@ -76,7 +75,7 @@ export class List extends Component {
     }
 
     componentDidMount = () => {
-        this.props.actions.employeelist.get();
+        this._setActiveChild(this.props.employees.list.data[0]);
     }
 
     _doNothing = () => {
@@ -85,12 +84,12 @@ export class List extends Component {
 
     componentWillReceiveProps(nextProps){
         if(
-            JSON.stringify(nextProps.employeelist.data) !== JSON.stringify(this.props.employeelist.data)
+            JSON.stringify(nextProps.employees.list.data) !== JSON.stringify(this.props.employees.list.data)
             
         ){
-            this._setActiveChild(nextProps.employeelist.data[0]);
+            this._setActiveChild(nextProps.employees.list.data[0]);
             this.setState({
-                _list: [...nextProps.employeelist.data]
+                _list: [...nextProps.employees.list.data]
             })
         }
     }
@@ -106,6 +105,7 @@ export class List extends Component {
     }
 
     _setActiveChild = async(oItem) => {
+        let bIndex = false;
         if(this.state._activeKey != oItem.key){
             console.log('oItem: ' + oItem.key);
             await this.props.actions.employee.updateActiveID(oItem.key);
@@ -113,24 +113,35 @@ export class List extends Component {
                 _activeKey: oItem.key
             },
                 async() => {
-                    await this.props.actions.employee.getAllInfo(oItem.key);
-                    this._updateEmployeeRecord(oItem.key);
+                    bIndex = await this._checkIfNewProfile(oItem.key);
+                    if(bIndex < 0){
+                        console.log('GETTING FROMSERVER');
+                        this.props.actions.employee.getAllInfo(oItem.key);
+                    }
+                    else{
+                        console.log('EXISTING. UPDATING FROM VIEW.');
+                        this.props.actions.employee.updateAllInfo({employee:this.props.employees.allProfiles.data[bIndex]});
+                    }
                 }
             );
         }
     }
 
-    _updateEmployeeRecord = (key) => {
-        /* let newArray = this.props.myEmployees.employeeRecord.slice();
-        let iData = newArray.findIndex(obj => obj.id == key);
-        if(this.props.myEmployees.employee.basicInfoStatus == 1){
-            if(iData >= 0){
-                this.props.actions.employee.updateEmployeeRecord(this.props.myEmployees.employee);
-            }
-            else{
-                this.props.actions.employee.insertEmployeeRecord(this.props.myEmployees.employee);
-            }
-        } */
+    _checkIfNewProfile = async(key) => {
+        let newArray = this.props.employees.allProfiles.data.slice();
+        iData = newArray.findIndex(obj => obj.id == key);
+        if(iData >= 0){
+            return iData;
+        }
+        else{
+            return -1;
+        }
+    }
+
+    _refreshList = () => {
+        this.setState({_list: [], _activeKey: ''});
+        this.props.actions.allProfiles.clearAll();
+        this.props.actions.employeelist.get();
     }
 
     _hideLoadingPrompt = () => {
@@ -147,6 +158,8 @@ export class List extends Component {
     }
     
     render(){
+        console.log('this.props.employees.allProfiles: ' + JSON.stringify(this.props.employees.allProfiles));
+        /* console.log('this.props.employees.list.data: ' + JSON.stringify(this.props.employees.list.data)); */
         let pStatus = [...this.state._status]
         let pProgress = pStatus[0];
         let pMessage = pStatus[1];
@@ -159,20 +172,13 @@ export class List extends Component {
 
         else if(pProgress==1){
             const navigation = this.props.logininfo.navigation;
-            
-
-            console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@');
-            console.log('this.props.myEmployees.employeeRecord: ' + JSON.stringify(this.props.myEmployees.employeeRecord));
-            this.props.myEmployees.employeeRecord.map(data => {
-                console.log('@@@data.id: ' + data.id);
-            })
             const oListHeader = (
                 <View style={styles.contSearch}>
                     <View style={styles.iconFilter}>
                         <Icon name='filter' size={20} color='#fff' />
                     </View>
                     
-                    <SearchBox value={'TEST'} 
+                    <SearchBox value={''} 
                         onChangeText={this._doNothing} 
                         onSubmit={this._doNothing}/>
 
@@ -200,13 +206,10 @@ export class List extends Component {
                             /* getItemLayout={this._getItemLayout} */
                             initialNumToRender={3}
                             refreshing={this.state._refreshing}
-                            onRefresh={() => {
-                                this.setState({_list: [], _activeKey: ''});
-                                this.props.actions.employeelist.get();
-                            }}
+                            onRefresh={() => {this._refreshList()}}
                             ListHeaderComponent={oListHeader}
                             ref={(ref) => { this.flatListRef = ref; }}
-                            data={this.props.employeelist.data}
+                            data={this.props.employees.list.data}
                             renderItem={({item}) =>
                                 <EmployeeList 
                                     activeKey={this.state._activeKey}
@@ -239,8 +242,7 @@ function mapStateToProps (state) {
     return {
         logininfo: state.loginReducer.logininfo,
         activecompany: state.activeCompanyReducer.activecompany,
-        employeelist: state.employeeList,
-        myEmployees: state.employeeProfile
+        employees: state.employees
     }
 }
 
@@ -249,9 +251,10 @@ function mapDispatchToProps (dispatch) {
         actions: {
             employeelist: bindActionCreators(employeeListActions, dispatch),
             employee: bindActionCreators(employeeActions, dispatch),
+            allProfiles: bindActionCreators(allProfilesActions, dispatch),
         },
     }
-  }
+}
   
   export default connect(
     mapStateToProps,

@@ -23,10 +23,10 @@ import { customPickerTemplate } from '../../../../global/tcomb-customTemplate';
 //Redux
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import * as employeeActions from '../../profile/data/actions';
+import * as employeeActions from '../../data/activeProfile/actions';
 
 //API
-import * as employeeApi from '../../profile/data/api';
+import * as employeeApi from '../../data/activeProfile/api';
 
 //Custom Component
 import {FormCard, PropTitle} from '../../../../components/CustomCards';
@@ -338,10 +338,10 @@ export class Address extends Component {
                                 </View>
                                 <AddressForm 
                                     initialValue={{
-                                        province: this.props.employee.personalinfo.address.present.province.id,
-                                        city: this.props.employee.personalinfo.address.present.city.id,
-                                        barangay: this.props.employee.personalinfo.address.present.barangay.id,
-                                        street: this.props.employee.personalinfo.address.present.street.value
+                                        province: this.props.oEmployeeAddress.present.province.id,
+                                        city: this.props.oEmployeeAddress.present.city.id,
+                                        barangay: this.props.oEmployeeAddress.present.barangay.id,
+                                        street: this.props.oEmployeeAddress.present.street.value
                                     }}
                                     ref={(oInstance) => { this.present_address = oInstance; }}
                                     setLoadingStatus={this._updateLoadingStatus}/>
@@ -354,10 +354,10 @@ export class Address extends Component {
                                 </View>
                                 <AddressForm 
                                     initialValue={{
-                                        province: this.props.employee.personalinfo.address.permanent.province.id,
-                                        city: this.props.employee.personalinfo.address.permanent.city.id,
-                                        barangay: this.props.employee.personalinfo.address.permanent.barangay.id,
-                                        street: this.props.employee.personalinfo.address.permanent.street.value
+                                        province: this.props.oEmployeeAddress.permanent.province.id,
+                                        city: this.props.oEmployeeAddress.permanent.city.id,
+                                        barangay: this.props.oEmployeeAddress.permanent.barangay.id,
+                                        street: this.props.oEmployeeAddress.permanent.street.value
                                     }}
                                     ref={(oInstance) => { this.permanent_address = oInstance; }}
                                     setLoadingStatus={this._updateLoadingStatus}/>
@@ -382,11 +382,11 @@ export class Address extends Component {
 }
 
 function mapStateToProps (state) {
-  return {
-      logininfo: state.loginReducer.logininfo,
-      activecompany: state.activeCompanyReducer.activecompany,
-      employee: state.employeeProfile.employee
-  }
+    return {
+        logininfo: state.loginReducer.logininfo,
+        activecompany: state.activeCompanyReducer.activecompany,
+        oEmployeeAddress: state.employees.activeProfile.data.personalinfo.address
+    }
 }
 
 function mapDispatchToProps (dispatch) {

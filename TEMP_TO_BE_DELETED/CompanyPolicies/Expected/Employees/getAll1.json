@@ -1,0 +1,187 @@
+{
+    "flagno": "1",
+    "message": "Success",
+    "employee": {
+        "id": "1",
+        "personalinfo":{
+            "basicinfo":{
+                "title": "BASIC INFORMATION",
+                "firstname": "Jovan",
+                "middlename": "Proctacio",
+                "lastname": "Oilixua",
+                "nickname": "Van",
+                "birthdate": {
+                    "value": "1993-06-23",
+                    "format": "MMMM DD, YYYY"
+                },
+                "gender": {
+                    "value": "Male",
+                    "options": ["Male", "Female"]
+                },
+                "civilstatus": {
+                    "value": "Single",
+                    "options": ["Single", "Married", "Divorced", "Separated", "Widowed"]
+                }
+            },
+            "contactinfo":{
+                "title": "CONTACT INFORMATION",
+                "mobile": [
+                    "09179001137"
+                ],
+                "telephone": [
+                    "857-8247"
+                ],
+                "email": [
+                    "jga.binhimedfi@gmail.com"
+                ]
+            },
+            "ids": {
+                "title": "GOVERNMENT IDS",
+                "tin": {
+                    "label": "TIN NO",
+                    "value": "336699"
+                },
+                "sss": {
+                    "label": "SSS NO",
+                    "value": "22446688"
+                },
+                "philhealth": {
+                    "label": "PHILHEALTH NO",
+                    "value": "115577"
+                },
+                "pagibig": {
+                    "label": "PAGIBIG NO",
+                    "value": "123546"
+                }
+            },
+
+            "address": {
+                "present":{
+                    "title": "PRESENT ADDRESS",
+                    "province": {
+                        "label": "PROVINCE",
+                        "id": "001",
+                        "value": "Misamis Oriental"
+                    },
+                    "city": {
+                        "label": "CITY",
+                        "id": "011",
+                        "value": "Cagayan de Oro City"
+                    },
+                    "barangay": {
+                        "label": "BARANGAY",
+                        "id": "022",
+                        "value": "Consolacion"
+                    },
+                    "street": {
+                        "label": "STREET",
+                        "value": "Zone 1, Bahaon Street"
+                    }
+                },
+        
+                "permanent":{
+                    "title": "PERMANENT ADDRESS",
+                    "province": {
+                        "label": "PROVINCE",
+                        "id": "001",
+                        "value": "Misamis Oriental"
+                    },
+                    "city": {
+                        "label": "City",
+                        "id": "011",
+                        "value": "Cagayan de Oro City"
+                    },
+                    "barangay": {
+                        "label": "BARANGAY",
+                        "id": "022",
+                        "value": "Balulang"
+                    },
+                    "street": {
+                        "label": "STREET",
+                        "value": "Itom Puti Street"
+                    }
+                }
+            },
+
+            "family": {
+                "spouse": {
+                    "title": "SPOUSE",
+                    "name": "",
+                    "birthdate": {
+                        "value": "",
+                        "format": "MMMM DD, YYYY"
+                    },
+                    "work":{
+                        "jobtitle":"",
+                        "company":""
+                    }
+                },
+
+                "dependents": {
+                    "title": "DEPENDENTS",
+                    "data": [
+                    ]
+                }
+            }
+        },
+        
+        "bankinfo": {
+            "title": "BANK ACCOUNT INFORMATION",
+            "bankname": "BPI",
+            "accountnumber": "0459-84994-53"
+        },
+
+        "employmentinfo": {
+            "details":{
+                "title": "EMPLOYMENT DETAILS",
+                "employmenttype": "Probationary",
+                "datehired": {
+                    "value": "2016-01-16",
+                    "format": "MMMM DD, YYYY"
+                },
+                "dateend": {
+                    "value": "-",
+                    "format": "MMMM DD, YYYY"
+                },
+                "data": [
+                    {
+                        "id": "0002",
+                        "current": true,
+                        "position": "Head Staff",
+                        "branch": "Yacapin Branch",
+                        "effectivedate": {
+                            "from": {
+                                "value": "2000-12-31",
+                                "format": "MMM DD, YYYY"
+                            },
+                            "to": {
+                                "value": "PRESENT",
+                                "format": "MMM DD, YYYY"
+                            }
+                        },
+                        "remarks": ""
+                    }
+                ]
+            },
+
+            "workshift": {
+                "title": "WORK SHIFT",
+                "data": [
+                    {
+                        "id": "0001",
+                        "effectivedate": {
+                            "from": {
+                                "value": "1990-02-03",
+                                "format": "MMM DD, YYYY"
+                            },
+                            "to": {
+                                "value": "2000-12-31",
+                                "format": "MMM DD, YYYY"
+                            }
+                        }
+                    }
+                ]
+            }
+        }
+    }
+}
