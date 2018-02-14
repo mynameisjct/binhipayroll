@@ -20,7 +20,8 @@ import styles from './styles';
 import stylesheet from '../../../../global/globalFormStyle';
 
 //Form Template 
-import { customPickerTemplate } from '../../../../global/tcomb-customTemplate';
+import { customPickerTemplate } from '../../../../global/tcomb-custom-select-android';
+import { customDatePickerTemplate } from '../../../../global/tcomb-custom-datepicker-android';
 
 //Redux
 import { connect } from 'react-redux';
@@ -33,10 +34,16 @@ import {FormCard, PropTitle} from '../../../../components/CustomCards';
 import * as CustomForm from '../../../../components/CustomForm';
   
 const Form = t.form.Form;
-const DEFAULT_DEPENDENT = {name: '', birthdate: '1990-01-01', relationship: ''};
+const DEFAULT_DEPENDENT = {
+    name: '', 
+    birthdate: {
+        value: null, 
+        format: 'MMMM DD, YYYY'      
+    },
+    relationship: ''
+}
 
 const RELATIONSHIPS = t.enums({
-    Spouse:'Spouse',
     Son: 'Son',
     Daughter: 'Daughter',
     Parent: 'Parent',
@@ -49,9 +56,10 @@ class DependentsFields extends Component {
     constructor(props){
         super(props);
         this.state={
+            _dateFormat: this.props.value.birthdate.format || "MMMM DD, YYYY",
             _oDependent: {
                 name: this.props.value.name,
-                birthdate: new Date(this.props.value.birthdate) || null,
+                birthdate: this.props.value.birthdate.value ? new Date(this.props.value.birthdate) : null,
                 relationship: this.props.value.relationship,
             }
         }
@@ -63,20 +71,28 @@ class DependentsFields extends Component {
     }
 
     _onSubmit = () => {
+        
+    }
 
+    getValue = () => { 
+        let oForm = this.refs.dependent_form.getValue();
+        if(oForm){
+            return oForm;
+        }
     }
 
     render(){
-
+        console.log('this.props.value: ' + JSON.stringify(this.props.value));
         let myFormatFunction = (format,date) => {
             return moment(date).format(format);
         }
           
         let oBday = {
+            template: customDatePickerTemplate,
             label: 'BIRTHDATE',
             mode:'date',
             config:{
-                format:(date) => myFormatFunction("MMMM DD YYYY",date)
+                format:(date) => myFormatFunction(this.state._dateFormat,date)
             },
             error: '*Select birth date'
         };
@@ -90,9 +106,9 @@ class DependentsFields extends Component {
         const OPTIONS = {
             fields: {
                 name:{ 
-                    label: 'NAME' ,
+                    label: 'NAME',
                 },
-                birthdate:oBday,
+                birthdate: oBday,
 
                 relationship:{ 
                     template: customPickerTemplate,
@@ -118,9 +134,15 @@ class DependentsFields extends Component {
 class DependentsForm extends Component{
     constructor(props){
         super(props);
-        this._nodes = new Map();
+        this._dependentRef = [];
         this.state={
-            _value: this.props.value.length == 0 ? [DEFAULT_DEPENDENT] : this.props.value,
+            _value: this.props.value.length == 0 ? [JSON.parse(JSON.stringify(DEFAULT_DEPENDENT))] : [...this.props.value],
+        }
+    }
+
+    componentWillReceiveProps(nextProps){
+        if(this.props.isSubmitted === false && nextProps.isSubmitted===true){
+            this._dependentRef[0].getValue();
         }
     }
 
@@ -146,7 +168,8 @@ class DependentsForm extends Component{
             }) */
         }
         else{
-            aList.push(DEFAULT_DEPENDENT);
+            console.log('DEFAULT_DEPENDENT: ' + JSON.stringify(DEFAULT_DEPENDENT));
+            aList.push(JSON.parse(JSON.stringify(DEFAULT_DEPENDENT)));
             this.setState({
                 _value: aList
             })
@@ -174,6 +197,7 @@ class DependentsForm extends Component{
     }
 
     render(){
+        console.log('this.state._value: ' + JSON.stringify(this.state._value));
         return(
             <View style={styles.genericContainer}>
                 {
@@ -184,6 +208,8 @@ class DependentsForm extends Component{
                             </View>
                             {console.log('data: ' + JSON.stringify(data))}
                             <DependentsFields 
+                                ref = {(oInstance) => this._dependentRef[index] = oInstance}
+                                key={index}
                                 isSubmitted={this.props.isSubmitted}
                                 formIndex = {index}
                                 value={data}
@@ -229,12 +255,55 @@ export class Dependents extends Component {
     constructor(props){
         super(props);
         this.state={
-            _oSpouse: null
+            _dateFormat: this.props.oFamily.spouse.birthdate.format,
+            _oSpouse: {
+                name: this.props.oFamily.spouse.name,
+                birthdate: this.props.oFamily.spouse.birthdate.value ? new Date(this.props.oFamily.spouse.birthdate.value) : null,
+                jobtitle: this.props.oFamily.spouse.work.jobtitle,
+                company: this.props.oFamily.spouse.work.company
+            },
+            _isSubmitted: false
         }
     }
 
+    _setSubmitStatus = (value) => {
+        let TEMP = this.refs.form_spouse.getValue();
+        console.log('TEMP: ' + JSON.stringify(TEMP));
+        console.log('this.state._oSpouse: ' + JSON.stringify(this.state._oSpouse));
+        if(TEMP){
+            
+        }
+        this.setState({ _isSubmitted: value })
+    }
+
+    _onChange = (curData) => {
+        console.log('curData: ' + JSON.stringify(curData));
+        let oData = JSON.parse(JSON.stringify(curData));
+        let bFlag = false;
+        if(oHelper.isStringEmptyOrSpace(oData.name)){
+            oData.birthdate = null;
+            oData.jobtitle = '';
+            oData.company = '';
+            bFlag = false;
+        }
+        this.setState({
+            _oSpouse: oData
+        })
+    }
+
+    _promptSpouseRequirements = () => {
+        Alert.alert(
+            'Required Information',
+            'Enter the spouse name before setting information.',
+            [
+            {text: 'OK', onPress: () => {}},
+            ],
+            { cancelable: false }
+        )
+    }
     _onSubmitForm = () => {
-        const navigation = this.props.logininfo.navigation;
+
+        /* const navigation = this.props.logininfo.navigation;
 
         let oPresentAdd = this.refs.presentadd_form.getValue();
         let oPermanentAdd = this.refs.permanentadd_form.getValue();
@@ -251,82 +320,103 @@ export class Dependents extends Component {
                 ],
                 { cancelable: false }
             )
-        }
+        } */
     }
 
     render() {
     //This is put into render method to allow direct access to class properties
 
-    { /********** SPOUSE INFO **********/ }
+        { /********** SPOUSE INFO **********/ }
+        let myFormatFunction = (format,strDate) => {
+            return moment(strDate).format(format);
+        }
 
-    const EMPLOYEE_SPOUSE = t.struct({
-        name: t.String,
-        work: t.String,
-        company: t.maybe(t.String)
-    });
-
-    const OPTIONS_SPOUSE = {
-        fields: {
-            name:{ 
-                label: 'NAME' ,
+        let oBday = {
+            template: customDatePickerTemplate,
+            label: 'BIRTHDATE',
+            mode:'date',
+            config:{
+                format: (strDate) => myFormatFunction(this.state._dateFormat, strDate)
             },
-            work:{ 
-                label: 'WORK',
+            error: '*Select birth date'
+        };
+
+        const EMPLOYEE_SPOUSE = t.struct({
+            name: t.maybe(t.String),
+            birthdate: oHelper.isStringEmptyOrSpace(this.state._oSpouse.name) ? t.maybe(t.Date) : t.Date,
+            jobtitle: oHelper.isStringEmptyOrSpace(this.state._oSpouse.name) ? t.maybe(t.String) : t.String,
+            company: oHelper.isStringEmptyOrSpace(this.state._oSpouse.name) ? t.maybe(t.String) : t.String
+        });
+
+        const OPTIONS_SPOUSE = {
+            fields: {
+                name:{ 
+                    label: 'NAME' ,
+                },
+
+                birthdate: oBday,
+
+                work:{ 
+                    label: 'WORK',
+                },
+
+                company:{ 
+                    label: 'COMPANY',
+                }
             },
-            company:{ 
-                label: 'COMPANY',
-            }
-        },
-        stylesheet: stylesheet
-    };
+            stylesheet: stylesheet
+        };
 
-    return (
-      <View style={styles.container}>
-        <ScrollView>
-            <View style={styles.contDivider}>
-                <View style={styles.contFormLeft}>
-                    { /********** SPOUSE Information **********/ }
-                    <View style={styles.contTitle}>
-                        <PropTitle name='SPOUSE INFORMATION'/>
+        return (
+        <View style={styles.container}>
+            <ScrollView>
+                <View style={styles.contDivider}>
+                    <View style={styles.contFormLeft}>
+                        { /********** SPOUSE Information **********/ }
+                        <View style={styles.contTitle}>
+                            <PropTitle name='SPOUSE INFORMATION'/>
+                        </View>
+                        <View style={styles.contNote}>
+                            <Text style={styles.txtNoteLabel}>Note: There is no need to add a spouse in the dependents.</Text>
+                        </View>
+                        <Form 
+                            ref='form_spouse'
+                            type={EMPLOYEE_SPOUSE} 
+                            value={this.state._oSpouse}
+                            options={OPTIONS_SPOUSE}
+                            onChange={this._onChange}/>
                     </View>
-                    <View style={styles.contNote}>
-                        <Text style={styles.txtNoteLabel}>Note: There is no need to add a spouse in the dependents.</Text>
-                    </View>
-                    <Form 
-                        ref='presentadd_form'
-                        type={EMPLOYEE_SPOUSE} 
-                        value={this.state._oSpouse}
-                        options={OPTIONS_SPOUSE}/>
-                </View>
 
-                <View style={styles.contFormRight}>
-                    { /********** Dependents Information **********/ }
-                        
-                    <View style={styles.contTitle}>
-                        <PropTitle name='DEPENDENTS INFORMATION'/>
+                    <View style={styles.contFormRight}>
+                        { /********** Dependents Information **********/ }
+                            
+                        <View style={styles.contTitle}>
+                            <PropTitle name='DEPENDENTS INFORMATION'/>
+                        </View>
+                        <DependentsForm 
+                            isSubmitted={this.state._isSubmitted}
+                            label='DEPENDENT'
+                            value={[]}/>
                     </View>
-                    <DependentsForm 
-                        label='DEPENDENT'
-                        value={[]}/>
                 </View>
-            </View>
-            <View style={{flex:1, padding: 40}}>
-                <Button
-                    onPress={this._onSubmitForm}
-                    title='Next'
-                    color="#3b5998"
-                    accessibilityLabel='Next'/>
-            </View>
-        </ScrollView>
-      </View>
-    );
-  }
+                <View style={{flex:1, padding: 40}}>
+                    <Button
+                        onPress={() => this._setSubmitStatus(true)}
+                        title='Next'
+                        color="#3b5998"
+                        accessibilityLabel='Next'/>
+                </View>
+            </ScrollView>
+        </View>
+        );
+    }
 }
 
 function mapStateToProps (state) {
   return {
       logininfo: state.loginReducer.logininfo,
-      activecompany: state.activeCompanyReducer.activecompany
+      activecompany: state.activeCompanyReducer.activecompany,
+      oFamily: state.employees.activeProfile.data.personalinfo.family
   }
 }
 

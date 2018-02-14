@@ -193,6 +193,7 @@ const stylesheet = Object.freeze({
   },
   dateValue: {
     normal: {
+      height: 36,
       color: INPUT_COLOR,
       fontSize: FONT_SIZE,
       padding: 7,
@@ -203,12 +204,13 @@ const stylesheet = Object.freeze({
       borderRadius: 4
     },
     error: {
+      height: 36,
       color: ERROR_COLOR,
       fontSize: FONT_SIZE,
       padding: 7,
       marginBottom: 5,
       borderWidth: BORDER_WIDTH,
-      borderColor: BORDER_COLOR,
+      borderColor: ERROR_COLOR,
       borderRadius: 4
     }
   },

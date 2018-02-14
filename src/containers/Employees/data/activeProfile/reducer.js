@@ -12,7 +12,10 @@ const initialState = {
 			middlename: "MNAME_TEST",
 			lastname: "LNAME_TEST",
 			nickname: "NNAME_TEST",
-			birthdate: "1900-01-01",
+			birthdate: {
+				value: '',
+				format: "MMMM DD, YYYY"
+			},
 			gender: {
 				value: "Male",
 				options: ["-", "Male", "Female"]
@@ -99,14 +102,14 @@ const initialState = {
 		family: {
 			spouse: {
 				title: "SPOUSE",
-				name: "",
+				name: "SPOUSE_NAME",
 				birthdate: {
 					value: "",
 					format: "MMMM DD, YYYY"
 				},
 				work:{
-					jobtitle:"",
-					company:""
+					jobtitle:"SPOUSE_jobtitle_TEST",
+					company:"SPOUSE_company_TEST"
 				}
 			},
 

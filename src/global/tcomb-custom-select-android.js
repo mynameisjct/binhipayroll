@@ -59,6 +59,7 @@ export const customPickerTemplate = (locals) => {
                     accessibilityLabel={locals.label}
                     ref="input"
                     style={selectStyle}
+                    /* selectedValue={locals.value} */
                     selectedValue={locals.value}
                     onValueChange={locals.onChange}
                     help={locals.help}

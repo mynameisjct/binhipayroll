@@ -18,7 +18,8 @@ import styles from './styles';
 import stylesheet from '../../../../global/globalFormStyle';
 
 //Form Template 
-import { customPickerTemplate } from '../../../../global/tcomb-customTemplate';
+import { customPickerTemplate } from '../../../../global/tcomb-custom-select-android';
+import { customDatePickerTemplate } from '../../../../global/tcomb-custom-datepicker-android';
 
 //Redux
 import { connect } from 'react-redux';
@@ -32,8 +33,8 @@ import * as CustomForm from '../../../../components/CustomForm';
 const Form = t.form.Form;
 
 const Gender = t.enums({
-  M: 'Male',
-  F: 'Female'
+  Male: "Male",
+  Female: "Female"
 });
 
 const CivilStatus = t.enums({
@@ -49,7 +50,7 @@ const EMPLOYEE_BASICINFO = t.struct({
   middlename: t.String,
   lastname: t.String,
   nickname: t.maybe(t.String),
-  birthday: t.Date,
+  birthdate: t.Date,
   gender: Gender,
   civilstatus: CivilStatus
 });
@@ -67,12 +68,13 @@ export class Basic extends Component {
   constructor(props){
     super(props);
     this.state={
+      _dateFormat: this.props.employeePersonalInfo.basicinfo.birthdate.format || "MMMM DD, YYYY",
       _oBasicInfo: {
         firstname: this.props.employeePersonalInfo.basicinfo.firstname,
         middlename: this.props.employeePersonalInfo.basicinfo.middlename,
         lastname: this.props.employeePersonalInfo.basicinfo.lastname,
         nickname: this.props.employeePersonalInfo.basicinfo.nickname,
-        birthday: this.props.employeePersonalInfo.basicinfo.birthdate ? new Date(this.props.employeePersonalInfo.basicinfo.birthdate) : null,
+        birthdate: this.props.employeePersonalInfo.basicinfo.birthdate.value ? new Date( this.props.employeePersonalInfo.basicinfo.birthdate.value) : null,
         gender: this.props.employeePersonalInfo.basicinfo.gender.value,
         civilstatus: this.props.employeePersonalInfo.basicinfo.civilstatus.value,
       },
@@ -100,11 +102,11 @@ export class Basic extends Component {
     let oGovForm = this.refs.govid_form.getValue();
 
     if (oBasicForm && oGovForm) {
-/*       console.log('oBasicForm: ' + JSON.stringify(oBasicForm));
+      console.log('oBasicForm: ' + JSON.stringify(oBasicForm));
       console.log('oGovForm: ' + JSON.stringify(oGovForm));
       console.log('aMobile: ' + aMobile);
       console.log('aTelephone: ' + aTelephone);
-      console.log('aEmail: ' + aEmail); */
+      console.log('aEmail: ' + aEmail);
       let oContactInfo = {
         mobile: aMobile, 
         telephone: aTelephone, 
@@ -141,10 +143,11 @@ export class Basic extends Component {
     }
     
     let oBday = {
+        template: customDatePickerTemplate,
         label: 'BIRTHDATE',
         mode:'date',
         config:{
-            format: (strDate) => myFormatFunction("MMMM DD YYYY", strDate)
+            format: (strDate) => myFormatFunction(this.state._dateFormat, strDate)
         },
         error: '*Select birth date'
     };
@@ -179,7 +182,7 @@ export class Basic extends Component {
           label: 'GENDER',
           error: '*Select a gender'
         },
-        birthday: oBday,
+        birthdate: oBday,
 
         civilstatus:{
           template: customPickerTemplate,

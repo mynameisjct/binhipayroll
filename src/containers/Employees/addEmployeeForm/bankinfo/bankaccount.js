@@ -18,7 +18,7 @@ import styles from '../personalinfo/styles';
 import stylesheet from '../../../../global/globalFormStyle';
 
 //Form Template 
-import { customPickerTemplate } from '../../../../global/tcomb-customTemplate';
+import { customPickerTemplate } from '../../../../global/tcomb-custom-select-android';
 
 //Redux
 import { connect } from 'react-redux';
