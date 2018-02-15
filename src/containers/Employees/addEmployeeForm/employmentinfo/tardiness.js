@@ -15,7 +15,7 @@ export default class EmployeeTardiness extends Component {
     render(){
         return(
             <View style={styles.container}>
-                <Tardiness/>
+                {/* <Tardiness/> */}
             </View>
         )
     }

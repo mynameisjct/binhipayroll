@@ -1,6 +1,7 @@
 import { combineReducers } from 'redux';
 import * as actionTypes from './actionTypes';
 import { CONSTANTS } from '../../../../constants';
+import * as oHelper from '../../../../helper';
 
 const initialStatus = CONSTANTS.STATUS.LOADING;
 const initialState = {
@@ -56,22 +57,22 @@ const initialState = {
 				title: "PRESENT ADDRESS",
 				province: {
 					label: "Province",
-					id: "",
+					id: "1042",
 					value: ""
 				},
 				city: {
 					label: "City",
-					id: "",
+					id: "104206",
 					value: ""
 				},
 				barangay: {
 					label: "Barangay",
-					id: "",
+					id: "104206007",
 					value: ""
 				},
 				street: {
 					label: "street",
-					value: ""
+					value: "jj"
 				}
 			},
 	
@@ -79,22 +80,22 @@ const initialState = {
 				title: "PERMANENT ADDRESS",
 				province: {
 					label: "Province",
-					id: "",
+					id: "1043",
 					value: ""
 				},
 				city: {
 					label: "City",
-					id: "011",
+					id: "104307",
 					value: ""
 				},
 				barangay: {
 					label: "Barangay",
-					id: "",
+					id: "104307008",
 					value: ""
 				},
 				street: {
 					label: "street",
-					value: ""
+					value: "nj"
 				}
 			}
 		},
@@ -232,9 +233,22 @@ export const data = (state = initialState, action) => {
 			break;
 		
 		case actionTypes.DEPENDENTS.UPDATE.DATA:
+			
+			//Spouse
+			oState.personalinfo.family.spouse.name = action.payload.spouse.name;
+			oState.personalinfo.family.spouse.birthdate.value = 
+				action.payload.spouse.birthdate ? 
+					oHelper.convertDateToString(action.payload.spouse.birthdate, 'YYYY-MM-DD')
+					:
+					null;
+			oState.personalinfo.family.spouse.work.jobtitle = action.payload.spouse.jobtitle;
+			oState.personalinfo.family.spouse.work.company = action.payload.spouse.company;
+
+			//Dependents
+			oState.personalinfo.family.dependents = [...action.payload.dependents];
+
 			return {
-				...state.personalinfo.dependents,
-				...action.payload
+				...oState
 			}
 			break;
 

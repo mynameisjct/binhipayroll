@@ -251,7 +251,9 @@ export class Login extends Component {
 
                     /* this.props.navigation.navigate('CompanyPolicies') */
                     /* this.props.navigation.navigate('Employees') */
-                    this.props.navigation.navigate('AddEmployeeForm')
+                    /* this.props.navigation.navigate('AddEmployeeForm') */
+                    this.props.navigation.navigate('EmploymentInfo')
+                    
                     break;
 
                 case 'TIMEIN':

@@ -22,7 +22,7 @@ export class EmployeeWorkShift extends Component {
     render(){
         return(
             <View style={styles.container}>
-                <WorkShift/>
+                {/* <WorkShift/> */}
             </View>
         )
     }

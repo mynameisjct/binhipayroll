@@ -297,12 +297,12 @@ export const getBankInfo = payload =>
 	}
 
 export const updateBankInfo = payload => ({
-	type: actionTypes.DEPENDENTS.UPDATE.DATA,
+	type: actionTypes.BANKINFO.UPDATE.DATA,
 	payload
 });
 
 export const updateBankInfoStatus = payload => ({
-	type: actionTypes.DEPENDENTS.UPDATE.STATUS,
+	type: actionTypes.BANKINFO.UPDATE.STATUS,
 	payload
 });
 

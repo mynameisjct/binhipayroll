@@ -25,6 +25,8 @@ import { customDatePickerTemplate } from '../../../../global/tcomb-custom-datepi
 
 //Redux
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import * as employeeActions from '../../data/activeProfile/actions';
 
 //Helper 
 import * as oHelper from '../../../../helper';
@@ -64,14 +66,73 @@ class DependentsFields extends Component {
             }
         }
     }
+    
+    componentWillReceiveProps(nextProps){
+        if(
+            (this.state._oDependent.name !== nextProps.value.name) ||
+            (this.state._oDependent.birthdate !== nextProps.value.birthdate) ||
+            (this.state._oDependent.relationship !== nextProps.value.relationship)
+        ){
+            this.forceUpdate();
+        }
+    }
 
     _onChange = (curData) => {
-        this.setState({_oDependent: curData})
-        this.props.onChange(curData, this.props.formIndex);
+        let bFlag = false;
+        let oData = JSON.parse(JSON.stringify(curData));
+
+        if(oHelper.isStringEmptyOrSpace(oData.name)){
+            oData.birthdate = null;
+            relationship = '';
+            bFlag = true;
+        }
+        else{
+            oData.birthdate = new Date(curData.birthdate)
+        }
+
+        this.setState({
+            _oDependent: oData 
+        },
+            () => {
+                if(bFlag && 
+                    (
+                        curData.birthdate != null || 
+                        curData.relationship != ''
+                    )
+                ){
+                    this._promptSpouseRequirements();
+                }
+            }
+        )
+        this.props.onChange(oData, this.props.formIndex);
+    }
+
+    _promptSpouseRequirements = () => {
+        Alert.alert(
+            'Required Information',
+            'Dependent ' + (this.props.formIndex+1) + " information is cleared. Input a dependent's name first.",
+            [
+            {text: 'OK', onPress: () => {}},
+            ],
+            { cancelable: false }
+        )
     }
 
     _onSubmit = () => {
         
+    }
+
+    focusName = () => {
+        this.refs.dependent_form.getComponent('name').refs.input.focus();
+    }
+
+    setValue = (data) => {
+        let oData = JSON.parse(JSON.stringify(data));
+        let oDependent = JSON.parse(JSON.stringify(this.state._oDependent));
+        oDependent.name = oData.name;
+        oDependent.birthdate = new Date(oData.birthdate);
+        oDependent.relationship = oData.relationship;
+        this.setState({ _oDependent: oDependent })
     }
 
     getValue = () => { 
@@ -79,9 +140,13 @@ class DependentsFields extends Component {
         if(oForm){
             return oForm;
         }
+        else{
+            return null;
+        }
     }
 
     render(){
+        console.log('---------------------------Rendering Dependents Fields')
         console.log('this.props.value: ' + JSON.stringify(this.props.value));
         let myFormatFunction = (format,date) => {
             return moment(date).format(format);
@@ -98,9 +163,9 @@ class DependentsFields extends Component {
         };
 
         const EMPLOYEEE_DEPENDENT = t.struct({
-            name: t.String,
-            birthdate: t.Date,
-            relationship: RELATIONSHIPS
+            name: t.maybe(t.String),
+            birthdate: oHelper.isStringEmptyOrSpace(this.state._oDependent.name) ? t.maybe(t.Date) : t.Date,
+            relationship: oHelper.isStringEmptyOrSpace(this.state._oDependent.name) ?  t.maybe(RELATIONSHIPS) : RELATIONSHIPS
         });
         
         const OPTIONS = {
@@ -134,15 +199,50 @@ class DependentsFields extends Component {
 class DependentsForm extends Component{
     constructor(props){
         super(props);
-        this._dependentRef = [];
         this.state={
+            _dependentRef: [],
             _value: this.props.value.length == 0 ? [JSON.parse(JSON.stringify(DEFAULT_DEPENDENT))] : [...this.props.value],
         }
     }
 
     componentWillReceiveProps(nextProps){
-        if(this.props.isSubmitted === false && nextProps.isSubmitted===true){
-            this._dependentRef[0].getValue();
+        let bFlag = true;
+        if(nextProps.isSubmitted===true){
+            this._validateDependents();
+        }
+    }
+    
+    _validateDependents = async() => {
+        let oDependent = await this._validateEveryDepenent();
+        this.props.validateAllData(oDependent);
+    }
+    
+    _validateEveryDepenent = async() => {
+        let bFlag = true;
+        await this.state._value.map((data,index) => {
+            if(this.state._dependentRef[index].getValue()){
+                //do nothing
+            }
+            else{
+                if(bFlag){
+                    bFlag = false;
+                }
+            }
+        });
+
+        if(bFlag){
+            console.log('ALL INPUTS ARE VALID!!!!!')
+            if (oHelper.isStringEmptyOrSpace(this.state._value[0].name)) {
+                return [];
+            }
+            else{
+                return this.state._value;
+            }
+            
+        }
+        else{
+            console.log('ONE OF THE INPUTS IS INVALID!!!!!')
+            return null;
         }
     }
 
@@ -161,11 +261,7 @@ class DependentsForm extends Component{
         let oLastRow = aList.slice(-1)[0];
         console.log
         if(oHelper.isStringEmptyOrSpace(oLastRow.name)){
-            /* this._textInput.focus(); */
-            /* aList.push(DEFAULT_DEPENDENT);
-            this.setState({
-                _value: aList
-            }) */
+            this.state._dependentRef[aList.length - 1].focusName();
         }
         else{
             console.log('DEFAULT_DEPENDENT: ' + JSON.stringify(DEFAULT_DEPENDENT));
@@ -189,11 +285,24 @@ class DependentsForm extends Component{
     }
 
     _removeRow = (index) => {
+        console.log('DELETEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEXXX: ' + index);
+        console.log('this.state._value: ' + JSON.stringify(this.state._value));
         let aList = [...this.state._value];
+        let aDependentRef = [...this.state._dependentRef];
+
         aList.splice(index, 1);
+        aDependentRef.splice(index, 1);
+
         this.setState({
             _value: aList
-        })
+        },
+            () => {
+                this.state._value.map((data,index) =>
+                    this.state._dependentRef[index].setValue(data)
+                )
+            }
+        )
+        
     }
 
     render(){
@@ -208,7 +317,7 @@ class DependentsForm extends Component{
                             </View>
                             {console.log('data: ' + JSON.stringify(data))}
                             <DependentsFields 
-                                ref = {(oInstance) => this._dependentRef[index] = oInstance}
+                                ref = {(oInstance) => this.state._dependentRef[index] = oInstance}
                                 key={index}
                                 isSubmitted={this.props.isSubmitted}
                                 formIndex = {index}
@@ -255,7 +364,8 @@ export class Dependents extends Component {
     constructor(props){
         super(props);
         this.state={
-            _dateFormat: this.props.oFamily.spouse.birthdate.format,
+            _isSpouseDataValid: false,
+            _dateFormat: this.props.oFamily.spouse.birthdate.format || 'MMMM DD, YYYY',
             _oSpouse: {
                 name: this.props.oFamily.spouse.name,
                 birthdate: this.props.oFamily.spouse.birthdate.value ? new Date(this.props.oFamily.spouse.birthdate.value) : null,
@@ -268,15 +378,67 @@ export class Dependents extends Component {
 
     _setSubmitStatus = (value) => {
         let TEMP = this.refs.form_spouse.getValue();
-        console.log('TEMP: ' + JSON.stringify(TEMP));
-        console.log('this.state._oSpouse: ' + JSON.stringify(this.state._oSpouse));
+
         if(TEMP){
-            
+            this.setState({ _isSpouseDataValid: true });
         }
+        else{
+            this.setState({ _isSpouseDataValid: false });
+        }
+
         this.setState({ _isSubmitted: value })
     }
 
+    _validateAllData = (oDependents) => {
+        console.log('=-=-=-0=-=--=-=0-0--=-==-==-=-=-=-===-9-909=-==-');
+        console.log('oDependents: ' + JSON.stringify(oDependents));
+        if(oDependents && this.state._isSpouseDataValid){
+            this._updateAllData(this.state._oSpouse, oDependents);
+        }
+        else{
+            this._promptInvalidInputs();
+        }
+
+        this.setState({ _isSubmitted: false })
+    }
+
+    _updateAllData = async(oSpouse, oDependents) => {
+        const navigation = this.props.logininfo.navigation;
+        let arrDependents = await this._formatDependents(oDependents);
+        console.log('oDependents: ' + JSON.stringify(arrDependents));
+        this.props.actions.employee.updateDependents({spouse: oSpouse, dependents: arrDependents});
+        navigation.navigate('BankAccount');
+    }
+
+    _formatDependents = async(oDependents) => {
+        let arrNew = [];
+        await oDependents.map((data, index) => {
+            arrNew.push({
+                name: data.name,
+                birthdate: {
+                    value: oHelper.convertDateToString(data.birthdate, 'YYYY-MM-DD'),
+                    format: this.state._dateFormat
+                },
+                relationship: data.relationship
+            })
+        })
+
+        return arrNew;
+    }
+
+    _promptInvalidInputs = () => {
+        Alert.alert(
+            'Error',
+            'One or more inputs are invalid. Please check the highlighted fields.',
+            [
+                {text: 'Review Form', onPress: () => {}},
+            ],
+            { cancelable: false }
+        )
+    }
+
     _onChange = (curData) => {
+        console.log('XXXXXXXXXXXXX');
         console.log('curData: ' + JSON.stringify(curData));
         let oData = JSON.parse(JSON.stringify(curData));
         let bFlag = false;
@@ -284,43 +446,48 @@ export class Dependents extends Component {
             oData.birthdate = null;
             oData.jobtitle = '';
             oData.company = '';
-            bFlag = false;
+            bFlag = true;
+        }
+        else{
+            oData.birthdate = new Date(curData.birthdate)
         }
         this.setState({
             _oSpouse: oData
-        })
+        },
+            () => {
+                if(bFlag && 
+                    (
+                        curData.birthdate != null || 
+                        curData.jobtitle != '' || 
+                        curData.company != ''
+                    )
+                ){
+                    this._promptSpouseRequirements();
+                }
+            }
+        )
+    }
+
+    _showErrorAlert = () => {
+        Alert.alert(
+            'Error',
+            'One of the inputs is invalid. Please check the highlighted fields.',
+            [
+              {text: 'Review Form', onPress: () => {}},
+            ],
+            { cancelable: false }
+          )
     }
 
     _promptSpouseRequirements = () => {
         Alert.alert(
             'Required Information',
-            'Enter the spouse name before setting information.',
+            'Spouse information is cleared. Input a spouse name first.',
             [
             {text: 'OK', onPress: () => {}},
             ],
             { cancelable: false }
         )
-    }
-    _onSubmitForm = () => {
-
-        /* const navigation = this.props.logininfo.navigation;
-
-        let oPresentAdd = this.refs.presentadd_form.getValue();
-        let oPermanentAdd = this.refs.permanentadd_form.getValue();
-
-        if (oPresentAdd && oPermanentAdd) {
-        navigation.navigate('Family');
-        }
-        else{
-            Alert.alert(
-                'Error',
-                'One of the inputs is invalid. Check the highlighted fields.',
-                [
-                {text: 'Review Form', onPress: () => {}},
-                ],
-                { cancelable: false }
-            )
-        } */
     }
 
     render() {
@@ -345,23 +512,24 @@ export class Dependents extends Component {
             name: t.maybe(t.String),
             birthdate: oHelper.isStringEmptyOrSpace(this.state._oSpouse.name) ? t.maybe(t.Date) : t.Date,
             jobtitle: oHelper.isStringEmptyOrSpace(this.state._oSpouse.name) ? t.maybe(t.String) : t.String,
-            company: oHelper.isStringEmptyOrSpace(this.state._oSpouse.name) ? t.maybe(t.String) : t.String
+            company: t.maybe(t.String)
         });
 
         const OPTIONS_SPOUSE = {
             fields: {
                 name:{ 
-                    label: 'NAME' ,
+                    label: 'NAME',
                 },
 
                 birthdate: oBday,
 
-                work:{ 
+                jobtitle:{ 
                     label: 'WORK',
+                    error: '*Input a job title'
                 },
 
                 company:{ 
-                    label: 'COMPANY',
+                    label: 'COMPANY'
                 }
             },
             stylesheet: stylesheet
@@ -395,6 +563,7 @@ export class Dependents extends Component {
                         </View>
                         <DependentsForm 
                             isSubmitted={this.state._isSubmitted}
+                            validateAllData={this._validateAllData}
                             label='DEPENDENT'
                             value={[]}/>
                     </View>
@@ -413,13 +582,22 @@ export class Dependents extends Component {
 }
 
 function mapStateToProps (state) {
-  return {
-      logininfo: state.loginReducer.logininfo,
-      activecompany: state.activeCompanyReducer.activecompany,
-      oFamily: state.employees.activeProfile.data.personalinfo.family
-  }
+    return {
+        logininfo: state.loginReducer.logininfo,
+        activecompany: state.activeCompanyReducer.activecompany,
+        oFamily: state.employees.activeProfile.data.personalinfo.family
+    }
 }
 
+function mapDispatchToProps (dispatch) {
+    return {
+        actions: {
+            employee: bindActionCreators(employeeActions, dispatch),
+        },
+    }
+}
+  
 export default connect(
-  mapStateToProps,
+    mapStateToProps,
+    mapDispatchToProps
 )(Dependents)

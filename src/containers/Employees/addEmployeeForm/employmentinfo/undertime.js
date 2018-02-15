@@ -15,7 +15,7 @@ export default class EmployeeUndertime extends Component {
     render(){
         return(
             <View style={styles.container}>
-                <Undertime/>
+               {/*  <Undertime/> */}
             </View>
         )
     }

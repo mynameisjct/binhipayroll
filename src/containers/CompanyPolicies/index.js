@@ -65,7 +65,7 @@ export class CompanyPolicies extends Component {
             _hasActiveTransaction: false,
 
             //Active Child State
-            _activeChild: '',   
+            _activeChild: '001',   
 
             //List of Children
             _policyList: [

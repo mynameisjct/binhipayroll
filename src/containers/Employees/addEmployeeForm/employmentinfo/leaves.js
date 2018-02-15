@@ -11,7 +11,7 @@ export default class EmployeeLeaves extends Component {
     render(){
         return(
             <View style={styles.container}>
-                <Leaves/>
+                {/* <Leaves/> */}
             </View>
         )
     }

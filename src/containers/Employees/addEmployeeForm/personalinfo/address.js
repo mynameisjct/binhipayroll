@@ -302,8 +302,8 @@ export class Address extends Component {
         const navigation = this.props.logininfo.navigation;
         let bPermanentAdd = this.permanent_address.getValue();
         let bPresentAdd = this.present_address.getValue();
-        /* console.log('bPresentAdd: ' + JSON.stringify(bPresentAdd));
-        console.log('bPermanentAdd: ' + JSON.stringify(bPermanentAdd)); */
+        console.log('bPresentAdd: ' + JSON.stringify(bPresentAdd));
+        console.log('bPermanentAdd: ' + JSON.stringify(bPermanentAdd));
 
         if (bPresentAdd && bPermanentAdd) {
             this.props.actions.employee.updateAddress({

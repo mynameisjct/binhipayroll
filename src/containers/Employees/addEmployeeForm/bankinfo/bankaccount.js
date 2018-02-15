@@ -45,16 +45,27 @@ export class BankAccount extends Component {
     }
   }
 
+  _onChangeData = (value) => {
+
+    let oData = JSON.parse(JSON.stringify(this.state._oBankAccount));
+    oData.bankname = value.bankname || '';
+    oData.accountnumber = value.accountnumber || '';
+    this.setState({_oBankAccount: oData})
+  }
+
   _onPress = () => {
+    console.log('XXXXXXXXXXXXXXXXXXXXXXXX');
+    console.log('this.state._oBankAccount: ' + JSON.stringify(this.state._oBankAccount));
     const navigation = this.props.logininfo.navigation;
     let oBankInfo = this.refs.form_bankinfo.getValue();
 
     if (oBankInfo) {
       this.props.actions.employee.updateBankInfo(oBankInfo);
-
+      
       this.setState({ _oBankAccount: oBankInfo});
       navigation.navigate('EmplomentDetails');
     }
+
     else{
       Alert.alert(
         'Error',
@@ -69,19 +80,10 @@ export class BankAccount extends Component {
 
   render() {
     //This is put into render method to allow direct access to class properties
-    let EMPLOYEE_BANKINFO = t.struct({
-            bankname: t.maybe(t.String),
-            accountnumber: t.maybe(t.String)
-        });
-
-    if(oHelper.isStringEmptyOrSpace(this.state._oBankAccount.bankname) !=
-        oHelper.isStringEmptyOrSpace(this.state._oBankAccount.bankname)){
-        
-        EMPLOYEE_BANKACCOUNT = t.struct({
-            bankname: t.String,
-            accountnumber: t.String
-        })
-    }
+    EMPLOYEE_BANKINFO = t.struct({
+        bankname: oHelper.isStringEmptyOrSpace(this.state._oBankAccount.accountnumber) ? t.maybe(t.String) : t.String,
+        accountnumber: oHelper.isStringEmptyOrSpace(this.state._oBankAccount.bankname) ? t.maybe(t.String) : t.String
+    })
       
     { /********** OPTIONS **********/ }
     const OPTIONS = {
@@ -89,14 +91,13 @@ export class BankAccount extends Component {
             bankname:{ 
                 label: 'BANK NAME (Optional)' ,
                 returnKeyType: 'next',
-                onSubmitEditing: (event) => {this.refs.form_bankinfo.getComponent('bankname').refs.input.focus()},
-                error: '*Account Number is filled. Enter a Bank Name.'
+                onSubmitEditing: (event) => {this.refs.form_bankinfo.getComponent('accountnumber').refs.input.focus()},
+                error: '*You have an Account Number input. Enter a Bank Name.'
             },
             accountnumber:{ 
                 label: 'ACCOUNT NUMBER (Optional)',
                 returnKeyType: 'done',
-                onSubmitEditing: (event) => {this.refs.form_bankinfo.getComponent('accountnumber').refs.input.focus()},
-                error: '*Bank Name is filled. Enter an Account Number.'
+                error: '*You have an Bank Name input. Enter an Account Number.'
             }
         },
         stylesheet: stylesheet
@@ -104,25 +105,27 @@ export class BankAccount extends Component {
 
     return (
         <View style={styles.container}>
-          <View style={styles.contFormBankInfo}>
+          <ScrollView>
+            <View style={styles.contFormBankInfo}>
 
-              <Form 
-                ref='form_bankinfo'
-                type={EMPLOYEE_BANKINFO} 
-                value={this.state._oBasicInfo}
-                onChange={this._onChangeBasicInfo}
-                options={OPTIONS}/>
+                <Form 
+                  ref='form_bankinfo'
+                  type={EMPLOYEE_BANKINFO} 
+                  value={this.state._oBankAccount}
+                  onChange={this._onChangeData}
+                  options={OPTIONS}/>
 
-          </View>
+            </View>
 
-          <View style={{flex:1, marginTop: 100, alignSelf: 'center', width: 400}}>
-            <Button
-                onPress={this._onPress}
-                title='Next'
-                color="#3b5998"
-                accessibilityLabel='Next'
-            />
-          </View>
+            <View style={{flex:1, marginTop: 100, alignSelf: 'center', width: 400}}>
+              <Button
+                  onPress={this._onPress}
+                  title='Next'
+                  color="#3b5998"
+                  accessibilityLabel='Next'
+              />
+            </View>
+          </ScrollView>
         </View>
     );
   }

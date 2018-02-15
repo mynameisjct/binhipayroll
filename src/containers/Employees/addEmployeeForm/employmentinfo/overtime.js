@@ -15,7 +15,7 @@ export default class EmployeeOvertime extends Component {
     render(){
         return(
             <View style={styles.container}>
-                <Overtime/>
+               {/*  <Overtime/> */}
             </View>
         )
     }
