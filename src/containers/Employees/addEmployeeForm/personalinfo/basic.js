@@ -230,7 +230,7 @@ export class Basic extends Component {
             <View style={styles.contFormLeft}>
               { /********** Basic Information **********/ }
               <View style={styles.contTitle}>
-                <PropTitle name='BASIC INFORMATION'/>
+                <Text style={styles.txtFormTitle}> BASIC INFORMATION </Text>
               </View>
               <Form 
                 ref='basic_form'
@@ -255,7 +255,7 @@ export class Basic extends Component {
             <View style={styles.contFormRight}>
               { /********** Contact Information **********/ }
               <View style={styles.contTitle}>
-                <PropTitle name='CONTACT INFORMATION'/>
+                <Text style={styles.txtFormTitle}> CONTACT INFORMATION </Text>
               </View>
               
               <CustomForm.DynamicList 

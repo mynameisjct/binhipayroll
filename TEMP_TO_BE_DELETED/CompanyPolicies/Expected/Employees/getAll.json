@@ -173,7 +173,10 @@
                     {
                         "id": "0002",
                         "current": true,
-                        "position": "Head Staff",
+                        "position": {
+                            "id": 5,
+                            "value": "Secretary"
+                        },
                         "branch": "Yacapin Branch",
                         "effectivedate": {
                             "from": {

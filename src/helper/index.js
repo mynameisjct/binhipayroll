@@ -44,6 +44,14 @@ export const isValidDate = (strDate) => {
     return moment(strDate, "YYYY-MM-DD", true).isValid();
 }
 
+export const addDaysFromDate = (oDate, value) => {
+    console.log('oDate: ' + oDate);
+    let curDate = new Date(oDate);
+    curDate.setDate(curDate.getDate()+value);
+    console.log('curDate: ' + curDate);
+    return curDate;
+}
+
 export const removeElementByIndex = (arrData, index) => {
     let curData = [...arrData]
     curData.splice(index, 1);

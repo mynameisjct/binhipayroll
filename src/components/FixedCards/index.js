@@ -30,7 +30,7 @@ export default class FixedCard1 extends PureComponent {
                             onPress={() => {}}>
                             {   
                                 this.props.actionComponent || 
-                                <Icon name='ios-create-outline' size={40} color='#000000'/>
+                                <Icon name='ios-create-outline' size={this.props.iconSize || 40} color='#000000'/>
                             }
                         </TouchableOpacity>
                     </View>

@@ -51,10 +51,10 @@ export default {
     },
     
     contTitle: {
+        backgroundColor: 'transparent',
         alignItems: 'center',
-        marginTop: 15, 
-        marginBottom: 15, 
-        marginLeft: 20
+        paddingTop: 50, 
+        paddingBottom: 30
     },
 
     contButton: {
@@ -136,7 +136,21 @@ export default {
         flex: 1,
         marginBottom: 5
         
+    },
+
+    contEmpty: {
+        flex: 1,
+        height: 100,
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+
+    txtFormTitle: {
+        fontSize: 16,
+        fontWeight: '500',
+        color: '#434646'
     }
+
 
 
 }

@@ -131,8 +131,14 @@ const initialState = {
 		details:{
 			title: "EMPLOYMENT DETAILS",
 			employmenttype: "Regular",
-			datehired: "06/01/2016",
-			dateend: "-",
+			datehired:{
+				value: null,
+				format: "MMMM DD, YYYY"
+			},
+			dateend: {
+				value: null,
+				format: "MMMM DD, YYYY"
+			},
 			data: []
 		},
 

@@ -334,7 +334,7 @@ export class Address extends Component {
                             <View style={styles.contFormLeft}>
                                 { /********** Present Address **********/ }
                                 <View style={styles.contTitle}>
-                                    <PropTitle name='PRESENT ADDRESS'/>
+                                    <Text style={styles.txtFormTitle}> PRESENT ADDRESS </Text>
                                 </View>
                                 <AddressForm 
                                     initialValue={{
@@ -350,7 +350,7 @@ export class Address extends Component {
                             <View style={styles.contFormRight}>
                                 { /********** PERMANENT Information **********/ }
                                 <View style={styles.contTitle}>
-                                    <PropTitle name='PERMANENT ADDRESS'/>
+                                    <Text style={styles.txtFormTitle}> PERMANENT ADDRESS </Text>
                                 </View>
                                 <AddressForm 
                                     initialValue={{

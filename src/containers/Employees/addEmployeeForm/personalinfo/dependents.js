@@ -542,7 +542,7 @@ export class Dependents extends Component {
                     <View style={styles.contFormLeft}>
                         { /********** SPOUSE Information **********/ }
                         <View style={styles.contTitle}>
-                            <PropTitle name='SPOUSE INFORMATION'/>
+                            <Text style={styles.txtFormTitle}> SPOUSE INFORMATION </Text>
                         </View>
                         <View style={styles.contNote}>
                             <Text style={styles.txtNoteLabel}>Note: There is no need to add a spouse in the dependents.</Text>
@@ -559,7 +559,7 @@ export class Dependents extends Component {
                         { /********** Dependents Information **********/ }
                             
                         <View style={styles.contTitle}>
-                            <PropTitle name='DEPENDENTS INFORMATION'/>
+                            <Text style={styles.txtFormTitle}> DEPENDENTS INFORMATION </Text>
                         </View>
                         <DependentsForm 
                             isSubmitted={this.state._isSubmitted}
