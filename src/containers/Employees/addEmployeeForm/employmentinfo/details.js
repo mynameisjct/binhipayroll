@@ -27,7 +27,8 @@ import { customDatePickerTemplate } from '../../../../global/tcomb-custom-datepi
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as employeeActions from '../../data/activeProfile/actions';
-
+import * as ranksActions from '../../../CompanyPolicies/data/ranks/actions';
+import * as companyProfileActions from '../../../CompanyProfile/data/actions';
 //API
 import * as employeeApi from '../../data/activeProfile/api';
 
@@ -38,9 +39,11 @@ import * as PromptScreen from '../../../../components/ScreenLoadStatus';
 import { validate } from 'tcomb-validation';
 import EmployeePositionForm from './forms/employeePositionForm';
 import FixedCard1 from '../../../../components/FixedCards';
+import MessageBox from '../../../../components/MessageBox';
 
 //Helper
 import * as oHelper from '../../../../helper';
+import { CONSTANTS } from '../../../../constants/index';
 
 const Form = t.form.Form;
 
@@ -75,17 +78,19 @@ export class EmployeePositions extends Component{
                     this.props.data.map((oData, index) => 
                         <View key={index} style={styles.contPosition}>
                             <FixedCard1
-                                iconSize={30}
+                                onEdit={() => {this.props.editItem(oData, index)}}
+                                borderRadius={15}
+                                iconSize={35}
                                 title={
                                     (oHelper.isValidDate(new Date(oData.effectivedate.from.value)) ? 
                                         oHelper.convertDateToString(new Date(oData.effectivedate.from.value), oData.effectivedate.from.format)
                                     :
                                         oData.effectivedate.from.value)
-                                    + ' - ' + 
+                                    + 
                                         (oHelper.isValidDate(new Date(oData.effectivedate.to.value)) ? 
-                                        oHelper.convertDateToString(new Date(oData.effectivedate.to.value), oData.effectivedate.to.format)
+                                        ' - ' + oHelper.convertDateToString(new Date(oData.effectivedate.to.value), oData.effectivedate.to.format)
                                     :
-                                        oData.effectivedate.to.value)
+                                        '')
                                 }
                                 attributes={this._generateAttributesList(oData)}/>
                         </View>
@@ -114,18 +119,20 @@ export class Details extends Component {
     constructor(props){
         super(props);
         this.state={
-            _dateFormat: 'MMMM DD, YYYY',
+            _refreshing: false,
+            _status: [2, 'Loading...'],
+            _dateHiredFormat: this.props.oEmpDetails.datehired.format,
+            _dateEndFormat: this.props.oEmpDetails.dateend.format,
             _oEmploymentDetails: {
-                employmenttype: '',
-                datehired: null,
-                dateend: null
+                employmenttype: this.props.oEmpDetails.employmenttype || '',
+                datehired: this.props.oEmpDetails.datehired.value ? new Date(this.props.oEmpDetails.datehired.value) : null,
+                dateend: this.props.oEmpDetails.dateend.value ? new Date(this.props.oEmpDetails.dateend.value) : null
             },
-
-            _positions: [],
-
+            _positions: this.props.oEmpDetails.data || [],
             _showPositionForm: false,
-
-            _oActivePosition: {
+            _activePosition: {},
+            _activeIndex: '',
+            _oDefaultPosition: {
                 id: '',
                 index: 1,
                 position: {
@@ -138,48 +145,179 @@ export class Details extends Component {
                 },
                 effectivedate: {
                     from: {
-                        value: '',
+                        value: null,
                         format: 'MMMM DD, YYYY'
                     },
                     to: {
-                        value: '',
+                        value: null,
                         format: 'MMMM DD, YYYY'
                     }
                 },
                 remarks: ''
+            },
+
+            _ranksList: {},
+            _branchesList: {},
+
+            //Generic States
+            _promptShow: false,
+            _promptMsg: '',
+            _msgBoxShow: false,
+            _msgBoxType: '',
+            _resMsg: ''
+        }
+    }
+
+    componentDidMount(){
+        this._getDataFromDB();
+    }
+
+    componentWillReceiveProps(nextProps){
+        if(
+            (nextProps.ranks.status[0] != this.state._status[0]) &&
+            (nextProps.ranks.status[0] == nextProps.companyProfile.branchStatus[0]) &&
+            (nextProps.ranks.status[0] == 1)
+        ){
+            if(nextProps.ranks.status[0] == 1){
+                this._initData(nextProps.ranks.status);
             }
         }
     }
 
-    _onPress = () => {
-        
-        /* const navigation = this.props.logininfo.navigation;
-        let bPermanentAdd = this.permanent_address.getValue();
-        let bPresentAdd = this.present_address.getValue();
-        console.log('bPresentAdd: ' + JSON.stringify(bPresentAdd));
-        console.log('bPermanentAdd: ' + JSON.stringify(bPermanentAdd));
+    _getDataFromDB = () => {
+        this._getRanks();
+        this._getBranches();
+    }
 
-        if (bPresentAdd && bPermanentAdd) {
-            this.props.actions.employee.updateAddress({
-                present: { ...bPresentAdd },
-                permanent: { ...bPermanentAdd }
-            });
-            navigation.navigate('Dependents');
+    _getRanks = () => {
+        this.props.actions.ranks.get();
+    }
+
+    _getBranches = () => {
+        this.props.actions.companyProfile.getBranches();
+    }
+
+    _initData = async(oStatus) => {
+        await this._generateOptions();
+        this.setState({
+            _status: oStatus
+        })
+    }
+
+    _generateOptions = () => {
+        this._generateRanks();
+        this._generateBranches();
+    }
+
+    _generateRanks = () => {
+        let arrRanks = [...this.props.ranks.data.data];
+        let oRanksList = {};
+        arrRanks.map((data, index) => {
+            oRanksList[data.name.value + CONSTANTS.SPLITSTRING + data.id] = data.name.value
+        })
+        oRanksList['_ADDNEWRANK_'] = '-- ADD NEW RANK --';
+
+        this.setState({
+            _ranksList: oRanksList
+        })
+    }
+    
+    _generateBranches = () => {
+        let arrBranches = [...this.props.companyProfile.data.branch];
+        let oBranchList = {};
+        arrBranches.map((data, index) => {
+            oBranchList[(data.name + CONSTANTS.SPLITSTRING + data.id)] = data.name
+        })
+
+        oBranchList['_ADDNEWBRANCH_'] = '-- ADD NEW BRANCH --';
+
+        this.setState({
+            _branchesList: oBranchList
+        })
+    }
+
+    _onChangeData = (value) => {
+        let oEmpDetails = {...this.state._oEmploymentDetails};
+        oEmpDetails.employmenttype = value.employmenttype;
+        oEmpDetails.datehired = value.datehired;
+        oEmpDetails.dateend = value.dateend;
+        this.setState({ _oEmploymentDetails: oEmpDetails })
+    }
+
+    _onSubmitForm = () => {
+        const navigation = this.props.logininfo.navigation;
+        let oFormDetails = this.refs.form_employment_details.getValue();
+        if(oFormDetails){
+            if(this.state._positions.length < 1){
+                this._showMsgBox('error-ok', 'Employee Position/Rank should not be empty. Please add an employee position.')
+            }
+            else{
+                let oDetails = JSON.parse(JSON.stringify(oFormDetails));
+                oDetails.data = [...this.state._positions];
+                this.props.actions.employee.updateEmploymentDetails(oDetails);
+                navigation.navigate('EmployeeWorkShift');
+            }
         }
-        else{
-            Alert.alert(
-                'Error',
-                'One of the inputs is invalid. Check the highlighted fields.',
-                [
-                {text: 'Review Form', onPress: () => {}},
-                ],
-                { cancelable: false }
-            )
-        } */
     }
 
     _addPostion = () => {
-        this.setState({_showPositionForm: true});
+        let oActivePos = {...this.state._activePosition};
+        oActivePos = JSON.parse(JSON.stringify(this.state._oDefaultPosition))
+        this.setState({
+            _activeIndex: null,
+            _activePosition: oActivePos
+        },
+            () => {
+                this.setState({ _showPositionForm: true });
+            }
+        );
+    }
+
+    _onEditPosition = (oData, index) => {
+        let oActivePos = {...this.state._activePosition};
+        oActivePos = JSON.parse(JSON.stringify(oData))
+        this.setState({
+            _activePosition: oActivePos,
+            _activeIndex: index
+        },
+            () => {
+                console.log('XXXXXXXXX==index: ' + index);
+                this.setState({ _showPositionForm: true });
+            }
+        );
+    }
+
+    _requestDeletePosition = () => {
+        Alert.alert(
+            'Warning',
+            'Deleting a position is an irreversible action. Are you sure you want to proceed ?',
+            [
+            {text: 'NO', onPress: () => {}},
+            {text: 'YES', onPress: () => this._deleteActivePosition()},
+            ],
+            { cancelable: false }
+        )
+    }
+
+    _requestModifyPosition = (oData) => {
+        Alert.alert(
+            'Warning',
+            'Are you sure you want to modify current position record ?',
+            [
+            {text: 'NO', onPress: () => {}},
+            {text: 'YES', onPress: () => this._modifyActivePosition(oData)},
+            ],
+            { cancelable: false }
+        )
+    }
+
+    _deleteActivePosition = () => {
+        let arrNew = [...this.state._positions];
+        arrNew.splice(this.state._activeIndex, 1)
+        this.setState({
+            _showPositionForm: false,
+            _positions: arrNew
+        })
     }
 
     _cancelPositionTransaction = () => {
@@ -187,145 +325,221 @@ export class Details extends Component {
     }
 
     _submitPositionTransaction = (oData) => {
-        let oPosition = JSON.parse(JSON.stringify(this.state._oActivePosition));
-        let arrPositions = [...this.state._positions];
-        let oLastData = {};
-        oPosition.id = ''; //Temp val
-        oPosition.position.label = oData.position;
-        oPosition.position.value = oData.position; //Temp val
-        oPosition.branch.label = oData.branch;
-        oPosition.branch.value = oData.branch; //Temp val
-        oPosition.effectivedate.from.value = (oHelper.convertDateToString(oData.effectivedate, 'YYYY-MM-DD'));
-        if(this.state._positions.length > 0){
-            let oLastDate = new Date(oData.effectivedate);
-            oLastDate = oLastDate.setDate(oLastDate.getDate()-1);
-            arrPositions[0].effectivedate.to.value = (oHelper.convertDateToString(oLastDate, 'YYYY-MM-DD'));
-        }
-        oPosition.effectivedate.to.value = 'PRESENT';
+        if(this.state._activeIndex == null){
+            let splitPos = oData.position.split(CONSTANTS.SPLITSTRING);
+            let splitBr = oData.branch.split(CONSTANTS.SPLITSTRING);
+            let oPosition = JSON.parse(JSON.stringify(this.state._oDefaultPosition));
+            let arrPositions = [...this.state._positions];
+            let oLastData = {};
+            oPosition.id = ''; //Temp val
+            oPosition.position.label = splitPos[0];
+            oPosition.position.value = splitPos[1]; 
+            oPosition.branch.label = splitBr[0];
+            oPosition.branch.value = splitBr[1];
+            oPosition.effectivedate.from.value = (oHelper.convertDateToString(oData.effectivedate, 'YYYY-MM-DD'));
+            if(this.state._positions.length > 0){
+                let oLastDate = new Date(oData.effectivedate);
+                oLastDate = oLastDate.setDate(oLastDate.getDate()-1);
+                arrPositions[0].effectivedate.to.value = (oHelper.convertDateToString(oLastDate, 'YYYY-MM-DD'));
+            }
+            /* oPosition.effectivedate.to.value = 'PRESENT'; */
+            oPosition.effectivedate.to.value = '';
 
-        oPosition.remarks = oData.remarks;
-        arrPositions.splice(0,0,oPosition)
+            oPosition.remarks = oData.remarks;
+            arrPositions.splice(0,0,oPosition)
+            this.setState({
+                _positions: arrPositions,
+                _showPositionForm: false
+            });
+        }
+        else{
+            this._requestModifyPosition(oData);
+        }
+    }
+
+    _modifyActivePosition = (oData) => {
+        let splitPos = oData.position.split(CONSTANTS.SPLITSTRING);
+        let splitBr = oData.branch.split(CONSTANTS.SPLITSTRING);
+        let indexActive = this.state._activeIndex;
+        let arrPositions = [...this.state._positions];
+        arrPositions[indexActive].position.label = splitPos[0];
+        arrPositions[indexActive].position.value = splitPos[1]; 
+        arrPositions[indexActive].branch.label = splitPos[0];
+        arrPositions[indexActive].branch.value = splitBr[1];
+        arrPositions[indexActive].effectivedate.from.value = (oHelper.convertDateToString(oData.effectivedate, 'YYYY-MM-DD'));
+        arrPositions[indexActive].remarks = oData.remarks;
         this.setState({
             _positions: arrPositions,
             _showPositionForm: false
         });
     }
 
+    _showMsgBox = (strType, msg) => {
+        this.setState({
+            _msgBoxShow: true,
+            _msgBoxType: strType,
+            _resMsg: msg
+        });
+    }
+
+    _closeMsgBox = () => {
+        this.setState({
+            _msgBoxShow: false
+        })
+    }
+
     render() {
-        const iPositionLength = this.state._positions.length;
-        
-        //This is put into render method to allow direct access to class properties
-        let myFormatFunction = (format,strDate) => {
-            return moment(strDate).format(format);
+        let pStatus = [...this.state._status];
+        let pProgress = pStatus[0];
+        let pMessage = pStatus[1];
+        if(pProgress==0){
+            return (
+                <PromptScreen.PromptError title='Tardiness Policy' onRefresh={this._getDataFromDB}/>
+            );
         }
 
-        let oDateHiredConfig = {
-            template: customDatePickerTemplate,
-            label: 'DATE HIRED',
-            mode:'date',
-            config:{
-                format: (strDate) => myFormatFunction(this.state._dateFormat, strDate)
-            },
-            error: '*Select birth date'
-        };
-
-        let oDateEndConfig = {
-            template: customDatePickerTemplate,
-            label: 'END DATE',
-            mode:'date',
-            disabled: true,
-            config:{
-                format: (strDate) => myFormatFunction(this.state._dateFormat, strDate)
-            }
-        };
-
-        const EMPLOYEE_EMPLOYMENTDETAILS = t.struct({
-            employmenttype: EMPLOYMENTTYPES,
-            datehired: t.Date,
-            dateend: t.maybe(t.Date)
-        });
-
-        const OPTIONS_GENERALINFO = {
-            fields: {
-                employmenttype:{ 
-                    template: customPickerTemplate,
-                    label: 'EMPLOYMENT TYPE',
-                    error: '*Select an employment type'
-                },
-
-                datehired: oDateHiredConfig,
-
-                dateend: oDateEndConfig,
-            },
-            stylesheet: stylesheet
-        };
-
-        return (
-            <View style={styles.genericContainer}>
-                <View style={styles.container}>
-                    <ScrollView>
-                        <View style={styles.contDivider}>
-                            <View style={styles.contFormLeft}>
-
-                                { /********** GENERAL INFORMATION **********/ }
-                                <View style={styles.contTitle}>
-                                    <Text style={styles.txtFormTitle}> GENERAL INFORMATION </Text>
-                                </View>
-                                <Form 
-                                    ref='form_employment_general_information'
-                                    type={EMPLOYEE_EMPLOYMENTDETAILS} 
-                                    value={this.state._oEmploymentDetails}
-                                    onChange={this._onChangeData}
-                                    options={OPTIONS_GENERALINFO}/>
-                            </View>
-
-                            <View style={styles.contFormRight}>
-                                { /********** POSITION HISTORY **********/ }
-                                <View style={styles.contTitle}>
-                                    <Text style={styles.txtFormTitle}> POSITION HISTORY </Text>
-                                </View>
-                                {
-                                    this.state._positions.length === 0 ?
-                                        <TouchableOpacity 
-                                            activeOpacity={0.6}
-                                            style={styles.contEmpty}
-                                            onPress={() => {this._addPostion()}}>
-                                            <Text>No Existing Positions. Tap here to Add.</Text>
-                                        </TouchableOpacity>
-                                    : 
-                                        <EmployeePositions
-                                            onAddAction={this._addPostion}
-                                            data={this.state._positions}/>
-                                }
+        else if(pProgress==1){
+            const iPositionLength = this.state._positions.length;
             
-                            </View>
-                        </View>
-                        <View style={{flex:1, padding: 40}}>
-                            <Button
-                                onPress={this._onPress}
-                                title='Next'
-                                color="#3b5998"
-                                accessibilityLabel='Next'
-                            />
-                        </View>
-                    </ScrollView>
-                </View>
+            //This is put into render method to allow direct access to class properties
+            let myFormatFunction = (format,strDate) => {
+                return moment(strDate).format(format);
+            }
+
+            let oDateHiredConfig = {
+                template: customDatePickerTemplate,
+                label: 'DATE HIRED',
+                mode:'date',
+                config:{
+                    format: (strDate) => myFormatFunction(this.state._dateHiredFormat, strDate)
+                },
+                error: '*Select birth date'
+            };
+
+            let oDateEndConfig = {
+                template: customDatePickerTemplate,
+                label: 'END DATE',
+                mode:'date',
+                disabled: true,
+                config:{
+                    format: (strDate) => myFormatFunction(this.state._dateEndFormat, strDate)
+                }
+            };
+
+            const EMPLOYEE_EMPLOYMENTDETAILS = t.struct({
+                employmenttype: EMPLOYMENTTYPES,
+                datehired: t.Date,
+                dateend: t.maybe(t.Date)
+            });
+
+            const OPTIONS_GENERALINFO = {
+                fields: {
+                    employmenttype:{ 
+                        template: customPickerTemplate,
+                        label: 'EMPLOYMENT TYPE',
+                        error: '*Select an employment type'
+                    },
+
+                    datehired: oDateHiredConfig,
+
+                    dateend: oDateEndConfig,
+                },
+                stylesheet: stylesheet
+            };
+
+            return (
+                <View style={styles.genericContainer}>
+                    <View style={styles.container}>
+                        <ScrollView>
+                            <View style={styles.contDivider}>
+                                <View style={styles.contFormLeft}>
+
+                                    { /********** GENERAL INFORMATION **********/ }
+                                    <View style={styles.contTitle}>
+                                        <Text style={styles.txtFormTitle}> GENERAL INFORMATION </Text>
+                                    </View>
+                                    <Form 
+                                        ref='form_employment_details'
+                                        type={EMPLOYEE_EMPLOYMENTDETAILS} 
+                                        value={this.state._oEmploymentDetails}
+                                        onChange={this._onChangeData}
+                                        options={OPTIONS_GENERALINFO}/>
+                                </View>
+
+                                <View style={styles.contFormRight}>
+                                    { /********** POSITION HISTORY **********/ }
+                                    <View style={styles.contTitle}>
+                                        <Text style={styles.txtFormTitle}> POSITION HISTORY </Text>
+                                    </View>
+                                    {
+                                        this.state._positions.length === 0 ?
+                                            <TouchableOpacity 
+                                                activeOpacity={0.6}
+                                                style={styles.contEmpty}
+                                                onPress={() => {this._addPostion()}}>
+                                                <Text>No Existing Positions. Tap here to Add.</Text>
+                                            </TouchableOpacity>
+                                        : 
+                                            <EmployeePositions
+                                                editItem={this._onEditPosition}
+                                                onAddAction={this._addPostion}
+                                                data={this.state._positions}/>
+                                    }
                 
-                <EmployeePositionForm 
-                    minEffectiveDate={iPositionLength === 0 ?
-                        null
-                    :
-                        oHelper.addDaysFromDate(this.state._positions[0].effectivedate.from.value, 1)
+                                </View>
+                            </View>
+                            <View style={{flex:1, padding: 40}}>
+                                <Button
+                                    onPress={this._onSubmitForm}
+                                    title='Next'
+                                    color="#3b5998"
+                                    accessibilityLabel='Next'
+                                />
+                            </View>
+                        </ScrollView>
+                    </View>
+                    {
+                        this.state._showPositionForm ? 
+                            <EmployeePositionForm 
+                                minEffectiveDate={iPositionLength === 0 || this.state._activeIndex != null ?
+                                    null
+                                :
+                                    this.state._activeIndex != null ? 
+                                        oHelper.addDaysFromDate(this.state._positions[this.state._activeIndex - 1].effectivedate.from.value, 1) 
+                                    :
+                                        oHelper.addDaysFromDate(this.state._positions[0].effectivedate.from.value, 1)
+                                }
+                                onDelete={this._requestDeletePosition}
+                                visible={this.state._showPositionForm}
+                                activeData = {this.state._activePosition}
+                                cancelForm={this._cancelPositionTransaction}
+                                submitForm={this._submitPositionTransaction}
+                                title='ADD NEW POSITION'
+                                ranks={this.state._ranksList}
+                                branches={this.state._branchesList}
+                            />
+                        :
+                            null
                     }
-                    visible={this.state._showPositionForm}
-                    cancelForm={this._cancelPositionTransaction}
-                    submitForm={this._submitPositionTransaction}
-                    title='ADD NEW POSITION'
-                    positions={{Pos1: 'Pos1', Pos2: 'Post2'}}
-                    branches={{Branch1: 'Branch1', Branch2: 'Branch2'}}
-                />
-            </View>
-        );
+
+                    <MessageBox
+                        promptType={this.state._msgBoxType}
+                        show={this.state._msgBoxShow}
+                        onClose={this._closeMsgBox}
+                        onWarningContinue={this._continueActionOnWarning}
+                        message={this.state._resMsg}
+                    /> 
+                </View>
+            );
+        } 
+        else{
+            return (
+                <View style={styles.container}>
+                    <PromptScreen.PromptLoading title={pMessage}/>
+                </View>
+            );
+        }
+       
     }
 }
 
@@ -333,7 +547,9 @@ function mapStateToProps (state) {
     return {
         logininfo: state.loginReducer.logininfo,
         activecompany: state.activeCompanyReducer.activecompany,
-        oEmployeeAddress: state.employees.activeProfile.data.personalinfo.address
+        oEmpDetails: state.employees.activeProfile.data.employmentinfo.details,
+        ranks: state.companyPoliciesReducer.ranks,
+        companyProfile: state.companyProfile
     }
 }
 
@@ -341,6 +557,8 @@ function mapDispatchToProps (dispatch) {
     return {
         actions: {
             employee: bindActionCreators(employeeActions, dispatch),
+            ranks: bindActionCreators(ranksActions, dispatch),
+            companyProfile: bindActionCreators(companyProfileActions,dispatch)
         },
     }
   }

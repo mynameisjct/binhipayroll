@@ -116,6 +116,7 @@ export default {
         flexDirection: 'row',
         alignItems: 'flex-end',
         width: 100,
+        marginTop: 10,
         alignSelf: 'flex-end',
     },
 
@@ -149,7 +150,14 @@ export default {
         fontSize: 16,
         fontWeight: '500',
         color: '#434646'
+    },
+
+    workshiftStyles:{
+        contHeader: {},
+        contEffectivedate: {},
+        contAddBtn: {}
     }
+    
 
 
 

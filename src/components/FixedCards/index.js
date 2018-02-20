@@ -15,7 +15,7 @@ export default class FixedCard1 extends PureComponent {
     render(){
         let attribs = this.props.attributes || [];
         return(
-            <View style={styles.container}>
+            <View style={[styles.container, this.props.borderRadius ? {borderRadius: this.props.borderRadius} : null]}>
                 <View style={styles.header.container}>
                     <View style={styles.header.contTitle}>
                         <View style={styles.header.placeHolderTitle}>
@@ -27,7 +27,7 @@ export default class FixedCard1 extends PureComponent {
 
                     <View style={styles.header.contBtn}>
                         <TouchableOpacity
-                            onPress={() => {}}>
+                            onPress={() => {this.props.onEdit()}}>
                             {   
                                 this.props.actionComponent || 
                                 <Icon name='ios-create-outline' size={this.props.iconSize || 40} color='#000000'/>

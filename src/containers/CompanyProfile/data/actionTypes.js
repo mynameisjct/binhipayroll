@@ -1,0 +1,8 @@
+const COMPANYPROFILEACTIONS = 'company/profile/';
+
+export const BRANCH  = {
+    UPDATE: {
+        DATA: COMPANYPROFILEACTIONS + 'UPDATE_BRANCH',
+        STATUS: COMPANYPROFILEACTIONS + 'UPDATE_BRANCH_STATUS'
+    }
+}

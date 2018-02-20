@@ -17,59 +17,62 @@ import EmployeeTax from './tax';
 
 const EmploymentInfo = TabNavigator({
     EmplomentDetails: {
-            screen: EmployeeDetails,
-            navigationOptions: {
+        screen: EmployeeDetails,
+        navigationOptions: {
             tabBarLabel: 'EMPLOYMENT DETAILS'
         }
     },
     EmployeeWorkShift: {
-            screen: EmployeeWorkShift,
-            navigationOptions: {
+        screen: EmployeeWorkShift,
+        navigationOptions: {
             tabBarLabel: 'WORK SHIFT'
         }
     },
-    EmployeePayroll: {
-            screen: EmployeePayroll,
-            navigationOptions: {
-            tabBarLabel: 'PAYROLL SCHEDULE'
+    EmployeeBenefits: {
+        screen: EmployeeBenefits,
+        navigationOptions: {
+            tabBarLabel: 'BENEFITS'
         }
     },
+
     EmployeeTardiness: {
-            screen: EmployeeTardiness,
-            navigationOptions: {
+        screen: EmployeeTardiness,
+        navigationOptions: {
             tabBarLabel: 'TARDINESS POLICY'
         }
     },
     EmployeeUndertime: {
-            screen: EmployeeUndertime,
-            navigationOptions: {
+        screen: EmployeeUndertime,
+        navigationOptions: {
             tabBarLabel: 'UNDERTIME POLICY'
         }
     },
     EmployeeOvertime: {
-            screen: EmployeeOvertime,
-            navigationOptions: {
+        screen: EmployeeOvertime,
+        navigationOptions: {
             tabBarLabel: 'OVERTIME POLICY'
         }
     },
     EmployeeLeaves: {
-            screen: EmployeeLeaves,
-            navigationOptions: {
+        screen: EmployeeLeaves,
+        navigationOptions: {
             tabBarLabel: 'LEAVES POLICY'
         }
     },
-    EmployeeBenefits: {
-            screen: EmployeeBenefits,
-            navigationOptions: {
-            tabBarLabel: 'BENEFITS'
+
+    EmployeePayroll: {
+        screen: EmployeePayroll,
+        navigationOptions: {
+            tabBarLabel: 'PAYROLL SCHEDULE'
         }
     },
+
     EmployeeTax: {
-            screen: EmployeeTax,
-            navigationOptions: {
+        screen: EmployeeTax,
+        navigationOptions: {
             tabBarLabel: 'TAX POLICY'
         }
-    },
+    }
 },
     {
         animationEnabled: false,

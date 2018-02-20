@@ -17,6 +17,15 @@ export let baseURL = {
  	}
 }
 
+export let company = {
+	branch: function(payload){
+		return(
+			baseURL.activeCompany() +
+			'/branch'
+		)
+	}
+}
+
 export let employee = {
 	allInfo: function(payload){
 		return(
@@ -66,6 +75,9 @@ export let policy = {
 }
 
 export let mock = {
+	company: {
+		branch: 'http://www.mocky.io/v2/5a8bd883320000f92c1ac015'
+	},
 	employee: {
 		list: 'http://www.mocky.io/v2/5a7be5f2300000982828c02a',
 		allInfo2: 'http://www.mocky.io/v2/5a7c17af2e0000600005274f',

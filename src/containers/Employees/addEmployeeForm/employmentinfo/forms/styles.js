@@ -22,5 +22,27 @@ export default {
         paddingLeft: 40,
         paddingRight: 40,
         paddingBottom: 25
+    },
+
+    btnDelete: {
+        container: {
+            height: 40,
+            borderRadius: 15,
+            backgroundColor: '#C70000',
+            justifyContent: 'center',
+            alignItems: 'center',
+            elevation: 5,
+            marginTop: 30,
+            marginRight: 10,
+            marginLeft: 10,
+            marginBottom: 15
+        },
+
+        txtBtn: {
+            fontFamily: 'Helvetica-Bold',
+            fontSize: 16,
+            color: '#fff',
+            fontWeight: '500'
+        }
     }
 }

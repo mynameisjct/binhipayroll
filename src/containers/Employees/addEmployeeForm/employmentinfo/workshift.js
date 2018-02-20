@@ -5,7 +5,7 @@ import {
 } from 'react-native';
 
 //Styles
-import styles from '../personalinfo/styles';
+import styles from './styles';
 
 
 import WorkShift from '../../../CompanyPolicies/workshift';
@@ -17,12 +17,17 @@ import * as workshiftActions from '../../../CompanyPolicies/data/workshift/actio
 
 export class EmployeeWorkShift extends Component {
     componentWillMount(){
-        console.log('##################this.props.workshift: ' + JSON.stringify(this.props.workshift));
+        
     }
     render(){
         return(
             <View style={styles.container}>
-                {/* <WorkShift/> */}
+                <View style={styles.workshiftStyles.contHeader}>
+                    <View style={styles.workshiftStyles.contEffectivedate}>
+                    </View>
+                    <View style={styles.workshiftStyles.contAddBtn}>
+                    </View>
+                </View>
             </View>
         )
     }

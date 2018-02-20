@@ -59,6 +59,7 @@ export const CONSTANTS = {
     //SUFFIX
     SUFFIX: {
         CONTACT: 'Or please contact BINHI-MeDFI.',
-    }
-    
+    },
+
+    SPLITSTRING: '_SPLITSTRING_'
 }

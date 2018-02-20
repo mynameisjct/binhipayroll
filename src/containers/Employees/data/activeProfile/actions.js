@@ -306,6 +306,16 @@ export const updateBankInfoStatus = payload => ({
 	payload
 });
 
+export const updateEmploymentDetails = payload => ({
+	type: actionTypes.EMPLOYMENTDETAILS.UPDATE.DATA,
+	payload
+});
+
+export const updateEmploymentDetailsStatus = payload => ({
+	type: actionTypes.EMPLOYMENTDETAILS.UPDATE.STATUS,
+	payload
+});
+
 
 
 

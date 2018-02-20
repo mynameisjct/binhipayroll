@@ -4,7 +4,8 @@ import {
   Modal,
   Text,
   ScrollView, 
-  Keyboard
+  Keyboard,
+  TouchableOpacity
 } from 'react-native';
 import t from 'tcomb-form-native'; // 0.6.9
 import moment from "moment";
@@ -29,8 +30,23 @@ export default class EmployeePositionForm extends Component{
   constructor(props){
     super(props);
     this.state = {
-      _oPosition: {},
+      _oPosition: {
+        position: this.props.activeData.position.value || '',
+        branch: this.props.activeData.branch.value || '',
+        effectivedate: this.props.activeData.effectivedate.from.value ? 
+          new Date(this.props.activeData.effectivedate.from.value) : null,
+        remarks: this.props.activeData.remarks || ''
+      },
       _dateFormat: 'MMMM DD, YYYY'
+    }
+  }
+
+  _onChange = (value) => {
+    if(value.position == '_ADDNEWRANK_'){
+      this.props.openRanksForm();
+    }
+    if(value.branch == '_ADDNEWBRANCH_'){
+      this.props.openBranchForm();
     }
   }
 
@@ -38,6 +54,7 @@ export default class EmployeePositionForm extends Component{
     Keyboard.dismiss();
     this.props.cancelForm();
   }
+  
 
   _onSubmit = () => {
     Keyboard.dismiss();
@@ -48,8 +65,14 @@ export default class EmployeePositionForm extends Component{
   }
 
   render(){
-    console.log('this.props.minEffectiveDate: ' + JSON.stringify(this.props.minEffectiveDate));
-    const POSITIONS = t.enums(this.props.positions);
+    console.log('this.props.ranks: ' + JSON.stringify(this.props.ranks));
+    const bDeletable = 
+      this.props.activeData.position.value!='' && this.props.activeData.effectivedate.from.value!=null ?
+        true
+      :
+        false 
+    
+    const POSITIONS = t.enums(this.props.ranks);
     const BRANCHES = t.enums(this.props.branches);
 
     let myFormatFunction = (format,strDate) => {
@@ -110,13 +133,27 @@ export default class EmployeePositionForm extends Component{
               <Form 
                 ref='form_employeePosition'
                 type={EMPLOYEE_POSITIONINFO}
+                onChange={this._onChange}
                 value={this.state._oPosition}
                 options={POSTIONINFO_OPTIONS}
               />
+
+              {
+                bDeletable ? 
+                  <TouchableOpacity
+                    activeOpacity={0.6}
+                    onPress={() => this.props.onDelete()}>
+                    
+                    <View style={styles.btnDelete.container}>
+                      <Text style={styles.btnDelete.txtBtn}>DELETE</Text>
+                    </View>
+                  </TouchableOpacity>
+                :
+                  null
+              }
             </View>
           </ScrollView>
         </View>
-
       </FormModal>
     )
   }

@@ -57,22 +57,22 @@ const initialState = {
 				title: "PRESENT ADDRESS",
 				province: {
 					label: "Province",
-					id: "1042",
+					id: "",
 					value: ""
 				},
 				city: {
 					label: "City",
-					id: "104206",
+					id: "",
 					value: ""
 				},
 				barangay: {
 					label: "Barangay",
-					id: "104206007",
+					id: "",
 					value: ""
 				},
 				street: {
 					label: "street",
-					value: "jj"
+					value: ""
 				}
 			},
 	
@@ -130,7 +130,7 @@ const initialState = {
 	employmentinfo: {
 		details:{
 			title: "EMPLOYMENT DETAILS",
-			employmenttype: "Regular",
+			employmenttype: '',
 			datehired:{
 				value: null,
 				format: "MMMM DD, YYYY"
@@ -140,6 +140,54 @@ const initialState = {
 				format: "MMMM DD, YYYY"
 			},
 			data: []
+			/* data: [  
+				{  
+				   "id":"",
+				   "index":1,
+				   "position":{  
+					  "label":"Pos2",
+					  "value":"Pos2"
+				   },
+				   "branch":{  
+					  "label":"Branch2",
+					  "value":"Branch2"
+				   },
+				   "effectivedate":{  
+					  "from":{  
+						 "value":"2018-06-13",
+						 "format":"MMMM DD, YYYY"
+					  },
+					  "to":{  
+						 "value":"PRESENT",
+						 "format":"MMMM DD, YYYY"
+					  }
+				   },
+				   "remarks":"1"
+				},
+				{  
+				   "id":"",
+				   "index":1,
+				   "position":{  
+					  "label":"Pos1",
+					  "value":"Pos1"
+				   },
+				   "branch":{  
+					  "label":"Branch1",
+					  "value":"Branch1"
+				   },
+				   "effectivedate":{  
+					  "from":{  
+						 "value":"2018-02-28",
+						 "format":"MMMM DD, YYYY"
+					  },
+					  "to":{  
+						 "value":"2018-06-12",
+						 "format":"MMMM DD, YYYY"
+					  }
+				   },
+				   "remarks":"1"
+				}
+			] */
 		},
 
 		workshift: {
@@ -261,6 +309,17 @@ export const data = (state = initialState, action) => {
 		case actionTypes.BANKINFO.UPDATE.DATA:
 			oState.bankinfo.bankname = action.payload.bankname;
 			oState.bankinfo.accountnumber = action.payload.accountnumber;
+			return {
+				...oState
+			}
+			break;
+		
+		case actionTypes.EMPLOYMENTDETAILS.UPDATE.DATA:
+			oState.employmentinfo.details.employmenttype = action.payload.employmenttype;
+			oState.employmentinfo.details.datehired = action.payload.datehired;
+			oState.employmentinfo.details.dateend = action.payload.dateend;
+			oState.employmentinfo.details.data = action.payload.data;
+
 			return {
 				...oState
 			}
