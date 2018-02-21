@@ -100,6 +100,7 @@ export default {
 
     /********STYLES FOR CHILDREN COMPONENTS***********/
     tableCont: {
+        marginTop: 20,
         flexDirection: 'row',
         backgroundColor: 'transparent'
     },
@@ -204,6 +205,14 @@ export default {
         fontSize: 14,
         color: '#434646'
     },
+
+    txtDefaultBold: {
+        fontFamily: 'Helvetica-Light',
+        fontSize: 15,
+        color: '#434646',
+        fontWeight: '500'
+    },
+
 
     txtDefaultTime:{
         textDecorationLine: 'underline',
@@ -519,6 +528,24 @@ export default {
         flexDirection: 'row'
     },
 
+    contRuleName: {
+        marginTop: 20,
+        marginBottom: 30,
+        height: 40,
+        backgroundColor: 'transparent',
+        flexDirection: 'row'
+    },
+
+    contNamePlaceHolder: {
+        flex: 1,
+        backgroundColor: '#D1D4D6',
+        paddingTop: 15,
+        paddingBottom: 15,
+        flexDirection: 'row',
+        paddingLeft: 22,
+        elevation: 1
+    },
+
     childPropNameCont: {
         justifyContent: 'center',
         width: 200,
@@ -535,6 +562,22 @@ export default {
         fontFamily: 'Helvetica-Light',
         fontSize: 15,
         color: '#434646'
+    },
+
+    txtNameTitle: {
+        fontFamily: 'Helvetica-Bold',
+        fontSize: 15,
+        color: '#434646',
+        fontWeight: '500',
+        paddingLeft: 15,
+        fontStyle: 'italic'
+    },
+
+    txtNamelabel: {
+        fontFamily: 'Helvetica-Bold',
+        fontSize: 15,
+        color: '#838383',
+        paddingLeft: 15
     },
 
     datePickerCont: {

@@ -514,7 +514,7 @@ export class Details extends Component {
                                 activeData = {this.state._activePosition}
                                 cancelForm={this._cancelPositionTransaction}
                                 submitForm={this._submitPositionTransaction}
-                                title='ADD NEW POSITION'
+                                title= {this.state._activeIndex ? 'MODIFY EMPLOYEE POSITION' : 'ADD NEW POSITION'}
                                 ranks={this.state._ranksList}
                                 branches={this.state._branchesList}
                             />

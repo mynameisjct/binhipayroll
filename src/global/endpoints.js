@@ -33,14 +33,24 @@ export let employee = {
 			'/employee/' + payload + '/'
 		)
 	 },
-	 
+	
+	//Deprecated
 	basicInfo: function(payload){
 		return(
 			baseURL.activeCompany() + 
 			'/employee/' + payload + 
 			'/personalinfo/basicinfo'
 		)
- 	}
+	 },
+	 
+	personalinfo: {
+		create: function(){
+			return(
+				baseURL.activeCompany() +
+				'/employee/personalinfo'
+			)
+		}
+	}
 }
 
 export let policy = {

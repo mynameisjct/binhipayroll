@@ -496,7 +496,9 @@ export class WorkShift extends Component {
                         _resMsg: res.message,
                         _bNoWorkShift: false
                     },
-                        this._getDataFromDB()
+                        () => {
+                            this._getDataFromDB();
+                        }
                     )
                 }
             })
@@ -867,6 +869,7 @@ export class WorkShift extends Component {
                         : null
                     }
 
+
                     <ScrollView
                         refreshControl={
                             <RefreshControl
@@ -874,14 +877,28 @@ export class WorkShift extends Component {
                                 onRefresh={this._getDataFromDB}
                             />
                         }>
-                        <CustomCard 
+                        {
+                            (this.props.viewOnly || false) ? 
+                                <View style={styles.contNamePlaceHolder}>
+                                    <View style={{width: 110}}>
+                                        <Text style={styles.txtNamelabel}>SHIFT NAME:</Text>
+                                    </View>
+                                    <View>
+                                        <Text style={styles.txtNameTitle}>{this.state._activeSchedule.description}</Text>
+                                    </View>
+                                </View>
+                            :
+                                null
+                        }
+                        <CustomCard
+                            hideHeader={this.props.hideHeader || false}
                             title={strTitle}
                             oType={oRightOptionType}
                             rightHeader={oRightOption}
                         >
                             {
-                                !this.state._disabledMode ? 
-                                    <View style={[styles.childPropCont, {paddingTop: -20, paddingBottom: 20, borderColor: '#D1D4D6', borderBottomWidth: 0.7}]}>
+                                !this.state._disabledMode && !(this.props.viewOnly || false) ? 
+                                    <View style={styles.contRuleName}>
                                         <View style={styles.childPropNameCont}>
                                             <Text style={[styles.txtChildStyle, {paddingLeft: 20,}]}>
                                                 Work Shift Name
@@ -897,6 +914,7 @@ export class WorkShift extends Component {
                                                     returnKeyType="done"
                                                     underlineColorAndroid='transparent'
                                                 />
+
                                                 {/* <Text numberOfLines={1} style={styles.txtChildStyle}>
                                                     1 Hour
                                                 </Text> */}
@@ -1017,21 +1035,26 @@ export class WorkShift extends Component {
                             }
 
                         </CustomCard>
-
+                        <View style={{height: 35}}></View>
                         <CustomCard 
                             title={title_BreakTime} 
                             headerBackground={'transparent'}
                             description={description_BreakTime} 
                             oType='Switch'
                             rightHeader={
-                                <Switch
-                                    disabled={this.state._disabledMode}
-                                    onValueChange={ (value) => {this._enableBreakTime(value)}} 
-                                    onTintColor={color_SwitchOn}
-                                    thumbTintColor={color_SwitchThumb}
-                                    tintColor={color_SwitchOff}
-                                    value={ this.state._activeSchedule.enablebreaktime} 
-                                />
+                                this.state._disabledMode ?
+                                    <Text style={styles.txtDefaultBold}>
+                                        { this.state._activeSchedule.enablebreaktime ? 'ON' : 'OFF' }
+                                    </Text>
+                                :
+                                    <Switch
+                                        disabled={this.state._disabledMode}
+                                        onValueChange={ (value) => {this._enableBreakTime(value)}} 
+                                        onTintColor={color_SwitchOn}
+                                        thumbTintColor={color_SwitchThumb}
+                                        tintColor={color_SwitchOff}
+                                        value={ this.state._activeSchedule.enablebreaktime} 
+                                    />
                             }
                         >
                             {
@@ -1047,7 +1070,15 @@ export class WorkShift extends Component {
                         onWarningContinue={this._continueActionOnWarning}
                         message={this.state._resMsg}
                     />
-                    {this.state._disabledMode ? actionButton : null}
+                    {
+                        this.state._disabledMode ?
+                            (this.props.viewOnly || false) ?
+                                null
+                            :
+                                actionButton 
+                        : 
+                            null
+                    }
                 </View>
             );
         }

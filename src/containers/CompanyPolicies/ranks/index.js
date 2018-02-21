@@ -768,7 +768,7 @@ export class Ranks extends Component{
                             />
                         }>
                         <CustomCard 
-                            title={CARD_TITLE} 
+                            title={this.props.title || CARD_TITLE} 
                             oType={!this.state._disabledMode ? 'button' : 'text'}
                             rightHeader={
                                 <View style={styles.btnRightCont}>
@@ -882,20 +882,29 @@ export class Ranks extends Component{
                     {vPolicy}
                     { 
                         this.state._disabledMode && !bIsEmpty?
-                            <ActionButton 
-                                buttonColor="#EEB843"
-                                spacing={10}>
-                                <ActionButton.Item buttonColor='#26A65B' title="ADD NEW RANK" onPress={() => {this._addRule()}}>
-                                    <Icon2 name="plus" color='#fff' size={22} style={styles.actionButtonIcon} />
-                                </ActionButton.Item>
-                                <ActionButton.Item buttonColor='#4183D7' title="MODIFY CURRENT RANK" onPress={() => {this._modifyRule()}}>
-                                    <Icon2 name="table-edit" color='#fff' size={22} style={styles.actionButtonIcon} />
-                                </ActionButton.Item>
-                                <ActionButton.Item buttonColor='#D75450' title="DELETE CURRENT RANK" onPress={() => {this._deleteActiveRule()}}>
-                                    <Icon2 name="delete-empty" color='#fff' size={22} style={styles.actionButtonIcon} />
-                                </ActionButton.Item>
-                            </ActionButton>
-                            : null
+                            this.props.viewOnly ? 
+                                <ActionButton 
+                                    buttonColor="#EEB843"
+                                    spacing={10}>
+                                    <ActionButton.Item buttonColor='#26A65B' title="ADD NEW RANK" onPress={() => {this._addRule()}}>
+                                        <Icon2 name="plus" color='#fff' size={22} style={styles.actionButtonIcon} />
+                                    </ActionButton.Item>
+                                </ActionButton>
+                            :
+                                <ActionButton 
+                                    buttonColor="#EEB843"
+                                    spacing={10}>
+                                    <ActionButton.Item buttonColor='#26A65B' title="ADD NEW RANK" onPress={() => {this._addRule()}}>
+                                        <Icon2 name="plus" color='#fff' size={22} style={styles.actionButtonIcon} />
+                                    </ActionButton.Item>
+                                    <ActionButton.Item buttonColor='#4183D7' title="MODIFY CURRENT RANK" onPress={() => {this._modifyRule()}}>
+                                        <Icon2 name="table-edit" color='#fff' size={22} style={styles.actionButtonIcon} />
+                                    </ActionButton.Item>
+                                    <ActionButton.Item buttonColor='#D75450' title="DELETE CURRENT RANK" onPress={() => {this._deleteActiveRule()}}>
+                                        <Icon2 name="delete-empty" color='#fff' size={22} style={styles.actionButtonIcon} />
+                                    </ActionButton.Item>
+                                </ActionButton>
+                        : null
                     }
                     <PromptScreen.PromptGeneric 
                         show= {this.state._promptShow} 

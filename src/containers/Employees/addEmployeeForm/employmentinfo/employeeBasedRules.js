@@ -17,7 +17,7 @@ import { bindActionCreators } from 'redux';
 import * as workshiftActions from '../../../CompanyPolicies/data/workshift/actions';
 import * as employeeActions from '../../data/activeProfile/actions';
 
-export class EmployeeWorkShift extends Component {
+export class EmployeeBasedRules extends Component {
     constructor(props){
         super(props);
         this.state = {
@@ -103,4 +103,4 @@ function mapDispatchToProps (dispatch) {
 export default connect(
     mapStateToProps,
     mapDispatchToProps
-)(EmployeeWorkShift)
+)(EmployeeBasedRules)

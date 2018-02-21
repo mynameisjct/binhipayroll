@@ -111,9 +111,14 @@ export default class CustomCard extends Component{
         return(
             
             <View style={styles.container}>
-                <View style={[styles.titleCont, this._getTitleBgColor()]}>
-                    {oTitle}
-                </View>
+                {
+                    (this.props.hideHeader || false) ? 
+                        null
+                    :
+                        <View style={[styles.titleCont, this._getTitleBgColor()]}>
+                            {oTitle}
+                        </View>
+                }
                 {
                     this.props.isScrollable ? 
                         <View style={styles.contentCont}>

@@ -215,6 +215,7 @@
                 "data": [
                     {
                         "id": "0001",
+                        "workshiftid": "001",
                         "effectivedate": {
                             "from": {
                                 "value": "1990-02-03",

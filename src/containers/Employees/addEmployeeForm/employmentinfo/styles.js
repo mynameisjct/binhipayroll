@@ -17,6 +17,11 @@ export default {
         flex:1
     },
 
+    transparentContainer: {
+        flex:1,
+        backgroundColor: 'transparent'
+    },
+    
     container: {
         flex:1,
         height: '100%',
@@ -153,9 +158,82 @@ export default {
     },
 
     workshiftStyles:{
-        contHeader: {},
-        contEffectivedate: {},
-        contAddBtn: {}
+        header: {
+            container: {
+                flexDirection: 'row',
+                borderTopRightRadius: 4,
+                borderTopLeftRadius: 4,
+                height: 80,
+                backgroundColor: '#FFF',
+                borderColor: '#D1D4D6',
+                borderWidth: 1.5
+            },
+
+            contBtn: {
+                borderTopRightRadius: 4,
+                width: 200,
+                backgroundColor: 'transparent'
+            },
+
+            contInfo: {
+                flex: 1,
+                flexDirection: 'row',
+                borderTopLeftRadius: 4,
+                backgroundColor: 'transparent',
+            },
+
+            contInfoLabel: {
+                paddingLeft: 35,
+                paddingRight: 15,
+                justifyContent: 'center',
+                alignItems: 'flex-start'
+            },
+
+            contInfoData: {
+                flex: 1,
+                backgroundColor: '#fff',
+                justifyContent: 'center'
+            },
+
+            pickerContainer: {
+                backgroundColor: 'transparent',
+                width: 300,
+                height: 40,
+                borderWidth: 1.5,
+                borderColor: '#D1D4D6'
+            },
+
+            namePickerStyle: {
+                height: 37,
+                width: 300
+            },
+
+            txtInfo: {
+                fontFamily: 'Helvetica-Light',
+                fontSize: 16,
+                color: '#434646'
+            }
+        },
+
+        body: {
+            container: {
+                flex: 1,
+                backgroundColor: '#fff',
+            },
+
+            contRule: {
+                marginLeft: 100,
+                marginRight: 100,
+                flex: 1,
+                backgroundColor: '#fff',
+                elevation: 3
+            }
+        }
+        
+
+        
+        
+        
     }
     
 

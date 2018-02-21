@@ -5,15 +5,18 @@ import { View } from 'react-native';
 
 //Children
 import EmployeeDetails from './details';
-import EmployeeWorkShift from './workshift';
-import EmployeePayroll from './payroll';
-import EmployeeTardiness from './tardiness';
+import EmployeeBasedRules from './employeeBasedRules';
+/* import EmployeeWorkShift from './workshift';
+import EmployeeBenefits from './benefits'; */
+import RankBasedRules from './rankBasedRules';
+/* import EmployeeTardiness from './tardiness';
 import EmployeeUndertime from './undertime';
 import EmployeeOvertime from './overtime';
-import EmployeeLeaves from './leaves';
-import EmployeeBenefits from './benefits';
+import EmployeeLeaves from './leaves'; */
+import CompanyBasedRules from './companyBasedRules';
+/* import EmployeePayroll from './payroll';
 import EmployeeTax from './tax';
-
+ */
 
 const EmploymentInfo = TabNavigator({
     EmplomentDetails: {
@@ -22,7 +25,7 @@ const EmploymentInfo = TabNavigator({
             tabBarLabel: 'EMPLOYMENT DETAILS'
         }
     },
-    EmployeeWorkShift: {
+/*     EmployeeWorkShift: {
         screen: EmployeeWorkShift,
         navigationOptions: {
             tabBarLabel: 'WORK SHIFT'
@@ -34,8 +37,15 @@ const EmploymentInfo = TabNavigator({
             tabBarLabel: 'BENEFITS'
         }
     },
+ */
+    EmployeeBasedRules: {
+        screen: EmployeeBasedRules,
+        navigationOptions: {
+            tabBarLabel: 'EMPLOYEE BASED RULES'
+        }
+    },
 
-    EmployeeTardiness: {
+    /* EmployeeTardiness: {
         screen: EmployeeTardiness,
         navigationOptions: {
             tabBarLabel: 'TARDINESS POLICY'
@@ -58,9 +68,23 @@ const EmploymentInfo = TabNavigator({
         navigationOptions: {
             tabBarLabel: 'LEAVES POLICY'
         }
+    }, */
+
+    RankBasedRules: {
+        screen: RankBasedRules,
+        navigationOptions: {
+            tabBarLabel: 'RANK BASED RULES'
+        }
     },
 
-    EmployeePayroll: {
+    CompanyBasedRules: {
+        screen: CompanyBasedRules,
+        navigationOptions: {
+            tabBarLabel: 'COMPANY BASED RULES'
+        }
+    },
+
+    /* EmployeePayroll: {
         screen: EmployeePayroll,
         navigationOptions: {
             tabBarLabel: 'PAYROLL SCHEDULE'
@@ -72,7 +96,7 @@ const EmploymentInfo = TabNavigator({
         navigationOptions: {
             tabBarLabel: 'TAX POLICY'
         }
-    }
+    } */
 },
     {
         animationEnabled: false,
@@ -81,10 +105,10 @@ const EmploymentInfo = TabNavigator({
         tabBarOptions: {
             showIcon: false,
             showLabel: true,
-            scrollEnabled: true,
+            scrollEnabled: false,
             activeTintColor: '#d69200',
             inactiveTintColor: '#434646',
-            tabStyle:  { width: 180, height: 40},
+            tabStyle: { height: 40},
             labelStyle: {
                 fontSize: 12,
                 fontWeight: '500'
@@ -98,7 +122,6 @@ const EmploymentInfo = TabNavigator({
                 height: 5
             }
         }
-        
     }
 );
 

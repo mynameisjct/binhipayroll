@@ -38,12 +38,10 @@ export let getAllInfo = payload => {
 	}
 }
 
+export let createPersonalInfo = payload => {
+	return fetchApi(endPoints.employee.personalinfo(), payload, 'post');
+}
 
-/* 
-export const update = payload => fetchApi(endPoints.get, payload, 'post');
-
-export const remove = payload => fetchApi(endPoints.remove, payload, 'post');
- */
 //Address API
 export const getProvinces = payload => fetchApi(
 	addressEndPoints.provinces, 
