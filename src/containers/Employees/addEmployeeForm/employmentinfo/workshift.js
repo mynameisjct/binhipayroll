@@ -24,6 +24,9 @@ import * as employeeActions from '../../data/activeProfile/actions';
 //Custom Component
 import * as PromptScreen from '../../../../components/ScreenLoadStatus';
 
+//Helper
+import * as oHelper from '../../../../helper';
+
 //Constants
 import { CONSTANTS } from '../../../../constants/index';
 
@@ -41,18 +44,15 @@ export class EmployeeWorkShift extends Component {
             _resMsg: '',
             _refreshing: false,
             _status: [2, 'Loading...'],
-
+            
             _bShowWorkshiftForm: false,
             _oWorkShiftTypeList: {},
             _oActiveData: {},
             _iActiveIndex: null,
             _oDefaultData: {
-                id: '0001',
-                index: 1,
-                workshiftid: {
-                    value: '',
-                    label: ''
-                },
+                id: '',
+                index: '',
+                workshiftid: '',
                 effectivedate: {
                     from: {
                         value: null,
@@ -67,6 +67,10 @@ export class EmployeeWorkShift extends Component {
             }
         }
     }
+
+    componentWillUnmount(){
+        /* this.props.actions.workshift.setActiveRule(''); */
+    }
     
     componentDidMount(){
         this._getDataFromDB();
@@ -74,9 +78,9 @@ export class EmployeeWorkShift extends Component {
 
     componentWillReceiveProps(nextProps){
         if(
-            (nextProps.workshift.status[0] != this.state._status[0])
+            (nextProps.workshift.status[0] != this.state._status[0]) || 
+            (JSON.stringify(this.props.oEmpWorkShift) != JSON.stringify(nextProps))
         ){
-            this.setState({ _status: nextProps.workshift.status });
             if(nextProps.workshift.status[0]==1){
                 this._initData(nextProps.workshift.status);
             }
@@ -102,27 +106,21 @@ export class EmployeeWorkShift extends Component {
         })
     }
 
-    _initData = async(oStatus) => {
-        await this._generateOptions();
+    _initData = (oStatus) => {
+        let oWSList = this._generateWorkShifts();
         this.setState({
+            _oWorkShiftTypeList: oWSList,
             _status: oStatus
         })
     }
 
-    _generateOptions = () => {
-        this._generateWorkShifts()
-    }
-
-    _generateWorkShifts = () => {
+    _generateWorkShifts = async() => {
         let arrWSTypes = [...this.props.workshift.data.schedule];
         let oWSList = {};
-        arrWSTypes.map((data, index) => {
+        await arrWSTypes.map((data, index) => {
             oWSList[data.description + CONSTANTS.SPLITSTRING + data.id] = data.description
         })
-
-        this.setState({
-            _oWorkShiftTypeList: oWSList
-        })
+        return oWSList;
     }
 
     _addNewWorkShift = () => {
@@ -138,17 +136,39 @@ export class EmployeeWorkShift extends Component {
     }
 
     _submitTransaction = (value) => {
-        console.log ('value: ' + JSON.stringify(value));
-        this.setState({ _bShowWorkshiftForm: false })
+        let splitWSType = value.workshiftid.split(CONSTANTS.SPLITSTRING);
+        let oData = JSON.parse(JSON.stringify(this.state._oDefaultData));
+        oData.workshiftid = splitWSType[1];
+        oData.effectivedate.from.value = (oHelper.convertDateToString(value.effectivedate, 'YYYY-MM-DD'));
+        oData.remarks = value.remarks;
+        this.setState({
+            _oActiveData: oData,
+            _bShowWorkshiftForm: false 
+        })
     }
 
     _requestDelete = () => {
 
     }
-    
 
-    
+    _formatEffectiveDate = (oEffectiveDate) => {
+        
+    }
+
+    _setActiveData = (value) => {
+        if(!oHelper.isStringEmptyOrSpace(value)){
+            
+            let oActive = oHelper.getElementByPropValue(this.props.oEmpWorkShift.data, 'id', value);
+            console.log('oActive.workshiftid: ' + JSON.stringify(oActive));
+            this.setState({_oActiveData: oActive}, console.log('JSON.stringify(this.state._oActiveData: ' + JSON.stringify(this.state._oActiveDat)));
+            if(oActive!==undefined){
+                this.props.actions.workshift.setActiveRule(oActive.workshiftid);
+            }
+        }
+    }
+
     render(){
+        
         let pStatus = [...this.state._status];
         let pProgress = pStatus[0];
         let pMessage = pStatus[1];
@@ -160,6 +180,8 @@ export class EmployeeWorkShift extends Component {
         }
 
         else if(pProgress==1){
+            console.log('RENDERING EMP WS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+            console.log('this.state._status: ' + this.state._status);
             return(
                 <View style={styles.transparentContainer}>
                     { 
@@ -185,10 +207,15 @@ export class EmployeeWorkShift extends Component {
                                         <View style={styles.workshiftStyles.header.pickerContainer}>
                                             <Picker
                                                 style={styles.workshiftStyles.header.namePickerStyle}
-                                                selectedValue={this.state.language}
-                                                onValueChange={(itemValue, itemIndex) => this.setState({language: itemValue})}>
-                                                <Picker.Item label="Java" value="java" />
-                                                <Picker.Item label="JavaScript" value="js" />
+                                                selectedValue={String(this.state._oActiveData.id)}
+                                                onValueChange={(itemValue, itemIndex) => {
+                                                    this._setActiveData(itemValue);
+                                                    }}>
+                                                {
+                                                    this.props.oEmpWorkShift.data.map((oData, index) =>
+                                                        <Picker.Item key={index} label={oHelper.convertRangeDateToString(oData.effectivedate)} value={String(oData.id)} />
+                                                    )
+                                                }
                                             </Picker>
                                         </View>
                                     </View>
@@ -208,14 +235,14 @@ export class EmployeeWorkShift extends Component {
                                 buttonColor="#EEB843"
                                 spacing={10}
                                 icon={<Icon name="alarm-multiple" color='#fff' size={25} style={styles.actionButtonIcon} />}>
-                                <ActionButton.Item size={45} buttonColor='#26A65B' title="ADD NEW EMPLOYEE SCHEDULE" onPress={() => {this._addNewWorkShift()}}>
+                                <ActionButton.Item size={45} buttonColor='#26A65B' title="ADD NEW EMPLOYEE SCHEDULE" onPress={this._addNewWorkShift}>
                                     <Icon name="bell-plus" color='#fff' size={18} style={styles.actionButtonIcon} />
                                 </ActionButton.Item>
-                                <ActionButton.Item size={45} buttonColor='#4183D7' title="ADD NEW WORKSHIFT TYPE" onPress={() => {}}>
+                                <ActionButton.Item size={45} buttonColor='#4183D7' title="MODIFY ACTIVE EMPLOYEE SCHEDULE" onPress={() => {}}>
                                     <Icon name="table-edit" color='#fff' size={18} style={styles.actionButtonIcon} />
                                 </ActionButton.Item>
-                                <ActionButton.Item size={45} buttonColor='#26A65B' title="ADD NEW EMPLOYEE SCHEDULE" onPress={() => {this._addNewWorkShift()}}>
-                                    <Icon name="bell-plus" color='#fff' size={18} style={styles.actionButtonIcon} />
+                                <ActionButton.Item size={45} buttonColor='#D75450' title="DELETE ACTIVE EMPLOYEE SCHEDULE" onPress={() => {this._addNewWorkShift()}}>
+                                    <Icon name="delete-empty" color='#fff' size={18} style={styles.actionButtonIcon} />
                                 </ActionButton.Item>
                             </ActionButton>
                         </View>

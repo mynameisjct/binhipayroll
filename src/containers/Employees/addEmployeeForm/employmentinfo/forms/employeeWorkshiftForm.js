@@ -31,7 +31,7 @@ export default class EmployeeWorkshiftForm extends Component{
     super(props);
     this.state = {
         _oEmpWorkshift: {
-            workshifttype: this.props.activeData.workshiftid.value || '',
+            workshifttype: this.props.activeData.workshiftid || '',
             effectivedate: this.props.activeData.effectivedate.from.value ? 
                 new Date(this.props.activeData.effectivedate.from.value) : null,
             remarks: this.props.activeData.remarks || ''
@@ -58,7 +58,7 @@ export default class EmployeeWorkshiftForm extends Component{
 
     render(){
         const bDeletable = 
-        this.props.activeData.workshiftid.value!='' && this.props.activeData.effectivedate.from.value!=null ?
+        this.props.activeData.workshiftid != '' && this.props.activeData.effectivedate.from.value!=null ?
             true
         :
             false 

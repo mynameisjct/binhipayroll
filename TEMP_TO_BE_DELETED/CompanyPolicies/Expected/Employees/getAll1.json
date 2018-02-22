@@ -166,23 +166,39 @@
                     }
                 ]
             },
-
+            
             "workshift": {
                 "title": "WORK SHIFT",
                 "data": [
                     {
                         "id": "0001",
-                        "workshiftid": "001",
+                        "workshiftid": "239",
                         "effectivedate": {
                             "from": {
-                                "value": "1990-02-03",
+                                "value": "2018-03-10",
                                 "format": "MMM DD, YYYY"
                             },
                             "to": {
-                                "value": "2000-12-31",
+                                "value": null,
                                 "format": "MMM DD, YYYY"
                             }
-                        }
+                        },
+                        "remarks": ""
+                    },
+                    {
+                        "id": "0002",
+                        "workshiftid": "240",
+                        "effectivedate": {
+                            "from": {
+                                "value": "2018-01-01",
+                                "format": "MMM DD, YYYY"
+                            },
+                            "to": {
+                                "value": "2018-03-10",
+                                "format": "MMM DD, YYYY"
+                            }
+                        },
+                        "remarks": ""
                     }
                 ]
             }

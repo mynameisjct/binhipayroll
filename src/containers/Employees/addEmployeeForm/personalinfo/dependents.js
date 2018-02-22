@@ -681,6 +681,10 @@ export class Dependents extends Component {
                         accessibilityLabel='Next'/>
                 </View>
             </ScrollView>
+            <PromptScreen.PromptGeneric 
+                show= {this.state._promptShow} 
+                title={this.state._promptMsg}/>
+
             <MessageBox
                 promptType={this.state._msgBoxType}
                 show={this.state._msgBoxShow}

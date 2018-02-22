@@ -120,7 +120,7 @@ export default class EmployeePositionForm extends Component{
     });
     
     return(
-      <FormModal 
+      <FormModal
         containerStyle={styles.container}
         visible={this.props.visible}
         onCancel={this._onCanncel}

@@ -163,7 +163,7 @@ export class WorkShift extends Component {
     }
 
     componentWillMount(){
-        console.log('+++++++++++++++++++++++++++++++++++++this.props.workshift: ' + JSON.stringify(this.props.workshift));
+        /* console.log('+++++++++++++++++++++++++++++++++++++this.props.workshift: ' + JSON.stringify(this.props.workshift)); */
     }
 
     componentWillUnmount(){
@@ -182,11 +182,11 @@ export class WorkShift extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        console.log('####################################################################################')
+        /* console.log('####################################################################################')
         console.log('##########################this.props.workshift.data: ' + JSON.stringify(this.props.workshift.data));
-        console.log('##########################nextProps.workshift.data: ' + JSON.stringify(nextProps.workshift.data));
+        console.log('##########################nextProps.workshift.data: ' + JSON.stringify(nextProps.workshift.data)); */
         if(this.state._status[0] != nextProps.workshift.status[0]){
-                this.setState({ _status: nextProps.workshift.status })
+            this.setState({ _status: nextProps.workshift.status })
         }
 
         if(
@@ -200,6 +200,7 @@ export class WorkShift extends Component {
             (this.state._activeType !== nextProps.workshift.activeRule) &&
             (this.state._status[0] == 1)
         ){
+            /* console.log('XXXXXXXXXXXXXXXXXXXXactiveRule: ' + nextProps.workshift.activeRule) */
             this._updateActiveRule(nextProps.workshift.activeRule);
         }
 
@@ -248,12 +249,14 @@ export class WorkShift extends Component {
         }
     }
 
-    _updateActiveRule = (iActiveRule) => {
-        let oNewActive = workShiftSelector.getScheduleFromTypeID(iActiveRule);
-        this.setState({
-            _activeType: oNewActive.id,
-            _activeSchedule: oNewActive
-        })
+    _updateActiveRule = async(iActiveRule) => {
+        let oNewActive = await workShiftSelector.getScheduleFromTypeID(iActiveRule);
+        if(!oHelper.isStringEmptyOrSpace(String(oNewActive.id))){
+            this.setState({
+                _activeType: oNewActive.id,
+                _activeSchedule: oNewActive
+            })
+        }
     }
 
     _setBottomBorder = (index) => {
@@ -684,8 +687,8 @@ export class WorkShift extends Component {
     
  
     render(){
-        console.log('xxxxxxxxxxxxx______REDERING WORKSHIFT');
-        console.log('this.state._status: ' + this.state._status);
+        /* console.log('xxxxxxxxxxxxx______REDERING WORKSHIFT');
+        console.log('this.state._status: ' + this.state._status); */
         //Loading View Status
         let pStatus = [...this.state._status];
         let pProgress = pStatus[0];

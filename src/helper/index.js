@@ -34,8 +34,31 @@ export const getArrayOfDaysInMonth = (month) => {
     
 }
 
+//Dates
 export const convertDateToString = (strDate, format) => {
     return moment(strDate).format(format);
+}
+
+export const convertRangeDateToString = (oDate) => {
+    try{
+        let strFrom = '';
+        let strTo = '';
+        let strSplitString = '';
+        if(oDate.from.value){
+            strFrom = convertDateToString(oDate.from.value, oDate.from.format);
+            if(oDate.to.value){
+                strSplitString = ' - ';
+                strTo = convertDateToString(oDate.to.value, oDate.to.format);
+            }
+            return(strFrom + strSplitString + strTo);
+        }
+        else{
+            return '';
+        }
+    }
+    catch(error){
+        return 'ERROR DATE'
+    }
 }
 
 export const isValidDate = (strDate) => {
@@ -52,12 +75,37 @@ export const addDaysFromDate = (oDate, value) => {
     return curDate;
 }
 
+//Arrays
 export const removeElementByIndex = (arrData, index) => {
     let curData = [...arrData]
     curData.splice(index, 1);
     return curData;
 }
 
+export const getElementByPropValue = (source, propertyName, propertyValue) => {
+    if(
+        source.length === 0 || 
+        isStringEmptyOrSpace(propertyName) || 
+        isStringEmptyOrSpace(propertyValue)
+    ){
+        return '';
+    }
+    else{
+        try{
+            return (source.find(x => x[propertyName] == propertyValue))
+        }
+        catch(exception){
+            return ''
+        }
+    }
+}
+
+//initially a number
+export const sortArrayOfObjects = (objData, propName) => {
+    
+}
+
+//Abbreviation
 export const getDayAbbrev = (_strDay) => {
     let _curAbbrev = _strDay=='SUNDAY' ? 'SUN':
     _strDay=='MONDAY' ? 'MON':

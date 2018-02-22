@@ -210,16 +210,18 @@ export default {
             },
 
             pickerContainer: {
+                borderRadius: 5,
                 backgroundColor: 'transparent',
                 width: 300,
                 height: 40,
                 borderWidth: 1.5,
-                borderColor: '#D1D4D6'
+                borderColor: '#D1D4D6',
+                paddingLeft: 10
             },
 
             namePickerStyle: {
                 height: 37,
-                width: 300
+                width: '100%'
             },
 
             txtInfo: {
@@ -236,8 +238,8 @@ export default {
             },
 
             contRule: {
-                marginLeft: 15,
-                marginRight: 15,
+                /* marginLeft: 15,
+                marginRight: 15, */
                 flex: 1,
                 backgroundColor: '#fff',
                 elevation: 50

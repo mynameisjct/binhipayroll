@@ -90,8 +90,8 @@ export let mock = {
 	},
 	employee: {
 		list: 'http://www.mocky.io/v2/5a7be5f2300000982828c02a',
-		allInfo2: 'http://www.mocky.io/v2/5a7c17af2e0000600005274f',
-		allInfo1: 'http://www.mocky.io/v2/5a8a21e12f00006200e46f0d',
+		allInfo2: 'http://www.mocky.io/v2/5a8e85142f000056004f26ca',
+		allInfo1: 'http://www.mocky.io/v2/5a8e852b2f000048004f26cb',
 	},
 	policies: {
 		ranks: 'http://www.mocky.io/v2/5a7d50b83100002b00cd0811'
