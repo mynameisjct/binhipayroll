@@ -39,7 +39,7 @@ export let getAllInfo = payload => {
 }
 
 export let createPersonalInfo = payload => {
-	return fetchApi(endPoints.employee.personalinfo(), payload, 'post');
+	return fetchApi(endPoints.employee.personalinfo.create(), payload, 'post');
 }
 
 //Address API

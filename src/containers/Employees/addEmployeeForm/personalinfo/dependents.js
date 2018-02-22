@@ -28,13 +28,23 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as employeeActions from '../../data/activeProfile/actions';
 
+//API
+import * as employeeApi from '../../data/activeProfile/api'
+
 //Helper 
 import * as oHelper from '../../../../helper';
 
 //Custom Component
 import {FormCard, PropTitle} from '../../../../components/CustomCards';
 import * as CustomForm from '../../../../components/CustomForm';
-  
+import * as PromptScreen from '../../../../components/ScreenLoadStatus';
+import MessageBox from '../../../../components/MessageBox';
+
+//Constants
+const add_loading_message = 'Saving New Employee Data. Please wait.';
+const update_loading_message = 'Updating Existing Profile. Please wait...';
+const delete_loading_message = 'Deleting a Profile. Please wait...';
+
 const Form = t.form.Form;
 const DEFAULT_DEPENDENT = {
     name: '', 
@@ -372,7 +382,17 @@ export class Dependents extends Component {
                 jobtitle: this.props.oFamily.spouse.work.jobtitle,
                 company: this.props.oFamily.spouse.work.company
             },
-            _isSubmitted: false
+            _isSubmitted: false,
+
+            //Gereric States
+            _promptShow: false,
+            _promptMsg: '',
+            _msgBoxShow: false,
+            _msgBoxType: '',
+            _resMsg: '',
+            _refreshing: false,
+            _disabledMode: true,
+            _status: [2, 'Loading...'],
         }
     }
 
@@ -389,11 +409,12 @@ export class Dependents extends Component {
         this.setState({ _isSubmitted: value })
     }
 
-    _validateAllData = (oDependents) => {
+    _validateAllData = async(oDependents) => {
         console.log('=-=-=-0=-=--=-=0-0--=-==-==-=-=-=-===-9-909=-==-');
         console.log('oDependents: ' + JSON.stringify(oDependents));
         if(oDependents && this.state._isSpouseDataValid){
-            this._updateAllData(this.state._oSpouse, oDependents);
+            await this._updateAllData(this.state._oSpouse, oDependents);
+            this._saveAndNavigate();
         }
         else{
             this._promptInvalidInputs();
@@ -405,10 +426,42 @@ export class Dependents extends Component {
     _updateAllData = async(oSpouse, oDependents) => {
         const navigation = this.props.logininfo.navigation;
         let arrDependents = await this._formatDependents(oDependents);
-        console.log('oDependents: ' + JSON.stringify(arrDependents));
         this.props.actions.employee.updateDependents({spouse: oSpouse, dependents: arrDependents});
-        navigation.navigate('BankAccount');
     }
+
+    _saveAndNavigate = async() => {
+        let bSuccess = await this._saveDataToDB({personalinfo: this.props.oPersonalInfo});
+        if(bSuccess){
+            navigation.navigate('BankAccount');
+        }
+    }
+
+    _saveDataToDB = async(oData) => {
+        this._showLoadingPrompt(add_loading_message);
+
+        let bFlag = false;
+
+        await employeeApi.createPersonalInfo(oData)
+            .then((response) => response.json())
+            .then((res) => {
+                console.log('XXXXXXXXXXXXXXXXXXXXXXXXXXXX');
+                console.log('res: ' + JSON.stringify(res));
+                this._hideLoadingPrompt();
+                bFlag = this._evaluateResponse(res);
+                if(res.flagno==1){
+                    this._pushNewRule(res.id,value);
+                }
+                
+            })
+            .catch((exception) => {
+                this._hideLoadingPrompt();
+                this._showMsgBox('error-ok', exception.message);
+            });
+
+        return bFlag;
+    }
+
+
 
     _formatDependents = async(oDependents) => {
         let arrNew = [];
@@ -488,6 +541,58 @@ export class Dependents extends Component {
             ],
             { cancelable: false }
         )
+    }
+
+    //GENERIC METHODS
+    _evaluateResponse = (res) => {
+        switch (res.flagno){
+            case 0:
+                this._showMsgBox('error-ok', res.message);
+                return false
+                break;
+            case 1:
+                this._showMsgBox('success', res.message);
+                return true;
+                break;
+            default:
+                this._showMsgBox('error-ok', CONSTANTS.ERROR.UNKNOWN);
+                return false
+                break;
+        }
+    }
+
+    _showLoadingPrompt = (msg) => {
+        this.setState({
+            _promptMsg: msg,
+            _promptShow: true
+        })
+    }
+
+    _showMsgBox = (strType, msg) => {
+        this.setState({
+            _msgBoxShow: true,
+            _msgBoxType: strType,
+            _resMsg: msg
+        });
+    }
+
+    _closeMsgBox = () => {
+        this.setState({
+            _msgBoxShow: false
+        })
+    }
+
+    _hideLoadingPrompt = () => {
+        this.setState({
+            _promptShow: false
+        })
+    }
+
+    _onFormClose = () => {
+        this.setState({
+            _bShowCompForm: false,
+            _bShowGovForm: false
+        })
     }
 
     render() {
@@ -576,6 +681,13 @@ export class Dependents extends Component {
                         accessibilityLabel='Next'/>
                 </View>
             </ScrollView>
+            <MessageBox
+                promptType={this.state._msgBoxType}
+                show={this.state._msgBoxShow}
+                onClose={this._closeMsgBox}
+                onWarningContinue={this._continueActionOnWarning}
+                message={this.state._resMsg}
+            /> 
         </View>
         );
     }
@@ -585,7 +697,8 @@ function mapStateToProps (state) {
     return {
         logininfo: state.loginReducer.logininfo,
         activecompany: state.activeCompanyReducer.activecompany,
-        oFamily: state.employees.activeProfile.data.personalinfo.family
+        oFamily: state.employees.activeProfile.data.personalinfo.family,
+        oPersonalInfo: state.employees.activeProfile.data.personalinfo
     }
 }
 

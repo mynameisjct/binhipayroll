@@ -5,9 +5,8 @@ import { View } from 'react-native';
 
 //Children
 import EmployeeDetails from './details';
-import EmployeeBasedRules from './employeeBasedRules';
-/* import EmployeeWorkShift from './workshift';
-import EmployeeBenefits from './benefits'; */
+import EmployeeWorkShift from './workshift';
+import EmployeeBenefits from './benefits';
 import RankBasedRules from './rankBasedRules';
 /* import EmployeeTardiness from './tardiness';
 import EmployeeUndertime from './undertime';
@@ -25,7 +24,7 @@ const EmploymentInfo = TabNavigator({
             tabBarLabel: 'EMPLOYMENT DETAILS'
         }
     },
-/*     EmployeeWorkShift: {
+    EmployeeWorkShift: {
         screen: EmployeeWorkShift,
         navigationOptions: {
             tabBarLabel: 'WORK SHIFT'
@@ -35,13 +34,6 @@ const EmploymentInfo = TabNavigator({
         screen: EmployeeBenefits,
         navigationOptions: {
             tabBarLabel: 'BENEFITS'
-        }
-    },
- */
-    EmployeeBasedRules: {
-        screen: EmployeeBasedRules,
-        navigationOptions: {
-            tabBarLabel: 'EMPLOYEE BASED RULES'
         }
     },
 

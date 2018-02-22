@@ -193,7 +193,7 @@ const initialState = {
 		workshift: {
 			title: "WORK SHIFT",
 			data: [
-				{
+				/* {
 					id: "0001",
 					workshiftid: "229",
 					effectivedate: {
@@ -206,7 +206,7 @@ const initialState = {
 							"format": "MMM DD, YYYY"
 						}
 					}
-				}
+				} */
 			]
 		}
 	},

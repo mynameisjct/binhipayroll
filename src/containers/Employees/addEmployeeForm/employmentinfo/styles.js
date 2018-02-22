@@ -21,6 +21,20 @@ export default {
         flex:1,
         backgroundColor: 'transparent'
     },
+
+    emptyDataContainer: {
+        flex:1,
+        height: '100%',
+        backgroundColor: '#f9f9f9',
+        margin: 10,
+        marginBottom: 0,
+        borderTopRightRadius: 4,
+        borderTopLeftRadius: 4,
+        elevation: 20,
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
     
     container: {
         flex:1,
@@ -222,11 +236,11 @@ export default {
             },
 
             contRule: {
-                marginLeft: 100,
-                marginRight: 100,
+                marginLeft: 15,
+                marginRight: 15,
                 flex: 1,
                 backgroundColor: '#fff',
-                elevation: 3
+                elevation: 50
             }
         }
         

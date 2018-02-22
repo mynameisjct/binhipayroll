@@ -658,11 +658,6 @@ export class Ranks extends Component{
             _promptShow: false
         })
     }
-    _closeMsgBox = () => {
-        this.setState({
-            _msgBoxShow: false
-        })
-    }
 
     _onFormClose = () => {
         this.setState({
