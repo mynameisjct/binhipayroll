@@ -158,7 +158,7 @@ export class List extends Component {
     }
     
     render(){
-        console.log('this.props.employees.allProfiles: ' + JSON.stringify(this.props.employees.allProfiles));
+        /* console.log('this.props.employees.allProfiles: ' + JSON.stringify(this.props.employees.allProfiles)); */
         /* console.log('this.props.employees.list.data: ' + JSON.stringify(this.props.employees.list.data)); */
         let pStatus = [...this.state._status]
         let pProgress = pStatus[0];

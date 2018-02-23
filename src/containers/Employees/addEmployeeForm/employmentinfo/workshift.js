@@ -69,7 +69,7 @@ export class EmployeeWorkShift extends Component {
     }
 
     componentWillUnmount(){
-        /* this.props.actions.workshift.setActiveRule(''); */
+        this.props.actions.workshift.setActiveRule('');
     }
     
     componentDidMount(){
@@ -114,10 +114,10 @@ export class EmployeeWorkShift extends Component {
         })
     }
 
-    _generateWorkShifts = async() => {
+    _generateWorkShifts = () => {
         let arrWSTypes = [...this.props.workshift.data.schedule];
         let oWSList = {};
-        await arrWSTypes.map((data, index) => {
+        arrWSTypes.map((data, index) => {
             oWSList[data.description + CONSTANTS.SPLITSTRING + data.id] = data.description
         })
         return oWSList;
@@ -131,11 +131,20 @@ export class EmployeeWorkShift extends Component {
         })
     }
 
+    _editActiveWorkshift = () => {
+        console.log('this.state._oActiveData: ' + JSON.stringify(this.state._oActiveData));
+        this.setState({ 
+            
+            _bShowWorkshiftForm: true 
+        })
+    }
+
     _cancelTransaction = () => {
         this.setState({ _bShowWorkshiftForm: false })
     }
 
     _submitTransaction = (value) => {
+        console.log('value: ' + JSON.stringify(value));
         let splitWSType = value.workshiftid.split(CONSTANTS.SPLITSTRING);
         let oData = JSON.parse(JSON.stringify(this.state._oDefaultData));
         oData.workshiftid = splitWSType[1];
@@ -238,11 +247,8 @@ export class EmployeeWorkShift extends Component {
                                 <ActionButton.Item size={45} buttonColor='#26A65B' title="ADD NEW EMPLOYEE SCHEDULE" onPress={this._addNewWorkShift}>
                                     <Icon name="bell-plus" color='#fff' size={18} style={styles.actionButtonIcon} />
                                 </ActionButton.Item>
-                                <ActionButton.Item size={45} buttonColor='#4183D7' title="MODIFY ACTIVE EMPLOYEE SCHEDULE" onPress={() => {}}>
+                                <ActionButton.Item size={45} buttonColor='#4183D7' title="MODIFY ACTIVE EMPLOYEE SCHEDULE" onPress={this._editActiveWorkshift}>
                                     <Icon name="table-edit" color='#fff' size={18} style={styles.actionButtonIcon} />
-                                </ActionButton.Item>
-                                <ActionButton.Item size={45} buttonColor='#D75450' title="DELETE ACTIVE EMPLOYEE SCHEDULE" onPress={() => {this._addNewWorkShift()}}>
-                                    <Icon name="delete-empty" color='#fff' size={18} style={styles.actionButtonIcon} />
                                 </ActionButton.Item>
                             </ActionButton>
                         </View>

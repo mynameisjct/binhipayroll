@@ -162,16 +162,15 @@ export class WorkShift extends Component {
         this._onBreakTimeUpdate = this._onBreakTimeUpdate.bind(this);
     }
 
-    componentWillMount(){
-        /* console.log('+++++++++++++++++++++++++++++++++++++this.props.workshift: ' + JSON.stringify(this.props.workshift)); */
-    }
-
     componentWillUnmount(){
-        this.props.actions.workshift.setActiveRule('')
+        this.setState({ _status: CONSTANTS.STATUS.LOADING}, 
+            () => this.props.actions.workshift.setActiveRule('')
+        );
     }
 
     componentDidMount(){
         if(this.props.workshift.data){
+            console.log('componentDidMount!!!!');
             this._initValues();
             this.setState({_status: [1,'']})
         }
@@ -182,17 +181,26 @@ export class WorkShift extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        /* console.log('####################################################################################')
-        console.log('##########################this.props.workshift.data: ' + JSON.stringify(this.props.workshift.data));
-        console.log('##########################nextProps.workshift.data: ' + JSON.stringify(nextProps.workshift.data)); */
+/*         console.log('####################################################################################')
+        console.log('this.props.workshift.data: ' + JSON.stringify(this.props.workshift.data));
+        console.log('nextProps.workshift.data: ' + JSON.stringify(nextProps.workshift.data));
+        console.log('####################################################################################')
+        console.log('this.props.activeRule: ' + JSON.stringify(this.props.workshift.activeRule));
+        console.log('nextProps.activeRule: ' + JSON.stringify(nextProps.workshift.activeRule));
+        console.log('####################################################################################')
+        console.log('this.state._status[0]: ' + JSON.stringify(this.state._status[0]));
+        console.log('nextProps.workshift.status[0]: ' + JSON.stringify(nextProps.workshift.status[0]));
+        console.log('####################################################################################') */
         if(this.state._status[0] != nextProps.workshift.status[0]){
             this.setState({ _status: nextProps.workshift.status })
+            /* console.log('componentWillReceiveProps: STATUS CHANGE') */
         }
 
         if(
             (JSON.stringify(this.state._curWorkShiftObj) !== JSON.stringify(nextProps.workshift.data)) &&
             (nextProps.workshift.status[0] == 1)
         ){
+            /* console.log('componentWillReceiveProps: INIT VALUES') */
             this._initValues();
         }
 
@@ -200,7 +208,8 @@ export class WorkShift extends Component {
             (this.state._activeType !== nextProps.workshift.activeRule) &&
             (this.state._status[0] == 1)
         ){
-            /* console.log('XXXXXXXXXXXXXXXXXXXXactiveRule: ' + nextProps.workshift.activeRule) */
+            /* console.log('componentWillReceiveProps: ACTIVE RULE CHANGE')
+            console.log('XXXXXXXXXXXXXXXXXXXXactiveRule: ' + nextProps.workshift.activeRule) */
             this._updateActiveRule(nextProps.workshift.activeRule);
         }
 
@@ -220,15 +229,22 @@ export class WorkShift extends Component {
     }
 
     _initValues = () => {
+        console.log('INIT DATA!');
+        console.log('this.props.workshift.activeRule: ' + this.props.workshift.activeRule);
         try{
+            /* console.log('this.props.workshift.activeRule: ' + JSON.stringify(this.props.workshift.activeRule));
+            console.log() */
             let bNoWorkShift = false;
             let oWorkShift = {...workShiftSelector.getWorkShiftObject()};
             let oDefaultSchedule = this.props.workshift.activeRule == '' ||  isNaN(this.props.workshift.activeRule) ?
                 workShiftSelector.getDefaultActiveSchedule() : workShiftSelector.getScheduleFromTypeID(this.props.workshift.activeRule)
             if(Object.keys(oDefaultSchedule).length === 0){
+                
                 oDefaultSchedule = JSON.parse(JSON.stringify(this.state._defaultSchedule));
                 bNoWorkShift = true;
             }
+
+            console.log('oDefaultSchedule: ' + JSON.stringify(oDefaultSchedule));
 
             //Initialize component values
             this.setState({
@@ -237,10 +253,9 @@ export class WorkShift extends Component {
                 _activeType:  oDefaultSchedule.id,
                 _bNoWorkShift: bNoWorkShift,
                 _disabledMode: !bNoWorkShift,
-            }); 
+            }, () => this.props.actions.workshift.setActiveRule(oDefaultSchedule.id)); 
 
-            //Initialize Active Rule
-            this.props.actions.workshift.setActiveRule(oDefaultSchedule.id);
+            
         }
         catch(exception){
             this.setState({_status: [0,CONSTANTS.ERROR.SERVER]})
@@ -250,6 +265,7 @@ export class WorkShift extends Component {
     }
 
     _updateActiveRule = async(iActiveRule) => {
+        console.log('_updateActiveRule');
         let oNewActive = await workShiftSelector.getScheduleFromTypeID(iActiveRule);
         if(!oHelper.isStringEmptyOrSpace(String(oNewActive.id))){
             this.setState({
@@ -701,6 +717,8 @@ export class WorkShift extends Component {
         }
 
         else if(pProgress==1){
+            /* console.log('xxxxxxxxxxxxx______REDERING WORKSHIFT');
+            console.log('this.state._activeSchedule.day: ' + JSON.stringify(this.state._activeSchedule.day)); */
             let oDailyPolicy = {...this.state._activeSchedule.day};
             let oRightOption;
             let oRightOptionType;

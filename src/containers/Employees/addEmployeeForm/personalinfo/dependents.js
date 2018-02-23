@@ -424,12 +424,12 @@ export class Dependents extends Component {
     }
 
     _updateAllData = async(oSpouse, oDependents) => {
-        const navigation = this.props.logininfo.navigation;
         let arrDependents = await this._formatDependents(oDependents);
         this.props.actions.employee.updateDependents({spouse: oSpouse, dependents: arrDependents});
     }
 
     _saveAndNavigate = async() => {
+        const navigation = this.props.logininfo.navigation;
         let bSuccess = await this._saveDataToDB({personalinfo: this.props.oPersonalInfo});
         if(bSuccess){
             navigation.navigate('BankAccount');
@@ -449,7 +449,7 @@ export class Dependents extends Component {
                 this._hideLoadingPrompt();
                 bFlag = this._evaluateResponse(res);
                 if(res.flagno==1){
-                    this._pushNewRule(res.id,value);
+                   
                 }
                 
             })

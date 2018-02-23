@@ -27,18 +27,18 @@ import * as oHelper from '../../../../../helper';
 const Form = t.form.Form;
 
 export default class EmployeeWorkshiftForm extends Component{
-  constructor(props){
-    super(props);
-    this.state = {
-        _oEmpWorkshift: {
-            workshifttype: this.props.activeData.workshiftid || '',
-            effectivedate: this.props.activeData.effectivedate.from.value ? 
-                new Date(this.props.activeData.effectivedate.from.value) : null,
-            remarks: this.props.activeData.remarks || ''
-        },
-        _dateFormat: 'MMMM DD, YYYY'
+    constructor(props){
+        super(props);
+        this.state = {
+            _oEmpWorkshift: {
+                workshiftid: this.props.activeData.workshiftid || '',
+                effectivedate: this.props.activeData.effectivedate.from.value ? 
+                    new Date(this.props.activeData.effectivedate.from.value) : null,
+                remarks: this.props.activeData.remarks || ''
+            },
+            _dateFormat: 'MMMM DD, YYYY'
+        }
     }
-  }
 
     _onChange = (value) => {
     }
@@ -57,83 +57,84 @@ export default class EmployeeWorkshiftForm extends Component{
     }
 
     render(){
+        console.log('this.props.workshifttype: ' + JSON.stringify(this.props.workshifttype));
         const bDeletable = 
         this.props.activeData.workshiftid != '' && this.props.activeData.effectivedate.from.value!=null ?
             true
         :
             false 
     
-    const WORKSHIFTTYPE = t.enums(this.props.workshifttype);
+        const WORKSHIFTTYPE = t.enums(this.props.workshifttype);
 
-    const EMPWORKSHIFT_OPTIONS = {
-        fields: {
-            workshiftype:{ 
-                template: customPickerTemplate,
-                label: 'WORKSHIFT TYPE',
-                error: '*Select a Workshift Type'
-            },
-
-            effectivedate: {
-                template: customDatePickerTemplate,
-                label: 'EFFECTIVE DATE',
-                mode:'date',
-                minimumDate: this.props.minEffectiveDate,
-                config:{
-                    format: (strDate) => oHelper.convertDateToString(strDate, this.state._dateFormat)
+        const EMPWORKSHIFT_OPTIONS = {
+            fields: {
+                workshiftid:{ 
+                    template: customPickerTemplate,
+                    label: 'WORKSHIFT TYPE',
+                    error: '*Select a Workshift Type'
                 },
-                error: '*Select effective date'
+
+                effectivedate: {
+                    template: customDatePickerTemplate,
+                    label: 'EFFECTIVE DATE',
+                    mode:'date',
+                    minimumDate: this.props.minEffectiveDate,
+                    config:{
+                        format: (strDate) => oHelper.convertDateToString(strDate, this.state._dateFormat)
+                    },
+                    error: '*Select effective date'
+                },
+
+                remarks:{ 
+                    label: 'REMARKS' ,
+                    returnKeyType: 'done'
+                }
             },
+            stylesheet: stylesheet
+        };
 
-            remarks:{ 
-                label: 'REMARKS' ,
-                returnKeyType: 'done'
-            }
-        },
-        stylesheet: stylesheet
-    };
-
-    const EMPLOYEE_WORKSHIFT = t.struct({
-      workshiftype: WORKSHIFTTYPE,
-      effectivedate: t.Date,
-      remarks: t.maybe(t.String)
-    });
-    
-    return(
-      <FormModal 
-        containerStyle={styles.container}
-        visible={this.props.visible}
-        onCancel={this._onCanncel}
-        onOK={this._onSubmit}
-        title={this.props.title}>
+        const EMPLOYEE_WORKSHIFT = t.struct({
+            workshiftid: WORKSHIFTTYPE,
+            effectivedate: t.Date,
+            remarks: t.maybe(t.String)
+        });
         
-        <View style={styles.contForm}>
-            <ScrollView>
-                <View style={styles.formContent}>
-                    <Form 
-                        ref='form_employeeworkshift'
-                        type={EMPLOYEE_WORKSHIFT}
-                        onChange={this._onChange}
-                        value={this.state._oEmpWorkshift}
-                        options={EMPWORKSHIFT_OPTIONS}
-                    />
+    return(
+        <FormModal 
+            containerStyle={styles.container}
+            visible={this.props.visible}
+            onCancel={this._onCanncel}
+            onOK={this._onSubmit}
+            title={this.props.title}>
+            
+            <View style={styles.contForm}>
+                <ScrollView>
+                    <View style={styles.formContent}>
+                        <Form 
+                            ref='form_employeeworkshift'
+                            type={EMPLOYEE_WORKSHIFT}
+                            onChange={this._onChange}
+                            value={this.state._oEmpWorkshift}
+                            options={EMPWORKSHIFT_OPTIONS}
+                        />
 
-                    {
-                        bDeletable ? 
-                            <TouchableOpacity
-                                activeOpacity={0.6}
-                                onPress={() => this.props.onDelete()}>
-                                
-                                <View style={styles.btnDelete.container}>
-                                <Text style={styles.btnDelete.txtBtn}>DELETE</Text>
-                                </View>
-                            </TouchableOpacity>
-                        :
-                            null
-                    }
+                        {
+                            bDeletable ? 
+                                <TouchableOpacity
+                                    activeOpacity={0.6}
+                                    onPress={() => this.props.onDelete()}>
+                                    
+                                    <View style={styles.btnDelete.container}>
+                                    <Text style={styles.btnDelete.txtBtn}>DELETE</Text>
+                                    </View>
+                                </TouchableOpacity>
+                            :
+                                null
+                        }
+                    </View>
+                </ScrollView>
                 </View>
-            </ScrollView>
-            </View>
-        </FormModal>
-    )
-  }
+            </FormModal>
+        )
+    }
 }

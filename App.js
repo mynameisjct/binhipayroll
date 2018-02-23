@@ -17,9 +17,9 @@ import {Provider} from 'react-redux';
 const store = configureStore();
 
 /* store.subscribe(() => {
-  console.log("Store is updated!", store.getState().companyProfile);
-});
- */
+  console.log("Store is updated!", store.getState().companyPoliciesReducer.workshift);
+}); */
+
 export default class Main extends Component {
   render() {
     return (

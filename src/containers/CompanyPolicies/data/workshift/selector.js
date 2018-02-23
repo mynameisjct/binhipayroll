@@ -25,11 +25,11 @@ export const getDefaultActiveSchedule = () => {
 	}
 };
 
-export const getScheduleFromTypeID = async(id) => {
+export const getScheduleFromTypeID = (id) => {
+	console.log('getScheduleFromTypeID');
 	activeTypeID = id; 
 	let oSchedule = [...store.getState().companyPoliciesReducer.workshift.data.schedule];
-	let iActiveID = await oSchedule.find(_findScheduleFromTypeID);
-	return iActiveID;
+	return oSchedule.find(_findScheduleFromTypeID);
 };
 
 export const getDefaultSchedule = () => {
