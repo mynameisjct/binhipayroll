@@ -20,6 +20,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as workshiftActions from '../../../CompanyPolicies/data/workshift/actions';
 import * as employeeActions from '../../data/activeProfile/actions';
+import * as workshiftSelector from '../../../CompanyPolicies/data/workshift/selector';
 
 //Custom Component
 import * as PromptScreen from '../../../../components/ScreenLoadStatus';
@@ -45,6 +46,7 @@ export class EmployeeWorkShift extends Component {
             _refreshing: false,
             _status: [2, 'Loading...'],
             
+            _oActiveWorkShiftRule: null,
             _bShowWorkshiftForm: false,
             _oWorkShiftTypeList: {},
             _oActiveData: {},
@@ -64,7 +66,9 @@ export class EmployeeWorkShift extends Component {
                     }
                 },
                 remarks: ''
-            }
+            },
+
+            _activeWorkshiftCode: ''
         }
     }
 
@@ -79,7 +83,7 @@ export class EmployeeWorkShift extends Component {
     componentWillReceiveProps(nextProps){
         if(
             (nextProps.workshift.status[0] != this.state._status[0]) || 
-            (JSON.stringify(this.props.oEmpWorkShift) != JSON.stringify(nextProps))
+            (JSON.stringify(this.props.oEmpWorkShift) != JSON.stringify(nextProps.oEmpWorkShift))
         ){
             if(nextProps.workshift.status[0]==1){
                 this._initData(nextProps.workshift.status);
@@ -108,6 +112,11 @@ export class EmployeeWorkShift extends Component {
 
     _initData = (oStatus) => {
         let oWSList = this._generateWorkShifts();
+        console.log('this.props.oEmpWorkShift.data.length: ' + this.props.oEmpWorkShift.data.length);
+        if(this.props.oEmpWorkShift.data.length > 0){
+            this._setActiveData(this.props.oEmpWorkShift.data[0].id);
+        }
+        
         this.setState({
             _oWorkShiftTypeList: oWSList,
             _status: oStatus
@@ -168,8 +177,14 @@ export class EmployeeWorkShift extends Component {
         if(!oHelper.isStringEmptyOrSpace(value)){
             
             let oActive = oHelper.getElementByPropValue(this.props.oEmpWorkShift.data, 'id', value);
+            let oCurWSData = workshiftSelector.getScheduleFromTypeID(oActive.workshiftid);
             console.log('oActive.workshiftid: ' + JSON.stringify(oActive));
-            this.setState({_oActiveData: oActive}, console.log('JSON.stringify(this.state._oActiveData: ' + JSON.stringify(this.state._oActiveDat)));
+            this.setState({
+                _oActiveData: oActive,
+                _oActiveWorkShiftRule: oCurWSData
+            }, 
+                console.log('JSON.stringify(this.state._oActiveData: ' + JSON.stringify(this.state._oActiveDat))
+            );
             if(oActive!==undefined){
                 this.props.actions.workshift.setActiveRule(oActive.workshiftid);
             }
@@ -191,6 +206,10 @@ export class EmployeeWorkShift extends Component {
         else if(pProgress==1){
             console.log('RENDERING EMP WS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
             console.log('this.state._status: ' + this.state._status);
+            console.log('this.state._oActiveWorkShiftRule: ' + JSON.stringify(this.state._oActiveWorkShiftRule));
+            console.log('this.state._oActiveData.workshiftid: ' + JSON.stringify(this.state._oActiveData.workshiftid));
+            let oActiveScheduleValue = this.state._oActiveWorkShiftRule.description +
+                CONSTANTS.SPLITSTRING + this.state._oActiveData.workshiftid
             return(
                 <View style={styles.transparentContainer}>
                     { 
@@ -256,6 +275,7 @@ export class EmployeeWorkShift extends Component {
                     {
                         this.state._bShowWorkshiftForm ?
                             <EmployeeWorkshiftForm
+                                activeScheduleValue = {oActiveScheduleValue}
                                 minEffectiveDate={null}
                                 onDelete={this._requestDelete}
                                 visible={this.state._bShowWorkshiftForm}

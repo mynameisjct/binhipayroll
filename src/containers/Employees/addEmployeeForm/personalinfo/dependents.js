@@ -393,6 +393,7 @@ export class Dependents extends Component {
             _refreshing: false,
             _disabledMode: true,
             _status: [2, 'Loading...'],
+            _hasSentRequest: false,
         }
     }
 
@@ -400,27 +401,28 @@ export class Dependents extends Component {
         let TEMP = this.refs.form_spouse.getValue();
 
         if(TEMP){
-            this.setState({ _isSpouseDataValid: true });
+            this.setState({ _hasSentRequest: true, _isSubmitted: value, _isSpouseDataValid: true });
+            
         }
         else{
-            this.setState({ _isSpouseDataValid: false });
+            this.setState({ _isSubmitted: value, _isSpouseDataValid: false });
         }
-
-        this.setState({ _isSubmitted: value })
     }
 
     _validateAllData = async(oDependents) => {
-        console.log('=-=-=-0=-=--=-=0-0--=-==-==-=-=-=-===-9-909=-==-');
-        console.log('oDependents: ' + JSON.stringify(oDependents));
-        if(oDependents && this.state._isSpouseDataValid){
-            await this._updateAllData(this.state._oSpouse, oDependents);
-            this._saveAndNavigate();
-        }
-        else{
-            this._promptInvalidInputs();
-        }
+        if(this.state._hasSentRequest){
+            console.log('=-=-=-0=-=--=-=0-0--=-==-==-=-=-=-===-9-909=-==-');
+            console.log('oDependents: ' + JSON.stringify(oDependents));
+            if(oDependents && this.state._isSpouseDataValid){
+                await this._updateAllData(this.state._oSpouse, oDependents);
+                this._saveAndNavigate();
+            }
+            else{
+                this._promptInvalidInputs();
+            }
 
-        this.setState({ _isSubmitted: false })
+            this.setState({ _hasSentRequest: false, _isSubmitted: false })
+        }
     }
 
     _updateAllData = async(oSpouse, oDependents) => {

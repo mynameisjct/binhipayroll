@@ -245,15 +245,74 @@ export default {
                 elevation: 50
             }
         }
-        
+    },
 
-        
-        
-        
+    benefitsStyles: {
+        container: {
+            flex: 1,
+            flexDirection: 'row'
+        },
+
+        contTitle: {
+            backgroundColor: 'yellow',
+            height: 60,
+             alignItems: 'center',
+             justifyContent: 'center'
+        },
+
+        contLeft: {
+            flex: 0.5,
+            backgroundColor: 'red',
+            borderTopLeftRadius: 5,
+            padding: 10
+        },
+
+        contRight: {
+            flex: 0.5,
+            backgroundColor: 'blue',
+            borderTopRightRadius: 5,
+            padding: 10
+        },
+
+        contContent: {
+            flex: 1,
+            paddingTop: 30,
+            paddingLeft: 35,
+            paddingRight: 35
+        },
+
+        contElement: {
+            height: 80,
+            backgroundColor: 'green',
+            flexDirection: 'row'
+        },
+
+        contLeftElement: {
+            flex: 0.55,
+            paddingLeft: 15,
+            justifyContent: 'center',
+            alignItems: 'flex-start',
+            borderWidth: 1
+        },
+
+        contRightElement: {
+            flex: 0.45,
+            paddingLeft: 15,
+            justifyContent: 'center',
+            alignItems: 'flex-start',
+            borderWidth: 1
+        },
+
+        txtPropName: {
+            fontFamily: 'Helvetica-Light',
+            fontSize: 15,
+            fontWeight: 500,
+            color: '#D1D4D6'
+        }
+    },
+
+    govStyles: {
+
     }
-    
-
-
-
 }
    

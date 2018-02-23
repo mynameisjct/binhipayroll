@@ -24,6 +24,9 @@ import FormModal from '../../../../../components/FormModal';
 //Helpers
 import * as oHelper from '../../../../../helper';
 
+//Constants
+import {CONSTANTS} from '../../../../../constants';
+
 const Form = t.form.Form;
 
 export default class EmployeeWorkshiftForm extends Component{
@@ -31,7 +34,7 @@ export default class EmployeeWorkshiftForm extends Component{
         super(props);
         this.state = {
             _oEmpWorkshift: {
-                workshiftid: this.props.activeData.workshiftid || '',
+                workshiftid: this.props.activeScheduleValue || '',
                 effectivedate: this.props.activeData.effectivedate.from.value ? 
                     new Date(this.props.activeData.effectivedate.from.value) : null,
                 remarks: this.props.activeData.remarks || ''

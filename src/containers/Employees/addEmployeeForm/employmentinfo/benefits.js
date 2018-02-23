@@ -4,8 +4,55 @@ import {
     Text,
 } from 'react-native';
 
-import styles from '../personalinfo/styles';
+import styles from './styles';
 /* import {Benefits as BenefitsPolicy} from '../../../CompanyPolicies/Rules/benefits'; */
+
+class EmpGovBenefits extends Component {
+    constructor(props){
+        super(props);
+        this.state = {
+            
+        }
+    }
+
+    render(){
+        return(
+            <View style={styles.genericContainer}>
+                <View style={styles.benefitsStyles.contTitle}>
+                    <Text style={styles.txtFormTitle}>GOVERNMENT BENEFITS</Text>
+                </View>
+                <View style={styles.benefitsStyles.contContent}>
+                    <View style={styles.benefitsStyles.contElement}>
+                        <View style={styles.benefitsStyles.contLeftElement}>
+                            <Text>hi!</Text>
+                        </View>
+                        <View style={styles.benefitsStyles.contRightElement}>
+                        </View>
+                    </View>
+                </View>
+            </View>
+        )
+    }
+}
+
+class EmpCompBenefits extends Component {
+    constructor(props){
+        super(props);
+        this.state = {
+
+        }
+    }
+
+    render(){
+        return(
+            <View style={styles.genericContainer}>
+                <View style={styles.benefitsStyles.contTitle}>
+                    <Text style={styles.txtFormTitle}>COMPANY BENEFITS</Text>
+                </View>
+            </View>
+        )
+    }
+}
 
 export default class Benefits extends Component {
     _triggerRefresh = () => {
@@ -15,7 +62,14 @@ export default class Benefits extends Component {
     render(){
         return(
             <View style={styles.container}>
-                {/* <BenefitsPolicy status={[1, 'Success']} triggerRefresh={this._triggerRefresh}/> */}
+                <View style={styles.benefitsStyles.container}>
+                    <View style={styles.benefitsStyles.contLeft}>
+                        <EmpGovBenefits/>
+                    </View>
+                    <View style={styles.benefitsStyles.contRight}>
+                        <EmpCompBenefits/>
+                    </View>
+                </View>
             </View>
         )
     }
