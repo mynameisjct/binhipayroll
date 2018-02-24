@@ -18,7 +18,7 @@ export default {
 
     formContent: {
         flex: 1,
-        paddingTop: 25,
+        paddingTop: 35,
         paddingLeft: 40,
         paddingRight: 40,
         paddingBottom: 25

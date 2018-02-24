@@ -253,7 +253,8 @@ export class Login extends Component {
                     /* this.props.navigation.navigate('Employees') */
                     /* this.props.navigation.navigate('AddEmployeeForm') */
                     /* this.props.navigation.navigate('EmploymentInfo') */
-                    this.props.navigation.navigate('EmployeeWorkShift')
+                    /* this.props.navigation.navigate('EmployeeWorkShift') */
+                    this.props.navigation.navigate('EmployeeBenefits')
                     
                     break;
 

@@ -18,7 +18,7 @@ export default class SearchBox extends PureComponent{
 
     //Icon Props
     _getIconName = () => {
-        return 'account-plus';
+        return this.props.iconname || 'account-plus';
     }
 
     _getIconSize = () => {

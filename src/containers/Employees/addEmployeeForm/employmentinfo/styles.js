@@ -165,6 +165,7 @@ export default {
         alignItems: 'center'
     },
 
+
     txtFormTitle: {
         fontSize: 16,
         fontWeight: '500',
@@ -253,62 +254,146 @@ export default {
             flexDirection: 'row'
         },
 
+        
+            contEmpty: {
+                flex: 1,
+                justifyContent: 'center',
+                alignItems: 'center',
+                paddingBottom: 20,
+            },
+
         contTitle: {
-            backgroundColor: 'yellow',
+            backgroundColor: 'transparent',
             height: 60,
-             alignItems: 'center',
-             justifyContent: 'center'
+            alignItems: 'center',
+            justifyContent: 'flex-end',
+
         },
 
         contLeft: {
             flex: 0.5,
-            backgroundColor: 'red',
+            backgroundColor: 'transparent',
             borderTopLeftRadius: 5,
-            padding: 10
+            borderWidth: 1,
+            borderColor: '#D1D4D6'
         },
 
         contRight: {
             flex: 0.5,
-            backgroundColor: 'blue',
-            borderTopRightRadius: 5,
-            padding: 10
+            backgroundColor: 'transparent',
+            borderTopRightRadius: 5
         },
 
         contContent: {
             flex: 1,
             paddingTop: 30,
-            paddingLeft: 35,
-            paddingRight: 35
+            paddingLeft: 35
         },
 
-        contElement: {
-            height: 80,
-            backgroundColor: 'green',
+        contElementPlaceholder: {
+            backgroundColor: 'transparent',
+            padding: 20,
+            borderTopWidth: 1,
+            borderColor: '#D1D4D6'
+        },
+
+        contElementMain: {
+            height: 30,
+            backgroundColor: 'transparent',
+            flexDirection: 'row'
+        },
+
+        contElementDescription: {
+            height: 20,
+            backgroundColor: 'transparent',
             flexDirection: 'row'
         },
 
         contLeftElement: {
             flex: 0.55,
-            paddingLeft: 15,
+            paddingLeft: 30,
             justifyContent: 'center',
             alignItems: 'flex-start',
-            borderWidth: 1
         },
 
+        contLeftElementDescription: {
+            flex: 0.55,
+            paddingLeft: 30,
+            justifyContent: 'flex-start',
+            alignItems: 'flex-start',
+        },
+        
         contRightElement: {
             flex: 0.45,
-            paddingLeft: 15,
+            paddingRight: 60,
             justifyContent: 'center',
-            alignItems: 'flex-start',
-            borderWidth: 1
+            alignItems: 'flex-end',
         },
 
         txtPropName: {
             fontFamily: 'Helvetica-Light',
-            fontSize: 15,
-            fontWeight: 500,
-            color: '#D1D4D6'
-        }
+            fontSize: 14,
+            fontWeight: '500',
+            color: '#434646'
+        },
+
+        txtDescription: {
+            fontFamily: 'Helvetica-Light',
+            fontStyle: 'italic',
+            fontSize: 12,
+            color: '#838383'
+        },
+        
+        placeholderCompanyBenefit:{ 
+            marginTop: 7,    
+            marginBottom: 7,   
+            marginLeft: 20,   
+            marginRight: 20,    
+            padding: 20,
+            backgroundColor: '#fff',
+            elevation: 5,
+            flexDirection: 'column',
+            flex: 1,
+        },
+
+        contCompanyBenefits: {
+            flex: 1,
+            backgroundColor: 'transparent',
+            paddingTop: 20
+        },
+
+        contProperty: {
+            flex: 1,
+            flexDirection: 'row'
+        },
+
+        contRemove: {
+            flex: 1,
+            alignItems: 'flex-end',
+            paddingRight: 5
+        },
+
+        contPropertyLeft: {
+            flex: 0.45,
+        },
+
+        contPropertyRight: {
+            flex: 0.55,
+        },
+
+        txtPropNameCompany: {
+            fontFamily: 'Helvetica-Light',
+            fontSize: 13,
+            fontWeight: '500',
+            color: '#838383'
+        },
+
+        txtPropValueCompany: {
+            fontFamily: 'Helvetica-Light',
+            fontSize: 14,
+            color: '#434646'
+        },
+        
     },
 
     govStyles: {
