@@ -3,5 +3,5 @@ import {store} from '../../../../store';
 let activeID = '';
 
 export const getAllData = () => {
-	return store.getState().companyPoliciesReducer.benefits;
+	return store.getState().companyPoliciesReducer.benefits.data;
 };

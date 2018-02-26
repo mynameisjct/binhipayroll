@@ -5,13 +5,22 @@ import {
 } from 'react-native';
 
 import styles from '../personalinfo/styles';
-import Leaves from '../../../CompanyPolicies/leaves';
+
+//Children Components
+import Tax from '../../../CompanyPolicies/tax';
+import Payroll from '../../../CompanyPolicies/payroll';
 
 export default class CompanyBasedRules extends Component {
     render(){
         return(
             <View style={styles.container}>
+                <View style={{flex: 1, margin: 20, elevation: 20}}>
+                    <Payroll/>
+                </View>
                 
+                {/* <View style={{flex: 1}}>
+                    <Tax/>
+                </View> */}
             </View>
         )
     }

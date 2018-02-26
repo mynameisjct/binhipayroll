@@ -179,7 +179,7 @@ export class Tardiness extends Component{
         this.props.actions.tardiness.get({...this._requiredInputs(), transtype:'get'});
     }
 
-        _requiredInputs = () => {
+    _requiredInputs = () => {
         return({
             companyid: this.props.activecompany.id,
             username: this.props.logininfo.resUsername,

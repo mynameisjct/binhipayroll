@@ -18,6 +18,7 @@ import {
 } from 'react-native';
 
 import styles from './styles';
+import { CONSTANTS } from '../../constants/index';
 
 //Available Props:
 //1. title
@@ -229,9 +230,13 @@ export class PropLevel2 extends Component{
     }
     
     componentWillReceiveProps = (nextProps) => {
-        if(this.state.hideBorder !== nextProps.hideBorder){
+        if(
+            (this.state.hideBorder !== nextProps.hideBorder) || 
+            (this.state.contentType !== nextProps.contentType)
+        ){
             this.setState({
-                hideBorder: nextProps.hideBorder
+                hideBorder: nextProps.hideBorder,
+                contentType: nextProps.contentType || ''
             })
         }
     }
@@ -246,17 +251,27 @@ export class PropLevel2 extends Component{
     }
 
     render(){
-        let oContent = 
-            <View style={[styles.propContChild, this.state.contentStyle, this._getBorder()]}>
-                {this.props.content}
-            </View>;
+/*         console.log('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX');
+        console.log('this.props.name: ' + this.props.name); 
+        console.log(' this.props.contentType: + ' + this.props.contentType || 'NO CONTENT TYPE');
+        console.log('this.state.contentType: + ' + this.state.contentType || 'NO CONTENT TYPE');
+        console.log('this.props.content: ' + this.props.content);  */
 
-        if(this.state.contentType.toUpperCase() == "TEXT"){
+        let oContent = null
+
+        if(this.state.contentType.toUpperCase() == 'TEXT'){
             oContent = (
                 <View style={[styles.propContTxt, this.state.contentStyle]}>
                     <Text style={styles.txtDefault}>
                         {this.props.content}
                     </Text>
+                </View>
+            )
+        }
+        else{
+            oContent = (
+                <View style={[styles.propContChild, this.state.contentStyle, this._getBorder()]}>
+                    {this.props.content}
                 </View>
             )
         }

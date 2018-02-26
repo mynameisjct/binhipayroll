@@ -21,7 +21,7 @@ import Tardiness from './tardiness';
 import Undertime from './undertime';
 import Overtime from './overtime';
 import Leaves from './leaves';
-import Benefits from './Rules/benefits';
+import Benefits from './benefits';
 import Bonus from './Rules/bonus';
 import Ranks from './ranks';
 
@@ -31,7 +31,6 @@ import { bindActionCreators } from 'redux';
 import {SetLoginInfo, SetActiveCompany} from '../../actions';
 import * as payrollActions from './data/payroll/actions';
 import * as taxActions from './data/tax/actions';
-import * as benefitsActions from './data/benefits/actions';
 import * as bonusActions from './data/bonus/actions';
 import * as ranksActions from './data/ranks/actions';
 
@@ -55,11 +54,7 @@ export class CompanyPolicies extends Component {
             _objActiveCompany: null,
 
             //Error-0, Success-1, Loading-2,  Handler
-            _payrollStatus: ['3', 'Loading...'],
-            _taxStatus: ['3','Loading...'],
-            _benefitsStatus: ['3', 'Loading...'],
             _bonusStatus: ['3', 'Loading...'],
-            _ranksStatus: ['3', 'Loading...'],
 
             //Unsaved Transaction
             _hasActiveTransaction: false,
@@ -195,14 +190,11 @@ export class CompanyPolicies extends Component {
             this.setState({
                 _objLoginInfo: {...oProps.logininfo},
                 _objActiveCompany: {...oProps.activecompany},
-                _payrollStatus: ['3', 'Loading...'],
-                _taxStatus: ['3','Loading...'],
-                _benefitsStatus: ['3', 'Loading...'],
                 _bonusStatus: ['3', 'Loading...'],
                 _ranksStatus: ['3', 'Loading...']
             },
                 () => {
-                    this._setActiveChild({key:'010'});
+                    this._setActiveChild({key:'003'});
                     this.setState({_status: 1});
                 }
             )
@@ -218,102 +210,6 @@ export class CompanyPolicies extends Component {
         this.setState({
             _hasActiveTransaction: value
         })
-    }
-
-    _getPayrollSchedule = (bForceUpdate) => {
-        let curStatus = [2, 'Loading...'];
-        this.setState({
-            _payrollStatus: curStatus
-        });
-
-        this.props.actions.payroll.get({
-            companyid: this.state._objActiveCompany.id,
-            username: this.state._objLoginInfo.resUsername,
-            transtype: 'get',
-            accesstoken: '',
-            clientid: '',
-        })
-        
-        .then(() => {
-            /* console.log('this.props.payroll: ' + JSON.stringify(this.props.payroll)); */
-            let oPayroll  = {...this.props.payroll};
-            let oStatus = [oPayroll.flagno, oPayroll.message];
-            this.setState({
-                _payrollStatus: oStatus
-            });
-		})
-		.catch((exception) => {
-            console.log('exception: ' + exception);
-            let oStatus = [0, 'Application error was encountered. \n Please contact BINHI-MeDFI'];
-			this.setState({
-                _payrollStatus: oStatus
-            })
-		});
-    }
-
-    _getTaxSettings = (bForceUpdate) => {
-        let curStatus = [2, 'Loading...'];
-        this.setState({
-            _taxStatus: curStatus
-        });
-        
-        let oInput = {
-            companyid: this.state._objActiveCompany.id,
-            username: this.state._objLoginInfo.resUsername,
-            transtype: 'get',
-            accesstoken: '',
-            clientid: '',
-        }
-
-        this.props.actions.tax.get(oInput)
-        .then(() => {
-            /* console.log('this.props.tax: ' + JSON.stringify(this.props.tax)); */
-            let oTax  = {...this.props.tax};
-            let oStatus = [oTax.flagno, oTax.message];
-            this.setState({
-                _taxStatus: oStatus
-            });
-		})
-		.catch((exception) => {
-            console.log('exception: ' + exception);
-            let oStatus = [0, 'Application error was encountered. \n Please contact BINHI-MeDFI'];
-			this.setState({
-                _taxStatus: oStatus
-            })
-		});
-    }
-
-    _getBenefitsRule = (bForceUpdate) => {
-        let curStatus = [2, 'Loading...'];
-        this.setState({
-            _benefitsStatus: curStatus
-        });
-
-        let oInput = {
-            companyid: this.state._objActiveCompany.id,
-            username: this.state._objLoginInfo.resUsername,
-            transtype: 'get',
-            accesstoken: '',
-            clientid: '',
-        }
-        
-        this.props.actions.benefits.get(oInput)
-        .then(() => {
-            console.log('this.props.benefits: ' + JSON.stringify(this.props.benefits));
-            let oBenefits  = {...this.props.benefits};
-            let oStatus = [oBenefits.flagno, oBenefits.message];
-            this.setState({
-                _benefitsStatus: oStatus
-            });
-		})
-		.catch((exception) => {
-            console.log('oInput: ' + JSON.stringify(oInput));
-            console.log('exception: ' + exception);
-            let oStatus = [0, 'Application error was encountered. \n Please contact BINHI-MeDFI'];
-			this.setState({
-                _benefitsStatus: oStatus
-            })
-		}); 
     }
 
     _getBonusRule = (bForceUpdate) => {
@@ -434,10 +330,7 @@ _setActiveChild = (oItem) => {
                     break;
                 case '002':
                     childComponent = (
-                        <Payroll 
-                            hasUnsaved={this._hasActiveTransaction} 
-                            status={this.state._payrollStatus} 
-                            triggerRefresh={this._getPayrollSchedule}/>
+                        <Payroll/>
                     );
                     break;
                 case '003':
@@ -470,10 +363,7 @@ _setActiveChild = (oItem) => {
                     break;
                 case '008':
                     childComponent = (
-                        <Benefits
-                            hasUnsaved={this._hasActiveTransaction} 
-                            status={this.state._benefitsStatus} 
-                            triggerRefresh={this._getBenefitsRule}/>
+                        <Benefits/>
                     );
                     break;
                 case '009':
@@ -548,11 +438,7 @@ function mapStateToProps (state) {
     return {
         logininfo: state.loginReducer.logininfo,
         activecompany: state.activeCompanyReducer.activecompany,
-        payroll: state.companyPoliciesReducer.payroll,
-        tax: state.companyPoliciesReducer.tax,
-        benefits: state.companyPoliciesReducer.benefits,
-        bonus: state.companyPoliciesReducer.bonus,
-        ranks: state.companyPoliciesReducer.ranks
+        bonus: state.companyPoliciesReducer.bonus
 
     }
 }
@@ -560,11 +446,7 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
     return {
         actions: {
-            payroll: bindActionCreators(payrollActions, dispatch),
-            tax: bindActionCreators(taxActions,dispatch),
-            benefits: bindActionCreators(benefitsActions, dispatch),
             bonus: bindActionCreators(bonusActions, dispatch),
-            ranks: bindActionCreators(ranksActions, dispatch),
         },
     }
 }

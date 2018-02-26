@@ -19,7 +19,7 @@ import ActionButton from 'react-native-action-button';
 import Icon2 from 'react-native-vector-icons/MaterialCommunityIcons';
 
 //Styles
-import styles from './styles'
+import styles from '../styles'
 
 //Redux
 import { connect } from 'react-redux';
@@ -71,10 +71,6 @@ const color_SwitchThumb='#EEB843';
 const UNKNOWNERROR = 'Unable to commit transaction. An Unknown Error has been encountered. Contact BINHI-MeDFI.';
 
 class GovernmentBenefits extends Component{
-    /* shouldComponentUpdate(nextProps, nextStates){
-        return (JSON.stringify(this.props.data) !== JSON.stringify(nextProps.data));
-    } */
-
     _toggleSwitch = (value) => {
         this.props.toggleSwitch('GOVERNMENT', value);
     }
@@ -324,35 +320,48 @@ export class Benefits extends Component{
     
 
     componentDidMount(){
-        if(this.props.status[0]==1){
+        if(this.props.benefits.data){
             this._initValues();
         }
-        else if(this.props.status[0]==3){
-            this.props.triggerRefresh(true);
+        else{
+            this._getDataFromDB();
         }
-        else;
-
-        this.setState({
-            _status: [...this.props.status]
-        });
     }
 
     componentWillReceiveProps(nextProps) {
-        if(this.state._status[0] != nextProps.status[0]){
-            if(nextProps.status[0]==1){
-                this._initValues();
-            }
-
-            this.setState({
-                _status: nextProps.status
-            })
+        if(
+            (this.state._status[0] != nextProps.benefits.status[0]) &&
+            (this.state._status[0] != 1)
+        ){
+            this.setState({ _status: nextProps.benefits.status })
         }
+
+        if(
+            (JSON.stringify(this.state._allData) !== JSON.stringify(nextProps.benefits.data)) &&
+            (nextProps.benefits.status[0] == 1)
+        ){
+            this._initValues();
+        }
+    }
+
+    _getDataFromDB = () => {
+        this.props.actions.benefits.get({...this._requiredInputs(), transtype:'get'});
+    }
+
+    _requiredInputs = () => {
+        return({
+            companyid: this.props.activecompany.id,
+            username: this.props.logininfo.resUsername,
+            accesstoken: '',
+            clientid: ''
+        })
     }
 
     _initValues = () => {
         let oAllData = JSON.parse(JSON.stringify(benefitsSelector.getAllData()));
         this.setState({
             _allData: oAllData,
+            _status: [1,''],
         })
     }
 
@@ -720,13 +729,14 @@ export class Benefits extends Component{
     render(){
         console.log('xxxxxxxxxxxxx______REDERING BENEFITS');
         console.log('======================this.state._status: ' + this.state._status);
+        console.log('======================this.state._allData: ' + JSON.stringify(this.state._allData));
         let pStatus = [...this.state._status];
         let pProgress = pStatus[0];
         let pMessage = pStatus[1];
 
         if(pProgress==0){
             return (
-                <PromptScreen.PromptError title='Benefits Policy' onRefresh={()=>this.props.triggerRefresh(true)}/>
+                <PromptScreen.PromptError title='Benefits Policy' onRefresh={this._getDataFromDB}/>
             ); 
         }
 
@@ -738,7 +748,7 @@ export class Benefits extends Component{
                         refreshControl={
                             <RefreshControl
                                 refreshing={this.state._refreshing}
-                                onRefresh={() => this.props.triggerRefresh(true)}
+                                onRefresh={this._getDataFromDB}
                             />
                         }
                     >

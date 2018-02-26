@@ -4,7 +4,8 @@ import {
     Text,
     ScrollView,
     Picker,
-    RefreshControl
+    RefreshControl,
+    TouchableOpacity
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 
@@ -34,6 +35,7 @@ import MessageBox from '../../../components/MessageBox';
 
 //Helper
 import * as oHelper from '../../../helper/';
+import { CONSTANTS } from '../../../constants/index';
 
 const title_Payroll = 'Set Payroll Rules and Schedule';
 
@@ -151,40 +153,52 @@ export class SemiMonthly extends Component{
                     <PropTitle name='Payroll Schedule'/>
                     <PropLevel2 
                         name='First Pay Day'
+                        contentType={this.props.disabledMode ? 'TEXT' : null}
                         content={
-                            <Picker
-                                mode='dropdown'
-                                style={styles.pickerStyle}
-                                selectedValue={this.state._data.firstpayday.value}
-                                onValueChange={(itemValue, itemIndex) => {this._setFirstPayDay(itemValue)}}>
-                                {
-                                    this.state._data.firstpayday.options.map((paytype, index) => (
-                                        <Picker.Item key={index} label={paytype} value={paytype} />
-                                    ))
-                                }
-                            </Picker>
+                            this.props.disabledMode ? 
+                                this.state._data.firstpayday.value
+                            :
+                                <Picker
+                                    mode='dropdown'
+                                    style={styles.pickerStyle}
+                                    selectedValue={this.state._data.firstpayday.value}
+                                    onValueChange={(itemValue, itemIndex) => {this._setFirstPayDay(itemValue)}}>
+                                    {
+                                        this.state._data.firstpayday.options.map((paytype, index) => (
+                                            <Picker.Item key={index} label={paytype} value={paytype} />
+                                        ))
+                                    }
+                                </Picker>
                         }
+                        hideBorder={this.state._disabledMode}
                     />
+
                     <PropLevel2 
                         name='Second Pay Day'
                         content={this.state._data.secondpayday.value}
                         contentType='Text'
                     />
+
                     <PropLevel2 
                         name='Cut-off'
+                        contentType={this.props.disabledMode ? 'TEXT' : null}
                         content={
-                            <Picker
-                                mode='dropdown'
-                                style={styles.pickerStyle}
-                                selectedValue={this.state._data.cutoff.value}
-                                onValueChange={(itemValue, itemIndex) => {this._setCutOff(itemValue)}}>
-                                {
-                                    this.state._data.cutoff.options.map((paytype, index) => (
-                                        <Picker.Item key={index} label={paytype} value={paytype} />
-                                    ))
-                                }
-                            </Picker>
+                            this.props.disabledMode ? 
+                                this.state._data.cutoff.value
+                            :
+                                <Picker
+                                    mode='dropdown'
+                                    style={styles.pickerStyle}
+                                    selectedValue={this.state._data.cutoff.value}
+                                    onValueChange={(itemValue, itemIndex) => {this._setCutOff(itemValue)}}>
+                                    {
+                                        this.state._data.cutoff.options.map((paytype, index) => (
+                                            <Picker.Item key={index} label={paytype} value={paytype} />
+                                        ))
+                                    }
+                                </Picker>
                         }
+                        hideBorder={this.state._disabledMode}
                     />
                     <PropLevel2 
                         name='First Period'
@@ -294,36 +308,46 @@ export class Monthly extends Component{
                     <PropTitle name='Payroll Schedule'/>
                     <PropLevel2 
                         name='Pay Day'
+                        contentType={this.props.disabledMode ? 'TEXT' : null}
                         content={
-                            <Picker
-                                mode='dropdown'
-                                style={styles.pickerStyle}
-                                selectedValue={this.state._data.payday.value}
-                                onValueChange={(itemValue, itemIndex) => {this._setPayDay(itemValue)}}>
-                                {
-                                    this.state._data.payday.options.map((paytype, index) => (
-                                        <Picker.Item key={index} label={paytype} value={paytype} />
-                                    ))
-                                }
-                            </Picker>
+                            this.props.disabledMode ? 
+                                this.state._data.payday.value
+                            :
+                                <Picker
+                                    mode='dropdown'
+                                    style={styles.pickerStyle}
+                                    selectedValue={this.state._data.payday.value}
+                                    onValueChange={(itemValue, itemIndex) => {this._setPayDay(itemValue)}}>
+                                    {
+                                        this.state._data.payday.options.map((paytype, index) => (
+                                            <Picker.Item key={index} label={paytype} value={paytype} />
+                                        ))
+                                    }
+                                </Picker>
                         }
+                        hideBorder={this.state._disabledMode}
                     />
 
                     <PropLevel2 
                         name='Cut-off'
+                        contentType={this.props.disabledMode ? 'TEXT' : null}
                         content={
-                            <Picker
-                                mode='dropdown'
-                                style={styles.pickerStyle}
-                                selectedValue={this.state._data.cutoff.value}
-                                onValueChange={(itemValue, itemIndex) => {this._setCutOff(itemValue)}}>
-                                {
-                                    this.state._data.cutoff.options.map((paytype, index) => (
-                                        <Picker.Item key={index} label={paytype} value={paytype} />
-                                    ))
-                                }
-                            </Picker>
+                            this.props.disabledMode ? 
+                                this.state._data.cutoff.value
+                            :
+                                <Picker
+                                    mode='dropdown'
+                                    style={styles.pickerStyle}
+                                    selectedValue={this.state._data.cutoff.value}
+                                    onValueChange={(itemValue, itemIndex) => {this._setCutOff(itemValue)}}>
+                                    {
+                                        this.state._data.cutoff.options.map((paytype, index) => (
+                                            <Picker.Item key={index} label={paytype} value={paytype} />
+                                        ))
+                                    }
+                                </Picker>
                         }
+                        hideBorder={this.state._disabledMode}
                     />
 
                     <PropLevel2 
@@ -455,37 +479,47 @@ export class Weekly extends Component{
                     <PropTitle name='Payroll Schedule'/>
                     <PropLevel2 
                         name='Pay Day'
+                        contentType={this.props.disabledMode ? 'TEXT' : null}
                         content={
-                            <Picker
-                                mode='dropdown'
-                                style={styles.pickerStyle}
-                                selectedValue={this.state._data.payday.value}
-                                onValueChange={(itemValue, itemIndex) => {this._setPayDay(itemValue)}}>
-                                {
-                                    this.state._data.payday.options.map((paytype, index) => (
-                                        <Picker.Item key={index} label={paytype} value={paytype} />
-                                    ))
-                                }
-                            </Picker>
+                            this.props.disabledMode ? 
+                                this.state._data.payday.value
+                            :
+                                <Picker
+                                    mode='dropdown'
+                                    style={styles.pickerStyle}
+                                    selectedValue={this.state._data.payday.value}
+                                    onValueChange={(itemValue, itemIndex) => {this._setPayDay(itemValue)}}>
+                                    {
+                                        this.state._data.payday.options.map((paytype, index) => (
+                                            <Picker.Item key={index} label={paytype} value={paytype} />
+                                        ))
+                                    }
+                                </Picker>
                         }
-                        contentStyle={{width: 150}}
+                        hideBorder={this.state._disabledMode}
+                        contentStyle={{width: 200}}
                     />
                     <PropLevel2 
                         name='Cut-off'
+                        contentType={this.props.disabledMode ? 'TEXT' : null}
                         content={
-                            <Picker
-                                mode='dropdown'
-                                style={styles.pickerStyle}
-                                selectedValue={this.state._data.cutoff.value}
-                                onValueChange={(itemValue, itemIndex) => {this._setCutOff(itemValue)}}>
-                                {
-                                    this.state._data.cutoff.options.map((paytype, index) => (
-                                        <Picker.Item key={index} label={paytype} value={paytype} />
-                                    ))
-                                }
-                            </Picker>
+                            this.props.disabledMode ? 
+                                this.state._data.cutoff.value
+                            :
+                                <Picker
+                                    mode='dropdown'
+                                    style={styles.pickerStyle}
+                                    selectedValue={this.state._data.cutoff.value}
+                                    onValueChange={(itemValue, itemIndex) => {this._setCutOff(itemValue)}}>
+                                    {
+                                        this.state._data.cutoff.options.map((paytype, index) => (
+                                            <Picker.Item key={index} label={paytype} value={paytype} />
+                                        ))
+                                    }
+                                </Picker>
                         }
-                        contentStyle={{width: 150}}
+                        hideBorder={this.state._disabledMode}
+                        contentStyle={{width: 200}}
                     />
 
                     <PropLevel2 
@@ -509,7 +543,7 @@ export class Payroll extends Component{
             _payrolldata: {},
             _refreshing: false,
             _changeFlag: false,
-
+            _disabledMode: this.props.viewOnly || false ,
             //Messagebox
             _msgBoxShow: false,
             _msgBoxType: '',
@@ -528,34 +562,47 @@ export class Payroll extends Component{
     }
     
     componentDidMount(){
-        if(this.props.status[0]==1){
+        if(this.props.payroll.data){
             this._initValues();
         }
-        else if(this.props.status[0]==3){
-            this.props.triggerRefresh(true);
+        else{
+            this._getDataFromDB();
         }
-        else;
-
-        this.setState({
-            _status: [...this.props.status]
-        });
     }
     
     componentWillReceiveProps(nextProps) {
-        if(this.state._status[0] != nextProps.status[0]){
-            if(nextProps.status[0]==1){
-                this._initValues(nextProps.status);
-            }
+        if(
+            (this.state._status[0] != nextProps.payroll.status[0]) &&
+            (nextProps.payroll.status[0] != 1)
+        ){
+            console.log('STATUS HAS CHANGED!')
+            this.setState({ _status: nextProps.payroll.status })
+        }
 
-            this.setState({
-                _status: nextProps.status
-            })
+        if(
+            (JSON.stringify(this.state._allData) !== JSON.stringify(nextProps.payroll.data)) &&
+            (nextProps.payroll.status[0] == 1)
+        ){
+            this._initValues();
         }
     }
 
-    _initValues = (status) => {
+    _getDataFromDB = () => {
+        this.props.actions.payroll.get({...this._requiredInputs(), transtype:'get'});
+    }
+
+    _requiredInputs = () => {
+        return({
+            companyid: this.props.activecompany.id,
+            username: this.props.logininfo.resUsername,
+            accesstoken: '',
+            clientid: ''
+        })
+    }
+
+    _initValues = () => {
         this.setState({
-            _status: status,
+            _status: CONSTANTS.STATUS.SUCCESS,
             _payrolldata: JSON.parse(JSON.stringify(payrollSelector.getPayrollData()))
         })
     }
@@ -664,7 +711,8 @@ export class Payroll extends Component{
                         _msgBoxShow: true,
                         _msgBoxType: 'success',
                         _resMsg: res.message,
-                        _changeFlag: false
+                        _changeFlag: false,
+                        _disabledMode: true
                     });
                     
                     this.props.actions.payroll.update(res);
@@ -713,13 +761,26 @@ export class Payroll extends Component{
         })
     }
 
+    _editPayroll = () => {
+        this.setState({
+            _disabledMode: false
+        })
+    }
+
+    _cancelEdit = () => {
+        this.setState({
+            _disabledMode: true
+        })
+    }
+
     render(){
+        console.log('this.state._status: ' + JSON.stringify(this.state._status));
         let pStatus = [...this.state._status];
         let pProgress = pStatus[0];
         let pMessage = pStatus[1];
         if(pProgress==0){
             return (
-                <PromptScreen.PromptError title='Payroll Policy' onRefresh={()=>this.props.triggerRefresh(true)}/>
+                <PromptScreen.PromptError title='Payroll Policy' onRefresh={this._getDataFromDB}/>
             );
         }
         else if(pProgress==1){
@@ -727,13 +788,28 @@ export class Payroll extends Component{
             let oPayrollSchedule;
             switch(this.state._payrolldata.paytype.value.toUpperCase()){
                 case 'SEMI-MONTHLY':
-                    oPayrollSchedule = (<SemiMonthly change={this._detectChanges} data={this.state._payrolldata.data.semimonthly}/>);
+                    oPayrollSchedule = (
+                        <SemiMonthly 
+                            change={this._detectChanges} 
+                            data={this.state._payrolldata.data.semimonthly}
+                            disabledMode={this.state._disabledMode}
+                        />);
                     break;
                 case 'MONTHLY':
-                    oPayrollSchedule = (<Monthly change={this._detectChanges} data={this.state._payrolldata.data.monthly}/>);
+                    oPayrollSchedule = (
+                        <Monthly 
+                            change={this._detectChanges} 
+                            data={this.state._payrolldata.data.monthly}
+                            disabledMode={this.state._disabledMode}
+                        />);
                     break;
                 case 'WEEKLY':
-                    oPayrollSchedule = (<Weekly change={this._detectChanges} data={this.state._payrolldata.data.weekly}/>);
+                    oPayrollSchedule = (
+                        <Weekly 
+                            change={this._detectChanges} 
+                            data={this.state._payrolldata.data.weekly}
+                            disabledMode={this.state._disabledMode}
+                        />);
                     break;
                 default:
                     //Display an error
@@ -754,25 +830,29 @@ export class Payroll extends Component{
                         refreshControl={
                             <RefreshControl
                                 refreshing={this.state._refreshing}
-                                onRefresh={() => this.props.triggerRefresh(true)}
+                                onRefresh={this._getDataFromDB}
                             />
                         }
                     >
-                        <CustomCard title={title_Payroll} oType='Text'>
+                        <CustomCard title={title_Payroll} oType='TEXT'>
                             <PropLevel1 
                                 name='Payroll Type' 
                                 content={
-                                    <Picker
-                                        mode='dropdown'
-                                        selectedValue={this.state._payrolldata.paytype.value}
-                                        onValueChange={(itemValue, itemIndex) => {this._requestToChangePayType(itemValue)}}>
-                                        {
-                                            this.state._payrolldata.paytype.options.map((paytype, index) => (
-                                                <Picker.Item key={index} label={paytype} value={paytype} />
-                                            ))
-                                        }
-                                    </Picker>
+                                    this.state._disabledMode ? 
+                                        <Text style={styles.txtDisabledValue}>{this.state._payrolldata.paytype.value}</Text>
+                                    :
+                                        <Picker
+                                            mode='dropdown'
+                                            selectedValue={this.state._payrolldata.paytype.value}
+                                            onValueChange={(itemValue, itemIndex) => {this._requestToChangePayType(itemValue)}}>
+                                            {
+                                                this.state._payrolldata.paytype.options.map((paytype, index) => (
+                                                    <Picker.Item key={index} label={paytype} value={paytype} />
+                                                ))
+                                            }
+                                        </Picker> 
                                 }
+                                hideBorder={this.state._disabledMode}
                             />
                             { oPayrollSchedule }
 

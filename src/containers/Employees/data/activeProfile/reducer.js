@@ -224,6 +224,187 @@ const initialState = {
 					remarks: ''
 				}
 			]
+		},
+
+		benefits: {
+			government: {
+				title: 'GOVERNMENT BENEFITS',
+				data: [
+                    {
+                        id: '0001',
+                        name: 'SSS',
+                        enabled: false,
+                        effectivedate: {
+                            from:{
+                                value: '2017-01-01',
+                                format: 'YYYY-MM-DD'
+                            },
+                            to:{
+                                value: null,
+                                format: 'YYYY-MM-DD'
+                            }
+                        }
+                    },
+
+                    {
+                        id: '0002',
+                        name: 'PAGIBIG',
+                        enabled: true,
+                        effectivedate: {
+                            from:{
+                                value: '2017-01-01',
+                                format: 'YYYY-MM-DD'
+                            },
+                            to:{
+                                value: null,
+                                format: 'YYYY-MM-DD'
+                            }
+                        }
+                    },
+
+
+                    {
+                        id: '0003',
+                        name: 'PHILHEALTH',
+                        enabled: false,
+                        effectivedate: {
+                            from:{
+                                value: '2017-01-01',
+                                format: 'YYYY-MM-DD'
+                            },
+                            to:{
+                                value: null,
+                                format: 'YYYY-MM-DD'
+                            }
+                        }
+                    },
+                ]
+			},
+
+			company: {
+				title: 'COMPANY BENEFITS',
+				data: [
+					{
+						id: '1234',
+						benefitid: '0004',
+						name: 'Clothing Allowance',
+						amountpermonth: '200',
+						scheme: {
+							value: 'Last Pay of the Month',
+							options: [
+								'First Pay of the Month',
+								'Last Pay of the Month'
+							]
+						},
+						effectivedate: {
+							from: {
+								value: '2017-01-01',
+								format: 'YYYY-MM-DD'
+							},
+							to: {
+								value: null,
+								format: 'YYYY-MM-DD'
+							}
+						}
+					},
+					{
+						id: '5678',
+						benefitid: '0005',
+						name: 'Laundry Allowance',
+						amountpermonth: '100',
+						scheme: {
+							value: 'Last Pay of the Month',
+							options: [
+								'First Pay of the Month',
+								'Last Pay of the Month'
+							]
+						},
+						effectivedate: {
+							from: {
+								value: '2017-01-01',
+								format: 'YYYY-MM-DD'
+							},
+							to: {
+								value: null,
+								format: 'YYYY-MM-DD'
+							}
+						}
+					},
+
+					{
+						id: '9101',
+						benefitid: '0006',
+						name: 'Management Allowance',
+						amountpermonth: '300',
+						scheme: {
+							value: 'Last Pay of the Month',
+							options: [
+							'First Pay of the Month',
+							'Last Pay of the Month'
+							]
+						},
+						effectivedate: {
+							from: {
+								value: '2017-01-01',
+								format: 'YYYY-MM-DD'
+							},
+							to: {
+								value: null,
+								format: 'YYYY-MM-DD'
+							}
+						}
+						
+					},
+					{
+						id: '1121',
+						benefitid: '0007',
+						name: 'Medical Allowance',
+						amountpermonth: '100',
+						scheme: {
+							value: 'Last Pay of the Month',
+							options: [
+							'First Pay of the Month',
+							'Last Pay of the Month'
+							]
+						},
+						effectivedate: {
+							from: {
+								value: '2017-01-01',
+								format: 'YYYY-MM-DD'
+							},
+							to: {
+								value: null,
+								format: 'YYYY-MM-DD'
+							}
+						}
+						
+					},
+					{
+						id: '3141',
+						benefitid: '0008',
+						name: 'Rice Alowance',
+						amountpermonth: '250',
+						scheme: {
+							value: 'Last Pay of the Month',
+							options: [
+							'First Pay of the Month',
+							'Last Pay of the Month'
+							]
+						},
+						effectivedate: {
+							from: {
+								value: '2017-01-01',
+								format: 'YYYY-MM-DD'
+							},
+							to: {
+								value: null,
+								format: 'YYYY-MM-DD'
+							}
+						}
+					}
+					
+				]
+			}
 		}
 	},
 

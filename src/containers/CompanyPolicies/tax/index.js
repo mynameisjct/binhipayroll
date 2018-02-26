@@ -38,22 +38,13 @@ import * as taxSelector from '../data/tax/selector';
 
 //Api
 import * as taxApi from '../data/tax/api';
+import { CONSTANTS } from '../../../constants/index';
 
 const title_Tax = 'Withholding Tax';
 const description_Tax = 'Enable Withholding Tax Calculation';
 const color_SwitchOn='#FFF4DE';
 const color_SwitchOff='#838383';
 const color_SwitchThumb='#EEB843';
-/* const tax_disabled = 'Disabled — when the Withholding Tax is turned off,' +
-                        ' the system will NOT calculate and will NOT deduct a Tax' +
-                        " from every employee's income."
-
-const tax_enabled = 'Enabled — when the Withholding Tax is turned on,' +
-                        ' the system will calculate and will deduct a Tax' + 
-                        " from every employee's income" + 
-                        ' based on the Personal Income Tax Rates.'
- */
-
 const tax_disabled = "Disabled — When Withholding Tax is turned off, the" +
     " system will NOT calculate and will NOT deduct a tax component from every"
     " employee."
@@ -67,27 +58,8 @@ export class Tax extends Component{
         super(props);
         this.state = {
             _status: ['2', 'Loading...'],
-            /* _taxData: {
-                flagno:1,
-                message:"Record found",
-                enabled: true,
-                frequency:{
-                    data:{
-                        label:"Frequency",
-                        value:{id:1, label:'Monthly'},
-                        options:[
-                            {id:'1', label:"Monthly"},
-                            {id:'2', label:"Every Pay Day"}
-                        ]
-                    }
-                },
-                companytin:{
-                    data:{
-                        label:"Company",
-                        value:"12345"
-                    }
-                }
-            }, */
+            _disabledMode: this.props.viewOnly || false ,
+
             _taxData: {},
             _changeFlag: false,
 
@@ -102,35 +74,47 @@ export class Tax extends Component{
     }
 
     componentDidMount(){
-        if(this.props.status[0]==1){
+        if(this.props.tax.data){
             this._initValues();
         }
-        else if(this.props.status[0]==3){
-            this.props.triggerRefresh(true);
+        else{
+            this._getDataFromDB();
         }
-        else;
-
-        this.setState({
-            _status: [...this.props.status]
-        });
     }
-
-        
+  
     componentWillReceiveProps(nextProps) {
-        if(this.state._status[0] != nextProps.status[0]){
-            if(nextProps.status[0]==1){
-                this._initValues(nextProps.status);
-            }
+        if(
+            (this.state._status[0] != nextProps.tax.status[0]) &&
+            (nextProps.tax.status[0] != 1)
+        ){
+            console.log('STATUS HAS CHANGED!')
+            this.setState({ _status: nextProps.tax.status })
+        }
 
-            this.setState({
-                _status: nextProps.status
-            })
+        if(
+            (JSON.stringify(this.state._allData) !== JSON.stringify(nextProps.tax.data)) &&
+            (nextProps.tax.status[0] == 1)
+        ){
+            this._initValues();
         }
     }
 
-    _initValues = (status) => {
+    _getDataFromDB = () => {
+        this.props.actions.tax.get({...this._requiredInputs(), transtype:'get'});
+    }
+
+    _requiredInputs = () => {
+        return({
+            companyid: this.props.activecompany.id,
+            username: this.props.logininfo.resUsername,
+            accesstoken: '',
+            clientid: ''
+        })
+    }
+
+    _initValues = () => {
         this.setState({
-            _status: status,
+            _status: CONSTANTS.STATUS.SUCCESS,
             _taxData: JSON.parse(JSON.stringify(taxSelector.getAllTaxData()))
         })
     }
@@ -240,8 +224,6 @@ export class Tax extends Component{
     }
 
     _detectChanges = () => {
-        console.log('this.state._payrolldata: ' + JSON.stringify(this.state._taxData));
-        console.log('taxSelector.getAllTaxData(): ' + JSON.stringify(taxSelector.getAllTaxData()));
         if(JSON.stringify(taxSelector.getAllTaxData()) !== JSON.stringify(this.state._taxData)){
             this.setState({_changeFlag: true})
         }else{
@@ -268,7 +250,7 @@ export class Tax extends Component{
         let pMessage = pStatus[1];
         if(pProgress=='0'){
             return (
-                <PromptScreen.PromptError title='Tax Policy' onRefresh={()=>this.props.triggerRefresh(true)}/>
+                <PromptScreen.PromptError title='Tax Policy' onRefresh={this._getDataFromDB}/>
             );
         }
 
@@ -284,7 +266,7 @@ export class Tax extends Component{
                         refreshControl={
                             <RefreshControl
                                 refreshing={this.state._refreshing}
-                                onRefresh={() => this.props.triggerRefresh(true)}
+                                onRefresh={this._getDataFromDB}
                             />
                         }
                     >
@@ -293,13 +275,18 @@ export class Tax extends Component{
                             description={description_Tax} 
                             oType='Switch'
                             rightHeader={
-                                <Switch
-                                    onValueChange={ (value) => this._setSwitch(value)} 
-                                    onTintColor={color_SwitchOn}
-                                    thumbTintColor={color_SwitchThumb}
-                                    tintColor={color_SwitchOff}
-                                    value={ this.state._taxData.enabled } 
-                                />
+                                this.state._disabledMode ?
+                                    <Text style={styles.txtSwitchViewOnly}>
+                                        {this.state._taxData.enabled ? 'ON' : 'OFF'}
+                                    </Text>
+                                :
+                                    <Switch
+                                        onValueChange={ (value) => this._setSwitch(value)} 
+                                        onTintColor={color_SwitchOn}
+                                        thumbTintColor={color_SwitchThumb}
+                                        tintColor={color_SwitchOff}
+                                        value={ this.state._taxData.enabled } 
+                                    />
                             }
                         >
 
@@ -308,35 +295,45 @@ export class Tax extends Component{
                                 <View style={{paddingTop: 10}}>
                                     <PropLevel2 
                                         name='Deduction Frequency'
+                                        contentType={this.state._disabledMode ? 'TEXT' : null}
                                         content={
-                                            <Picker
-                                                mode='dropdown'
-                                                style={styles.pickerStyle}
-                                                selectedValue={this.state._taxData.frequency.data.value.id}
-                                                onValueChange={(itemValue, itemIndex) => {this._setFrequencyType(itemValue, itemIndex)}}>
-                                                {
-                                                    this.state._taxData.frequency.data.options.map((taxType, index) => (
-                                                        <Picker.Item key={index} label={taxType.label} value={taxType.id} />
-                                                    ))
-                                                }
-                                            </Picker>
+                                            this.state._disabledMode ? 
+                                                this.state._taxData.frequency.data.value.label
+                                            :
+                                                <Picker
+                                                    mode='dropdown'
+                                                    style={styles.pickerStyle}
+                                                    selectedValue={this.state._taxData.frequency.data.value.id}
+                                                    onValueChange={(itemValue, itemIndex) => {this._setFrequencyType(itemValue, itemIndex)}}>
+                                                    {
+                                                        this.state._taxData.frequency.data.options.map((taxType, index) => (
+                                                            <Picker.Item key={index} label={taxType.label} value={taxType.id} />
+                                                        ))
+                                                    }
+                                                </Picker>
                                         }
+                                        hideBorder={this.state._disabledMode}
                                         contentStyle={{width: 170}}
                                     />
                                     <View style={{height: 25}}>
                                     </View>
                                     <PropLevel2 
                                         name='Company TIN'
+                                        contentType={this.state._disabledMode ? 'TEXT' : null}
                                         content={
-                                            <TextInput 
-                                                placeholder='Input Company ID'
-                                                style={{paddingLeft: 10, height: '100%'}}
-                                                onChangeText={_curID => {this._setId(_curID)}}
-                                                value={this.state._taxData.companytin.value}
-                                                returnKeyType="done"
-                                                underlineColorAndroid='transparent'
-                                            />
+                                            this.state._disabledMode ? 
+                                                this.state._taxData.companytin.value
+                                            :
+                                                <TextInput 
+                                                    placeholder='Input Company ID'
+                                                    style={{paddingLeft: 10, height: '100%'}}
+                                                    onChangeText={_curID => {this._setId(_curID)}}
+                                                    value={this.state._taxData.companytin.value}
+                                                    returnKeyType="done"
+                                                    underlineColorAndroid='transparent'
+                                                />
                                         }
+                                        hideBorder={this.state._disabledMode}
                                         contentStyle={{width: 170}}
                                     />
                                 </View>

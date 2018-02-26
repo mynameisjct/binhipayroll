@@ -1,5 +1,5 @@
 import {store} from '../../../../store';
 
 export const getPayrollData = () => {
-	return store.getState().companyPoliciesReducer.payroll;
+	return store.getState().companyPoliciesReducer.payroll.data;
 };

@@ -35,11 +35,10 @@ export default class CompanyBenefitsForm extends Component{
         this.state = {
             _aBenefitsList:[],
             _oCompBenefit: {
-                id: '',
-                name: '',
-                amountperMonth: '',
-                scheme: '',
-                effective: '',
+                effectivedate: '', 
+                benefittype: '', //ID
+                amountpermonth: '', //string
+                scheme: '' //string
             }
         }
     }
@@ -51,7 +50,7 @@ export default class CompanyBenefitsForm extends Component{
     
     _onSubmit = () => {
         Keyboard.dismiss();
-        let oEffectiveDateForm = this.refs.form_effectivedate.getValue();
+        let oEffectiveDateForm = this.refs.form_employeecompbenefits.getValue();
         if(oEffectiveDateForm){
             this.props.onSubmit(oEffectiveDateForm)
         }
@@ -69,12 +68,33 @@ export default class CompanyBenefitsForm extends Component{
                     },
                     error: '*Select effective date'
                 },
+
+                benefittype: {
+                    template: customPickerTemplate,
+                    label: 'COMPANY BENEFIT TYPE',
+                    error: '*Select a Benefit'
+                },
+                
+                amountpermonth: {
+                    label: 'AMOUNT PER MONTH' ,
+                    returnKeyType: 'done',
+                    editable: false
+                },
+
+                scheme: {
+                    label: 'SCHEME' ,
+                    returnKeyType: 'done',
+                    editable: false
+                }
             },
             stylesheet: stylesheet
         };
 
-        const EFFECTIVEDATE = t.struct({
+        const EMPLOYEE_COMPBENEFITS = t.struct({
             effectivedate: t.Date,
+            benefittype: t.enums({1:'Hello', 2:'Hi'}),
+            amountpermonth: t.maybe(t.String),
+            scheme: t.maybe(t.String)
         });
         
     return(
@@ -89,8 +109,8 @@ export default class CompanyBenefitsForm extends Component{
                 <ScrollView>
                     <View style={styles.formContent}>
                         <Form 
-                            ref='form_effectivedate'
-                            type={EFFECTIVEDATE}
+                            ref='form_employeecompbenefits'
+                            type={EMPLOYEE_COMPBENEFITS}
                             value={this.state._oEffectiveDate}
                             options={EFFECTIVEDATE_OPTIONS}
                         />
