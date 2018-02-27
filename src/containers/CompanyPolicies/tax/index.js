@@ -271,7 +271,7 @@ export class Tax extends Component{
                         }
                     >
                         <CustomCard 
-                            title={title_Tax} 
+                            title={this.props.title || title_Tax} 
                             description={description_Tax} 
                             oType='Switch'
                             rightHeader={

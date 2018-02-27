@@ -99,12 +99,13 @@ export default {
         backgroundColor: 'transparent',
         justifyContent: 'center',
         alignItems: 'flex-start',
-        marginLeft: 15  
+        marginLeft: 15,
+        paddingRight: 15
     },
 
     txtLabel:{
         fontFamily: 'Helvetica-Light',
-        fontSize: 14,
+        fontSize: 13,
         color: '#fff'
     },
 
@@ -117,7 +118,7 @@ export default {
 
     txtLabelTitle:{
         fontFamily: 'Helvetica-Bold',
-        fontSize: 15,
+        fontSize: 13,
         color: '#fff',
         fontWeight: '500'
     },

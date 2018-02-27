@@ -396,8 +396,18 @@ export default {
         
     },
 
-    govStyles: {
+    companyBasedRulesStyles: {
+        container: {
+            flex: 1,
+            flexDirection: 'row'
+        },
 
+        rulePlaceholder: {
+            height: '100%',
+            margin: 10,
+            elevation: 2,
+            backgroundColor: '#fff'
+        }
     }
 }
    

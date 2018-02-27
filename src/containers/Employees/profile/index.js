@@ -326,9 +326,7 @@ export class Profile extends Component {
                     colors={['#818489', '#3f4144', '#202626']}
                     style={styles.leftCont}>
                     
-                    <LinearGradient 
-                        colors={['#818489', '#3f4144', '#202626']}
-                        style={styles.contTitle}>
+                    <View style={styles.contTitle}>
 
                         <View style={styles.contIconProfile}>
                             {/* <View style={{width: 65, height: 65, backgroundColor: 'red', borderWidth: 1, borderColor: '#EEB843', borderRadius: 100, justifyContent: 'center', alignItems: 'center'}}> */}
@@ -354,7 +352,7 @@ export class Profile extends Component {
                             </Text>
                         </View>
 
-                    </LinearGradient>
+                    </View>
 
                     <View style={styles.optionsCont}>
                         <FlatList

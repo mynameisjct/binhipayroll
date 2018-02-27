@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+/* import React, { Component } from 'react';
 import { TabNavigator } from 'react-navigation';
 import Icon from 'react-native-vector-icons/Ionicons';
 
@@ -71,9 +71,9 @@ const TabsFooter = TabNavigator({
             backgroundColor: '#ecf0f1',
             height: 0
           }
-        }
-        
+        },
+        lazy: true
     }
 );
 
-export default TabsFooter;
+export default TabsFooter; */

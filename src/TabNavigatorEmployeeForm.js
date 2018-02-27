@@ -31,6 +31,9 @@ export const AddEmployeeForm = TabNavigator({
             style={{ color: tintColor }}
           />
         ),
+        tabBarOnPress: (scene, jumpToIndex) => { 
+          jumpToIndex(scene.index); 
+        },
       },
     },
     BankInfo: {

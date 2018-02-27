@@ -29,47 +29,15 @@ from '../../../../components/CustomCards';
 //Helper
 import * as oHelper from '../../../../helper';
 
-//Redux
-import { connect } from 'react-redux';
-import * as employeeActions from '../../data/activeProfile/actions';
-import { bindActionCreators } from 'redux';
+//Children Components
+import Tax from '../../../CompanyPolicies/tax';
 
-//Constants
-const btnActive = 'rgba(255, 255, 255, 0.3);'
-const btnInactive = 'transparent';
-const TITLE = 'Employee Tax Information'
-export class EmpTax extends Component {
+export default class EmpTax extends Component {
     render(){
-        const navigation = this.props.logininfo.navigation;
         return(
             <View style={styles.child.container}>
-                <View style={styles.child.contCard}>
-                    <CustomCard clearMargin={true} title={TITLE} oType='Text'>
-                            <View style={styles.child.floatingCard}>
-                                <PropTitle name='Employee Tax Information'/>
-                            </View>
-                    </CustomCard>
-                </View>
+                <Tax title='Tax Policy' viewOnly={true}/>
             </View>
         );
     }
 }
-
-function mapStateToProps (state) {
-    return {
-        logininfo: state.loginReducer.logininfo
-    }
-}
-
-function mapDispatchToProps (dispatch) {
-    return {
-        actions: {
-            employee: bindActionCreators(employeeActions, dispatch),
-        },
-    }
-}
-
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(EmpTax)

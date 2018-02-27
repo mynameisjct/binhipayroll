@@ -3,28 +3,39 @@ import { TabNavigator } from 'react-navigation';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { View } from 'react-native';
 
-import Basic from './basic';
-import Address from './address';
-import Dependents from './dependents';
-import Background from './background';
+import EmployeeBasicInfo from './basic';
+import EmployeeAddress from './address';
+import EmployeeDependents from './dependents';
+import EmployeeBackground from './background';
 
 const PersonalInfo = TabNavigator({
-  BasicInfo: {
-    screen: Basic,
+  EmployeeBasicInfo: {
+    screen: EmployeeBasicInfo,
     navigationOptions: {
-      tabBarLabel: 'Basic & Contact Info'
+      tabBarLabel: 'Basic & Contact Info',
+      tabBarOnPress: (scene, jumpToIndex) => { 
+        /* jumpToIndex(scene.index);  */
+      },
     }
   },
-  Address: {
-    screen: Address,
+
+  EmployeeAddress: {
+    screen: EmployeeAddress,
     navigationOptions: {
-      tabBarLabel: 'Address Info'
+      tabBarLabel: 'Address Info',
+      tabBarOnPress: (scene, jumpToIndex) => { 
+        /* jumpToIndex(scene.index);  */
+      },
     }
   },
-  Dependents: {
-    screen: Dependents,
+  
+  EmployeeDependents: {
+    screen: EmployeeDependents,
     navigationOptions: {
-      tabBarLabel: 'Family & Dependents'
+      tabBarLabel: 'Family & Dependents',
+      tabBarOnPress: (scene, jumpToIndex) => { 
+        /* jumpToIndex(scene.index);  */
+      },
     }
   },
 /*   Background: {
@@ -37,7 +48,7 @@ const PersonalInfo = TabNavigator({
   {
     animationEnabled: false,
     tabBarPosition: 'top',
-    swipeEnabled: true,
+    swipeEnabled: false,
     tabBarOptions: {
       showIcon: false,
       showLabel: true,
@@ -57,7 +68,9 @@ const PersonalInfo = TabNavigator({
         backgroundColor: '#EEB843',
         height: 5
       }
-    }
+    },
+    
+    lazy: true
   }
 );
 

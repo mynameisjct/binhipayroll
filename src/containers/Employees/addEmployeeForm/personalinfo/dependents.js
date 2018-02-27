@@ -14,6 +14,7 @@ import {
 import t from 'tcomb-form-native'; // 0.6.9
 import moment from "moment";
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { withNavigation } from 'react-navigation';
 
 //Styles
 import styles from './styles';
@@ -370,7 +371,7 @@ class DependentsForm extends Component{
 
 }
 
-export class Dependents extends Component {
+export class EmployeeDependents extends Component {
     constructor(props){
         super(props);
         this.state={
@@ -394,6 +395,15 @@ export class Dependents extends Component {
             _disabledMode: true,
             _status: [2, 'Loading...'],
             _hasSentRequest: false,
+        }
+    }
+
+    componentWillReceiveProps(nextProps){
+        if(
+            (this.props.formTriggerNext.index !== nextProps.formTriggerNext.index) &&
+            (nextProps.formTriggerNext.key === this.props.navigation.state.key)
+        ){
+            this._setSubmitStatus(true);
         }
     }
 
@@ -675,13 +685,13 @@ export class Dependents extends Component {
                             value={[]}/>
                     </View>
                 </View>
-                <View style={{flex:1, padding: 40}}>
+                {/* <View style={{flex:1, padding: 40}}>
                     <Button
                         onPress={() => this._setSubmitStatus(true)}
                         title='Next'
                         color="#3b5998"
                         accessibilityLabel='Next'/>
-                </View>
+                </View> */}
             </ScrollView>
             <PromptScreen.PromptGeneric 
                 show= {this.state._promptShow} 
@@ -704,7 +714,8 @@ function mapStateToProps (state) {
         logininfo: state.loginReducer.logininfo,
         activecompany: state.activeCompanyReducer.activecompany,
         oFamily: state.employees.activeProfile.data.personalinfo.family,
-        oPersonalInfo: state.employees.activeProfile.data.personalinfo
+        oPersonalInfo: state.employees.activeProfile.data.personalinfo,
+        formTriggerNext: state.employees.formTriggerNext
     }
 }
 
@@ -716,7 +727,7 @@ function mapDispatchToProps (dispatch) {
     }
 }
   
-export default connect(
+export default withNavigation(connect(
     mapStateToProps,
     mapDispatchToProps
-)(Dependents)
+)(EmployeeDependents))

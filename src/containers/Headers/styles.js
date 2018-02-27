@@ -62,5 +62,66 @@ export default {
     fontSize: 16,
     fontWeight: '200',
     textAlign: 'center',
+  },
+
+  specialForm: {
+    headerRight:{
+      height: '60%',
+      width: 200,
+      paddingRight: 15,
+      /* backgroundColor: 'red', */
+      flexDirection: 'row'
+    },
+
+    headerLeft:{
+      height: '100%',
+      width: 200,
+      paddingLeft: 23,
+      backgroundColor: 'transparent',
+      justifyContent: 'center',
+      alignItems: 'flex-start'
+    },
+
+    contBtn:{
+      flex: 1,
+      width: '100%',
+      backgroundColor: 'transparent'
+    },
+
+    contBtnWrapper: {
+        flex: 1,
+        flexDirection: 'row',
+        /* borderWidth: 1, */
+    },
+
+    contIcon: {
+      left: {
+        justifyContent: 'center',
+        alignItems: 'flex-end',
+        /* borderWidth: 1 */
+        /* backgroundColor: 'red' */
+      },
+      
+      right: {
+        justifyContent: 'center',
+        alignItems: 'flex-start',
+        /* borderWidth: 1 */
+      }
+    },
+
+    contLabel: {
+      left: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'flex-start',
+        borderRightWidth: 0.7, 
+        borderColor: '#D1D4D6'
+      },
+      right: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'flex-end'
+      }
+    }
   }
 };

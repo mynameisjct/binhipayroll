@@ -18,7 +18,7 @@ import EmployeeTax from './tax';
  */
 
 const EmploymentInfo = TabNavigator({
-    EmplomentDetails: {
+    EmployeeDetails: {
         screen: EmployeeDetails,
         navigationOptions: {
             tabBarLabel: 'EMPLOYMENT DETAILS'
@@ -69,12 +69,12 @@ const EmploymentInfo = TabNavigator({
         }
     },
 
-    CompanyBasedRules: {
+/*     CompanyBasedRules: {
         screen: CompanyBasedRules,
         navigationOptions: {
             tabBarLabel: 'COMPANY BASED RULES'
         }
-    },
+    }, */
 
     /* EmployeePayroll: {
         screen: EmployeePayroll,
@@ -113,7 +113,9 @@ const EmploymentInfo = TabNavigator({
                 backgroundColor: '#EEB843',
                 height: 5
             }
-        }
+        },
+
+        lazy: true
     }
 );
 

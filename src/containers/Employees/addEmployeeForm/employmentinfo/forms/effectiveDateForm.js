@@ -93,8 +93,8 @@ export default class EffectiveDateForm extends Component{
                         />
                     </View>
                 </ScrollView>
-                </View>
-            </FormModal>
+            </View>
+        </FormModal>
         )
     }
 }

@@ -17,7 +17,7 @@ import {Provider} from 'react-redux';
 const store = configureStore();
 
 store.subscribe(() => {
-  console.log("Store is updated!", store.getState().employees.data);
+  console.log("Store is updated!", store.getState().employees.formTriggerNext);
 });
 
 export default class Main extends Component {

@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 import t from 'tcomb-form-native'; // 0.6.9
 import moment from "moment";
+import { withNavigation } from 'react-navigation';
 
 //Styles
 import styles from './styles';
@@ -284,7 +285,7 @@ class AddressForm extends Component {
     }
 }
 
-export class Address extends Component {
+export class EmployeeAddress extends Component {
     constructor(props){
         super(props);
         this.state={
@@ -292,6 +293,15 @@ export class Address extends Component {
             _promptShow: false
         }
     }
+
+    componentWillReceiveProps(nextProps){
+        if(
+          (this.props.formTriggerNext.index !== nextProps.formTriggerNext.index) &&
+          (nextProps.formTriggerNext.key === this.props.navigation.state.key)
+        ){
+            this._onPress();
+        }
+      }
 
     _updateLoadingStatus = (value) => {
         this.setState({ _promptShow: value })
@@ -310,7 +320,7 @@ export class Address extends Component {
                 present: { ...bPresentAdd },
                 permanent: { ...bPermanentAdd }
             });
-            navigation.navigate('Dependents');
+            navigation.navigate('EmployeeDependents');
         }
         else{
             Alert.alert(
@@ -363,14 +373,14 @@ export class Address extends Component {
                                     setLoadingStatus={this._updateLoadingStatus}/>
                             </View>
                         </View>
-                        <View style={{flex:1, padding: 40}}>
+                        {/* <View style={{flex:1, padding: 40}}>
                             <Button
                                 onPress={this._onPress}
                                 title='Next'
                                 color="#3b5998"
                                 accessibilityLabel='Next'
                             />
-                        </View>
+                        </View> */}
                     </View>
                 </ScrollView>
                 <PromptScreen.PromptGeneric 
@@ -385,7 +395,8 @@ function mapStateToProps (state) {
     return {
         logininfo: state.loginReducer.logininfo,
         activecompany: state.activeCompanyReducer.activecompany,
-        oEmployeeAddress: state.employees.activeProfile.data.personalinfo.address
+        oEmployeeAddress: state.employees.activeProfile.data.personalinfo.address,
+        formTriggerNext: state.employees.formTriggerNext
     }
 }
 
@@ -397,7 +408,7 @@ function mapDispatchToProps (dispatch) {
     }
   }
   
-export default connect(
+export default withNavigation(connect(
     mapStateToProps,
     mapDispatchToProps
-)(Address)
+)(EmployeeAddress))

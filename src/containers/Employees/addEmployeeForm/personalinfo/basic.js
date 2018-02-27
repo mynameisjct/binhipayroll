@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 import t from 'tcomb-form-native'; // 0.6.9
 import moment from "moment";
+import { withNavigation } from 'react-navigation';
 
 //Styles
 import styles from './styles';
@@ -64,7 +65,7 @@ const EMPLOYEE_GOVID = t.struct({
 });
 
 
-export class Basic extends Component {
+export class EmployeeBasicInfo extends Component {
   constructor(props){
     super(props);
     this.state={
@@ -92,8 +93,16 @@ export class Basic extends Component {
     }
   }
 
+  componentWillReceiveProps(nextProps){
+    if(
+      (this.props.formTriggerNext.index !== nextProps.formTriggerNext.index) &&
+      (nextProps.formTriggerNext.key === this.props.navigation.state.key)
+    ){
+        this._onPress();
+    }
+  }
+
   _onPress = () => {
-    const navigation = this.props.logininfo.navigation;
     let aMobile = this.mobileList.getValue();
     let aTelephone = this.telephoneList.getValue();
     let aEmail = this.emailList.getValue();
@@ -121,8 +130,7 @@ export class Basic extends Component {
         _oContactInfo: {...oContactInfo},
         _oGovID: {...oGovForm},
       });
-
-      navigation.navigate('Address');
+      this.props.navigation.navigate('EmployeeAddress');
     }
     else{
       Alert.alert(
@@ -137,6 +145,7 @@ export class Basic extends Component {
   }
 
   render() {
+    console.log('=====RENDERING BASIC INFO!')
     //This is put into render method to allow direct access to class properties
     let myFormatFunction = (format,strDate) => {
       return moment(strDate).format(format);
@@ -241,7 +250,7 @@ export class Basic extends Component {
 
               { /********** Basic Information **********/ }
               <View style={styles.contTitle}>
-                <PropTitle name='GOVERNMENT IDS'/>
+                <Text style={styles.txtFormTitle}> GOVERNMENT IDS </Text>
               </View>
               <Form 
                 ref='govid_form'
@@ -279,14 +288,14 @@ export class Basic extends Component {
               
             </View>
           </View>
-          <View style={{flex:1, padding: 40}}>
+{/*           <View style={{flex:1, padding: 40}}>
             <Button
                 onPress={this._onPress}
                 title='Next'
                 color="#3b5998"
                 accessibilityLabel='Next'
             />
-          </View>
+          </View> */}
         </View>
       </ScrollView>
     );
@@ -297,7 +306,8 @@ function mapStateToProps (state) {
   return {
       logininfo: state.loginReducer.logininfo,
       activecompany: state.activeCompanyReducer.activecompany,
-      employeePersonalInfo: state.employees.activeProfile.data.personalinfo
+      employeePersonalInfo: state.employees.activeProfile.data.personalinfo,
+      formTriggerNext: state.employees.formTriggerNext
   }
 }
 
@@ -309,7 +319,7 @@ function mapDispatchToProps (dispatch) {
   }
 }
 
-export default connect(
+export default withNavigation(connect(
   mapStateToProps,
   mapDispatchToProps
-)(Basic)
+)(EmployeeBasicInfo))

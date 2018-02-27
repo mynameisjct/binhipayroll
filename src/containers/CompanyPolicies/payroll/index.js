@@ -834,7 +834,7 @@ export class Payroll extends Component{
                             />
                         }
                     >
-                        <CustomCard title={title_Payroll} oType='TEXT'>
+                        <CustomCard title={this.props.title || title_Payroll} oType='TEXT'>
                             <PropLevel1 
                                 name='Payroll Type' 
                                 content={

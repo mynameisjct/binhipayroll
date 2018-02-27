@@ -26,13 +26,18 @@ export default class FixedCard1 extends PureComponent {
                     </View>
 
                     <View style={styles.header.contBtn}>
-                        <TouchableOpacity
-                            onPress={() => {this.props.onEdit()}}>
-                            {   
-                                this.props.actionComponent || 
-                                <Icon name='ios-create-outline' size={this.props.iconSize || 40} color='#000000'/>
-                            }
-                        </TouchableOpacity>
+                        {
+                            !this.props.hideActionIcon ?
+                                <TouchableOpacity
+                                    onPress={() => {this.props.onEdit()}}>
+                                    {   
+                                        this.props.actionComponent || 
+                                        <Icon name='ios-create-outline' size={this.props.iconSize || 40} color='#000000'/>
+                                    }
+                                </TouchableOpacity>
+                            :
+                                null
+                        }
                     </View>
                 </View>
 

@@ -29,6 +29,7 @@ export default {
     },
 
     contTitle: {
+        backgroundColor: '#202626',
         minHeight: 100,
         justifyContent: 'center',
         flexDirection: 'row',
@@ -251,7 +252,24 @@ export default {
             fontSize: 14,
             color: '#212223',
             fontFamily: 'Helvetica-Light',
-        }
+        },
+        
+        contBtn: {
+            width: 100,
+            backgroundColor: 'transparent',
+            justifyContent: 'flex-start',
+            alignItems: 'flex-end',
+        },
+    },
+
+    formModal: {
+        container: {
+        paddingTop: 15,
+        paddingBottom: 15,
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: '80%'
+    },
     }
 }
    
