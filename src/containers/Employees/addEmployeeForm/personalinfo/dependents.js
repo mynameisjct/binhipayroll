@@ -441,30 +441,29 @@ export class EmployeeDependents extends Component {
         this.props.actions.employee.updateDependents({spouse: oSpouse, dependents: arrDependents});
     }
 
-    _saveAndNavigate = async() => {
-        const navigation = this.props.logininfo.navigation;
-        let bSuccess = await this._saveDataToDB({personalinfo: this.props.oPersonalInfo});
-        if(bSuccess){
-            navigation.navigate('BankAccount');
-        }
+    _saveAndNavigate = () => {
+        let bSuccess = this._saveDataToDB({personalinfo: this.props.oPersonalInfo});
     }
 
     _saveDataToDB = async(oData) => {
         this._showLoadingPrompt(add_loading_message);
 
         let bFlag = false;
-
+        let oRes = null;
         await employeeApi.createPersonalInfo(oData)
             .then((response) => response.json())
             .then((res) => {
                 console.log('XXXXXXXXXXXXXXXXXXXXXXXXXXXX');
                 console.log('res: ' + JSON.stringify(res));
+                oRes = {...res};
                 this._hideLoadingPrompt();
                 bFlag = this._evaluateResponse(res);
-                if(res.flagno==1){
-                   
+            })
+            .then((res) => {
+                if(bFlag){
+                    this.props.actions.employee.updateActiveID(oRes.id);
+                    this.props.navigation.navigate('BankAccount');
                 }
-                
             })
             .catch((exception) => {
                 this._hideLoadingPrompt();

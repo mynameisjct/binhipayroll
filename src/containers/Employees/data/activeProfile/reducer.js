@@ -14,7 +14,7 @@ const initialState = {
 			lastname: "LNAME_TEST",
 			nickname: "NNAME_TEST",
 			birthdate: {
-				value: '',
+				value: '1990-01-01',
 				format: "MMMM DD, YYYY"
 			},
 			gender: {
@@ -57,22 +57,22 @@ const initialState = {
 				title: "PRESENT ADDRESS",
 				province: {
 					label: "Province",
-					id: "",
+					id: "1043",
 					value: ""
 				},
 				city: {
 					label: "City",
-					id: "",
+					id: "104307",
 					value: ""
 				},
 				barangay: {
 					label: "Barangay",
-					id: "",
+					id: "104307008",
 					value: ""
 				},
 				street: {
 					label: "street",
-					value: ""
+					value: "K"
 				}
 			},
 	
@@ -105,7 +105,7 @@ const initialState = {
 				title: "SPOUSE",
 				name: "SPOUSE_NAME",
 				birthdate: {
-					value: "",
+					value: '1980-01-01',
 					format: "MMMM DD, YYYY"
 				},
 				work:{

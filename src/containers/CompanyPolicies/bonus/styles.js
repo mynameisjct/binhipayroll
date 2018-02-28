@@ -465,9 +465,14 @@ export default {
         borderColor: '#505251',
         justifyContent: 'center',
         alignItems: 'center'
-    }
+    },
 
-    //********PAYROLL************//
+    txtDisabledValue: {
+        fontFamily: 'Helvetica-Bold',
+        fontSize: 15,
+        color: '#434646',
+        paddingLeft: 15
+    }
     
     
 

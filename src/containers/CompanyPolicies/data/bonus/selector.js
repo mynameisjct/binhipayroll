@@ -3,12 +3,12 @@ import {store} from '../../../../store';
 let activeID = '';
 
 export const getAllData = () => {
-	return store.getState().companyPoliciesReducer.bonus;
+	return store.getState().companyPoliciesReducer.bonus.data;
 };
 
 
 export const getDefaultActiveData = () => {
-	let oAllData = {...store.getState().companyPoliciesReducer.bonus}
+	let oAllData = {...store.getState().companyPoliciesReducer.bonus.data}
 	let oActiveData = null;
 	let bFlag = false;
 
@@ -30,7 +30,7 @@ export const getDefaultActiveData = () => {
 };
 
 export const getRuleFromID = (id) => {
-	let oAllData = {...store.getState().companyPoliciesReducer.bonus}
+	let oAllData = {...store.getState().companyPoliciesReducer.bonus.data}
 	let oActiveData = oAllData.data[oAllData.data.findIndex((obj => obj.id == id))];
 	oActiveData.schedule = sortData(oActiveData.schedule, true);
 	_addDummySchedule(oActiveData);

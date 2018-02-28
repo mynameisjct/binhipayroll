@@ -42,6 +42,12 @@ export let createPersonalInfo = payload => {
 	return fetchApi(endPoints.employee.personalinfo.create(), payload, 'post');
 }
 
+export let bankinfo = {
+	update: function(payload){
+		return fetchApi(endPoints.employee.bankinfo.update(payload), payload, 'put');
+	 }
+}
+
 //Address API
 export const getProvinces = payload => fetchApi(
 	addressEndPoints.provinces, 

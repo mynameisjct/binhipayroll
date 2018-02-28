@@ -1,4 +1,5 @@
 import {store} from '../store';
+import { bankInfo } from '../containers/Employees/data/activeProfile/api';
 
 export const getActiveUsername = () => {
 	return store.getState().loginReducer.logininfo.resUsername;
@@ -48,6 +49,16 @@ export let employee = {
 			return(
 				baseURL.activeCompany() +
 				'/employee/personalinfo'
+			)
+		}
+	},
+
+	bankinfo: {
+		update: function(payload){
+			return(
+				baseURL.activeCompany() +
+				'/employee/'  + payload.id + 
+				'/bankinfo'
 			)
 		}
 	}

@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 import t from 'tcomb-form-native'; // 0.6.9
 import moment from "moment";
+import { withNavigation } from 'react-navigation';
 
 //Styles
 import styles from '../personalinfo/styles';
@@ -25,12 +26,21 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as employeeActions from '../../data/activeProfile/actions';
 
+//API
+import * as employeeApi from '../../data/activeProfile/api'
+
 //Custom Component
 import {FormCard, PropTitle} from '../../../../components/CustomCards';
 import * as CustomForm from '../../../../components/CustomForm';
+import * as PromptScreen from '../../../../components/ScreenLoadStatus';
+import MessageBox from '../../../../components/MessageBox';
 
 //Helper
 import * as oHelper from '../../../../helper';
+
+//CONSTANTS
+const add_loading_message = 'Saving New Employee Bank Information. Please wait.';
+const update_loading_message = 'Saving Employee Bank Information. Please wait...';
 
 const Form = t.form.Form;
 
@@ -41,7 +51,28 @@ export class BankAccount extends Component {
       _oBankAccount: {
           bankname: '',
           accountnumber: ''
-      }
+      },
+
+      
+      //Gereric States
+      _promptShow: false,
+      _promptMsg: '',
+      _msgBoxShow: false,
+      _msgBoxType: '',
+      _resMsg: '',
+      _refreshing: false,
+      _disabledMode: true,
+      _status: [2, 'Loading...'],
+      _hasSentRequest: false,
+    }
+  }
+
+  componentWillReceiveProps(nextProps){
+    if(
+        (this.props.formTriggerNext.index !== nextProps.formTriggerNext.index) &&
+        (nextProps.formTriggerNext.key === this.props.navigation.state.key)
+    ){
+        this._onPress();
     }
   }
 
@@ -53,7 +84,7 @@ export class BankAccount extends Component {
     this.setState({_oBankAccount: oData})
   }
 
-  _onPress = () => {
+  _onPress = async() => {
     console.log('XXXXXXXXXXXXXXXXXXXXXXXX');
     console.log('this.state._oBankAccount: ' + JSON.stringify(this.state._oBankAccount));
     const navigation = this.props.logininfo.navigation;
@@ -61,9 +92,8 @@ export class BankAccount extends Component {
 
     if (oBankInfo) {
       this.props.actions.employee.updateBankInfo(oBankInfo);
+      this.setState({ _oBankAccount: oBankInfo}, this._saveAndNavigate());
       
-      this.setState({ _oBankAccount: oBankInfo});
-      navigation.navigate('EmplomentDetails');
     }
 
     else{
@@ -77,6 +107,90 @@ export class BankAccount extends Component {
       )
     }
   }
+
+  _saveAndNavigate = async() => {
+    const navigation = this.props.logininfo.navigation;
+    let bSuccess = await this._saveDataToDB({id: this.props.oEmployee.id, bankinfo: this.props.oEmployeeBankInfo});
+    if(bSuccess){
+        navigation.navigate('EmplomentDetails');
+    }
+  }
+
+
+  _saveDataToDB = async(oData) => {
+    this._showLoadingPrompt(add_loading_message);
+
+    let bFlag = false;
+
+    await employeeApi.bankinfo.update(oData)
+        .then((response) => response.json())
+        .then((res) => {
+            console.log('XXXXXXXXXXXXXXXXXXXXXXXXXXXX');
+            console.log('res: ' + JSON.stringify(res));
+            this._hideLoadingPrompt();
+            bFlag = this._evaluateResponse(res);
+        })
+        .catch((exception) => {
+            this._hideLoadingPrompt();
+            this._showMsgBox('error-ok', exception.message);
+        });
+
+    return bFlag;
+}
+
+
+  //GENERIC METHODS
+  _evaluateResponse = (res) => {
+    switch (res.flagno){
+        case 0:
+            this._showMsgBox('error-ok', res.message);
+            return false
+            break;
+        case 1:
+            this._showMsgBox('success', res.message);
+            return true;
+            break;
+        default:
+            this._showMsgBox('error-ok', CONSTANTS.ERROR.UNKNOWN);
+            return false
+            break;
+    }
+}
+
+  _showLoadingPrompt = (msg) => {
+    this.setState({
+      _promptMsg: msg,
+      _promptShow: true
+    })
+  }
+
+  _showMsgBox = (strType, msg) => {
+    this.setState({
+      _msgBoxShow: true,
+      _msgBoxType: strType,
+      _resMsg: msg
+    });
+  }
+
+  _closeMsgBox = () => {
+    this.setState({
+      _msgBoxShow: false
+    })
+  }
+
+  _hideLoadingPrompt = () => {
+    this.setState({
+      _promptShow: false
+    })
+  }
+
+  _onFormClose = () => {
+    this.setState({
+      _bShowCompForm: false,
+      _bShowGovForm: false
+    })
+  }
+
 
   render() {
     //This is put into render method to allow direct access to class properties
@@ -126,6 +240,17 @@ export class BankAccount extends Component {
               />
             </View>
           </ScrollView>
+          <PromptScreen.PromptGeneric 
+                show= {this.state._promptShow} 
+                title={this.state._promptMsg}/>
+
+          <MessageBox
+              promptType={this.state._msgBoxType}
+              show={this.state._msgBoxShow}
+              onClose={this._closeMsgBox}
+              onWarningContinue={this._continueActionOnWarning}
+              message={this.state._resMsg}
+          /> 
         </View>
     );
   }
@@ -135,7 +260,9 @@ function mapStateToProps (state) {
   return {
         logininfo: state.loginReducer.logininfo,
         activecompany: state.activeCompanyReducer.activecompany,
-        oEmployeeBankInfo: state.employees.activeProfile.data.bakinfo
+        oEmployeeBankInfo: state.employees.activeProfile.data.bankinfo,
+        oEmployee: state.employees.activeProfile.data,
+        formTriggerNext: state.employees.formTriggerNext
   }
 }
 
@@ -147,7 +274,7 @@ function mapDispatchToProps (dispatch) {
   }
 }
 
-export default connect(
+export default withNavigation(connect(
   mapStateToProps,
   mapDispatchToProps
-)(BankAccount)
+)(BankAccount))

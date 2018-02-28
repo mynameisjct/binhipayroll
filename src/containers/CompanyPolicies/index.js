@@ -22,17 +22,13 @@ import Undertime from './undertime';
 import Overtime from './overtime';
 import Leaves from './leaves';
 import Benefits from './benefits';
-import Bonus from './Rules/bonus';
+import Bonus from './bonus';
 import Ranks from './ranks';
 
 //Redux
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import {SetLoginInfo, SetActiveCompany} from '../../actions';
-import * as payrollActions from './data/payroll/actions';
-import * as taxActions from './data/tax/actions';
-import * as bonusActions from './data/bonus/actions';
-import * as ranksActions from './data/ranks/actions';
 
 //Custom Components
 import * as StatusLoader from '../../components/ScreenLoadStatus';
@@ -52,9 +48,6 @@ export class CompanyPolicies extends Component {
             //Redux Store
             _objLoginInfo: null,
             _objActiveCompany: null,
-
-            //Error-0, Success-1, Loading-2,  Handler
-            _bonusStatus: ['3', 'Loading...'],
 
             //Unsaved Transaction
             _hasActiveTransaction: false,
@@ -189,9 +182,7 @@ export class CompanyPolicies extends Component {
         try{
             this.setState({
                 _objLoginInfo: {...oProps.logininfo},
-                _objActiveCompany: {...oProps.activecompany},
-                _bonusStatus: ['3', 'Loading...'],
-                _ranksStatus: ['3', 'Loading...']
+                _objActiveCompany: {...oProps.activecompany}
             },
                 () => {
                     this._setActiveChild({key:'003'});
@@ -212,72 +203,6 @@ export class CompanyPolicies extends Component {
         })
     }
 
-    _getBonusRule = (bForceUpdate) => {
-        let curStatus = [2, 'Loading...'];
-        this.setState({
-            _bonusStatus: curStatus
-        });
-
-        let oInput = {
-            companyid: this.state._objActiveCompany.id,
-            username: this.state._objLoginInfo.resUsername,
-            transtype: 'get',
-            accesstoken: '',
-            clientid: '',
-        }
-        
-        this.props.actions.bonus.get(oInput)
-        .then(() => {
-            console.log('this.props.bonus: ' + JSON.stringify(this.props.bonus));
-            let oBonus  = {...this.props.bonus};
-            let oStatus = [oBonus.flagno, oBonus.message];
-            this.setState({
-                _bonusStatus: oStatus
-            });
-		})
-		.catch((exception) => {
-            console.log('oInput: ' + JSON.stringify(oInput));
-            console.log('exception: ' + exception);
-            let oStatus = [0, 'Application error was encountered. \n Please contact BINHI-MeDFI'];
-			this.setState({
-                _bonusStatus: oStatus
-            })
-		}); 
-    }
-
-    _getRanksRule = () => {
-        let curStatus = [2, 'Loading...'];
-        this.setState({
-            _ranksStatus: curStatus
-        });
-
-        let oInput = {
-            companyid: this.state._objActiveCompany.id,
-            username: this.state._objLoginInfo.resUsername,
-            transtype: 'get',
-            accesstoken: '',
-            clientid: '',
-        }
-        
-        this.props.actions.ranks.get(oInput)
-        .then(() => {
-            console.log('this.props.ranks: ' + JSON.stringify(this.props.ranks));
-            let oRanks  = {...this.props.ranks};
-            let oStatus = [oRanks.flagno, oRanks.message];
-            this.setState({
-                _bonusStatus: oStatus
-            });
-		})
-		.catch((exception) => {
-            console.log('oInput: ' + JSON.stringify(oInput));
-            console.log('exception: ' + exception);
-            let oStatus = [0, 'Application error was encountered. \n Please contact BINHI-MeDFI'];
-			this.setState({
-                _ranksStatus: oStatus
-            })
-		}); 
-    }
-
     _setActiveChild = (oItem) => {
         this._setButtons(oItem);
         requestAnimationFrame(() => {
@@ -285,15 +210,15 @@ export class CompanyPolicies extends Component {
         })
     }
 
-_setActiveChild = (oItem) => {
-    if(this.state._activeChild != oItem.key){
-        this._setButtons(oItem); //immediately trigg
-        requestAnimationFrame(() => {
-            this._setChildComponent(oItem);
-            this.flatListRef.scrollToIndex({animated: true, index: Number(oItem.key)-1});
-        })
+    _setActiveChild = (oItem) => {
+        if(this.state._activeChild != oItem.key){
+            this._setButtons(oItem); //immediately trigg
+            requestAnimationFrame(() => {
+                this._setChildComponent(oItem);
+                this.flatListRef.scrollToIndex({animated: true, index: Number(oItem.key)-1});
+            })
+        }
     }
-}
 
     _setButtons = (oItem) => {
         let aList = [...this.state._policyList];
@@ -324,63 +249,34 @@ _setActiveChild = (oItem) => {
             let childComponent = '';
             switch (this.state._activeChild){
                 case '001': 
-                    childComponent = (
-                        <WorkShift/>
-                    );
+                    childComponent = (<WorkShift/>);
                     break;
                 case '002':
-                    childComponent = (
-                        <Payroll/>
-                    );
+                    childComponent = (<Payroll/>);
                     break;
                 case '003':
-                    childComponent = (
-                        <Tax 
-                            hasUnsaved={this._hasActiveTransaction} 
-                            status={this.state._taxStatus} 
-                            triggerRefresh={this._getTaxSettings}/>
-                    );
+                    childComponent = (<Tax/>);
                     break;
                 case '004':
-                    childComponent = (
-                        <Tardiness/>
-                    )
+                    childComponent = (<Tardiness/>);
                     break;
                 case '005':
-                    childComponent = (
-                        <Undertime/>
-                    )
+                    childComponent = (<Undertime/>);
                     break;
                 case '006':
-                    childComponent = (
-                        <Overtime/>
-                    );
+                    childComponent = (<Overtime/>);
                     break;
                 case '007':
-                    childComponent = (
-                        <Leaves/>
-                    );
+                    childComponent = (<Leaves/>);
                     break;
                 case '008':
-                    childComponent = (
-                        <Benefits/>
-                    );
+                    childComponent = (<Benefits/>);
                     break;
                 case '009':
-                    childComponent = (
-                        <Bonus
-                            hasUnsaved={this._hasActiveTransaction} 
-                            status={this.state._bonusStatus} 
-                            triggerRefresh={this._getBonusRule}
-                        />);
+                    childComponent = (<Bonus/>);
                     break;
                 case '010':
-                    childComponent = (
-                        <Ranks
-                            hasUnsaved={this._hasActiveTransaction} 
-                            status={this.state._ranksStatus} 
-                            triggerRefresh={this._getRanksRule}
-                        />);
+                    childComponent = (<Ranks/>);
                     break;
                 default:
                     childComponent = (<StatusLoader.PromptLoading title='Loading...'/>);
@@ -437,8 +333,7 @@ _setActiveChild = (oItem) => {
 function mapStateToProps (state) {
     return {
         logininfo: state.loginReducer.logininfo,
-        activecompany: state.activeCompanyReducer.activecompany,
-        bonus: state.companyPoliciesReducer.bonus
+        activecompany: state.activeCompanyReducer.activecompany
 
     }
 }
@@ -446,7 +341,6 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
     return {
         actions: {
-            bonus: bindActionCreators(bonusActions, dispatch),
         },
     }
 }

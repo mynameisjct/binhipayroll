@@ -45,6 +45,7 @@ from '../../../components/CustomCards';
 
 //Helper
 import * as oHelper from '../../../helper';
+import { CONSTANTS } from '../../../constants/index';
 
 //Class Constants
 const switch_loading_message = 'Switching 13th Month Pay Policy. Please wait...';
@@ -256,6 +257,7 @@ class BonusForm extends Component{
                                 content={
                                     oRuleName
                                 }
+                                
                                 hideBorder={!this.props.disabledMode}
                                 contentStyle={{
                                     width: 130
@@ -390,30 +392,42 @@ export class Bonus extends Component{
     }
 
     componentDidMount(){
-        if(this.props.status[0]==1){
+        if(this.props.bonus.data){
             this._initValues();
         }
-        else if(this.props.status[0]==3){
-            this.props.triggerRefresh(true);
+        else{
+            this._getDataFromDB();
         }
-        else;
-
-        this.setState({
-            _status: [...this.props.status]
-        });
     }
     
-
     componentWillReceiveProps(nextProps) {
-        if(this.state._status[0] != nextProps.status[0]){
-            if(nextProps.status[0]==1){
-                this._initValues();
-            }
-
-            this.setState({
-                _status: nextProps.status
-            })
+        if(
+            (this.state._status[0] != nextProps.bonus.status[0]) &&
+            (nextProps.bonus.status[0] != 1)
+        ){
+            console.log('STATUS HAS CHANGED!')
+            this.setState({ _status: nextProps.bonus.status })
         }
+
+        if(
+            (JSON.stringify(this.state._allData) !== JSON.stringify(nextProps.bonus.data)) &&
+            (nextProps.bonus.status[0] == 1)
+        ){
+            this._initValues();
+        }
+    }
+
+    _getDataFromDB = () => {
+        this.props.actions.bonus.get({...this._requiredInputs(), transtype:'get'});
+    }
+
+    _requiredInputs = () => {
+        return({
+            companyid: this.props.activecompany.id,
+            username: this.props.logininfo.resUsername,
+            accesstoken: '',
+            clientid: ''
+        })
     }
 
     _initValues = () => {
@@ -423,7 +437,8 @@ export class Bonus extends Component{
         this.setState({
             _allData: oAllData,
             _activeData: oActiveData,
-            _disabledMode: true
+            _disabledMode: true,
+            _status: CONSTANTS.STATUS.SUCCESS
         })
     }
 
