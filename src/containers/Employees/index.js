@@ -29,6 +29,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as employeeListActions from './data/list/actions';
 
+const TITLE = 'EMPLOYEE LIST'
 export class Employees extends Component {
     constructor(props){
         super(props);
@@ -50,6 +51,10 @@ export class Employees extends Component {
     }
 
     componentDidMount = () => {
+        this._getEmployeeListFromDB();
+    }
+
+    _getEmployeeListFromDB = () => {
         this.props.actions.employeelist.get();
     }
 
@@ -60,7 +65,7 @@ export class Employees extends Component {
         let pMessage = pStatus[1];
         if(pProgress==0){
             return (
-                <PromptScreen.PromptError title={TITLE} onRefresh={()=>this.props.triggerRefresh(true)}/>
+                <PromptScreen.PromptError title={TITLE} onRefresh={this._getEmployeeListFromDB}/>
             );
         }
 

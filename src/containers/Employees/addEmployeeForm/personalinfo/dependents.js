@@ -383,6 +383,7 @@ export class EmployeeDependents extends Component {
                 jobtitle: this.props.oFamily.spouse.work.jobtitle,
                 company: this.props.oFamily.spouse.work.company
             },
+            _arrDependents: this.props.oFamily.dependents.data || [],
             _isSubmitted: false,
 
             //Gereric States
@@ -682,7 +683,7 @@ export class EmployeeDependents extends Component {
                             isSubmitted={this.state._isSubmitted}
                             validateAllData={this._validateAllData}
                             label='DEPENDENT'
-                            value={[]}/>
+                            value={this.state._arrDependents}/>
                     </View>
                 </View>
                 {/* <View style={{flex:1, padding: 40}}>

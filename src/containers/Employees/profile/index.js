@@ -72,7 +72,7 @@ export class ProfileMenu extends PureComponent{
                 <View>
                     {
                         item.type.toUpperCase() == 'CONTENT' ?
-                        <View style={[styles.btnCont, this.props.activeItem.key == item.key ? {backgroundColor: 'rgba(255, 255, 255, 0.3);'} : {}]}>
+                        <View style={[styles.btnCont, this.props.activeItem.key == item.key ? styles.btnContActive : {}]}>
                                 <View style={styles.iconCont}>
                                     <View style={styles.iconPlaceholder}>
                                         <Icon name={item.icon} size={16} color='#fff'/>
@@ -94,6 +94,7 @@ export class ProfileMenu extends PureComponent{
         )
     }
 }
+
 export class Profile extends Component {
     constructor(props){
         super(props);
@@ -279,14 +280,16 @@ export class Profile extends Component {
     }
 
     _setActiveChild = (oItem) => {
-        let oActiveItem = {...this.state._activeItem}
-        oActiveItem.key=oItem.key;
-        oActiveItem.name=oItem.name;
-        oActiveItem.icon=oItem.Icon;
-        oActiveItem.type=oItem.type;
-        oActiveItem.oComponent=oItem.oComponent;
-        this.setState({
-            _activeItem: oActiveItem
+        requestAnimationFrame(() => {
+            let oActiveItem = {...this.state._activeItem}
+            oActiveItem.key=oItem.key;
+            oActiveItem.name=oItem.name;
+            oActiveItem.icon=oItem.Icon;
+            oActiveItem.type=oItem.type;
+            oActiveItem.oComponent=oItem.oComponent;
+            this.setState({
+                _activeItem: oActiveItem
+            })
         })
     }
 
@@ -371,7 +374,9 @@ export class Profile extends Component {
                 </LinearGradient>
                     
                 <View style={styles.rightCont}>
-                    {this.state._activeItem.oComponent}
+                    {
+                        this.state._activeItem.oComponent
+                    }
                 </View>
             </View>
         );

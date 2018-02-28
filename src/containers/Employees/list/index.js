@@ -43,7 +43,7 @@ export class EmployeeList extends React.PureComponent{
                     alert('ALERT TEST!')
                 }}
                 background={TouchableNativeFeedback.SelectableBackground()}>
-                <View style={[styles.btnCont, this.props.activeKey == item.key ? {backgroundColor: 'rgba(255, 255, 255, 0.3);'} : {}]}>
+                <View style={[styles.btnCont, this.props.activeKey == item.key ? {backgroundColor: 'rgba(255, 153, 36, 0.1);'} : {}]}>
                     <View style={styles.iconCont}>
                         <View style={styles.iconPlaceholder}>
                             <Text style={styles.txtFirstLetter}>{item.name.charAt(0)}</Text>

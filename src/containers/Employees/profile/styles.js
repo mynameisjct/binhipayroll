@@ -77,9 +77,9 @@ export default {
 
     titleCont:{
         flex: 1,
-        height: 35,
+        height: 20,
         flexDirection: 'row',
-        backgroundColor: '#202626',
+        backgroundColor: '#cccccc',
         borderTopWidth: 0.5,
         borderColor: '#1d1e1e',
         elevation: 30,
@@ -93,6 +93,10 @@ export default {
         backgroundColor: 'transparent',
         borderTopWidth: 0.5,
         borderColor: '#1d1e1e'
+    },
+
+    btnContActive: {
+        backgroundColor: 'rgba(255, 153, 36, 0.1);'
     },
 
     labelCont: {
@@ -125,8 +129,8 @@ export default {
 
     txtLabelTitle:{
         fontFamily: 'Helvetica-Bold',
-        fontSize: 13,
-        color: '#FFFF',
+        fontSize: 10,
+        color: '#000000',
         fontWeight: '500',
         /* fontStyle: 'italic' */
     },
@@ -268,7 +272,7 @@ export default {
         paddingBottom: 15,
         justifyContent: 'center',
         alignItems: 'center',
-        width: '80%'
+        width: '85%'
     },
     }
 }

@@ -159,7 +159,7 @@ export class EmpBasicInfo extends Component {
 
                                 <FixedCard1
                                     hideActionIcon={true}
-                                    title={oContactInfo.title}
+                                    title={oIDS.title}
                                     attributes={attribs_IDS}/>
 
                             </View>
