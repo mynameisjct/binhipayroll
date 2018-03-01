@@ -8,7 +8,8 @@ import {
     TouchableNativeFeedback,
     TextInput,
     ScrollView,
-    TouchableOpacity
+    TouchableOpacity,
+    Alert
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import LinearGradient from 'react-native-linear-gradient';
@@ -36,14 +37,17 @@ import { bindActionCreators } from 'redux';
 //Constants
 const btnActive = 'rgba(255, 255, 255, 0.3);'
 const btnInactive = 'transparent';
-const TITLE = 'Basic and Contact Information'
+const TITLE = 'Basic and Contact Information';
+
 export class EmpBasicInfo extends Component {
     constructor(props){
         super(props);
         this.state = {
-            _bShowForm: false
+            _bShowForm: false,
+            _bTriggerSave: false
         }
     }
+
     _editData = () => {
         this.setState({ _bShowForm: true });
     }
@@ -53,7 +57,22 @@ export class EmpBasicInfo extends Component {
     }
 
     _onSubmit = () => {
-        this.setState({ _bShowForm: false });
+        Alert.alert(
+            'Warning',
+            'All changes will be saved and will be irreversible. Are you sure you want to proceed ?',
+            [
+                {text: 'NO', onPress: () =>  this.setState({ _bTriggerSave: false })},
+                {text: 'YES', onPress: () => this.setState({ _bTriggerSave: true })}
+            ],
+            { cancelable: false }
+        )
+        //this.setState({ _bShowForm: false });
+    }
+
+    _hideForm = () => {
+        this.setState({ 
+            _bTriggerSave: false,
+            _bShowForm: false });
     }
 
     render(){
@@ -174,7 +193,7 @@ export class EmpBasicInfo extends Component {
                     onCancel={this._onCancel}
                     onOK={this._onSubmit}
                     title="MODIFY BASIC & CONTACT INFORMATION">
-                    <EmployeeBasicInfo/>
+                    <EmployeeBasicInfo formTriggerSave={this.state._bTriggerSave} hideForm={this._hideForm}/>
                 </FormModal>
             </View>
         );

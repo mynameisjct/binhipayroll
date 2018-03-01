@@ -33,7 +33,10 @@ import * as employeeApi from '../../data/activeProfile/api';
 import {FormCard, PropTitle} from '../../../../components/CustomCards';
 import * as CustomForm from '../../../../components/CustomForm';
 import * as PromptScreen from '../../../../components/ScreenLoadStatus';
-import { validate } from 'tcomb-validation';
+import MessageBox from '../../../../components/MessageBox';
+
+//Constants
+const update_loading_message = 'Updating Employee Address Information. Please wait...';
 
 const Form = t.form.Form;
 
@@ -290,16 +293,34 @@ export class EmployeeAddress extends Component {
         super(props);
         this.state={
             _promptMsg: 'Populating Address List. Please wait...',
-            _promptShow: false
+            
+            //Gereric States
+            _promptShow: false,
+            _promptMsg: '',
+            _msgBoxShow: false,
+            _msgBoxType: '',
+            _resMsg: '',
+            _refreshing: false,
+            _disabledMode: true,
+            _status: [2, 'Loading...'],
+            _hasSentRequest: false,
+            _bLastStatus: 1
         }
     }
 
     componentWillReceiveProps(nextProps){
         if(
-          (this.props.formTriggerNext.index !== nextProps.formTriggerNext.index) &&
-          (nextProps.formTriggerNext.key === this.props.navigation.state.key)
+            (
+                (this.props.formTriggerNext.index !== nextProps.formTriggerNext.index) &&
+                (nextProps.formTriggerNext.key === this.props.navigation.state.key)
+            )
+                ||
+            (
+                (this.props.formTriggerSave !== nextProps.formTriggerSave) &&
+                (nextProps.formTriggerSave)
+            )
         ){
-            this._onPress();
+            this._onPress(nextProps.formTriggerSave);
         }
       }
 
@@ -307,20 +328,31 @@ export class EmployeeAddress extends Component {
         this.setState({ _promptShow: value })
     }
 
-    _onPress = () => {
-        
-        const navigation = this.props.logininfo.navigation;
+    _onPress = async(formTriggerSave) => {
+        console.log('formTriggerSave: ' + formTriggerSave);
         let bPermanentAdd = this.permanent_address.getValue();
         let bPresentAdd = this.present_address.getValue();
-        console.log('bPresentAdd: ' + JSON.stringify(bPresentAdd));
-        console.log('bPermanentAdd: ' + JSON.stringify(bPermanentAdd));
 
         if (bPresentAdd && bPermanentAdd) {
-            this.props.actions.employee.updateAddress({
+            await this.props.actions.employee.updateAddress({
                 present: { ...bPresentAdd },
                 permanent: { ...bPermanentAdd }
             });
-            navigation.navigate('EmployeeDependents');
+
+            if(formTriggerSave){
+                this._showLoadingPrompt(update_loading_message);
+                let oInput = {};
+                oInput.id = this.props.oEmployee.id;
+                oInput.personalinfo = {
+                  address: this.props.oEmployee.personalinfo.address
+                }
+                this._saveToDB(oInput);
+            }
+            else{
+                this.props.navigation.navigate('EmployeeDependents');
+            }
+
+            
         }
         else{
             Alert.alert(
@@ -332,6 +364,91 @@ export class EmployeeAddress extends Component {
                 { cancelable: false }
             )
         }
+    }
+
+    _saveToDB = async(oData) => {
+        let bFlag = false;
+        let oRes = null;
+        await employeeApi.personalinfo.address.update(oData)
+            .then((response) => response.json())
+            .then((res) => {
+                console.log('XXXXXXXXXXXXXXXXXXXXXXXXXXXX');
+                console.log('res: ' + JSON.stringify(res));
+                oRes = {...res};
+                this._hideLoadingPrompt();
+                bFlag = this._evaluateResponse(res);
+            })
+            .then((res) => {
+                if(bFlag){
+                    this.props.actions.employee.updateActiveID(oRes.id);
+                }
+            })
+            .catch((exception) => {
+                this._hideLoadingPrompt();
+                this._showMsgBox('error-ok', exception.message);
+            });
+    
+        return bFlag;
+    }
+    
+        //GENERIC METHODS
+    _evaluateResponse = (res) => {
+        switch (res.flagno){
+            case 0:
+                this._showMsgBox('error-ok', res.message);
+                return false
+                break;
+            case 1:
+                this._showMsgBox('success', res.message);
+                return true;
+                break;
+            default:
+                this._showMsgBox('error-ok', CONSTANTS.ERROR.UNKNOWN);
+                return false
+                break;
+        }
+    }
+
+    _showLoadingPrompt = (msg) => {
+        this.setState({
+            _promptMsg: msg,
+            _promptShow: true
+        })
+    }
+
+    _showMsgBox = (strType, msg) => {
+        this.setState({
+            _msgBoxShow: true,
+            _msgBoxType: strType,
+            _resMsg: msg
+        });
+    }
+
+    _closeMsgBox = () => {
+        if(this.state._msgBoxType == 'success'){
+            this.props.hideForm();
+        }
+        else{
+            this.setState({
+            _msgBoxShow: false
+            })
+        }
+        
+    }
+
+    _hideLoadingPrompt = () => {
+        this.setState({
+            _promptShow: false
+        })
+    }
+
+
+
+    _onFormClose = () => {
+        this.setState({
+            _bShowCompForm: false,
+            _bShowGovForm: false
+        })
     }
 
     render() {
@@ -386,6 +503,14 @@ export class EmployeeAddress extends Component {
                 <PromptScreen.PromptGeneric 
                     show= {this.state._promptShow} 
                     title={this.state._promptMsg}/>
+
+                <MessageBox
+                    promptType={this.state._msgBoxType}
+                    show={this.state._msgBoxShow}
+                    onClose={this._closeMsgBox}
+                    onWarningContinue={this._continueActionOnWarning}
+                    message={this.state._resMsg}
+                /> 
             </View>
         );
     }
@@ -396,6 +521,7 @@ function mapStateToProps (state) {
         logininfo: state.loginReducer.logininfo,
         activecompany: state.activeCompanyReducer.activecompany,
         oEmployeeAddress: state.employees.activeProfile.data.personalinfo.address,
+        oEmployee: state.employees.activeProfile.data,
         formTriggerNext: state.employees.formTriggerNext
     }
 }

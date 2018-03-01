@@ -27,10 +27,18 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as employeeActions from '../../data/activeProfile/actions';
 
+//API
+import * as employeeApi from '../../data/activeProfile/api'
+
 //Custom Component
 import {FormCard, PropTitle} from '../../../../components/CustomCards';
 import * as CustomForm from '../../../../components/CustomForm';
-  
+import * as PromptScreen from '../../../../components/ScreenLoadStatus';
+import MessageBox from '../../../../components/MessageBox';
+
+//Constants
+const update_loading_message = 'Updating Employee Basic Information. Please wait...';
+
 const Form = t.form.Form;
 
 const Gender = t.enums({
@@ -89,14 +97,35 @@ export class EmployeeBasicInfo extends Component {
         sss: this.props.employeePersonalInfo.ids.sss.value,
         philhealth: this.props.employeePersonalInfo.ids.philhealth.value,
         pagibig: this.props.employeePersonalInfo.ids.pagibig.value,
-      }
+      },
+
+      //Gereric States
+      _promptShow: false,
+      _promptMsg: '',
+      _msgBoxShow: false,
+      _msgBoxType: '',
+      _resMsg: '',
+      _refreshing: false,
+      _disabledMode: true,
+      _status: [2, 'Loading...'],
+      _hasSentRequest: false,
+      _bLastStatus: 1
     }
   }
 
   componentWillReceiveProps(nextProps){
+    console.log('this.props.formTriggerSave: ' + this.props.formTriggerSave);
+    console.log('nextProps.formTriggerSave: ' + nextProps.formTriggerSave);
     if(
-      (this.props.formTriggerNext.index !== nextProps.formTriggerNext.index) &&
-      (nextProps.formTriggerNext.key === this.props.navigation.state.key)
+      (
+        (this.props.formTriggerNext.index !== nextProps.formTriggerNext.index) &&
+        (nextProps.formTriggerNext.key === this.props.navigation.state.key)
+      )
+        ||
+      (
+        (this.props.formTriggerSave !== nextProps.formTriggerSave) &&
+        (nextProps.formTriggerSave)
+      )
     ){
         this._onPress();
     }
@@ -111,28 +140,40 @@ export class EmployeeBasicInfo extends Component {
     let oGovForm = this.refs.govid_form.getValue();
 
     if (oBasicForm && oGovForm) {
-      console.log('oBasicForm: ' + JSON.stringify(oBasicForm));
-      console.log('oGovForm: ' + JSON.stringify(oGovForm));
-      console.log('aMobile: ' + aMobile);
-      console.log('aTelephone: ' + aTelephone);
-      console.log('aEmail: ' + aEmail);
       let oContactInfo = {
         mobile: aMobile, 
         telephone: aTelephone, 
         email: aEmail
       }
-      this.props.actions.employee.updateBasicInfo(oBasicForm);
-      this.props.actions.employee.updateIDS(oGovForm);
-      this.props.actions.employee.updateContactInfo(oContactInfo);
+      
+      this._updateStore(oBasicForm, oGovForm, oContactInfo);
 
       this.setState({
         _oBasicInfo: {...oBasicForm},
         _oContactInfo: {...oContactInfo},
         _oGovID: {...oGovForm},
-      });
-      this.props.navigation.navigate('EmployeeAddress');
+      },
+        () => {
+          if(this.props.formTriggerSave){
+            this._showLoadingPrompt(update_loading_message);
+            let oInput = {};
+            oInput.id = this.props.oEmployee.id;
+            oInput.personalinfo = {
+              basicinfo: this.props.oEmployee.personalinfo.basicinfo,
+              contactinfo: this.props.oEmployee.personalinfo.contactinfo,
+              ids: this.props.oEmployee.personalinfo.ids,
+            }
+            this._saveToDB(oInput);
+          }
+          else{
+            this.props.navigation.navigate('EmployeeAddress');
+          }
+        }
+      );
+      
     }
     else{
+      this._hideLoadingPrompt();
       Alert.alert(
         'Error',
         'One of the inputs is invalid. Please check the highlighted fields.',
@@ -142,6 +183,97 @@ export class EmployeeBasicInfo extends Component {
         { cancelable: false }
       )
     }
+  }
+
+  _updateStore = (oBasicForm, oGovForm, oContactInfo) => {
+    this.props.actions.employee.updateBasicInfo(oBasicForm);
+    this.props.actions.employee.updateIDS(oGovForm);
+    this.props.actions.employee.updateContactInfo(oContactInfo);
+  }
+
+  _saveToDB = async(oData) => {
+    let bFlag = false;
+    let oRes = null;
+    await employeeApi.personalinfo.basicinfo.update(oData)
+        .then((response) => response.json())
+        .then((res) => {
+            console.log('XXXXXXXXXXXXXXXXXXXXXXXXXXXX');
+            console.log('res: ' + JSON.stringify(res));
+            oRes = {...res};
+            this._hideLoadingPrompt();
+            bFlag = this._evaluateResponse(res);
+        })
+        .then((res) => {
+            if(bFlag){
+                this.props.actions.employee.updateActiveID(oRes.id);
+            }
+        })
+        .catch((exception) => {
+            this._hideLoadingPrompt();
+            this._showMsgBox('error-ok', exception.message);
+        });
+
+    return bFlag;
+  }
+
+  //GENERIC METHODS
+  _evaluateResponse = (res) => {
+    switch (res.flagno){
+        case 0:
+            this._showMsgBox('error-ok', res.message);
+            return false
+            break;
+        case 1:
+            this._showMsgBox('success', res.message);
+            return true;
+            break;
+        default:
+            this._showMsgBox('error-ok', CONSTANTS.ERROR.UNKNOWN);
+            return false
+            break;
+    }
+}
+
+  _showLoadingPrompt = (msg) => {
+      this.setState({
+          _promptMsg: msg,
+          _promptShow: true
+      })
+  }
+
+  _showMsgBox = (strType, msg) => {
+      this.setState({
+          _msgBoxShow: true,
+          _msgBoxType: strType,
+          _resMsg: msg
+      });
+  }
+
+  _closeMsgBox = () => {
+      if(this.state._msgBoxType == 'success'){
+        this.props.hideForm();
+      }
+      else{
+        this.setState({
+          _msgBoxShow: false
+        })
+      }
+      
+  }
+
+  _hideLoadingPrompt = () => {
+      this.setState({
+          _promptShow: false
+      })
+  }
+
+
+
+  _onFormClose = () => {
+      this.setState({
+          _bShowCompForm: false,
+          _bShowGovForm: false
+      })
   }
 
   render() {
@@ -297,6 +429,17 @@ export class EmployeeBasicInfo extends Component {
             />
           </View> */}
         </View>
+        <PromptScreen.PromptGeneric 
+          show= {this.state._promptShow} 
+          title={this.state._promptMsg}/>
+
+        <MessageBox
+          promptType={this.state._msgBoxType}
+          show={this.state._msgBoxShow}
+          onClose={this._closeMsgBox}
+          onWarningContinue={this._continueActionOnWarning}
+          message={this.state._resMsg}
+        /> 
       </ScrollView>
     );
   }
@@ -307,6 +450,7 @@ function mapStateToProps (state) {
       logininfo: state.loginReducer.logininfo,
       activecompany: state.activeCompanyReducer.activecompany,
       employeePersonalInfo: state.employees.activeProfile.data.personalinfo,
+      oEmployee: state.employees.activeProfile.data,
       formTriggerNext: state.employees.formTriggerNext
   }
 }

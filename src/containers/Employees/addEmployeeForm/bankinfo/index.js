@@ -3,11 +3,11 @@ import { TabNavigator } from 'react-navigation';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { View } from 'react-native';
 
-import BankAccount from './bankaccount';
+import EmployeeBankAccount from './bankaccount';
 
 const BankInfo = TabNavigator({
-  BankAccount: {
-    screen: BankAccount,
+  EmployeeBankAccount: {
+    screen: EmployeeBankAccount,
     navigationOptions: {
       tabBarLabel: 'BANK ACCOUNT INFORMATION'
     }

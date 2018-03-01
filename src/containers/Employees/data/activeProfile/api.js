@@ -14,14 +14,14 @@ const addressEndPoints = {
 };
 
 
-export let getBasicInfo = payload => {
+/* export let getBasicInfo = payload => {
 	if(blackOps.mode){
 		return fetchApi(endPoints.employee.basicInfo(payload), {}, 'get');
 	}
 	else{
 		return fetchApi(endPoints.employee.basicInfo(payload), {}, 'get');
 	}
-}
+} */
 
 export let getAllInfo = payload => {
 	if(blackOps.mode){
@@ -45,7 +45,21 @@ export let createPersonalInfo = payload => {
 export let bankinfo = {
 	update: function(payload){
 		return fetchApi(endPoints.employee.bankinfo.update(payload), payload, 'put');
-	 }
+	}
+}
+
+export let personalinfo = {
+	basicinfo: {
+		update: function(payload){
+			return fetchApi(endPoints.employee.personalinfo.basicinfo.update(payload), payload, 'put');
+		}
+	},
+
+	address: {
+		update: function(payload){
+			return fetchApi(endPoints.employee.personalinfo.address.update(payload), payload, 'put');
+		}
+	}
 }
 
 //Address API

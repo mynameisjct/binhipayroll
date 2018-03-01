@@ -7,7 +7,8 @@ import {
     FlatList,
     TouchableNativeFeedback,
     TextInput,
-    ScrollView
+    ScrollView,
+    TouchableOpacity
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import LinearGradient from 'react-native-linear-gradient';
@@ -19,6 +20,10 @@ import styles from '../styles';
 import * as StatusLoader from '../../../../components/ScreenLoadStatus'
 import CustomCard from '../../../../components/CustomCards';
 import FixedCard1 from '../../../../components/FixedCards';
+import FormModal from '../../../../components/FormModal';
+
+//Children Components
+import EmployeeBankAccount from '../../addEmployeeForm/bankinfo/bankaccount';
 
 //Helper
 import * as oHelper from '../../../../helper';
@@ -34,6 +39,25 @@ const btnInactive = 'transparent';
 const TITLE = 'Personal Bank Account Information'
 
 export class EmpBankAccount extends Component {
+    constructor(props){
+        super(props);
+        this.state = {
+            _bShowForm: false
+        }
+    }
+
+    _editData = () => {
+        this.setState({ _bShowForm: true });
+    }
+
+    _onCancel = () => {
+        this.setState({ _bShowForm: false });
+    }
+
+    _onSubmit = () => {
+        this.setState({ _bShowForm: false });
+    }
+
     render(){
         const oBankInfo =  this.props.employees.activeProfile.data.bankinfo;
         const navigation = this.props.logininfo.navigation;
@@ -52,12 +76,23 @@ export class EmpBankAccount extends Component {
         return(
             <View style={styles.child.container}>
                 <View style={styles.child.contCard}>
-                    <CustomCard clearMargin={true} title={TITLE} oType='Text'>
+                    <CustomCard 
+                        clearMargin={true} 
+                        title={TITLE} 
+                        oType='Button'
+                        rightHeader={
+                            <TouchableOpacity
+                                style={styles.child.contBtn}
+                                onPress={this._editData}>
+                                <Icon name='ios-create-outline' size={40} color='#000000'/>
+                            </TouchableOpacity>
+                        }>
                         <ScrollView>
                             <View style={styles.child.contContent}>
 
                                 <FixedCard1
-                                    title={oBankInfo.title || 'PRESENT ADDRESS'}
+                                    hideActionIcon={true}
+                                    title={oBankInfo.title || 'BANK ACCOUNT INFORMATION'}
                                     attributes={attribs_BankAccount}/>
 
                             </View>
@@ -65,6 +100,14 @@ export class EmpBankAccount extends Component {
                         
                     </CustomCard>
                 </View>
+                <FormModal 
+                    containerStyle={styles.formModal.container}
+                    visible={this.state._bShowForm}
+                    onCancel={this._onCancel}
+                    onOK={this._onSubmit}
+                    title="MODIFY EMPLOYEE BANK ACCOUNT INFORMATION">
+                    <EmployeeBankAccount/>
+                </FormModal>
             </View>
         );
     }

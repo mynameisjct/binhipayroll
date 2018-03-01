@@ -44,7 +44,7 @@ const update_loading_message = 'Saving Employee Bank Information. Please wait...
 
 const Form = t.form.Form;
 
-export class BankAccount extends Component {
+export class EmployeeBankAccount extends Component {
   constructor(props){
     super(props);
     this.state={
@@ -69,8 +69,15 @@ export class BankAccount extends Component {
 
   componentWillReceiveProps(nextProps){
     if(
-        (this.props.formTriggerNext.index !== nextProps.formTriggerNext.index) &&
-        (nextProps.formTriggerNext.key === this.props.navigation.state.key)
+        (
+          (this.props.formTriggerNext.index !== nextProps.formTriggerNext.index) &&
+          (nextProps.formTriggerNext.key === this.props.navigation.state.key)
+        ) 
+          ||
+        (
+          (this.props.formTriggerSave !== nextProps.formTriggerSave) &&
+          (nextProps.formTriggerSave)
+        )
     ){
         this._onPress();
     }
@@ -91,9 +98,8 @@ export class BankAccount extends Component {
     let oBankInfo = this.refs.form_bankinfo.getValue();
 
     if (oBankInfo) {
-      this.props.actions.employee.updateBankInfo(oBankInfo);
-      this.setState({ _oBankAccount: oBankInfo}, this._saveAndNavigate());
-      
+      await this.props.actions.employee.updateBankInfo(oBankInfo);
+      this.setState({ _oBankAccount: oBankInfo},  () => this._saveAndNavigate());
     }
 
     else{
@@ -232,12 +238,12 @@ export class BankAccount extends Component {
             </View>
 
             <View style={{flex:1, marginTop: 100, alignSelf: 'center', width: 400}}>
-              <Button
+              {/* <Button
                   onPress={this._onPress}
                   title='Next'
                   color="#3b5998"
                   accessibilityLabel='Next'
-              />
+              /> */}
             </View>
           </ScrollView>
           <PromptScreen.PromptGeneric 
@@ -277,4 +283,4 @@ function mapDispatchToProps (dispatch) {
 export default withNavigation(connect(
   mapStateToProps,
   mapDispatchToProps
-)(BankAccount))
+)(EmployeeBankAccount))

@@ -5,7 +5,7 @@ import * as oHelper from '../../../../helper';
 
 const initialStatus = CONSTANTS.STATUS.LOADING;
 const initialState = {
-	id: '',
+	id: '378',
 	personalinfo:{
 		basicinfo:{
 			title: "BASIC INFORMATION",

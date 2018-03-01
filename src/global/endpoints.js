@@ -50,6 +50,26 @@ export let employee = {
 				baseURL.activeCompany() +
 				'/employee/personalinfo'
 			)
+		},
+
+		basicinfo: {
+			update: function(payload){
+				return(
+					baseURL.activeCompany() +
+					'/employee/' + payload.id +
+					'/personalinfo/' + 'basicinfo'
+				)
+			}
+		},
+
+		address: {
+			update: function(payload){
+				return(
+					baseURL.activeCompany() +
+					'/employee/' + payload.id +
+					'/personalinfo/' + 'address'
+				)
+			}
 		}
 	},
 
