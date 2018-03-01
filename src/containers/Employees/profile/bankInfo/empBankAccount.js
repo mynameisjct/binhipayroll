@@ -8,7 +8,8 @@ import {
     TouchableNativeFeedback,
     TextInput,
     ScrollView,
-    TouchableOpacity
+    TouchableOpacity,
+    Alert
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import LinearGradient from 'react-native-linear-gradient';
@@ -42,7 +43,8 @@ export class EmpBankAccount extends Component {
     constructor(props){
         super(props);
         this.state = {
-            _bShowForm: false
+            _bShowForm: false,
+            _bTriggerSave: false
         }
     }
 
@@ -55,7 +57,16 @@ export class EmpBankAccount extends Component {
     }
 
     _onSubmit = () => {
-        this.setState({ _bShowForm: false });
+        Alert.alert(
+            'Warning',
+            'All changes will be saved and will be irreversible. Are you sure you want to proceed ?',
+            [
+                {text: 'NO', onPress: () =>  this.setState({ _bTriggerSave: false })},
+                {text: 'YES', onPress: () => this.setState({ _bTriggerSave: true })}
+            ],
+            { cancelable: false }
+        )
+        //this.setState({ _bShowForm: false });
     }
 
     render(){
@@ -65,11 +76,11 @@ export class EmpBankAccount extends Component {
             [
                 {
                     label: 'BANK NAME',
-                    value: oBankInfo.bankname || ''
+                    value: oBankInfo.bankname || '-'
                 },
                 {
                     label: 'ACCOUNT NUMBER',
-                    value: oBankInfo.accountnumber || ''
+                    value: oBankInfo.accountnumber || '-'
                 }
             ]
 
@@ -106,7 +117,7 @@ export class EmpBankAccount extends Component {
                     onCancel={this._onCancel}
                     onOK={this._onSubmit}
                     title="MODIFY EMPLOYEE BANK ACCOUNT INFORMATION">
-                    <EmployeeBankAccount/>
+                    <EmployeeBankAccount formTriggerSave={this.state._bTriggerSave} hideForm={this._hideForm}/>
                 </FormModal>
             </View>
         );

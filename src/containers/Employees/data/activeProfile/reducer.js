@@ -5,7 +5,7 @@ import * as oHelper from '../../../../helper';
 
 const initialStatus = CONSTANTS.STATUS.LOADING;
 const initialState = {
-	id: '378',
+	id: '421',
 	personalinfo:{
 		basicinfo:{
 			title: "BASIC INFORMATION",
@@ -193,7 +193,7 @@ const initialState = {
 		workshift: {
 			title: "WORK SHIFT",
 			data: [
-				{
+				/* {
 					id: "0001",
 					workshiftid: "239",
 					effectivedate: {
@@ -222,7 +222,7 @@ const initialState = {
 						}
 					},
 					remarks: ''
-				}
+				} */
 			]
 		},
 
@@ -511,7 +511,7 @@ export const data = (state = initialState, action) => {
 			oState.personalinfo.family.spouse.work.company = action.payload.spouse.company;
 
 			//Dependents
-			oState.personalinfo.family.dependents = [...action.payload.dependents];
+			oState.personalinfo.family.dependents.data = [...action.payload.dependents];
 
 			return {
 				...oState

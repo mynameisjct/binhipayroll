@@ -316,13 +316,13 @@ export class EmployeeAddress extends Component {
             )
                 ||
             (
-                (this.props.formTriggerSave !== nextProps.formTriggerSave) &&
+                (this.props.formTriggerSave !== (nextProps.formTriggerSave || false)) &&
                 (nextProps.formTriggerSave)
             )
         ){
             this._onPress(nextProps.formTriggerSave);
         }
-      }
+    }
 
     _updateLoadingStatus = (value) => {
         this.setState({ _promptShow: value })
@@ -344,7 +344,7 @@ export class EmployeeAddress extends Component {
                 let oInput = {};
                 oInput.id = this.props.oEmployee.id;
                 oInput.personalinfo = {
-                  address: this.props.oEmployee.personalinfo.address
+                    address: this.props.oEmployee.personalinfo.address
                 }
                 this._saveToDB(oInput);
             }
@@ -377,11 +377,6 @@ export class EmployeeAddress extends Component {
                 oRes = {...res};
                 this._hideLoadingPrompt();
                 bFlag = this._evaluateResponse(res);
-            })
-            .then((res) => {
-                if(bFlag){
-                    this.props.actions.employee.updateActiveID(oRes.id);
-                }
             })
             .catch((exception) => {
                 this._hideLoadingPrompt();
@@ -426,12 +421,12 @@ export class EmployeeAddress extends Component {
 
     _closeMsgBox = () => {
         if(this.state._msgBoxType == 'success'){
-            this.props.hideForm();
+          this.props.hideForm();
         }
         else{
-            this.setState({
+          this.setState({
             _msgBoxShow: false
-            })
+          })
         }
         
     }

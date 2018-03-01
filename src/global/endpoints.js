@@ -70,7 +70,17 @@ export let employee = {
 					'/personalinfo/' + 'address'
 				)
 			}
-		}
+		},
+
+		family: {
+			update: function(payload){
+				return(
+					baseURL.activeCompany() +
+					'/employee/' + payload.id +
+					'/personalinfo/' + 'family'
+				)
+			}
+		},
 	},
 
 	bankinfo: {
@@ -81,7 +91,26 @@ export let employee = {
 				'/bankinfo'
 			)
 		}
-	}
+	},
+
+	employmentinfo: {
+		workshift: {
+			add: function(payload){
+				return(
+					baseURL.activeCompany() +
+					'/employee/'  + payload.employeeId + 
+					'/employmentinfo/workshift/'
+				)
+			},
+			update: function(payload){
+				return(
+					baseURL.activeCompany() +
+					'/employee/'  + payload.employeeId + 
+					'/employmentinfo/workshift/' + payload.id
+				)
+			}
+		}
+	},
 }
 
 export let policy = {

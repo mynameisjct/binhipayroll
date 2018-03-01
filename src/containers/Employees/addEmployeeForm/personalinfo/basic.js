@@ -131,7 +131,7 @@ export class EmployeeBasicInfo extends Component {
     }
   }
 
-  _onPress = () => {
+  _onPress = async() => {
     let aMobile = this.mobileList.getValue();
     let aTelephone = this.telephoneList.getValue();
     let aEmail = this.emailList.getValue();
@@ -146,7 +146,7 @@ export class EmployeeBasicInfo extends Component {
         email: aEmail
       }
       
-      this._updateStore(oBasicForm, oGovForm, oContactInfo);
+      await this._updateStore(oBasicForm, oGovForm, oContactInfo);
 
       this.setState({
         _oBasicInfo: {...oBasicForm},
@@ -203,11 +203,6 @@ export class EmployeeBasicInfo extends Component {
             this._hideLoadingPrompt();
             bFlag = this._evaluateResponse(res);
         })
-        .then((res) => {
-            if(bFlag){
-                this.props.actions.employee.updateActiveID(oRes.id);
-            }
-        })
         .catch((exception) => {
             this._hideLoadingPrompt();
             this._showMsgBox('error-ok', exception.message);
@@ -250,7 +245,7 @@ export class EmployeeBasicInfo extends Component {
   }
 
   _closeMsgBox = () => {
-      if(this.state._msgBoxType == 'success'){
+      if(this.state._msgBoxType == 'success' && this.props.formTriggerSave){
         this.props.hideForm();
       }
       else{

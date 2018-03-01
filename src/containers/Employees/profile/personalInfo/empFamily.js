@@ -8,7 +8,8 @@ import {
     TouchableNativeFeedback,
     TextInput,
     ScrollView,
-    TouchableOpacity
+    TouchableOpacity,
+    Alert
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import LinearGradient from 'react-native-linear-gradient';
@@ -42,7 +43,8 @@ export class EmpFamily extends Component {
     constructor(props){
         super(props);
         this.state = {
-            _bShowForm: false
+            _bShowForm: false,
+            _bTriggerSave: false
         }
     }
 
@@ -55,7 +57,16 @@ export class EmpFamily extends Component {
     }
 
     _onSubmit = () => {
-        this.setState({ _bShowForm: false });
+        Alert.alert(
+            'Warning',
+            'All changes will be saved and will be irreversible. Are you sure you want to proceed ?',
+            [
+                {text: 'NO', onPress: () =>  this.setState({ _bTriggerSave: false })},
+                {text: 'YES', onPress: () => this.setState({ _bTriggerSave: true })}
+            ],
+            { cancelable: false }
+        )
+        //this.setState({ _bShowForm: false });
     }
 
     _generateDependents = (oDependents) => {
@@ -79,10 +90,11 @@ export class EmpFamily extends Component {
     }
 
     render(){
+        console.log('oDependents: ' + JSON.stringify(this.props.employees.activeProfile.data.personalinfo.family.dependents))
         const oSpouse = this.props.employees.activeProfile.data.personalinfo.family.spouse;
         const oDependents =  this.props.employees.activeProfile.data.personalinfo.family.dependents;
         const navigation = this.props.logininfo.navigation;
-        let attribs_dependents = this._generateDependents(oDependents);
+        let attribs_dependents = this._generateDependents(this.props.employees.activeProfile.data.personalinfo.family.dependents);
         const attribs_spouse = 
             [
                 {
@@ -145,7 +157,7 @@ export class EmpFamily extends Component {
                     onCancel={this._onCancel}
                     onOK={this._onSubmit}
                     title="MODIFY FAMILY AND DEPENDENTS INFORMATION">
-                    <EmployeeDependents/>
+                    <EmployeeDependents formTriggerSave={this.state._bTriggerSave} hideForm={this._hideForm}/>
                 </FormModal>
 
             </View>

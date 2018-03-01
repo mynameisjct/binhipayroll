@@ -42,12 +42,14 @@ export let createPersonalInfo = payload => {
 	return fetchApi(endPoints.employee.personalinfo.create(), payload, 'post');
 }
 
+//BANKINFO
 export let bankinfo = {
 	update: function(payload){
 		return fetchApi(endPoints.employee.bankinfo.update(payload), payload, 'put');
 	}
 }
 
+//PERSONAL INFO
 export let personalinfo = {
 	basicinfo: {
 		update: function(payload){
@@ -58,6 +60,24 @@ export let personalinfo = {
 	address: {
 		update: function(payload){
 			return fetchApi(endPoints.employee.personalinfo.address.update(payload), payload, 'put');
+		}
+	},
+
+	family: {
+		update: function(payload){
+			return fetchApi(endPoints.employee.personalinfo.family.update(payload), payload, 'put');
+		}
+	}
+}
+
+//EMPLOYMENT INFO
+export let employmentinfo = {
+	workshift: {
+		add: function(payload){
+			return fetchApi(endPoints.employee.employmentinfo.workshift.add(payload), payload, 'post');
+		},
+		update: function(payload){
+			return fetchApi(endPoints.employee.employmentinfo.workshift.update(payload), payload, 'put');
 		}
 	}
 }

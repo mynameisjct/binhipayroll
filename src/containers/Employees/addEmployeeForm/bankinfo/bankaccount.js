@@ -91,7 +91,7 @@ export class EmployeeBankAccount extends Component {
     this.setState({_oBankAccount: oData})
   }
 
-  _onPress = async() => {
+  _onPress = async(formTriggerSave) => {
     console.log('XXXXXXXXXXXXXXXXXXXXXXXX');
     console.log('this.state._oBankAccount: ' + JSON.stringify(this.state._oBankAccount));
     const navigation = this.props.logininfo.navigation;
@@ -99,7 +99,7 @@ export class EmployeeBankAccount extends Component {
 
     if (oBankInfo) {
       await this.props.actions.employee.updateBankInfo(oBankInfo);
-      this.setState({ _oBankAccount: oBankInfo},  () => this._saveAndNavigate());
+      this.setState({ _oBankAccount: oBankInfo},  () => this._saveAndNavigate(formTriggerSave));
     }
 
     else{
@@ -114,10 +114,10 @@ export class EmployeeBankAccount extends Component {
     }
   }
 
-  _saveAndNavigate = async() => {
+  _saveAndNavigate = async(formTriggerSave) => {
     const navigation = this.props.logininfo.navigation;
     let bSuccess = await this._saveDataToDB({id: this.props.oEmployee.id, bankinfo: this.props.oEmployeeBankInfo});
-    if(bSuccess){
+    if(bSuccess && !formTriggerSave){
         navigation.navigate('EmplomentDetails');
     }
   }
@@ -142,7 +142,7 @@ export class EmployeeBankAccount extends Component {
         });
 
     return bFlag;
-}
+  }
 
 
   //GENERIC METHODS

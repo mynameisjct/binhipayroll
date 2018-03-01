@@ -15,6 +15,9 @@ import EmployeeWorkshiftForm from './forms/employeeWorkshiftForm';
 import styles from './styles';
 import WorkShift from '../../../CompanyPolicies/workshift';
 
+//API
+import * as employeeApi from '../../data/activeProfile/api'
+
 //Redux
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -24,12 +27,15 @@ import * as workshiftSelector from '../../../CompanyPolicies/data/workshift/sele
 
 //Custom Component
 import * as PromptScreen from '../../../../components/ScreenLoadStatus';
+import MessageBox from '../../../../components/MessageBox';
 
 //Helper
 import * as oHelper from '../../../../helper';
 
 //Constants
 import { CONSTANTS } from '../../../../constants/index';
+const add_loading_message = 'Saving New Employee Work Schedule. Please wait.';
+const update_loading_message = 'Updating an Employee Work Schedule. Please wait...';
 
 export class EmployeeWorkShift extends Component {
     constructor(props){
@@ -153,7 +159,21 @@ export class EmployeeWorkShift extends Component {
     }
 
     _submitTransaction = (value) => {
-        console.log('value: ' + JSON.stringify(value));
+        let oData = JSON.parse(JSON.stringify(this.state._oDefaultData));
+        let splitWSType = value.workshiftid.split(CONSTANTS.SPLITSTRING);
+        oData.id = this.state._oActiveData.id;
+        oData.workshiftid = splitWSType[1];
+        oData.effectivedate.from.value = (oHelper.convertDateToString(value.effectivedate, 'YYYY-MM-DD'));
+        oData.remarks = value.remarks;
+        oData.employeeId = this.props.oEmployee.id
+        
+        if( oData.id === ''){
+            this._saveNewDataToDB(oData);
+        }
+        else{
+
+        }
+        /* console.log('value: ' + JSON.stringify(value));
         let splitWSType = value.workshiftid.split(CONSTANTS.SPLITSTRING);
         let oData = JSON.parse(JSON.stringify(this.state._oDefaultData));
         oData.workshiftid = splitWSType[1];
@@ -162,7 +182,33 @@ export class EmployeeWorkShift extends Component {
         this.setState({
             _oActiveData: oData,
             _bShowWorkshiftForm: false 
-        })
+        }) */
+    }
+
+    _saveNewDataToDB = async(oData) => {
+        this._showLoadingPrompt(add_loading_message);
+    
+        let bFlag = false;
+        let oRes = null;
+
+        employeeApi.employmentinfo.workshift.add(oData)
+            .then((response) => response.json())
+            .then((res) => {
+                console.log('XXXXXXXXXXXXXXXXXXXXXXXXXXXX');
+                console.log('res: ' + JSON.stringify(res));
+                oRes = res;
+                this._hideLoadingPrompt();
+                bFlag = this._evaluateResponse(res);
+            })
+            .then(() => {
+                if(oRes.flagno === 1){
+                
+                }
+            })
+            .catch((exception) => {
+                this._hideLoadingPrompt();
+                this._showMsgBox('error-ok', exception.message);
+            });
     }
 
     _requestDelete = () => {
@@ -191,6 +237,41 @@ export class EmployeeWorkShift extends Component {
         }
     }
 
+    //Generic Methods
+    _showLoadingPrompt = (msg) => {
+        this.setState({
+          _promptMsg: msg,
+          _promptShow: true
+        })
+      }
+    
+      _showMsgBox = (strType, msg) => {
+        this.setState({
+          _msgBoxShow: true,
+          _msgBoxType: strType,
+          _resMsg: msg
+        });
+      }
+    
+      _closeMsgBox = () => {
+        this.setState({
+          _msgBoxShow: false
+        })
+      }
+    
+      _hideLoadingPrompt = () => {
+        this.setState({
+          _promptShow: false
+        })
+      }
+    
+      _onFormClose = () => {
+        this.setState({
+          _bShowCompForm: false,
+          _bShowGovForm: false
+        })
+      }
+
     render(){
         
         let pStatus = [...this.state._status];
@@ -208,8 +289,13 @@ export class EmployeeWorkShift extends Component {
             console.log('this.state._status: ' + this.state._status);
             console.log('this.state._oActiveWorkShiftRule: ' + JSON.stringify(this.state._oActiveWorkShiftRule));
             console.log('this.state._oActiveData.workshiftid: ' + JSON.stringify(this.state._oActiveData.workshiftid));
-            let oActiveScheduleValue = this.state._oActiveWorkShiftRule.description +
+            
+            let oActiveScheduleValue = null
+            if(this.state._oActiveWorkShiftRule){
+                oActiveScheduleValue = this.state._oActiveWorkShiftRule.description +
                 CONSTANTS.SPLITSTRING + this.state._oActiveData.workshiftid
+            }
+
             return(
                 <View style={styles.transparentContainer}>
                     { 
@@ -287,7 +373,17 @@ export class EmployeeWorkShift extends Component {
                         :
                             null
                     }
+                    <PromptScreen.PromptGeneric 
+                        show= {this.state._promptShow} 
+                        title={this.state._promptMsg}/>
 
+                    <MessageBox
+                        promptType={this.state._msgBoxType}
+                        show={this.state._msgBoxShow}
+                        onClose={this._closeMsgBox}
+                        onWarningContinue={this._continueActionOnWarning}
+                        message={this.state._resMsg}
+                    /> 
                 </View>
             )
         }
@@ -307,6 +403,7 @@ function mapStateToProps (state) {
         activecompany: state.activeCompanyReducer.activecompany,
         workshift: state.companyPoliciesReducer.workshift,
         oEmpWorkShift: state.employees.activeProfile.data.employmentinfo.workshift,
+        oEmployee: state.employees.activeProfile.data
     }
 }
 

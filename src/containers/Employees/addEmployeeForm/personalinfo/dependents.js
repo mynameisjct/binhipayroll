@@ -30,7 +30,8 @@ import { bindActionCreators } from 'redux';
 import * as employeeActions from '../../data/activeProfile/actions';
 
 //API
-import * as employeeApi from '../../data/activeProfile/api'
+import * as employeeApi from '../../data/activeProfile/api';
+
 
 //Helper 
 import * as oHelper from '../../../../helper';
@@ -43,7 +44,7 @@ import MessageBox from '../../../../components/MessageBox';
 
 //Constants
 const add_loading_message = 'Saving New Employee Data. Please wait.';
-const update_loading_message = 'Updating Existing Profile. Please wait...';
+const update_loading_message = 'Updating Employee Family and Dependents Information. Please wait...';
 const delete_loading_message = 'Deleting a Profile. Please wait...';
 
 const Form = t.form.Form;
@@ -72,7 +73,7 @@ class DependentsFields extends Component {
             _dateFormat: this.props.value.birthdate.format || "MMMM DD, YYYY",
             _oDependent: {
                 name: this.props.value.name,
-                birthdate: this.props.value.birthdate.value ? new Date(this.props.value.birthdate) : null,
+                birthdate: this.props.value.birthdate.value ? new Date(this.props.value.birthdate.value) : null,
                 relationship: this.props.value.relationship,
             }
         }
@@ -215,17 +216,11 @@ class DependentsForm extends Component{
             _value: this.props.value.length == 0 ? [JSON.parse(JSON.stringify(DEFAULT_DEPENDENT))] : [...this.props.value],
         }
     }
-
-    componentWillReceiveProps(nextProps){
-        let bFlag = true;
-        if(nextProps.isSubmitted===true){
-            this._validateDependents();
-        }
-    }
     
-    _validateDependents = async() => {
-        let oDependent = await this._validateEveryDepenent();
-        this.props.validateAllData(oDependent);
+    getValue = async() => {
+        let oDependents = await this._validateEveryDepenent();
+        console.log('getValue_oDependents: ' + JSON.stringify(oDependents));
+        return oDependents;
     }
     
     _validateEveryDepenent = async() => {
@@ -401,38 +396,32 @@ export class EmployeeDependents extends Component {
 
     componentWillReceiveProps(nextProps){
         if(
-            (this.props.formTriggerNext.index !== nextProps.formTriggerNext.index) &&
-            (nextProps.formTriggerNext.key === this.props.navigation.state.key)
+            (
+                (this.props.formTriggerNext.index !== nextProps.formTriggerNext.index) &&
+                (nextProps.formTriggerNext.key === this.props.navigation.state.key)
+            )
+                ||
+            (
+                (this.props.formTriggerSave !== nextProps.formTriggerSave) &&
+                (nextProps.formTriggerSave)
+            )
         ){
-            this._setSubmitStatus(true);
+            console.log('XXXXXXXXXXXXXXXXXXXXXXXXXXformTriggerSave!');
+            this._onPress(true);
         }
     }
 
-    _setSubmitStatus = (value) => {
-        let TEMP = this.refs.form_spouse.getValue();
-
-        if(TEMP){
-            this.setState({ _hasSentRequest: true, _isSubmitted: value, _isSpouseDataValid: true });
-            
+    _onPress = async(bTriggerSave) => {
+        let oSpouse = this.refs.form_spouse.getValue();
+        let oDependents = await this.refs.dependents_component.getValue();
+        console.log('=-=-=-0=-=--=-=0-0--=-==-==-=-=-=-===-9-909=-==-');
+        console.log('oDependents: ' + JSON.stringify(oDependents));
+        if(oDependents && oSpouse){
+            await this._updateAllData(this.state._oSpouse, oDependents);
+            this._saveAndNavigate();
         }
         else{
-            this.setState({ _isSubmitted: value, _isSpouseDataValid: false });
-        }
-    }
-
-    _validateAllData = async(oDependents) => {
-        if(this.state._hasSentRequest){
-            console.log('=-=-=-0=-=--=-=0-0--=-==-==-=-=-=-===-9-909=-==-');
-            console.log('oDependents: ' + JSON.stringify(oDependents));
-            if(oDependents && this.state._isSpouseDataValid){
-                await this._updateAllData(this.state._oSpouse, oDependents);
-                this._saveAndNavigate();
-            }
-            else{
-                this._promptInvalidInputs();
-            }
-
-            this.setState({ _hasSentRequest: false, _isSubmitted: false })
+            this._promptInvalidInputs();
         }
     }
 
@@ -442,7 +431,39 @@ export class EmployeeDependents extends Component {
     }
 
     _saveAndNavigate = () => {
-        let bSuccess = this._saveDataToDB({personalinfo: this.props.oPersonalInfo});
+        if(this.props.formTriggerSave){
+            this._showLoadingPrompt(update_loading_message);
+            let oInput = {};
+            console.log('this.props.oEmployee: ' + JSON.stringify(this.props.oEmployee))
+            oInput.id = this.props.oEmployee.id;
+            oInput.personalinfo = {
+                family: this.props.oEmployee.personalinfo.family
+            }
+            this._updateToDB(oInput);
+        }
+        else{
+            this._saveDataToDB({personalinfo: this.props.oPersonalInfo});
+        }
+    }
+
+    _updateToDB = async(oData) => {
+        let bFlag = false;
+        let oRes = null;
+        await employeeApi.personalinfo.family.update(oData)
+            .then((response) => response.json())
+            .then((res) => {
+                console.log('XXXXXXXXXXXXXXXXXXXXXXXXXXXX');
+                console.log('res: ' + JSON.stringify(res));
+                oRes = {...res};
+                this._hideLoadingPrompt();
+                bFlag = this._evaluateResponse(res);
+            })
+            .catch((exception) => {
+                this._hideLoadingPrompt();
+                this._showMsgBox('error-ok', exception.message);
+            });
+    
+        return bFlag;
     }
 
     _saveDataToDB = async(oData) => {
@@ -589,9 +610,15 @@ export class EmployeeDependents extends Component {
     }
 
     _closeMsgBox = () => {
-        this.setState({
+        if(this.state._msgBoxType == 'success'){
+          this.props.hideForm();
+        }
+        else{
+          this.setState({
             _msgBoxShow: false
-        })
+          })
+        }
+        
     }
 
     _hideLoadingPrompt = () => {
@@ -679,7 +706,7 @@ export class EmployeeDependents extends Component {
                             <Text style={styles.txtFormTitle}> DEPENDENTS INFORMATION </Text>
                         </View>
                         <DependentsForm 
-                            isSubmitted={this.state._isSubmitted}
+                            ref='dependents_component'
                             validateAllData={this._validateAllData}
                             label='DEPENDENT'
                             value={this.state._arrDependents}/>
@@ -715,6 +742,7 @@ function mapStateToProps (state) {
         activecompany: state.activeCompanyReducer.activecompany,
         oFamily: state.employees.activeProfile.data.personalinfo.family,
         oPersonalInfo: state.employees.activeProfile.data.personalinfo,
+        oEmployee: state.employees.activeProfile.data,
         formTriggerNext: state.employees.formTriggerNext
     }
 }

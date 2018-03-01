@@ -105,7 +105,8 @@ export class List extends Component {
     }
 
     _setActiveChild = async(oItem) => {
-        let bIndex = false;
+        this.setState({ _activeKey: oItem.key });
+        /* let bIndex = false;
         if(this.state._activeKey != oItem.key){
             console.log('oItem: ' + oItem.key);
             await this.props.actions.employee.updateActiveID(oItem.key);
@@ -124,7 +125,7 @@ export class List extends Component {
                     }
                 }
             );
-        }
+        } */
     }
 
     _checkIfNewProfile = async(key) => {
