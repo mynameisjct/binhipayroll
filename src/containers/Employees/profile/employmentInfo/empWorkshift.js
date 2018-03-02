@@ -16,7 +16,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import styles from '../styles';
 
 //Children Components
-import Workshift from '../../../CompanyPolicies/workshift';
+import EmployeeWorkShift from '../../addEmployeeForm/employmentinfo/workshift';
 
 //Custom Components
 import * as StatusLoader from '../../../../components/ScreenLoadStatus'
@@ -46,9 +46,7 @@ export class EmpWorkshift extends Component {
         const navigation = this.props.logininfo.navigation;
         return(
             <View style={styles.child.container}>
-                {/* <View style={styles.child.floatingCard}> */}
-                    <Workshift/>
-                {/* </View> */}
+                <EmployeeWorkShift/>
             </View>
         );
     }

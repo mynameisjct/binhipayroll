@@ -405,8 +405,46 @@ const initialState = {
 					
 				]
 			}
-		}
+		},
+
+		rank: {
+			title: "EMPLOYEE RANK",
+			data: [
+				{
+					id: "0001",
+					rankid: "239",
+					effectivedate: {
+						from: {
+							value: '2018-01-01',
+							format: "MMM DD, YYYY"
+						},
+						to: {
+							value: "2018-03-02",
+							"format": "MMM DD, YYYY"
+						}
+					},
+					remarks: ''
+				},
+				{
+					id: "0002",
+					rankid: "240",
+					effectivedate: {
+						from: {
+							value: '2018-03-01',
+							format: "MMM DD, YYYY"
+						},
+						to: {
+							value: null,
+							"format": "MMM DD, YYYY"
+						}
+					},
+					remarks: ''
+				}
+			]
+		},
 	},
+
+
 
 	reports: {
 
@@ -532,6 +570,14 @@ export const data = (state = initialState, action) => {
 			oState.employmentinfo.details.dateend = action.payload.dateend;
 			oState.employmentinfo.details.data = action.payload.data;
 
+			return {
+				...oState
+			}
+			break;
+
+		case actionTypes.EMPLOYEEWORKSHIFT.UPDATE.DATA:
+			oState.employmentinfo.workshift.data = action.payload;
+			
 			return {
 				...oState
 			}

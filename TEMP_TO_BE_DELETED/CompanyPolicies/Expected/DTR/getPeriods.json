@@ -1,0 +1,23 @@
+
+{
+    "dtr": {
+        "payrollperiods" : [
+            {
+                "from": "2018-02-26",
+                "to": "2018-03-10"
+            },
+            {
+                "from": "2018-02-11",
+                "to": "2018-02-25"
+            }
+        ],
+        "activeperiod": {
+            "currentDate": "2018-02-03",
+            "pastScrollRange": 1,
+            "futureScrollRange": 0,
+
+        },
+
+        "datedisplayformat": "MMM DD YYYY"
+    }
+}

@@ -106,26 +106,20 @@ export class List extends Component {
 
     _setActiveChild = async(oItem) => {
         this.setState({ _activeKey: oItem.key });
-        /* let bIndex = false;
+        let bIndex = false;
         if(this.state._activeKey != oItem.key){
             console.log('oItem: ' + oItem.key);
             await this.props.actions.employee.updateActiveID(oItem.key);
-            this.setState({
-                _activeKey: oItem.key
-            },
-                async() => {
-                    bIndex = await this._checkIfNewProfile(oItem.key);
-                    if(bIndex < 0){
-                        console.log('GETTING FROMSERVER');
-                        this.props.actions.employee.getAllInfo(oItem.key);
-                    }
-                    else{
-                        console.log('EXISTING. UPDATING FROM VIEW.');
-                        this.props.actions.employee.updateAllInfo({employee:this.props.employees.allProfiles.data[bIndex]});
-                    }
-                }
-            );
-        } */
+            bIndex = await this._checkIfNewProfile(oItem.key);
+            if(bIndex < 0){
+                console.log('GETTING FROMSERVER');
+                this.props.actions.employee.getAllInfo(oItem.key);
+            }
+            else{
+                console.log('EXISTING. UPDATING FROM VIEW.');
+                this.props.actions.employee.updateAllInfo({employee:this.props.employees.allProfiles.data[bIndex]});
+            }
+        }
     }
 
     _checkIfNewProfile = async(key) => {

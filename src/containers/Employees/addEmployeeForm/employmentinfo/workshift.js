@@ -199,10 +199,13 @@ export class EmployeeWorkShift extends Component {
                 oRes = res;
                 this._hideLoadingPrompt();
                 bFlag = this._evaluateResponse(res);
+                if(res.flagno === 1){
+                    this.props.actions.employee.updateWorkshift(res.workshift.data)
+                }
             })
             .then(() => {
                 if(oRes.flagno === 1){
-                
+                    this._initData(CONSTANTS.STATUS.SUCCESS);
                 }
             })
             .catch((exception) => {
@@ -238,39 +241,56 @@ export class EmployeeWorkShift extends Component {
     }
 
     //Generic Methods
+    _evaluateResponse = (res) => {
+        switch (res.flagno){
+            case 0:
+                this._showMsgBox('error-ok', res.message);
+                return false
+                break;
+            case 1:
+                this._showMsgBox('success', res.message);
+                return true;
+                break;
+            default:
+                this._showMsgBox('error-ok', CONSTANTS.ERROR.UNKNOWN);
+                return false
+                break;
+        }
+    }
+
     _showLoadingPrompt = (msg) => {
         this.setState({
           _promptMsg: msg,
           _promptShow: true
         })
-      }
+    }
     
-      _showMsgBox = (strType, msg) => {
+    _showMsgBox = (strType, msg) => {
         this.setState({
-          _msgBoxShow: true,
-          _msgBoxType: strType,
-          _resMsg: msg
+        _msgBoxShow: true,
+        _msgBoxType: strType,
+        _resMsg: msg
         });
-      }
+    }
     
-      _closeMsgBox = () => {
+    _closeMsgBox = () => {
         this.setState({
-          _msgBoxShow: false
+            _msgBoxShow: false
         })
-      }
+    }
     
-      _hideLoadingPrompt = () => {
+    _hideLoadingPrompt = () => {
         this.setState({
-          _promptShow: false
+        _promptShow: false
         })
-      }
+    }
     
-      _onFormClose = () => {
+    _onFormClose = () => {
         this.setState({
-          _bShowCompForm: false,
-          _bShowGovForm: false
+        _bShowCompForm: false,
+        _bShowGovForm: false
         })
-      }
+    }
 
     render(){
         

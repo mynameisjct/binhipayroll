@@ -1,0 +1,17 @@
+
+
+1. URL: ../payroll/company/1/employee/1/reports/dtr
+2. Info shown per day:
+    a. Time-In
+        i. System Recorded
+        ii. User Modified
+    b. Time-Out
+        i. System Recorded
+        ii. User Modified
+    c. Tardiness
+        
+    d. Undertime
+    e. Overtime
+    f. Leave
+    g. Absent
+3. 

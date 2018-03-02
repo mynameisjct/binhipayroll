@@ -55,7 +55,13 @@ export default class EmployeeWorkshiftForm extends Component{
         Keyboard.dismiss();
         let oEmpWorkshiftForm = this.refs.form_employeeworkshift.getValue();
         if(oEmpWorkshiftForm){
-            this.props.submitForm(oEmpWorkshiftForm)
+            this.setState({
+                _oEmpWorkshift: {...oEmpWorkshiftForm}
+            },
+                () => {
+                    this.props.submitForm(oEmpWorkshiftForm);
+                }
+            )
         }
     }
 
