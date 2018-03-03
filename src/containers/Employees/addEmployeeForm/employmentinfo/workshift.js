@@ -149,7 +149,6 @@ export class EmployeeWorkShift extends Component {
     _editActiveWorkshift = () => {
         console.log('this.state._oActiveData: ' + JSON.stringify(this.state._oActiveData));
         this.setState({ 
-            
             _bShowWorkshiftForm: true 
         })
     }
@@ -171,7 +170,7 @@ export class EmployeeWorkShift extends Component {
             this._saveNewDataToDB(oData);
         }
         else{
-
+            this._updateDataToDB(oData);
         }
         /* console.log('value: ' + JSON.stringify(value));
         let splitWSType = value.workshiftid.split(CONSTANTS.SPLITSTRING);
@@ -200,7 +199,38 @@ export class EmployeeWorkShift extends Component {
                 this._hideLoadingPrompt();
                 bFlag = this._evaluateResponse(res);
                 if(res.flagno === 1){
-                    this.props.actions.employee.updateWorkshift(res.workshift.data)
+                    this.props.actions.employee.updateWorkshift(res.workshift.data);
+                    this._cancelTransaction();
+                }
+            })
+            .then(() => {
+                if(oRes.flagno === 1){
+                    this._initData(CONSTANTS.STATUS.SUCCESS);
+                }
+            })
+            .catch((exception) => {
+                this._hideLoadingPrompt();
+                this._showMsgBox('error-ok', exception.message);
+            });
+    }
+
+    _updateDataToDB = async(oData) => {
+        this._showLoadingPrompt(add_loading_message);
+    
+        let bFlag = false;
+        let oRes = null;
+
+        employeeApi.employmentinfo.workshift.update(oData)
+            .then((response) => response.json())
+            .then((res) => {
+                console.log('XXXXXXXXXXXXXXXXXXXXXXXXXXXX');
+                console.log('res: ' + JSON.stringify(res));
+                oRes = res;
+                this._hideLoadingPrompt();
+                bFlag = this._evaluateResponse(res);
+                if(res.flagno === 1){
+                    this.props.actions.employee.updateWorkshift(res.workshift.data);
+                    this._cancelTransaction();
                 }
             })
             .then(() => {

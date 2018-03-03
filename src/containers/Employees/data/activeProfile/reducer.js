@@ -232,7 +232,8 @@ const initialState = {
 				data: [
                     {
                         id: '0001',
-                        name: 'SSS',
+						name: 'SSS',
+						empsssid: '124567',
                         enabled: false,
                         effectivedate: {
                             from:{
@@ -248,7 +249,8 @@ const initialState = {
 
                     {
                         id: '0002',
-                        name: 'PAGIBIG',
+						name: 'PAGIBIG',
+						empsssid: '124567',
                         enabled: true,
                         effectivedate: {
                             from:{
@@ -265,7 +267,8 @@ const initialState = {
 
                     {
                         id: '0003',
-                        name: 'PHILHEALTH',
+						name: 'PHILHEALTH',
+						empsssid: '124567',
                         enabled: false,
                         effectivedate: {
                             from:{

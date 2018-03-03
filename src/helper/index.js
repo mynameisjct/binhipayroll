@@ -48,7 +48,13 @@ export const convertRangeDateToString = (oDate) => {
             strFrom = convertDateToString(oDate.from.value, oDate.from.format);
             if(oDate.to.value){
                 strSplitString = ' - ';
-                strTo = convertDateToString(oDate.to.value, oDate.to.format);
+                if(isValidDate(oDate.to.value)){
+                    strTo = convertDateToString(oDate.to.value, oDate.to.format);
+                }
+                else{
+                    strTo = oDate.to.value;
+                }
+                
             }
             return(strFrom + strSplitString + strTo);
         }
