@@ -1,20 +1,33 @@
 import React, { Component } from 'react';
 import {
-    View,
-    Text, 
-    Button
+  Text,
+  View,
+  TouchableOpacity
 } from 'react-native';
 
-export default class EmpeDTR extends Component {
+//Styles
+import styles from './styles';
+import DTRCalendar from './calendar';
+import DTRHeader from './header';
+
+export default class EmployeeDTR extends Component {
+    constructor(props){
+        super(props);
+        this.state = {
+            _bHasError: false
+        }
+    }
+
     render(){
         return(
-            <View>
-                <Text>This will display DTR</Text>
-                <Button
-                  onPress={() => this.props.navigation.navigate("DrawerToggle")}
-                  title="Open Drawer"
-                />
+            <View style={styles.container}>
+                <View style={styles.dividerHeader}>
+                    <DTRHeader/>
+                </View>
+                <View style={styles.dividerBody}>
+                    <DTRCalendar/>
+                </View>
             </View>
-        );
+        )
     }
 }

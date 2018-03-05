@@ -12,7 +12,6 @@
 import React, { Component } from 'react';
 import { DrawerNavigator, DrawerItems, StackNavigator } from 'react-navigation';
 
-import EmpeDTR from './containers/DTR';
 import EmprDashBoard from './containers/DashBoard';
 import Sidebar from './containers/Sidebar';
 import Employees from './containers/Employees/';

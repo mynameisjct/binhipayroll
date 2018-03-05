@@ -26,6 +26,9 @@ import CustomCard,
 }
 from '../../../../components/CustomCards';
 
+//Childre Components
+import EmployeeDTR from '../../../DTR';
+
 //Helper
 import * as oHelper from '../../../../helper';
 
@@ -43,13 +46,11 @@ export class EmpDTR extends Component {
         const navigation = this.props.logininfo.navigation;
         return(
             <View style={styles.child.container}>
-                <View style={styles.child.contCard}>
-                    <CustomCard clearMargin={true} title={TITLE} oType='Text'>
-                            <View style={styles.child.floatingCard}>
-                                <PropTitle name='Daily Time Record'/>
-                            </View>
-                    </CustomCard>
-                </View>
+                {/* <View style={styles.child.contCard}>
+                    <CustomCard clearMargin={true} title={TITLE} oType='Text'> */}
+                        <EmployeeDTR/>
+                    {/* </CustomCard>
+                </View> */}
             </View>
         );
     }

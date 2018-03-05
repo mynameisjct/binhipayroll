@@ -14,7 +14,7 @@ import { StackNavigator, TabNavigator } from "react-navigation";
 import { Easing, Animated } from 'react-native';
 
 import Login from './containers/Login';
-import EmpeDTR from './containers/DTR';
+import EmployeeDTR from './containers/DTR';
 import EmprDashBoard from './containers/DashBoard';
 import RootDrawer from './Drawer';
 import ChangePassword from './containers/ChangePassword';

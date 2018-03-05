@@ -175,10 +175,12 @@ export const customDatePickerTemplate = (locals) => {
                 hour: isDate ? locals.value.getHours() : now.getHours(),
                 minute: isDate ? locals.value.getMinutes() : now.getMinutes()
               };
+              console.log('XXXXXXXXXXXXXXXXXdialogMode: ' + dialogMode);
               TimePickerAndroid.open({
                 is24Hour: true,
                 hour: setTime.hour,
-                minute: setTime.minute
+                minute: setTime.minute,
+                mode: dialogMode
               }).then(function(time) {
                 if (time.action !== TimePickerAndroid.dismissedAction) {
                   const newTime = new Date();
