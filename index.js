@@ -10,13 +10,14 @@
 
 **************************************************************/
 
-/* import { AppRegistry } from 'react-native';
+import { AppRegistry } from 'react-native';
 import App from './App';
 
 AppRegistry.registerComponent('BinhiPayroll', () => App);
- */
 
-import { AppRegistry } from 'react-native';
+
+/* import { AppRegistry } from 'react-native';
 import EmployeeDTR from './src/containers/DTR';
 
 AppRegistry.registerComponent('BinhiPayroll', () => EmployeeDTR);
+ */

@@ -36,6 +36,7 @@ export const getArrayOfDaysInMonth = (month) => {
 
 //Dates
 export const convertDateToString = (strDate, format) => {
+    /* console.log('strDate:' + strDate); */
     return moment(strDate).format(format);
 }
 
@@ -68,16 +69,16 @@ export const convertRangeDateToString = (oDate) => {
 }
 
 export const isValidDate = (strDate) => {
-    console.log('strDate: ' + strDate);
-    console.log('moment(strDate, "YYYY-MM-DD", true).isValid(): ' + moment(strDate, "YYYY-MM-DD", true).isValid());
+    /* console.log('strDate: ' + strDate);
+    console.log('moment(strDate, "YYYY-MM-DD", true).isValid(): ' + moment(strDate, "YYYY-MM-DD", true).isValid()); */
     return moment(strDate, "YYYY-MM-DD", true).isValid();
 }
 
 export const addDaysFromDate = (oDate, value) => {
-    console.log('oDate: ' + oDate);
+    /* console.log('oDate: ' + oDate); */
     let curDate = new Date(oDate);
     curDate.setDate(curDate.getDate()+value);
-    console.log('curDate: ' + curDate);
+    /* console.log('curDate: ' + curDate); */
     return curDate;
 }
 

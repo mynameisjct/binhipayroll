@@ -28,7 +28,7 @@ export default {
         container: {
             height: 40,
             borderRadius: 15,
-            backgroundColor: '#C70000',
+            backgroundColor: '#D75450',
             justifyContent: 'center',
             alignItems: 'center',
             elevation: 5,

@@ -1,19 +1,40 @@
 export const dtr = {
-    payrollperiods: [
+    payrollperiod: [
         {
-        id: '010101',
-        from: '2018-02-26',
-        to: '2018-03-10'
+            id: '090909',
+            label: '20180301: Feb 26 2018 - Mar 10 2018'
         },
         {
-        id: '020202',
-        from: '2018-02-11',
-        to: '2018-02-25'
+            id: '080808',
+            label: '20180202: Feb 11 2018 - Feb 25 2018'
+        },
+        {
+            id: '070707',
+            label: '20180201: Jan 26 2018 - Feb 10 2018'
+        },
+        {
+            id: '060606',
+            label: '20180102: Jan 11 2018 - Jan 25 2018'
+        },
+        {
+            id: '050505',
+            label: '20180101: Dec 26 2017 - Jan 10 2018'
+        },
+        {
+            id: '040404',
+            label: '20171202: Dec 11 2017 - Dec 25 2017 '
+        },
+        {
+            id: '030303',
+            label: '20171201: Nov 26 2017 - Dec 10 2017'
         }
     ],
 
     currentperiod: {
         id: '010101',
+        period: 'PERIOD: Oct 11 to Oct 25, 2017',
+        payroll: 'PAYROLL DATE: Oct 30, 2017',
+        description: 'CURRENT PERIOD',
         markings: {
         '2018-02-26': {
             dots: [
@@ -383,7 +404,7 @@ export const dtr = {
 
     labels: {
         timein: 'TIME-IN',
-        timeout: 'TIME-OUT'
+        timeout: 'TIME-OUT',
     },
-    datedisplayformat: 'MMM DD YYYY'
+    datedisplayformat: 'MM/DD/YYYY'
 }

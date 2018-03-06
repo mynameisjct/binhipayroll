@@ -108,6 +108,13 @@ export let employee = {
 					'/employee/'  + payload.employeeId + 
 					'/employmentinfo/workshift/' + payload.id
 				)
+			},
+			delete: function(payload){
+				return(
+					baseURL.activeCompany() +
+					'/employee/'  + payload.employeeId + 
+					'/employmentinfo/workshift/' + payload.id
+				)
 			}
 		}
 	},

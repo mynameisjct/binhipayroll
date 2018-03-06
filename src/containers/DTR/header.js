@@ -6,6 +6,9 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
+//Childre Components
+import CustomPicker from '../../components/CustomPicker';
+
 //Styles
 import styles from './styles';
 
@@ -13,12 +16,25 @@ export default class DTRHeader extends Component {
     constructor(props){
         super(props);
         this.state = {
+            _bShowPicker: false,
             _bHasError: false
         }
     }
 
     _onPeriodChange = () => {
+        this.setState({
+            _bShowPicker: true
+        })
+    }
 
+    _onSelect = () => {
+        this._hidePicker();
+    }
+    
+    _hidePicker = () => {
+        this.setState({
+            _bShowPicker: false
+        })
     }
 
     render(){
@@ -46,10 +62,24 @@ export default class DTRHeader extends Component {
                 <View style={headerStyles.contRight}>
                     <TouchableOpacity
                         activeOpacity={0.6}
-                        onPress={this.props._onPeriodChange}>
+                        onPress={this._onPeriodChange}>
                         <Icon name='calendar-clock' size={35} color='#EEB843'/>
                     </TouchableOpacity>
                 </View>
+                {
+                    this.state._bShowPicker ? 
+                        <CustomPicker 
+                            list={this.props.data.payrollperiod}
+                            dateformat={this.props.data.datedisplayformat}
+                            emptyprompt = 'Error: No data found'
+                            title='SELECT PAYROLL PERIOD'
+                            onSelect={this._onSelect}
+                            visible={this.state._bShowPicker}
+                            onClose={this._hidePicker}/>
+                    :
+                        null
+                }
+                
             </View>
         )
     }

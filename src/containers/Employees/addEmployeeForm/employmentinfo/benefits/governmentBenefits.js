@@ -32,6 +32,7 @@ const color_SwitchThumb='#EEB843';
 export class EmpGovBenefits extends Component {
     constructor(props){
         super(props);
+        console.log('this.props.oEmpBenefits: ' + JSON.stringify(this.props.oEmpBenefits));
         this.state = {
             _status: CONSTANTS.STATUS.SUCCESS,
             _activeIndex: '',

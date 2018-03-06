@@ -12,6 +12,9 @@ import {
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import LinearGradient from 'react-native-linear-gradient';
 
+//Children Components
+import EmployeeBenefits from '../../addEmployeeForm/employmentinfo/benefits';
+
 //Styles Properties
 import styles from '../styles';
 
@@ -43,13 +46,7 @@ export class EmpBenefits extends Component {
         const navigation = this.props.logininfo.navigation;
         return(
             <View style={styles.child.container}>
-                <View style={styles.child.contCard}>
-                    <CustomCard clearMargin={true} title={TITLE} oType='Text'>
-                            <View style={styles.child.floatingCard}>
-                                <PropTitle name='Employee Benefits Information'/>
-                            </View>
-                    </CustomCard>
-                </View>
+                <EmployeeBenefits/>
             </View>
         );
     }

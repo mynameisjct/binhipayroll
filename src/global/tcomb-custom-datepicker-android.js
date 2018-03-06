@@ -56,6 +56,12 @@ export const customDatePickerTemplate = (locals) => {
   let dialogMode = "default";
   let formattedDateValue = locals.value/* .toDateString(); */
   let formattedTimeValue = locals.value/* .toTimeString(); */
+
+  //VNX_2018-03-06 - Disable Date/Time Filed Color View
+  if (locals.disabled === true) {
+    dateValueStyle = stylesheet.dateValue.notEditable;
+  }
+
   if (locals.config) {
     if (locals.config.format) {
       if(locals.value){
@@ -175,9 +181,8 @@ export const customDatePickerTemplate = (locals) => {
                 hour: isDate ? locals.value.getHours() : now.getHours(),
                 minute: isDate ? locals.value.getMinutes() : now.getMinutes()
               };
-              console.log('XXXXXXXXXXXXXXXXXdialogMode: ' + dialogMode);
               TimePickerAndroid.open({
-                is24Hour: true,
+                is24Hour: false,
                 hour: setTime.hour,
                 minute: setTime.minute,
                 mode: dialogMode

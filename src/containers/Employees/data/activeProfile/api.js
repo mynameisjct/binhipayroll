@@ -78,6 +78,9 @@ export let employmentinfo = {
 		},
 		update: function(payload){
 			return fetchApi(endPoints.employee.employmentinfo.workshift.update(payload), payload, 'put');
+		},
+		delete: function(payload){
+			return fetchApi(endPoints.employee.employmentinfo.workshift.delete(payload), payload, 'delete');
 		}
 	}
 }

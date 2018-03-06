@@ -212,6 +212,19 @@ const stylesheet = Object.freeze({
       borderWidth: BORDER_WIDTH,
       borderColor: ERROR_COLOR,
       borderRadius: 4
+    },
+
+    notEditable: {
+      height: 36,
+      color: DISABLED_COLOR,
+      fontSize: FONT_SIZE,
+      padding: 7,
+      paddingLeft: 10,
+      marginBottom: 5,
+      borderWidth: BORDER_WIDTH,
+      borderColor: BORDER_COLOR,
+      borderRadius: 4,
+      backgroundColor: DISABLED_BACKGROUND_COLOR
     }
   },
   buttonText: {

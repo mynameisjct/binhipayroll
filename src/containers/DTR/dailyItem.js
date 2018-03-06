@@ -37,7 +37,7 @@ export default class DTRItem extends Component {
                     this.props.showButton || false ?
                         <TouchableOpacity 
                             style={itemStyle.btn.container}
-                            onPress={ () => this.props.onPress()}>
+                            onPress={ () => this.props.onPress(this.props.date, this.props.value)}>
                             <Text style={itemStyle.btn.txtLabel}>{this.props.buttonTitle}</Text>
                         </TouchableOpacity> 
                     :

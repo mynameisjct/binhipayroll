@@ -13,7 +13,6 @@ import {
   TouchableOpacity
 } from 'react-native';
 import { Calendar, CalendarList, Agenda } from 'react-native-calendars';
-import {dtr} from './data';
 
 //Styles
 import styles from './styles';
@@ -28,20 +27,43 @@ export default class DTRCalendar extends Component {
     this.state = {
         _strFormTitle: '',
         _bShowTimeForm: false,
-        items: dtr,
+        _activeTimeData: {
+          employeename: '',
+          date: '',
+          oldtime: '',
+          newtime: null,
+          remarks: '',
+        },
+        items: this.props.data,
         selected: '2018-02-26'
     };
   }
 
-  _onModifyTimeIn = () => {
+  _onModifyTimeIn = (oDate, oTime) => {
+    console.log('_onModifyTimeIn_oDate: ' + oDate);
+    console.log('_onModifyTimeIn_oTime: ' + oTime);
+    let oActive = {...this.state._activeTimeData};
+    oActive.employeename = 'TEMP'; //TEMP
+    oActive.date = oDate;
+    oActive.oldtime = oTime;
+    oActive.newtime = null;
+    oActive.remarks = '';
     this.setState({
+        _activeTimeData: oActive,
         _strFormTitle: 'MODIFY EMPLOYEE TIME-IN',
         _bShowTimeForm: true
     })
   }
 
-  _onModifyTimeOut = () => {
+  _onModifyTimeOut = (oDate, oTime) => {
+    let oActive = {...this.state._activeTimeData};
+    oActive.employeename = 'TEMP'; //TEMP
+    oActive.date = oDate;
+    oActive.oldtime = oTime;
+    oActive.newtime = null;
+    oActive.remarks = '';
     this.setState({
+        _activeTimeData: oActive,
         _strFormTitle: 'MODIFY EMPLOYEE TIME-OUT',
         _bShowTimeForm: true
     })
@@ -77,13 +99,12 @@ export default class DTRCalendar extends Component {
                 renderItem={this.renderItem.bind(this)}
                 renderEmptyDate={this.renderEmptyDate.bind(this)}
                 rowHasChanged={this.rowHasChanged.bind(this)}
-                onPress
                 minDate={'2018-02-26'}
                 maxDate={'2018-03-10'}
                 markingType={'multi-dot'}
                 markedDates={this.state.items.currentperiod.markings}
-                pastScrollRange={0}
-                futureScrollRange={1}
+                pastScrollRange={1}
+                futureScrollRange={2}
                 // agenda theme
                 theme={{
                 agendaDayTextColor: '#838383',
@@ -92,11 +113,18 @@ export default class DTRCalendar extends Component {
                 agendaKnobColor: '#EEB843'
                 }}
             />
-            <DTRTimeForm
-                visible={this.state._bShowTimeForm}
-                title={this.state._strFormTitle}
-                onCancel={this._hideTimeForm}
-                onOK={this._onSubmit}/>
+            {
+              this.state._bShowTimeForm ? 
+                <DTRTimeForm
+                  data={this.state._activeTimeData}
+                  visible={this.state._bShowTimeForm}
+                  title={this.state._strFormTitle}
+                  onCancel={this._hideTimeForm}
+                  onOK={this._onSubmit}/>
+              :
+                null
+            }
+            
         </View>
     );
   }
@@ -136,7 +164,8 @@ export default class DTRCalendar extends Component {
     return (
       /* <View style={[styles.item, {height: 60}]}><Text>{JSON.stringify(item.data.timein)}</Text></View> */
       <View style={styles.itemStyle.container}>
-        <DTRItem 
+        <DTRItem
+          date={item.data.date}
           name={oLabels.timein} 
           value={oTimeIn.value}
           remarks={oTimeIn.remarks} 
@@ -144,7 +173,9 @@ export default class DTRCalendar extends Component {
           showButton={true} 
           buttonTitle='MODIFY TIME-IN '
           onPress={this._onModifyTimeIn}/>
+
         <DTRItem 
+          date={item.data.date}
           name={oLabels.timeout} 
           value={oTimeOut.value}
           remarks={oTimeOut.remarks}
@@ -153,9 +184,11 @@ export default class DTRCalendar extends Component {
           hideBorder={iValidationsLen===0 ? true : false}
           buttonTitle='MODIFY TIME-OUT'
           onPress={this._onModifyTimeOut}/>
+
         {
           aValidations.map((oData, index) => 
             <DTRItem 
+              date={item.data.date}
               hideBorder={(iValidationsLen-1)===index ? true : false}
               key={index}
               name={oData.label} 

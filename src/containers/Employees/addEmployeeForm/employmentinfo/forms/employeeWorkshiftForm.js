@@ -132,7 +132,6 @@ export default class EmployeeWorkshiftForm extends Component{
                                 <TouchableOpacity
                                     activeOpacity={0.6}
                                     onPress={() => this.props.onDelete()}>
-                                    
                                     <View style={styles.btnDelete.container}>
                                     <Text style={styles.btnDelete.txtBtn}>DELETE</Text>
                                     </View>

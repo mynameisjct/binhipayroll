@@ -3,7 +3,8 @@ import {
     View,
     Text,
     Picker,
-    TouchableOpacity
+    TouchableOpacity,
+    Alert
 } from 'react-native';
 import ActionButton from 'react-native-action-button';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -170,7 +171,35 @@ export class EmployeeWorkShift extends Component {
             this._saveNewDataToDB(oData);
         }
         else{
-            this._updateDataToDB(oData);
+            let originalData = {...this.state._oActiveData};
+            let newData = {...oData};
+            console.log('originalData:' + JSON.stringify(originalData));
+            console.log('newData:' + JSON.stringify(newData));
+            if(
+                (newData.workshiftid==originalData.workshiftid) &&
+                (newData.effectivedate.from.value==originalData.effectivedate.from.value) 
+            ){
+                Alert.alert(
+                    'Identical Data',
+                    'Unable to commit changes. Modified data is similar to current data.',
+                    [
+                        {text: 'OK', onPress: () => {}}
+                    ],
+                    { cancelable: false }
+                )
+            }
+            else{
+                Alert.alert(
+                    'Warning',
+                    'All changes will be saved and will be irreversible. ' + 
+                    'Are you sure you want to proceed ?',
+                    [
+                        {text: 'NO', onPress: () => {}},
+                        {text: 'YES', onPress: () => this._updateDataToDB(oData)}
+                    ],
+                    { cancelable: false }
+                )
+            }
         }
         /* console.log('value: ' + JSON.stringify(value));
         let splitWSType = value.workshiftid.split(CONSTANTS.SPLITSTRING);
@@ -245,7 +274,42 @@ export class EmployeeWorkShift extends Component {
     }
 
     _requestDelete = () => {
+        Alert.alert(
+            'WARNING',
+            'Deleting a workshift schedule is an irreversible action. ' + 
+            'Are you sure you want to proceed ?',
+            [
+                {text: 'NO', onPress: () => {}},
+                {text: 'YES', onPress: () => this._deleteDataFromDB(this.state._oActiveData)}
+            ],
+            { cancelable: false }
+        )
+    }
 
+    _deleteDataFromDB = (oData) => {
+        this._showLoadingPrompt(add_loading_message);
+        let oRes = null;
+        employeeApi.employmentinfo.workshift.delete(oData)
+            .then((response) => response.json())
+            .then((res) => {
+                console.log('XXXXXXXXXXXXXXXXXXXXXXXXXXXX');
+                console.log('res: ' + JSON.stringify(res));
+                oRes = res;
+                this._hideLoadingPrompt();
+                if(res.flagno === 1){
+                    this.props.actions.employee.updateWorkshift(res.workshift.data);
+                    this._cancelTransaction();
+                }
+            })
+            .then(() => {
+                if(oRes.flagno === 1){
+                    this._initData(CONSTANTS.STATUS.SUCCESS);
+                }
+            })
+            .catch((exception) => {
+                this._hideLoadingPrompt();
+                this._showMsgBox('error-ok', exception.message);
+            });
     }
 
     _formatEffectiveDate = (oEffectiveDate) => {
@@ -335,11 +399,11 @@ export class EmployeeWorkShift extends Component {
         }
 
         else if(pProgress==1){
-            console.log('RENDERING EMP WS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+            /* console.log('RENDERING EMP WS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
             console.log('this.state._status: ' + this.state._status);
             console.log('this.state._oActiveWorkShiftRule: ' + JSON.stringify(this.state._oActiveWorkShiftRule));
             console.log('this.state._oActiveData.workshiftid: ' + JSON.stringify(this.state._oActiveData.workshiftid));
-            
+             */
             let oActiveScheduleValue = null
             if(this.state._oActiveWorkShiftRule){
                 oActiveScheduleValue = this.state._oActiveWorkShiftRule.description +
