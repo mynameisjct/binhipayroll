@@ -36,6 +36,7 @@ import * as oHelper from '../../../../helper';
 //Constants
 import { CONSTANTS } from '../../../../constants/index';
 const add_loading_message = 'Saving New Employee Work Schedule. Please wait.';
+const delete_loading_message = 'Deleting Employee Work Schedule. Please wait...';
 const update_loading_message = 'Updating an Employee Work Schedule. Please wait...';
 
 export class EmployeeWorkShift extends Component {
@@ -274,21 +275,24 @@ export class EmployeeWorkShift extends Component {
     }
 
     _requestDelete = () => {
+        let oData = JSON.parse(JSON.stringify(this.state._oActiveData));
+        oData.employeeId = this.props.oEmployee.id;
         Alert.alert(
             'WARNING',
             'Deleting a workshift schedule is an irreversible action. ' + 
             'Are you sure you want to proceed ?',
             [
                 {text: 'NO', onPress: () => {}},
-                {text: 'YES', onPress: () => this._deleteDataFromDB(this.state._oActiveData)}
+                {text: 'YES', onPress: () => this._deleteDataFromDB(oData)}
             ],
             { cancelable: false }
         )
     }
 
     _deleteDataFromDB = (oData) => {
-        this._showLoadingPrompt(add_loading_message);
+        this._showLoadingPrompt(delete_loading_message);
         let oRes = null;
+        
         employeeApi.employmentinfo.workshift.delete(oData)
             .then((response) => response.json())
             .then((res) => {
@@ -296,6 +300,7 @@ export class EmployeeWorkShift extends Component {
                 console.log('res: ' + JSON.stringify(res));
                 oRes = res;
                 this._hideLoadingPrompt();
+                bFlag = this._evaluateResponse(res);
                 if(res.flagno === 1){
                     this.props.actions.employee.updateWorkshift(res.workshift.data);
                     this._cancelTransaction();

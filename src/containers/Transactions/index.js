@@ -7,6 +7,9 @@ import {
 import Icon from 'react-native-vector-icons/Ionicons';
 import Header2 from '../Headers/header2';
 
+//Children Components
+import TransactionsList from './list';
+
 export default class Transactions extends Component {
     static navigationOptions = {
         headerTitle : 
@@ -20,9 +23,7 @@ export default class Transactions extends Component {
 
     render(){
         return(
-            <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-                <Text>This will display TRANSACTIONS</Text>
-            </View>
+            <TransactionsList/>
         );
     }
 }

@@ -21,3 +21,9 @@ import EmployeeDTR from './src/containers/DTR';
 
 AppRegistry.registerComponent('BinhiPayroll', () => EmployeeDTR);
  */
+
+
+/* import { AppRegistry } from 'react-native';
+import App from './src/containers/Transactions/list/';
+
+AppRegistry.registerComponent('BinhiPayroll', () => App); */

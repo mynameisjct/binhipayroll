@@ -145,8 +145,7 @@ export class EmpGovBenefits extends Component {
                                                 <View style={styles.benefitsStyles.contLeftElementDescription}>
                                                     <Text style={styles.benefitsStyles.txtDescription}>
                                                         {
-                                                            'Effective Date: ' +
-                                                            oHelper.convertDateToString(new Date(oData.effectivedate.from.value), oData.effectivedate.from.format)
+                                                            'Effective Date: ' + oHelper.convertDateToString(new Date(oData.effectivedate.from.value), oData.effectivedate.from.format)
                                                         }
                                                     </Text>
                                                 </View>
