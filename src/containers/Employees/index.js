@@ -34,7 +34,8 @@ export class Employees extends Component {
     constructor(props){
         super(props);
         this.state={
-            _status: [2, 'Loading...']
+            _status: [2, 'Loading...'],
+            _summaryStatus: [2, 'Loading...']
         }
     }
 
@@ -58,6 +59,10 @@ export class Employees extends Component {
         this.props.actions.employeelist.get();
     }
 
+    _setActiveProfileStatus = (status) => {
+        this.setState({ _summaryStatus: status });
+    }
+
     render(){
         console.log('this.state._status: ' + this.state._status)
         let pStatus = [...this.state._status]
@@ -72,8 +77,8 @@ export class Employees extends Component {
         else if(pProgress==1){
             return(
                 <View style={styles.container}>
-                    <List/>
-                    <Summary/>
+                    <List activeProfileStatus={this._setActiveProfileStatus}/>
+                    <Summary status={this.state._summaryStatus}/>
                 </View>
             )
         }

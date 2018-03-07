@@ -22,7 +22,7 @@ export const getAllInfo = payload =>
 		api.getAllInfo(payload)
 		.then((response) => response.json())
 		.then((res) => {
-			console.log('res: ' + JSON.stringify(res));
+			/* console.log('res: ' + JSON.stringify(res)); */
 			if(res.flagno == 1){
 				dispatch(updateAllInfo(res));
 				dispatch(insert(res.employee));
@@ -194,7 +194,7 @@ dispatch => {
 	api.get(payload)
 	.then((response) => response.json())
 	.then((res) => {
-		console.log('res: ' + JSON.stringify(res));
+		/* console.log('res: ' + JSON.stringify(res)); */
 		if(res.flagno == 1){
 			dispatch(updateAddress(res));
 		}
@@ -235,7 +235,7 @@ export const getDependents = payload =>
 		api.get(payload)
 		.then((response) => response.json())
 		.then((res) => {
-			console.log('res: ' + JSON.stringify(res));
+			/* console.log('res: ' + JSON.stringify(res)); */
 			if(res.flagno == 1){
 				dispatch(updateDependents(res));
 			}
@@ -275,7 +275,7 @@ export const getBankInfo = payload =>
 		api.get(payload)
 		.then((response) => response.json())
 		.then((res) => {
-			console.log('res: ' + JSON.stringify(res));
+			/* console.log('res: ' + JSON.stringify(res)); */
 			if(res.flagno == 1){
 				dispatch(updateBankInfo(res));
 			}

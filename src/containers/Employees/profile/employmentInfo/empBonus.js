@@ -43,10 +43,9 @@ const btnInactive = 'transparent';
 const TITLE = '13th Month Pay Information'
 export default class EmpBonus extends Component {
     render(){
-        const navigation = this.props.logininfo.navigation;
         return(
             <View style={styles.child.container}>
-                <Bonus title='Tax Policy' viewOnly={true}/>
+                <Bonus title='EMPLOYEE BONUS' viewOnly={true}/>
             </View>
         );
     }

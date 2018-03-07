@@ -472,6 +472,14 @@ export default {
         fontSize: 15,
         color: '#434646',
         paddingLeft: 15
+    },
+    
+    txtSwitchViewOnly: {
+        fontFamily: 'Helvetica-Bold',
+        fontSize: 15,
+        color: '#434646',
+        paddingLeft: 15,
+        fontWeight: '500'
     }
     
     

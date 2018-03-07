@@ -311,21 +311,21 @@ export default {
 
         contLeftElement: {
             flex: 0.55,
-            paddingLeft: 30,
+            paddingLeft: 15,
             justifyContent: 'center',
             alignItems: 'flex-start',
         },
 
         contLeftElementDescription: {
             flex: 0.55,
-            paddingLeft: 30,
+            paddingLeft: 15,
             justifyContent: 'flex-start',
             alignItems: 'flex-start',
         },
         
         contRightElement: {
             flex: 0.45,
-            paddingRight: 60,
+            paddingRight: 20,
             justifyContent: 'center',
             alignItems: 'flex-end',
         },

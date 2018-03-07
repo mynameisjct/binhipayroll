@@ -33,6 +33,7 @@ import * as oHelper from '../../../helper';
 import { connect } from 'react-redux';
 import * as employeeActions from '../data/activeProfile/actions';
 import { bindActionCreators } from 'redux';
+import { CONSTANTS } from '../../../constants/index';
 
 //constants
 const btnActive = 'rgba(255, 255, 255, 0.3);'
@@ -44,9 +45,20 @@ export class Summary extends Component {
         this.props.actions.employee.getAllInfo(this.props.employees.activeProfile.data.id);
     }
 
+    _viewProfile = () => {
+        const navigation = this.props.logininfo.navigation;
+        navigation.navigate('EmployeeProfile')
+    }
+
     render(){
         /* console.log('%%%%%%%%%%%%%%%%%%%%%%%%this.props.employeeProfile: ' + JSON.stringify(this.props.employeeProfile)); */
-        let pStatus = [...this.props.employees.activeProfile.status]
+        let pStatus = [CONSTANTS.STATUS.LOADING];
+        if(this.props.status[0] !== 1){
+            pStatus = this.props.status;
+        }
+        else{
+            pStatus = [...this.props.employees.activeProfile.status]
+        }
         let pProgress = pStatus[0];
         let pMessage = pStatus[1];
 
@@ -58,7 +70,6 @@ export class Summary extends Component {
 
         else if(pProgress==1){
             const activeProfile = this.props.employees.activeProfile.data;
-            const navigation = this.props.logininfo.navigation;
             return(
                 <View style={styles.rightCont}>
                     <View style={styles.contCard}>
@@ -176,7 +187,7 @@ export class Summary extends Component {
                         </CustomCard>
                     </View>
                     <TouchableNativeFeedback 
-                        onPress={() => {navigation.navigate('EmployeeProfile')}}
+                        onPress={this._viewProfile}
                         background={TouchableNativeFeedback.SelectableBackground()}>
     
                         <View style={styles.contFooter}>

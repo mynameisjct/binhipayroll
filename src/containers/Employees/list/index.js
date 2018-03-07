@@ -32,10 +32,22 @@ import { CONSTANTS } from '../../../constants/index';
 const btnActive = 'rgba(255, 255, 255, 0.3);'
 const btnInactive = 'transparent';
 
-export class EmployeeList extends React.PureComponent{
+export class EmployeeList extends Component{
+    shouldComponentUpdate(nextProps, nextState){
+        if(
+            (this.props.activeKey === this.props.item.key) ||
+            (nextProps.activeKey === this.props.item.key)
+        ){
+            /* console.log('this.props.item.name: ' + this.props.item.name); */
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
     render(){
         let item = this.props.item;
-
         return(
             <TouchableNativeFeedback 
                 onPress={() => this.props.itemPressed(item)}
@@ -104,22 +116,31 @@ export class List extends Component {
         })
     }
 
-    _setActiveChild = async(oItem) => {
-        this.setState({ _activeKey: oItem.key });
-        let bIndex = false;
-        if(this.state._activeKey != oItem.key){
-            console.log('oItem: ' + oItem.key);
-            await this.props.actions.employee.updateActiveID(oItem.key);
-            bIndex = await this._checkIfNewProfile(oItem.key);
-            if(bIndex < 0){
-                console.log('GETTING FROMSERVER');
-                this.props.actions.employee.getAllInfo(oItem.key);
-            }
-            else{
-                console.log('EXISTING. UPDATING FROM VIEW.');
-                this.props.actions.employee.updateAllInfo({employee:this.props.employees.allProfiles.data[bIndex]});
-            }
+    _setActiveChild = (oItem) => {
+        let curKey  = this.state._activeKey;
+        if(curKey != oItem.key){
+            this.setState({ _activeKey: oItem.key });
+            this.props.activeProfileStatus(CONSTANTS.STATUS.LOADING);
+            requestAnimationFrame(() => {
+                this._checkAndGetEmployeeProfile(oItem)
+            })
         }
+    }
+
+    _checkAndGetEmployeeProfile = async(oItem) => {
+        let bIndex = false;
+        await this.props.actions.employee.updateActiveID(oItem.key);
+        bIndex = await this._checkIfNewProfile(oItem.key);
+        if(bIndex < 0){
+            /* console.log('GETTING FROMSERVER'); */
+            this.props.actions.employee.getAllInfo(oItem.key);
+        }
+        else{
+            /* console.log('EXISTING. UPDATING FROM VIEW.'); */
+            this.props.actions.employee.updateAllInfo({employee:this.props.employees.allProfiles.data[bIndex]});
+        }
+        this.props.activeProfileStatus(CONSTANTS.STATUS.SUCCESS);
+        
     }
 
     _checkIfNewProfile = async(key) => {
@@ -166,7 +187,6 @@ export class List extends Component {
         }
 
         else if(pProgress==1){
-            const navigation = this.props.logininfo.navigation;
             const oListHeader = (
                 <View style={styles.contSearch}>
                     <View style={styles.iconFilter}>
@@ -199,10 +219,10 @@ export class List extends Component {
                     <View style={styles.optionsCont}>
                         <FlatList
                             /* getItemLayout={this._getItemLayout} */
-                            initialNumToRender={3}
+                            initialNumToRender={50}
                             refreshing={this.state._refreshing}
                             onRefresh={() => {this._refreshList()}}
-                            ListHeaderComponent={oListHeader}
+                            /* ListHeaderComponent={oListHeader} */
                             ref={(ref) => { this.flatListRef = ref; }}
                             data={this.props.employees.list.data}
                             renderItem={({item}) =>

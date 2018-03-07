@@ -27,6 +27,7 @@ import CustomCard,
 }
 from '../../../components/CustomCards';
 import Header1 from '../../Headers/header1';
+import * as PromptScreen from '../../../components/ScreenLoadStatus';
 
 //Children Components
 import EmpBasicInfo from './personalInfo/empBasicInfo';
@@ -56,13 +57,27 @@ import * as oHelper from '../../../helper';
 
 //Redux
 import { connect } from 'react-redux';
+import { CONSTANTS } from '../../../constants/index';
 
 //constants
 const btnActive = 'rgba(255, 255, 255, 0.3);'
 const btnInactive = 'transparent';
 const TITLE = 'Employee Profile Summary'
 
-export class ProfileMenu extends PureComponent{
+export class ProfileMenu extends Component{
+    shouldComponentUpdate(nextProps, nextState){
+        if(
+            (this.props.activeItem.key === this.props.item.key) ||
+            (nextProps.activeItem.key === this.props.item.key)
+        ){
+            /* console.log('this.props.item.name: ' + this.props.item.name); */
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
     render(){
         let item = this.props.item;
         return(
@@ -99,6 +114,7 @@ export class Profile extends Component {
     constructor(props){
         super(props);
         this.state = {
+            _status: CONSTANTS.STATUS.LOADING,
             _refreshing: false,
             _list: [
                 {
@@ -279,18 +295,28 @@ export class Profile extends Component {
             <Header1 title= 'MY EMPLOYEES'/>
     }
 
-    _setActiveChild = (oItem) => {
+    componentDidMount(){
+        this.setState({ _status: CONSTANTS.STATUS.SUCCESS });
+    }
+
+    _setActiveChild = async(oItem) => {
+        await this._setInitialActiveComponent(oItem)
         requestAnimationFrame(() => {
-            let oActiveItem = {...this.state._activeItem}
+            let oActiveItem = {...this.state._activeItem};
             oActiveItem.key=oItem.key;
             oActiveItem.name=oItem.name;
             oActiveItem.icon=oItem.Icon;
             oActiveItem.type=oItem.type;
             oActiveItem.oComponent=oItem.oComponent;
-            this.setState({
-                _activeItem: oActiveItem
-            })
+            this.setState({ _activeItem: oActiveItem })
         })
+    }
+
+    _setInitialActiveComponent = (oItem) => {
+        let oInitialItem = {...this.state._activeItem};
+        oInitialItem.key=oItem.key;
+        oInitialItem.oComponent = <PromptScreen.PromptLoading title={''}/>;
+        this.setState({ _activeItem: oInitialItem })
     }
 
 /*     _setActiveChild = (oItem) => {
@@ -304,82 +330,100 @@ export class Profile extends Component {
     } */
 
     render(){
-        let oProfile = this.props.employees.activeProfile.data;
-        const oListHeader = (
-            <View style={styles.contSearch}>
-                <View style={styles.contSearchBox}>
-                    <Icon name='magnify' size={22} color='#000' style={styles.iconSearch}/>
-                    <TextInput 
-                        style={styles.textinputField}
-                        placeholder='Search'
-                        onChangeText={txtInput => {}}
-                        value={''}
-                        ref='_ref_emp_search'
-                        returnKeyType="search"
-                        underlineColorAndroid='transparent'
-                    />
-                </View>
-            </View>
-        )
-        
-        const navigation = this.props.logininfo.navigation;
-        return(
-            <View style={styles.container}>
-                <LinearGradient 
-                    colors={['#818489', '#3f4144', '#202626']}
-                    style={styles.leftCont}>
-                    
-                    <View style={styles.contTitle}>
+        let pStatus = this.state._status;
+        let pProgress = pStatus[0];
+        let pMessage = pStatus[1];
 
-                        <View style={styles.contIconProfile}>
-                            {/* <View style={{width: 65, height: 65, backgroundColor: 'red', borderWidth: 1, borderColor: '#EEB843', borderRadius: 100, justifyContent: 'center', alignItems: 'center'}}> */}
-                                <Icon name='account-circle' size={67} color='#fff'/>
-                            {/* </View> */}
-                        </View>
-
-                        <View style={styles.contInfoProfile}>
-                            <Text style={styles.txtProfileTitle}>
-                                {
-                                    oProfile.personalinfo.basicinfo.lastname + ', ' +
-                                    oProfile.personalinfo.basicinfo.firstname 
-                                }
-                            </Text>
-                            <Text style={styles.txtProfileLabel}>
-                                {this.props.activecompany.name}
-                            </Text>
-                            <Text style={styles.txtProfileLabel}>
-                                Auditor
-                            </Text>
-                            <Text style={styles.txtProfileLabel}>
-                                Yacapin Branch
-                            </Text>
-                        </View>
-
-                    </View>
-
-                    <View style={styles.optionsCont}>
-                        <FlatList
-                            /* getItemLayout={this._getItemLayout} */
-                            ListHeaderComonent={oListHeader}
-                            ref={(ref) => { this.flatListRef = ref; }}
-                            data={this.state._list}
-                            renderItem={({item}) => 
-                                <ProfileMenu
-                                    activeItem={this.state._activeItem}
-                                    item={item} 
-                                    itemPressed={(pressedItem) => this._setActiveChild(pressedItem)}/>
-                            }
+        if(pProgress==0){
+            return (
+                <PromptScreen.PromptError title={TITLE} onRefresh={()=>this.props.triggerRefresh(true)}/>
+            );
+        }
+        else if(pProgress==1){
+            let oProfile = this.props.employees.activeProfile.data;
+            const oListHeader = (
+                <View style={styles.contSearch}>
+                    <View style={styles.contSearchBox}>
+                        <Icon name='magnify' size={22} color='#000' style={styles.iconSearch}/>
+                        <TextInput 
+                            style={styles.textinputField}
+                            placeholder='Search'
+                            onChangeText={txtInput => {}}
+                            value={''}
+                            ref='_ref_emp_search'
+                            returnKeyType="search"
+                            underlineColorAndroid='transparent'
                         />
                     </View>
-                </LinearGradient>
-                    
-                <View style={styles.rightCont}>
-                    {
-                        this.state._activeItem.oComponent
-                    }
                 </View>
-            </View>
-        );
+            )
+            
+            const navigation = this.props.logininfo.navigation;
+            return(
+                <View style={styles.container}>
+                    <LinearGradient 
+                        colors={['#818489', '#3f4144', '#202626']}
+                        style={styles.leftCont}>
+                        
+                        <View style={styles.contTitle}>
+
+                            <View style={styles.contIconProfile}>
+                                {/* <View style={{width: 65, height: 65, backgroundColor: 'red', borderWidth: 1, borderColor: '#EEB843', borderRadius: 100, justifyContent: 'center', alignItems: 'center'}}> */}
+                                    <Icon name='account-circle' size={67} color='#fff'/>
+                                {/* </View> */}
+                            </View>
+
+                            <View style={styles.contInfoProfile}>
+                                <Text style={styles.txtProfileTitle}>
+                                    {
+                                        oProfile.personalinfo.basicinfo.lastname + ', ' +
+                                        oProfile.personalinfo.basicinfo.firstname 
+                                    }
+                                </Text>
+                                <Text style={styles.txtProfileLabel}>
+                                    {this.props.activecompany.name}
+                                </Text>
+                                <Text style={styles.txtProfileLabel}>
+                                    Auditor
+                                </Text>
+                                <Text style={styles.txtProfileLabel}>
+                                    Yacapin Branch
+                                </Text>
+                            </View>
+
+                        </View>
+
+                        <View style={styles.optionsCont}>
+                            <FlatList
+                                /* getItemLayout={this._getItemLayout} */
+                                ListHeaderComonent={oListHeader}
+                                ref={(ref) => { this.flatListRef = ref; }}
+                                data={this.state._list}
+                                renderItem={({item}) => 
+                                    <ProfileMenu
+                                        activeItem={this.state._activeItem}
+                                        item={item} 
+                                        itemPressed={(pressedItem) => this._setActiveChild(pressedItem)}/>
+                                }
+                            />
+                        </View>
+                    </LinearGradient>
+                        
+                    <View style={styles.rightCont}>
+                        {
+                            this.state._activeItem.oComponent
+                        }
+                    </View>
+                </View>
+            );
+        }
+        else{
+            return (
+                <View style={styles.container}>
+                    <PromptScreen.PromptLoading title={pMessage}/>
+                </View>
+            );
+        }
     }
 }
 

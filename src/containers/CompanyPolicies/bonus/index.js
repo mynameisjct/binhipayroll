@@ -166,6 +166,7 @@ class BonusForm extends Component{
     }
 
     render(){
+        console.log('this.props.viewOnly: ' + this.props.viewOnly)
         let pTitle = '';
         if(this.props.disabledMode){
             pTitle='13th Month Pay';
@@ -246,7 +247,12 @@ class BonusForm extends Component{
                 description={description_Bonus} 
                 oType={oRightOptionType}
                 rightHeader={
-                    oRightOption
+                    this.props.viewOnly || false ?
+                        <Text style={styles.txtSwitchViewOnly}>
+                            {this.props.allData.enabled ? 'ON' : 'OFF'}
+                        </Text>
+                    :
+                        oRightOption
                 }>
 
                 { 
@@ -750,6 +756,7 @@ export class Bonus extends Component{
                         }
                     >
                         <BonusForm
+                            viewOnly={this.props.viewOnly}
                             allData={this.state._allData}
                             activeData={this.state._activeData}
                             toggleSwitch={this._toggleSwitch}
@@ -763,7 +770,7 @@ export class Bonus extends Component{
                             />
                     </ScrollView>
 
-                    { this.state._allData.enabled && this.state._disabledMode ?
+                    { this.state._allData.enabled && this.state._disabledMode && !this.props.viewOnly ?
                         <ActionButton 
                             buttonColor="#EEB843"
                             spacing={10}>
