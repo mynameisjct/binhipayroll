@@ -8,7 +8,8 @@ import {
     ScrollView,
     TextInput,
     TouchableOpacity,
-    RefreshControl
+    RefreshControl,
+    Alert
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import ActionButton from 'react-native-action-button';
@@ -142,7 +143,10 @@ export class Tardiness extends Component{
     }
 
     componentWillUnmount(){
-        this.props.actions.tardiness.setActiveRule('');
+        if(!(this.props.disableClearActiveOnUnmount || false)){
+            this.props.actions.tardiness.setActiveRule('');
+        }
+        
     }
 
     componentDidMount(){
@@ -171,7 +175,9 @@ export class Tardiness extends Component{
             (this.state._activeTardiness.id !== nextProps.tardiness.activeRule) &&
             (this.state._status[0] == 1)
         ){
-            this._updateActiveRule(nextProps.tardiness.activeRule);
+            if(nextProps.tardiness.activeRule){
+                this._updateActiveRule(nextProps.tardiness.activeRule);
+            }
         }
     }
 
@@ -223,6 +229,7 @@ export class Tardiness extends Component{
     }
 
     _updateActiveRule = (iActiveRule) => {
+        console.log('XXXXXXXXXXXiActiveRule:' + iActiveRule);
         let oNewActive = JSON.parse(JSON.stringify(tardinessSelector.getActiveTardinessFromID(iActiveRule)));
         this.setState({
             _activeTardiness: oNewActive
@@ -349,7 +356,19 @@ export class Tardiness extends Component{
         });
     }
 
-    _deleteActiveRule = (value) => {
+    _deleteRequest = () => {
+        Alert.alert(
+            'Warning',
+            'Deleting a tardiness rule is an irreversible action. Are you sure you want to proceed ?',
+            [
+                {text: 'NO', onPress: () =>  {}},
+                {text: 'YES', onPress: () => this._deleteActiveRule()}
+            ],
+            { cancelable: false }
+        )
+    }
+
+    _deleteActiveRule = () => {
         this.setState({
             _promptMsg: delete_loading_message,
             _promptShow: true
@@ -366,8 +385,8 @@ export class Tardiness extends Component{
         tardinessApi.remove(oInput)
         .then((response) => response.json())
         .then((res) => {
-/*             console.log('INPUT: ' + JSON.stringify(oInput));
-            console.log('OUTPUT: ' + JSON.stringify(res)); */
+            console.log('INPUT: ' + JSON.stringify(oInput));
+            console.log('OUTPUT: ' + JSON.stringify(res));
             this.setState({
                 _promptShow: false
             });
@@ -384,9 +403,7 @@ export class Tardiness extends Component{
                     _msgBoxType: 'success',
                     _resMsg: res.message
                 })
-                this.props.actions.tardiness.setActiveRule('');
-                this._popActiveRuleFromStore(value);
-                
+                this._popActiveRuleFromStore();
             }
             else{
                 this.setState({
@@ -441,6 +458,7 @@ export class Tardiness extends Component{
         });
 
         oTardiness.data = aTardinessData;
+        this.props.actions.tardiness.setActiveRule('');
         this.props.actions.tardiness.update(oTardiness);
         this._initValues();
     }
@@ -886,14 +904,14 @@ export class Tardiness extends Component{
                     { 
                         this.state._tardinessData.enabled && this.state._disabledMode ? 
                             <ActionButton 
+                                bgColor='rgba(0,0,0,0.8)'
                                 buttonColor="#EEB843"
-                                spacing={10}
-                            >
-                                <ActionButton.Item buttonColor='#26A65B' title="ADD NEW TARDINESS RULE" onPress={() => {this._addNewRule()}}>
+                                spacing={10}>
+                                <ActionButton.Item buttonColor='#26A65B' title="ADD NEW TARDINESS RULE" onPress={this._addNewRule}>
                                     <Icon2 name="bell-plus" color='#fff' size={22} style={styles.actionButtonIcon} />
                                 </ActionButton.Item>
                                 
-                                <ActionButton.Item buttonColor='#D75450' title="DELETE CURRENT TARDINESS RULE" onPress={() => {this._deleteActiveRule()}}>
+                                <ActionButton.Item buttonColor='#D75450' title="DELETE CURRENT TARDINESS RULE" onPress={this._deleteRequest}>
                                     <Icon2 name="delete-empty" color='#fff' size={22} style={styles.actionButtonIcon} />
                                 </ActionButton.Item>
                             </ActionButton>

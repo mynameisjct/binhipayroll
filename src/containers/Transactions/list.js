@@ -5,10 +5,11 @@ import {
     TouchableOpacity
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { withNavigation } from 'react-navigation';
 
 import styles from './styles';
 
-export default class TransactionsList extends Component {
+export class TransactionsList extends Component {
     constructor(props){
         super(props);
         this.state = {
@@ -18,24 +19,28 @@ export default class TransactionsList extends Component {
                         id: '001',
                         name: 'Daily Time Record\nModification',
                         icon: 'timetable',
-                        iconSize: '40'
+                        iconSize: '40',
+                        navigateTo: 'EmployeeDTR'
                     },
                     {
                         id: '002',
                         name: 'Leave\nApplication',
-                        icon: 'timer-off'
+                        icon: 'timer-off',
+                        navigateTo: 'EmployeeDTR'
                     },
                     {
                         id: '003',
                         name: 'Overtime\nApplication',
-                        icon: 'clock-fast'
+                        icon: 'clock-fast',
+                        navigateTo: 'EmployeeDTR'
                     }
                 ],
                 [
                     {
                         id: '004',
                         name: 'Special Deductions\n& Allowances',
-                        icon: 'format-list-numbers'
+                        icon: 'format-list-numbers',
+                        navigateTo: 'EmployeeDTR'
                     },
                     {
                         id: '005',
@@ -51,8 +56,8 @@ export default class TransactionsList extends Component {
         }
     }
 
-    _onTriggerAction = () => {
-        
+    _onTriggerAction = (oCol) => {
+        this.props.navigation.navigate(oCol.navigateTo);
     }
 
     render(){
@@ -94,3 +99,5 @@ export default class TransactionsList extends Component {
         );
     }
 }
+
+export default withNavigation(TransactionsList)

@@ -21,6 +21,7 @@ export default class EmployeeDTR extends Component {
     }
 
     render(){
+        
         return(
             <View style={styles.container}>
                 <View style={styles.dividerHeader}>

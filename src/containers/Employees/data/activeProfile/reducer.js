@@ -586,6 +586,22 @@ export const data = (state = initialState, action) => {
 			}
 			break;
 
+		case actionTypes.EMPLOYEEBENEFITS.GOVERNMENT.DATA:
+			oState.employmentinfo.benefits.government.data = action.payload;
+			
+			return {
+				...oState
+			}
+			break;
+		
+		case actionTypes.EMPLOYEEBENEFITS.COMPANY.DATA:
+			oState.employmentinfo.benefits.company.data = action.payload;
+			
+			return {
+				...oState
+			}
+			break;
+
 		case actionTypes.ALLINFO.REMOVE.ACTIVEDATA:
 			return initialState;
 			break;

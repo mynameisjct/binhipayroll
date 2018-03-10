@@ -829,6 +829,7 @@ export class Leaves extends Component{
 
                     { this.state._allData.enabled && this.state._disabledMode ?
                             <ActionButton 
+                                bgColor='rgba(0,0,0,0.8)'
                                 buttonColor="#EEB843"
                                 spacing={10}>
                                 <ActionButton.Item buttonColor='#26A65B' title="ADD NEW LEAVE TYPE" onPress={() => {this._addRule()}}>

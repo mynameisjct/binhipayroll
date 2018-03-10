@@ -305,7 +305,7 @@ export default {
 
         contElementDescription: {
             height: 20,
-            backgroundColor: 'red',
+            backgroundColor: 'transparent',
             flexDirection: 'row'
         },
 

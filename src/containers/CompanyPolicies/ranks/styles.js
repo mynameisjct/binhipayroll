@@ -49,6 +49,19 @@ export default {
             height: '100%',
             textAlignVertical: 'center'
         },
+
+        button: {
+            margin: 3,
+            paddingTop: 5,
+            paddingBottom: 5,
+            paddingLeft: 15,
+            paddingRight: 15,
+            borderRadius: 10,
+            backgroundColor: '#e5e5e5',
+            color: '#505251',
+            elevation: 3,
+        },
+
         cont: {
             width: 200
         }

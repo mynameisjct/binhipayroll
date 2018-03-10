@@ -1,0 +1,594 @@
+{  
+    "payrollperiod":[  
+       {  
+          "id":"090909",
+          "label":"20180301: Feb 26 2018 - Mar 10 2018"
+       },
+       {  
+          "id":"080808",
+          "label":"20180202: Feb 11 2018 - Feb 25 2018"
+       },
+       {  
+          "id":"070707",
+          "label":"20180201: Jan 26 2018 - Feb 10 2018"
+       },
+       {  
+          "id":"060606",
+          "label":"20180102: Jan 11 2018 - Jan 25 2018"
+       },
+       {  
+          "id":"050505",
+          "label":"20180101: Dec 26 2017 - Jan 10 2018"
+       },
+       {  
+          "id":"040404",
+          "label":"20171202: Dec 11 2017 - Dec 25 2017 "
+       },
+       {  
+          "id":"030303",
+          "label":"20171201: Nov 26 2017 - Dec 10 2017"
+       }
+    ],
+    
+    "currentperiod":{  
+        "id":"090909",
+        "period":"PERIOD: Feb 26 2018 - Mar 10 2018",
+        "payroll":"PAYROLL DATE: Mar 15 2018",
+        "description":"CURRENT PERIOD",
+        "data":{
+            "2018-02-26":{  
+                "markings": 'error'
+            },
+            "2018-02-27":{  
+                "dots":[  
+                {  
+                    "color":"green"
+                },
+                {  
+                    "color":"green"
+                }
+                ]
+            },
+            "2018-02-28":{  
+                "dots":[  
+                {  
+                    "color":"green"
+                },
+                {  
+                    "color":"green"
+                }
+                ]
+            },
+            "2018-03-01":{  
+                "dots":[  
+                {  
+                    "color":"green"
+                },
+                {  
+                    "color":"green"
+                }
+                ]
+            },
+            "2018-03-02":{  
+                "dots":[  
+                {  
+                    "color":"green"
+                },
+                {  
+                    "color":"green"
+                }
+                ]
+            },
+            "2018-03-03":{  
+                "dots":[  
+                {  
+                    "color":"green"
+                },
+                {  
+                    "color":"green"
+                }
+                ]
+            },
+            "2018-03-04":{  
+                "dots":[  
+                {  
+                    "color":"green"
+                },
+                {  
+                    "color":"green"
+                }
+                ]
+            },
+            "2018-03-05":{  
+                "dots":[  
+                {  
+                    "color":"green"
+                },
+                {  
+                    "color":"green"
+                }
+                ]
+            },
+            "2018-03-06":{  
+                "dots":[  
+                {  
+                    "color":"green"
+                },
+                {  
+                    "color":"green"
+                }
+                ]
+            },
+            "2018-03-07":{  
+                "dots":[  
+                {  
+                    "color":"green"
+                },
+                {  
+                    "color":"green"
+                }
+                ]
+            },
+            "2018-03-08":{  
+                "dots":[  
+                {  
+                    "color":"green"
+                },
+                {  
+                    "color":"green"
+                }
+                ]
+            },
+            "2018-03-09":{  
+                "dots":[  
+                {  
+                    "color":"green"
+                },
+                {  
+                    "color":"green"
+                }
+                ]
+            },
+            "2018-03-10":{  
+                "dots":[  
+                {  
+                    "color":"green"
+                },
+                {  
+                    "color":"green"
+                }
+                ]
+            }
+        },
+       "markings":{
+          "2018-02-26":{  
+             "dots":[  
+                {  
+                   "color":"green"
+                },
+                {  
+                   "color":"green"
+                }
+             ]
+          },
+          "2018-02-27":{  
+             "dots":[  
+                {  
+                   "color":"green"
+                },
+                {  
+                   "color":"green"
+                }
+             ]
+          },
+          "2018-02-28":{  
+             "dots":[  
+                {  
+                   "color":"green"
+                },
+                {  
+                   "color":"green"
+                }
+             ]
+          },
+          "2018-03-01":{  
+             "dots":[  
+                {  
+                   "color":"green"
+                },
+                {  
+                   "color":"green"
+                }
+             ]
+          },
+          "2018-03-02":{  
+             "dots":[  
+                {  
+                   "color":"green"
+                },
+                {  
+                   "color":"green"
+                }
+             ]
+          },
+          "2018-03-03":{  
+             "dots":[  
+                {  
+                   "color":"green"
+                },
+                {  
+                   "color":"green"
+                }
+             ]
+          },
+          "2018-03-04":{  
+             "dots":[  
+                {  
+                   "color":"green"
+                },
+                {  
+                   "color":"green"
+                }
+             ]
+          },
+          "2018-03-05":{  
+             "dots":[  
+                {  
+                   "color":"green"
+                },
+                {  
+                   "color":"green"
+                }
+             ]
+          },
+          "2018-03-06":{  
+             "dots":[  
+                {  
+                   "color":"green"
+                },
+                {  
+                   "color":"green"
+                }
+             ]
+          },
+          "2018-03-07":{  
+             "dots":[  
+                {  
+                   "color":"green"
+                },
+                {  
+                   "color":"green"
+                }
+             ]
+          },
+          "2018-03-08":{  
+             "dots":[  
+                {  
+                   "color":"green"
+                },
+                {  
+                   "color":"green"
+                }
+             ]
+          },
+          "2018-03-09":{  
+             "dots":[  
+                {  
+                   "color":"green"
+                },
+                {  
+                   "color":"green"
+                }
+             ]
+          },
+          "2018-03-10":{  
+             "dots":[  
+                {  
+                   "color":"green"
+                },
+                {  
+                   "color":"green"
+                }
+             ]
+          }
+       },
+       "details":{  
+          "2018-02-26":[  
+             {  
+                "data":{  
+                   "date":"2018-02-26",
+                   "timein":{  
+                      "value":"07:45:24 AM",
+                      "remarks":"System Recorded",
+                      "remarksColor":"red",
+                      "valueColor":"red"
+                   },
+                   "timeout":{  
+                      "value":"05:30:09 PM",
+                      "remarks":"Manually Modified",
+                      "remarksColor":"red",
+                      "valueColor":"red"
+                   },
+                   "rulesvalidation":[  
+                      {  
+                         "label":"REMARKS",
+                         "value":"Absent",
+                         "remarks":"System Generated",
+                         "remarksColor":"",
+                         "valueColor":"red"
+                      },
+                      {  
+                         "label":"OVERTIME",
+                         "value":"1 Hour",
+                         "remarks":"System Computed",
+                         "remarksColor":"red",
+                         "valueColor":"red"
+                      },
+                      {  
+                         "label":"UNDERTIME",
+                         "value":"1 Hour",
+                         "remarks":"System Computed",
+                         "remarksColor":"red",
+                         "valueColor":"red"
+                      },
+                      {  
+                         "label":"TARDINESS",
+                         "value":"20 mins",
+                         "remarks":"System Computed",
+                         "remarksColor":"red",
+                         "valueColor":"red"
+                      }
+                   ]
+                }
+             }
+          ],
+          "2018-02-27":[  
+             {  
+                "data":{  
+                   "date":"2018-02-27",
+                   "timein":{  
+                      "value":"07:45:24 AM",
+                      "remarks":"System Recorded",
+                      "remarksColor":"red",
+                      "valueColor":"red"
+                   },
+                   "timeout":{  
+                      "value":"05:30:09 PM",
+                      "remarks":"Manually Modified",
+                      "remarksColor":"red",
+                      "valueColor":"red"
+                   },
+                   "rulesvalidation":[  
+ 
+                   ]
+                }
+             }
+          ],
+          "2018-02-28":[  
+             {  
+                "data":{  
+                   "date":"2018-02-28",
+                   "timein":{  
+                      "value":"07:45:24 AM",
+                      "remarks":"System Recorded",
+                      "remarksColor":"red",
+                      "valueColor":"red"
+                   },
+                   "timeout":{  
+                      "value":"05:30:09 PM",
+                      "remarks":"Manually Modified",
+                      "remarksColor":"red",
+                      "valueColor":"red"
+                   },
+                   "rulesvalidation":[  
+ 
+                   ]
+                }
+             }
+          ],
+          "2018-03-01":[  
+             {  
+                "data":{  
+                   "timein":{  
+                      "value":"07:45:24 AM",
+                      "remarks":"System Recorded",
+                      "remarksColor":"red",
+                      "valueColor":"red"
+                   },
+                   "timeout":{  
+                      "value":"05:30:09 PM",
+                      "remarks":"Manually Modified",
+                      "remarksColor":"red",
+                      "valueColor":"red"
+                   },
+                   "rulesvalidation":[  
+ 
+                   ]
+                }
+             }
+          ],
+          "2018-03-02":[  
+             {  
+                "data":{  
+                   "timein":{  
+                      "value":"07:45:24 AM",
+                      "remarks":"System Recorded",
+                      "remarksColor":"red",
+                      "valueColor":"red"
+                   },
+                   "timeout":{  
+                      "value":"05:30:09 PM",
+                      "remarks":"Manually Modified",
+                      "remarksColor":"red",
+                      "valueColor":"red"
+                   },
+                   "rulesvalidation":[  
+ 
+                   ]
+                }
+             }
+          ],
+          "2018-03-03":[  
+             {  
+                "data":{  
+                   "timein":{  
+                      "value":"07:45:24 AM",
+                      "remarks":"System Recorded",
+                      "remarksColor":"red",
+                      "valueColor":"red"
+                   },
+                   "timeout":{  
+                      "value":"05:30:09 PM",
+                      "remarks":"Manually Modified",
+                      "remarksColor":"red",
+                      "valueColor":"red"
+                   },
+                   "rulesvalidation":[  
+ 
+                   ]
+                }
+             }
+          ],
+          "2018-03-04":[  
+             {  
+                "data":{  
+                   "timein":{  
+                      "value":"07:45:24 AM",
+                      "remarks":"System Recorded",
+                      "remarksColor":"red",
+                      "valueColor":"red"
+                   },
+                   "timeout":{  
+                      "value":"05:30:09 PM",
+                      "remarks":"Manually Modified",
+                      "remarksColor":"red",
+                      "valueColor":"red"
+                   },
+                   "rulesvalidation":[  
+ 
+                   ]
+                }
+             }
+          ],
+          "2018-03-05":[  
+             {  
+                "data":{  
+                   "timein":{  
+                      "value":"07:45:24 AM",
+                      "remarks":"System Recorded",
+                      "remarksColor":"red",
+                      "valueColor":"red"
+                   },
+                   "timeout":{  
+                      "value":"05:30:09 PM",
+                      "remarks":"Manually Modified",
+                      "remarksColor":"red",
+                      "valueColor":"red"
+                   },
+                   "rulesvalidation":[  
+ 
+                   ]
+                }
+             }
+          ],
+          "2018-03-06":[  
+             {  
+                "data":{  
+                   "timein":{  
+                      "value":"07:45:24 AM",
+                      "remarks":"System Recorded",
+                      "remarksColor":"red",
+                      "valueColor":"red"
+                   },
+                   "timeout":{  
+                      "value":"05:30:09 PM",
+                      "remarks":"Manually Modified",
+                      "remarksColor":"red",
+                      "valueColor":"red"
+                   },
+                   "rulesvalidation":[  
+ 
+                   ]
+                }
+             }
+          ],
+          "2018-03-07":[  
+             {  
+                "data":{  
+                   "date":"2018-03-07",
+                   "timein":{  
+                      "value":"07:45:24 AM",
+                      "remarks":"System Recorded"
+                   },
+                   "timeout":{  
+                      "value":"05:30:09 PM",
+                      "remarks":"Manually Modified"
+                   },
+                   "rulesvalidation":[  
+ 
+                   ]
+                }
+             }
+          ],
+          "2018-03-08":[  
+             {  
+                "data":{  
+                   "date":"2018-03-08",
+                   "timein":{  
+                      "value":"07:45:24 AM",
+                      "remarks":"System Recorded"
+                   },
+                   "timeout":{  
+                      "value":"05:30:09 PM",
+                      "remarks":"Manually Modified"
+                   },
+                   "rulesvalidation":[  
+ 
+                   ]
+                }
+             }
+          ],
+          "2018-03-09":[  
+             {  
+                "data":{  
+                   "date":"2018-03-09",
+                   "timein":{  
+                      "value":"07:45:24 AM",
+                      "remarks":"System Recorded"
+                   },
+                   "timeout":{  
+                      "value":"05:30:09 PM",
+                      "remarks":"Manually Modified"
+                   },
+                   "rulesvalidation":[  
+ 
+                   ]
+                }
+             }
+          ],
+          "2018-03-10":[  
+             {  
+                "data":{  
+                   "date":"2018-03-10",
+                   "timein":{  
+                      "value":"07:45:24 AM",
+                      "remarks":"System Recorded"
+                   },
+                   "timeout":{  
+                      "value":"05:30:09 PM",
+                      "remarks":"Manually Modified"
+                   },
+                   "rulesvalidation":[  
+ 
+                   ]
+                }
+             }
+          ]
+       }
+    },
+    "labels":{  
+       "timein":"TIME-IN",
+       "timeout":"TIME-OUT"
+    },
+    "datedisplayformat":"MM/DD/YYYY"
+ }

@@ -356,7 +356,9 @@ export class Overtime extends Component {
     }
 
     componentWillUnmount(){
-        this.props.actions.overtime.setActiveRule('');
+        if(!(this.props.disableClearActiveOnUnmount || false)){
+            this.props.actions.overtime.setActiveRule('');
+        }
     }
 
     componentDidMount(){
@@ -385,7 +387,9 @@ export class Overtime extends Component {
             (this.state._activeRule.id !== nextProps.overtime.activeRule) &&
             (this.state._status[0] == 1)
         ){
-            this._updateActiveRule(nextProps.overtime.activeRule);
+            if(nextProps.overtime.activeRule){
+                this._updateActiveRule(nextProps.overtime.activeRule);
+            }
         }
     }
 
@@ -788,6 +792,7 @@ export class Overtime extends Component {
                     { 
                         this.state._allData.enabled && this.state._disabledMode ? 
                             <ActionButton 
+                                bgColor='rgba(0,0,0,0.8)'
                                 buttonColor="#EEB843"
                                 spacing={10}
                             >

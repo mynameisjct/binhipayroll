@@ -10,10 +10,10 @@
 
 **************************************************************/
 
-import { AppRegistry } from 'react-native';
+/* import { AppRegistry } from 'react-native';
 import App from './App';
 
-AppRegistry.registerComponent('BinhiPayroll', () => App);
+AppRegistry.registerComponent('BinhiPayroll', () => App); */
 
 
 /* import { AppRegistry } from 'react-native';
@@ -27,3 +27,9 @@ AppRegistry.registerComponent('BinhiPayroll', () => EmployeeDTR);
 import App from './src/containers/Transactions/list/';
 
 AppRegistry.registerComponent('BinhiPayroll', () => App); */
+
+
+import { AppRegistry } from 'react-native';
+import App from './src/containers/Reports/payslip/payslipform';
+
+AppRegistry.registerComponent('BinhiPayroll', () => App);

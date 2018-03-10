@@ -30,7 +30,7 @@ export default {
         margin: 15,
         borderRadius: 15,
         borderColor: '#FFF',
-        elevation: 10,
+        elevation: 7,
         flexDirection: 'row'
     },
 

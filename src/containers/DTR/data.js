@@ -208,6 +208,7 @@ export const dtr = {
         '2018-03-01': [
             {
             data: {
+                date:'2018-03-01',
                 timein: {
                     value: '07:45:24 AM',
                     remarks: 'System Recorded',
@@ -227,6 +228,7 @@ export const dtr = {
         '2018-03-02': [
             {
             data: {
+                date:'2018-03-02',
                 timein: {
                     value: '07:45:24 AM',
                     remarks: 'System Recorded',
@@ -243,9 +245,10 @@ export const dtr = {
             }
             }
         ],
-        '2018-03-03': [
+        '2018-03-10': [
             {
             data: {
+                date:'2018-03-10',
                 timein: {
                     value: '07:45:24 AM',
                     remarks: 'System Recorded',
@@ -335,22 +338,6 @@ export const dtr = {
             }
             }
         ],
-        '2018-03-07': [
-            {
-            data: {
-                date:'2018-03-07',
-                timein: {
-                value: '07:45:24 AM',
-                remarks: 'System Recorded'
-                },
-                timeout: {
-                value: '05:30:09 PM',
-                remarks: 'Manually Modified'
-                },
-                rulesvalidation: []
-            }
-            }
-        ],
         '2018-03-08': [
             {
             data: {
@@ -383,10 +370,10 @@ export const dtr = {
             }
             }
         ],
-        '2018-03-10': [
+        '2018-03-03': [
             {
             data: {
-                date:'2018-03-10',
+                date:'2018-03-03',
                 timein: {
                 value: '07:45:24 AM',
                 remarks: 'System Recorded'

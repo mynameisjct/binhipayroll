@@ -82,6 +82,18 @@ export let employmentinfo = {
 		delete: function(payload){
 			return fetchApi(endPoints.employee.employmentinfo.workshift.delete(payload), payload, 'delete');
 		}
+	},
+
+	benefits: {
+		add: function(payload){
+			return fetchApi(endPoints.employee.employmentinfo.benefits.add(payload), payload, 'post');
+		},
+		delete: function(payload){
+			return fetchApi(endPoints.employee.employmentinfo.benefits.delete(payload), payload, 'delete');
+		},
+		request: function(payload){
+			return fetchApi(endPoints.employee.employmentinfo.benefits.request(payload), payload, 'put');
+		}
 	}
 }
 

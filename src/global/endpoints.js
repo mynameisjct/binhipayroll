@@ -116,6 +116,29 @@ export let employee = {
 					'/employmentinfo/workshift/' + payload.id
 				)
 			}
+		},
+		benefits: {
+			add: function(payload){
+				return(
+					baseURL.activeCompany() +
+					'/employee/'  + payload.employeeId + 
+					'/employmentinfo/benefits/'
+				)
+			},
+			delete: function(payload){
+				return(
+					baseURL.activeCompany() +
+					'/employee/'  + payload.employeeId + 
+					'/employmentinfo/benefits/' + payload.id
+				)
+			},
+			request: function(payload){
+				return(
+					baseURL.activeCompany() +
+					'/employee/'  + payload.employeeId + 
+					'/employmentinfo/benefits/request'
+				)
+			}
 		}
 	},
 }

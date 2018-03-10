@@ -47,6 +47,14 @@ const AddEmployeeFormNav = StackNavigator({
     }
 );
 
+const EmployeeDTRNav = StackNavigator({
+    EmployeeDTR: {screen: EmployeeDTR},
+    },
+    {
+        headerMode: 'screen'
+    }
+);
+
 /******APP NAVIGATOR******/
 const AppNavigator = StackNavigator(
     {
@@ -55,7 +63,7 @@ const AppNavigator = StackNavigator(
         ChangePassword: {screen: ChangePassword},
         BranchFormNav: {screen: BranchFormNav},
         CompanyIdFormNav: {screen: CompanyIdFormNav},
-
+        EmployeeDTR: {screen: EmployeeDTRNav},
         //Employee
         AddEmployeeForm: {screen: AddEmployeeFormNav}
     },

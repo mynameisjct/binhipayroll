@@ -354,8 +354,20 @@ export class Ranks extends Component{
         }
     }
 
-    _showPolicy = (strType) => {
+    _showPolicy = async (strType, value) => {
         /* console.log('XXXX=strType: ' + strType); */
+        let iActiveID = (value && value !== 0) ? value : '';
+        switch(strType.toUpperCase()){
+            case 'UNDERTIME':
+                await this.props.actions.undertime.setActiveRule(iActiveID);
+                break;
+            case 'TARDINESS':
+                await this.props.actions.tardiness.setActiveRule(iActiveID);
+                break;
+            case 'OVERTIME':
+                await this.props.actions.overtime.setActiveRule(iActiveID);
+                break;
+        }
         let strPolicy = strType.toUpperCase()
         this.setState({
             _activePolicy: strPolicy,
@@ -667,13 +679,6 @@ export class Ranks extends Component{
     }
 
     render(){
-        /* console.log('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX');
-        console.log('_allData: ' + JSON.stringify(this.state._allData));
-        console.log('this.state._activeData: ' + JSON.stringify(this.state._activeData));
-        console.log('this.props.ranks.activeRule: ' + this.props.ranks.activeRule);
-        console.log('this.props.tardiness.activeRule: ' + this.props.tardiness.activeRule);
-        console.log('this.props.overtime.activeRule: ' + this.props.overtime.activeRule);
-        console.log('this.props.undertime.activeRule: ' + this.props.undertime.activeRule); */
         let pStatus = [...this.state._status];
         let pProgress = pStatus[0];
         let pMessage = pStatus[1];
@@ -689,13 +694,13 @@ export class Ranks extends Component{
             let oActivePolicy = null;
             switch(this.state._activePolicy){
                 case 'TARDINESS':
-                    oActivePolicy = (<Tardiness/>)
+                    oActivePolicy = (<Tardiness disableClearActiveOnUnmount = {true}/>)
                     break;
                 case 'OVERTIME':
-                    oActivePolicy = (<Overtime/>)
+                    oActivePolicy = (<Overtime disableClearActiveOnUnmount = {true}/>)
                     break;
                 case 'UNDERTIME':
-                    oActivePolicy = (<Undertime/>)
+                    oActivePolicy = (<Undertime disableClearActiveOnUnmount = {true}/>)
                     break;
                 case 'LEAVES':
                     oActivePolicy = (<Leaves/>)
@@ -827,9 +832,14 @@ export class Ranks extends Component{
                                             name='Tardiness Rule'
                                             content={
                                                 <Text 
-                                                    style={styles.level2Styles.txt}
-                                                    disabled={this.state._disabledMode}
-                                                    onPress={() => this._showPolicy('TARDINESS')}>
+                                                    style={
+                                                        (this.state._disabledMode && this.state._activeData.tardiness.value) ? 
+                                                            styles.level2Styles.button 
+                                                        : 
+                                                            styles.level2Styles.txt
+                                                    }
+                                                    disabled={this.state._activeData.tardiness.value || !this.state._disabledMode ? false : true}
+                                                    onPress={() => this._showPolicy('TARDINESS', this.state._activeData.tardiness.value)}>
                                                     {this.state._activeData.tardiness.label}
                                                 </Text>
                                             }
@@ -840,9 +850,14 @@ export class Ranks extends Component{
                                             name='Undertime Rule'
                                             content={
                                                 <Text 
-                                                    style={styles.level2Styles.txt}
-                                                    disabled={this.state._disabledMode}
-                                                    onPress={() => this._showPolicy('UNDERTIME')}>
+                                                    style={
+                                                        (this.state._disabledMode && this.state._activeData.undertime.value) ? 
+                                                            styles.level2Styles.button 
+                                                        : 
+                                                            styles.level2Styles.txt
+                                                    }
+                                                    disabled={this.state._activeData.undertime.value || !this.state._disabledMode ? false : true}
+                                                    onPress={() => this._showPolicy('UNDERTIME', this.state._activeData.undertime.value)}>
                                                     {this.state._activeData.undertime.label}
                                                 </Text>
                                             }
@@ -853,9 +868,14 @@ export class Ranks extends Component{
                                             name='Overtime Rule'
                                             content={
                                                 <Text 
-                                                    style={styles.level2Styles.txt}
-                                                    disabled={this.state._disabledMode}
-                                                    onPress={() => this._showPolicy('OVERTIME')}>
+                                                    style={
+                                                        (this.state._disabledMode && this.state._activeData.overtime.value) ? 
+                                                            styles.level2Styles.button 
+                                                        : 
+                                                            styles.level2Styles.txt
+                                                    }
+                                                    disabled={this.state._activeData.overtime.value || !this.state._disabledMode ? false : true}
+                                                    onPress={() => this._showPolicy('OVERTIME', this.state._activeData.overtime.value)}>
                                                     {this.state._activeData.overtime.label}
                                                 </Text>
                                             }
@@ -879,6 +899,7 @@ export class Ranks extends Component{
                         this.state._disabledMode && !bIsEmpty?
                             this.props.viewOnly ? 
                                 <ActionButton 
+                                    bgColor='rgba(0,0,0,0.8)'
                                     buttonColor="#EEB843"
                                     spacing={10}>
                                     <ActionButton.Item buttonColor='#26A65B' title="ADD NEW RANK" onPress={() => {this._addRule()}}>
@@ -887,6 +908,7 @@ export class Ranks extends Component{
                                 </ActionButton>
                             :
                                 <ActionButton 
+                                    bgColor='rgba(0,0,0,0.8)'
                                     buttonColor="#EEB843"
                                     spacing={10}>
                                     <ActionButton.Item buttonColor='#26A65B' title="ADD NEW RANK" onPress={() => {this._addRule()}}>

@@ -327,3 +327,13 @@ export const updateWorkshiftStatus = payload => ({
 	payload
 });
 
+export const updateCompanyBenefits = payload => ({
+	type: actionTypes.EMPLOYEEBENEFITS.COMPANY.UPDATE.DATA,
+	payload
+});
+
+export const updateGovernmentBenefits = payload => ({
+	type: actionTypes.EMPLOYEEBENEFITS.GOVERNMENT.UPDATE.DATA,
+	payload
+});
+

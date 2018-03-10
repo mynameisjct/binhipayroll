@@ -772,6 +772,7 @@ export class Bonus extends Component{
 
                     { this.state._allData.enabled && this.state._disabledMode && !this.props.viewOnly ?
                         <ActionButton 
+                            bgColor='rgba(0,0,0,0.8)'
                             buttonColor="#EEB843"
                             spacing={10}>
                             <ActionButton.Item buttonColor='#26A65B' title="ADD NEW SCHEDULE" onPress={() => {this._addNewSchedule()}}>

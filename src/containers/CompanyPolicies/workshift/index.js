@@ -772,10 +772,10 @@ export class WorkShift extends Component {
             //Floating Actions Buttons for A/D Work Shift Type
             const actionButton = 
                 <ActionButton
+                    bgColor='rgba(0,0,0,0.8)'
                     shadowStyle={{elevation: 30}}
                     buttonColor="#EEB843"
-                    spacing={10}
-                >
+                    spacing={10}>
                     <ActionButton.Item buttonColor='#26A65B' title="ADD NEW WORK SHIFT" onPress={() => {this._addNewWorkShift()}}>
                         <Icon2 name="bell-plus" color='#fff' size={22} style={styles.actionButtonIcon} />
                     </ActionButton.Item>

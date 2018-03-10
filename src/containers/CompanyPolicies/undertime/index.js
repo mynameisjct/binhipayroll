@@ -86,7 +86,9 @@ export class Undertime extends Component{
     }
 
     componentWillUnmount(){
-        this.props.actions.undertime.setActiveRule('');
+        if(!(this.props.disableClearActiveOnUnmount || false)){
+            this.props.actions.undertime.setActiveRule('');
+        }
     }
 
     componentDidMount(){
@@ -115,7 +117,9 @@ export class Undertime extends Component{
             (this.state._activeUndertime.id !== nextProps.undertime.activeRule) &&
             (this.state._status[0] == 1)
         ){
-            this._updateActiveRule(nextProps.undertime.activeRule);
+            if(nextProps.undertime.activeRule){
+                this._updateActiveRule(nextProps.undertime.activeRule);
+            }
         }
     }
 
@@ -720,9 +724,9 @@ export class Undertime extends Component{
                     { 
                         this.state._undertimeData.enabled && this.state._disabledMode ? 
                             <ActionButton 
+                                bgColor='rgba(0,0,0,0.8)'
                                 buttonColor="#EEB843"
-                                spacing={10}
-                            >
+                                spacing={10}>
                                 <ActionButton.Item buttonColor='#26A65B' title="ADD NEW UNDERTIME RULE" onPress={() => {this._addNewRule()}}>
                                     <Icon2 name="bell-plus" color='#fff' size={22} style={styles.actionButtonIcon} />
                                 </ActionButton.Item>
