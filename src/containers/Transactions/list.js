@@ -17,39 +17,42 @@ export class TransactionsList extends Component {
                 [
                     {
                         id: '001',
-                        name: 'Daily Time Record\nModification',
+                        name: 'Resolve\nNotifications',
                         icon: 'timetable',
                         iconSize: '40',
                         navigateTo: 'EmployeeDTR'
                     },
                     {
                         id: '002',
-                        name: 'Leave\nApplication',
-                        icon: 'timer-off',
+                        name: 'Daily Time Record\nModification',
+                        icon: 'timetable',
+                        iconSize: '40',
                         navigateTo: 'EmployeeDTR'
                     },
                     {
                         id: '003',
-                        name: 'Overtime\nApplication',
-                        icon: 'clock-fast',
+                        name: 'Leave\nApplication',
+                        icon: 'timer-off',
                         navigateTo: 'EmployeeDTR'
                     }
                 ],
                 [
                     {
                         id: '004',
+                        name: 'Overtime\nApplication',
+                        icon: 'clock-fast',
+                        navigateTo: 'EmployeeDTR'
+                    },
+                    {
+                        id: '005',
                         name: 'Special Deductions\n& Allowances',
                         icon: 'format-list-numbers',
                         navigateTo: 'EmployeeDTR'
                     },
                     {
-                        id: '005',
-                        name: 'Run Payroll',
+                        id: '006',
+                        name: 'Run\nPayroll',
                         icon: 'calculator'
-                    },
-                    {
-                        id: null,
-                        name: null
                     }
                 ]
             ]
