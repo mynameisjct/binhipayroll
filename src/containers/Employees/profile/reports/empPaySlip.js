@@ -15,19 +15,11 @@ import LinearGradient from 'react-native-linear-gradient';
 //Styles Properties
 import styles from '../styles';
 
-//Custom Components
-import * as StatusLoader from '../../../../components/ScreenLoadStatus'
-import CustomCard, 
-{
-    Description,
-    PropTitle,
-    PropLevel1, 
-    PropLevel2
-}
-from '../../../../components/CustomCards';
-
 //Helper
 import * as oHelper from '../../../../helper';
+
+//Children Components
+import EmployeePayslipForm from '../../../Reports/payslip/payslipform';
 
 //Redux
 import { connect } from 'react-redux';
@@ -38,38 +30,13 @@ import { bindActionCreators } from 'redux';
 const btnActive = 'rgba(255, 255, 255, 0.3);'
 const btnInactive = 'transparent';
 const TITLE = 'Employee Pay Slip'
-export class EmpPaySlip extends Component {
+
+export default class EmpPaySlip extends Component {
     render(){
-        const navigation = this.props.logininfo.navigation;
         return(
             <View style={styles.child.container}>
-                <View style={styles.child.contCard}>
-                    <CustomCard clearMargin={true} title={TITLE} oType='Text'>
-                            <View style={styles.child.floatingCard}>
-                                <PropTitle name='Employee Pay Slip'/>
-                            </View>
-                    </CustomCard>
-                </View>
+                <EmployeePayslipForm/>
             </View>
         );
     }
 }
-
-function mapStateToProps (state) {
-    return {
-        logininfo: state.loginReducer.logininfo
-    }
-}
-
-function mapDispatchToProps (dispatch) {
-    return {
-        actions: {
-            employee: bindActionCreators(employeeActions, dispatch),
-        },
-    }
-}
-
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(EmpPaySlip)

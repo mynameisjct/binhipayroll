@@ -6,7 +6,7 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-//Childre Components
+//Children Components
 import CustomPicker from '../../components/CustomPicker';
 
 //Styles

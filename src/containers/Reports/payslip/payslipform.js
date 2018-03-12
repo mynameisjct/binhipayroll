@@ -3,25 +3,61 @@ import {
     View,
     Text,
     Button,
-    ScrollView
+    ScrollView,
+    TouchableOpacity
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import Icon2 from 'react-native-vector-icons/MaterialCommunityIcons';
 
+//Children Components
+import CustomPicker from '../../../components/CustomPicker';
+
+//Styles
 import styles from './styles';
 
 const oTempData = {
     period: '20170902',
+    payrollperiods: [
+        {
+            id: '090909',
+            label: '20180301: Feb 26 2018 - Mar 10 2018'
+        },
+        {
+            id: '080808',
+            label: '20180202: Feb 11 2018 - Feb 25 2018'
+        },
+        {
+            id: '070707',
+            label: '20180201: Jan 26 2018 - Feb 10 2018'
+        },
+        {
+            id: '060606',
+            label: '20180102: Jan 11 2018 - Jan 25 2018'
+        },
+        {
+            id: '050505',
+            label: '20180101: Dec 26 2017 - Jan 10 2018'
+        },
+        {
+            id: '040404',
+            label: '20171202: Dec 11 2017 - Dec 25 2017 '
+        },
+        {
+            id: '030303',
+            label: '20171201: Nov 26 2017 - Dec 10 2017'
+        }
+    ],
 
     info: [
         [
-            ['ID Number', '2017-1804E'],
-            ['Employee Name', 'Auxilio, Jovanni G. '],
-            ['Position', 'Internal Janitor']
+            ['ID Number:', '2017-1804E'],
+            ['Name:', 'Auxilio, Jovanni G.'],
+            ['Position:', 'Internal Janitor']
         ],
         [
-            ['Payroll Period', '09/11/2017 - 09/25/2017'],
-            ['Pay Date', '09/11/30'],
-            ['Basic Salary', '13,000.00 (Monthly)']
+            ['Payroll Period:', '09/11/2017 - 09/25/2017'],
+            ['Pay Date:', '09/11/30'],
+            ['Basic Salary:', '13,000.00 (Monthly)']
         ]
     ],
 
@@ -82,12 +118,39 @@ const oTempData = {
                 ['systemfooter', 'NET PAY', '17,000.00']
             ]
         }
-    ]
+    ],
+
+    datedisplayformat: 'MM/DD/YYYY'
 }
 
 export default class EmployeePayslipForm extends Component {
+    constructor(props){
+        super(props);
+        this.state = {
+            _bShowPicker: false,
+            _bHasError: false
+        }
+    }
+
+    _onPeriodChange = () => {
+        this.setState({
+            _bShowPicker: true
+        })
+    }
+
+    _onSelect = () => {
+        this._hidePicker();
+    }
+    
+    _hidePicker = () => {
+        this.setState({
+            _bShowPicker: false
+        })
+    }
+
     render(){
         const headerStyles = styles.header;
+        const navigatorStyles = styles.navigator;
         const contentStyles = styles.content;
         const titleStyles = styles.title;
         const bodyStyles = styles.body;
@@ -95,15 +158,29 @@ export default class EmployeePayslipForm extends Component {
         const textStyles = styles.textStyles;
         return(
             <View style={styles.container}>
+
+                <View style={navigatorStyles.container}>
+                    <View style={navigatorStyles.left}>
+                        <Text style={textStyles.cardTitle}>Employee Detailed Payslip</Text>
+                    </View>
+                    <View style={navigatorStyles.right}>
+                        <TouchableOpacity
+                            activeOpacity={0.6}
+                            onPress={this._onPeriodChange}>
+                            <Icon2 name='calendar-clock' size={35} color='#434646'/>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+
                 <View style={headerStyles.container}>
                     <View style={headerStyles.left}>
-                        <View style={headerStyles.iconCont}>
-                            <Icon 
-                            size={40} 
-                            name='md-home' 
-                            color='#434646'/>
-                        </View>
                         <View style={headerStyles.generalInfoCont}>
+                            <View style={headerStyles.iconCont}>
+                                <Icon 
+                                    size={40} 
+                                    name='md-home' 
+                                    color='#434646'/>
+                            </View>
                             <View style={headerStyles.titleCont}>
                                 <Text style={textStyles.companyName}>JCA Realty Corporation</Text>
                                 <Text style={textStyles.address}>#80 Yacapin Sts., Cagayan de Oro City, Misamis Oriental 9000</Text>
@@ -138,7 +215,7 @@ export default class EmployeePayslipForm extends Component {
                         oTempData.data.map((oData, indexData) => 
                             <View key={indexData} style={contentStyles.placeholder}>
                                 <View style={titleStyles.container}>
-                                    <Text>{oData.title}</Text>
+                                    <Text style={textStyles.detailsHeader}>{oData.title}</Text>
                                 </View>
                                 <View style={bodyStyles.container}>
                                     <ScrollView>
@@ -169,7 +246,7 @@ export default class EmployeePayslipForm extends Component {
                                                                                     }
                                                                                 >
 
-                                                                                    <Text>{strParam}</Text>
+                                                                                    <Text style={textStyles.details}>{strParam}</Text>
                                                                                 </View>
                                                                             )
                                                                         }
@@ -189,13 +266,13 @@ export default class EmployeePayslipForm extends Component {
                                                         style={systemStyles.footer.container}>
 
                                                         <View style={systemStyles.footer.title}>
-                                                            <Text>
+                                                            <Text style={textStyles.footerTitle}>
                                                                 { aList[1] }
                                                             </Text>
                                                         </View>
 
                                                         <View style={systemStyles.footer.value}>
-                                                            <Text>
+                                                            <Text style={textStyles.footerValue}>
                                                                 { aList[2] }
                                                             </Text>
                                                         </View>
@@ -213,7 +290,19 @@ export default class EmployeePayslipForm extends Component {
                         )
                     }
                 </View>
-
+                {
+                    this.state._bShowPicker ? 
+                        <CustomPicker 
+                            list={oTempData.payrollperiods}
+                            dateformat={oTempData.datedisplayformat}
+                            emptyprompt = 'Error: No data found'
+                            title='SELECT PAYROLL PERIOD'
+                            onSelect={this._onSelect}
+                            visible={this.state._bShowPicker}
+                            onClose={this._hidePicker}/>
+                    :
+                        null
+                }
             </View>
         );
     }

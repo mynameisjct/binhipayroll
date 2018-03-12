@@ -2,7 +2,7 @@
 export default {
     container: {
         flex: 1,
-        backgroundColor: 'red',
+        backgroundColor: '#FFF',
         flexDirection: 'column'
     },
 
@@ -15,47 +15,78 @@ export default {
         placeholder: {
             flex: 1,
             flexDirection: 'column',
-            borderWidth: 1
+            borderTopWidth: 0.7,
+            borderRightWidth: 0.7,
+            borderColor: '#838383'
+        }
+    },
+
+    navigator: {
+        container: {
+            height: 58,
+            flexDirection: 'row',
+            elevation: 2,
+            backgroundColor: '#D1D4D6'
+        },
+
+        left: {
+            flex: 1,
+            /* backgroundColor: 'red' */
+            alignItems: 'flex-start',
+            justifyContent: 'center',
+            padding: 20
+        },
+
+        right: {
+            flex: 1,
+            /* backgroundColor: 'orange', */
+            alignItems: 'flex-end',
+            justifyContent: 'center',
+            padding: 15
         }
     },
 
     header: {
         container: {
-            backgroundColor: 'orange',
+            /* backgroundColor: 'orange', */
             flexDirection: 'row'
         },
 
         left: {
-            maxWidth: '25%',
-            minWidth: '25%',
-            backgroundColor:'blue',
+            width: '35%',
+            /* backgroundColor:'blue', */
             flexDirection: 'row',
+            /* borderRightWidth: 0.7,
+            borderColor: '#838383', */
+            padding: 10
         },
 
         right: {
-            width: '75%',
-            backgroundColor:'indigo',
+            width: '65%',
+            /* backgroundColor:'indigo', */
             flexDirection: 'row',
-            justifyContent: 'center'
+            justifyContent: 'center',
+            padding: 10
         },
 
         iconCont: {
             justifyContent: 'center',
             alignItems: 'center',
-            borderWidth: 1,
-            padding: 5
+            /* borderWidth: 1, */
+            paddingRight: 8
         },
 
         generalInfoCont: {
-            maxWidth: '80%',
-            minWidth: '80%',
-            flexDirection: 'column',
-            backgroundColor: 'green',
-            justifyContent: 'center'
+            width: '100%',
+            flexDirection: 'row',
+            /* backgroundColor: 'green' */
         },
 
         titleCont: {
-            backgroundColor: 'red'
+            flex: -1,
+            /* backgroundColor: 'red', */
+            flexDirection: 'column',
+            justifyContent: 'center'
         },
         
         addressCont: {
@@ -63,27 +94,24 @@ export default {
 
         paramsList: {
             flexDirection: 'column',
-            borderWidth: 1,
+            /* borderWidth: 1, */
             width: '50%'
         },
 
         param: {
             flexDirection: 'row',
-            backgroundColor: 'orange',
-            paddingTop: 5
+            /* backgroundColor: 'orange' */
         },
 
         label: {
             width: '40%',
-            borderWidth: 1,
+            /* borderWidth: 1, */
             paddingLeft: 10,
-            paddingBottom: 5
         },
 
         value: {
             width: '60%',
-            borderWidth: 1,
-            paddingBottom: 5
+            /* borderWidth: 1, */
         }
         
     },
@@ -91,41 +119,43 @@ export default {
     title: {
         container: {
             padding: 10,
-            backgroundColor:'yellow',
+            /* backgroundColor:'yellow', */
             justifyContent: 'center',
-            alignItems: 'center'
+            alignItems: 'center',
+            borderBottomWidth: 0.7,
+            borderColor: '#838383'
         }
     },
     
     body: {
         container: {
             flex: 1,
-            backgroundColor: 'green',
+            /* backgroundColor: 'green', */
             flexDirection: 'column'
         },
 
         paramsList: {
             flex: 1,
-            padding: 7
+            padding: 13
         },
 
         params: {
             /* flex: 1, */
             paddingBottom: 7,
             flexDirection: 'row',
-            borderWidth: 1,
+            /* borderWidth: 1, */
             borderColor: '#FFF'
         },
 
         paramsArg: {
             flex: 1,
-            borderWidth: 1,
+            /* borderWidth: 1, */
             justifyContent: 'center',
-            borderColor: 'blue'
+            /* borderColor: 'blue' */
         },
 
         paramsLeftMost: {
-            flex: 2,
+            flex: 1.5,
             alignItems: 'flex-start'
         },
 
@@ -142,11 +172,11 @@ export default {
     system: {
         break: {
             height: 15,
-            backgroundColor: 'blue'
+            /* backgroundColor: 'blue' */
         },
 
         div: {
-            height: 1.5,
+            height: 1,
             marginTop: 10,
             marginBottom: 10,
             backgroundColor: '#838383'
@@ -154,27 +184,27 @@ export default {
 
         footer: {
             container:{
-                position: 'absolute',
-                backgroundColor:'red',
-                height: 120,
-                right: 0,
+                /* position: 'absolute', */
+                /* backgroundColor:'red', */
+                height: 75,
+                /* right: 0,
                 left: 0,
-                bottom: 0,
+                bottom: 0, */
                 flexDirection: 'column'
             },
             title: {
                 flex: 0.7,
-                backgroundColor: 'yellow',
+                backgroundColor: '#D1D4D6',
                 borderTopWidth: 1,
                 borderBottomWidth: 1,
-                borderColor: '#838383',
+                borderColor: '#505251',
                 justifyContent: 'center',
                 alignItems: 'center'
             
             },
             value: {
                 flex: 1,
-                backgroundColor: 'orange',
+                /* backgroundColor: 'orange', */
                 justifyContent: 'center',
                 alignItems: 'center'
             }
@@ -196,14 +226,46 @@ export default {
         },
 
         label: {
-            fontSize: 13,
+            fontSize: 12,
             fontFamily: 'Helvetica-Light',
-            color: '#838383'
+            color: '#434646'
         },
 
         value: {
+            fontSize: 12,
+            fontFamily: 'Helvetica-Light',
+            color: '#434646'
+        },
+
+        details: {
+            fontSize: 12,
+            fontFamily: 'Helvetica-Light',
+            color: '#434646'
+        },
+
+        detailsHeader: {
+            fontSize: 12,
+            fontFamily: 'Helvetica-Light',
+            color: '#434646',
+            fontWeight: '500'
+        },
+
+        footerTitle: {
             fontSize: 13,
             fontFamily: 'Helvetica-Light',
+            color: '#434646',
+            fontWeight: '500'
+        },
+
+        footerValue: {
+            fontSize: 14,
+            fontFamily: 'Helvetica-Light',
+            color: '#434646'
+        },
+
+        cardTitle: {
+            fontSize: 17,
+            fontFamily: 'Helvetica-Bold',
             color: '#434646'
         }
     }
