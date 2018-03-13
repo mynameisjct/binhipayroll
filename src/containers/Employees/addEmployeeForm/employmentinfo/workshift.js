@@ -359,8 +359,8 @@ export class EmployeeWorkShift extends Component {
 
     _showLoadingPrompt = (msg) => {
         this.setState({
-          _promptMsg: msg,
-          _promptShow: true
+            _promptMsg: msg,
+            _promptShow: true
         })
     }
     

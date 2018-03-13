@@ -13,6 +13,6 @@ export let get = payload => {
 		return mockFetch(endPoints.mock.employee.list, {}, 'get');
 	}
 	else{
-		return fetchApi(endPointsTemp.get, payload, 'get');
+		return fetchApi(endPoints.employee.list(), payload, 'get');
 	}
 }

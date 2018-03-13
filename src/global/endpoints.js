@@ -28,12 +28,18 @@ export let company = {
 }
 
 export let employee = {
+	list: function(){
+		return(
+			baseURL.activeCompany() + '/employee/info'
+		)
+	},
+
 	allInfo: function(payload){
 		return(
 			baseURL.activeCompany() +
 			'/employee/' + payload + '/'
 		)
-	 },
+	},
 	
 	//Deprecated
 	basicInfo: function(payload){
@@ -139,7 +145,32 @@ export let employee = {
 					'/employmentinfo/benefits/request'
 				)
 			}
+		},
+		
+		rank: {
+			add: function(payload){
+				return(
+					baseURL.activeCompany() +
+					'/employee/'  + payload.employeeId + 
+					'/employmentinfo/rank/'
+				)
+			},
+			update: function(payload){
+				return(
+					baseURL.activeCompany() +
+					'/employee/'  + payload.employeeId + 
+					'/employmentinfo/rank/' + payload.id
+				)
+			},
+			delete: function(payload){
+				return(
+					baseURL.activeCompany() +
+					'/employee/'  + payload.employeeId + 
+					'/employmentinfo/rank/' + payload.id
+				)
+			}
 		}
+
 	},
 }
 

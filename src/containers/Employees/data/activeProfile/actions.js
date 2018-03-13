@@ -22,7 +22,6 @@ export const getAllInfo = payload =>
 		api.getAllInfo(payload)
 		.then((response) => response.json())
 		.then((res) => {
-			/* console.log('res: ' + JSON.stringify(res)); */
 			if(res.flagno == 1){
 				dispatch(updateAllInfo(res));
 				dispatch(insert(res.employee));

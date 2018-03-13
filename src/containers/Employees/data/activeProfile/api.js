@@ -94,7 +94,19 @@ export let employmentinfo = {
 		request: function(payload){
 			return fetchApi(endPoints.employee.employmentinfo.benefits.request(payload), payload, 'put');
 		}
-	}
+	},
+
+	rank: {
+		add: function(payload){
+			return fetchApi(endPoints.employee.employmentinfo.rank.add(payload), payload, 'post');
+		},
+		update: function(payload){
+			return fetchApi(endPoints.employee.employmentinfo.rank.update(payload), payload, 'put');
+		},
+		delete: function(payload){
+			return fetchApi(endPoints.employee.employmentinfo.rank.delete(payload), payload, 'delete');
+		}
+	},
 }
 
 //Address API

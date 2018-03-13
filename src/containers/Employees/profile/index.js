@@ -38,13 +38,14 @@ import EmpBankAccount from './bankInfo/empBankAccount';
 import EmpBenefits from './employmentInfo/empBenefits';
 import EmpBonus from './employmentInfo/empBonus';
 import EmpDetails from './employmentInfo/empDetails';
-import EmpLeaves from './employmentInfo/empLeaves';
-import EmpOvertime from './employmentInfo/empOvertime';
 import EmpPayroll from './employmentInfo/empPayroll';
-import EmpTardiness from './employmentInfo/empTardiness';
 import EmpTax from './employmentInfo/empTax';
-import EmpUndertime from './employmentInfo/empUndertime';
+import EmpRank from './employmentInfo/empRank';
 import EmpWorkshift from './employmentInfo/empWorkshift';
+/* import EmpLeaves from './employmentInfo/empLeaves';
+import EmpOvertime from './employmentInfo/empOvertime'; */
+/* import EmpUndertime from './employmentInfo/empUndertime'; */
+/* import EmpTardiness from './employmentInfo/empTardiness'; */
 
 import EmpBenefitsReport from './reports/empBenefitsReport';
 import EmpDTR from './reports/empDTR';
@@ -189,33 +190,40 @@ export class Profile extends Component {
                     type: "content",
                     oComponent: <EmpPayroll/>
                 },
-                {
+                /* {
                     key: "0012",
                     name: "Tardiness Policy",
                     icon: "clock-alert",
                     type: "content",
                     oComponent: <EmpTardiness/>
-                },
-                {
+                }, */
+                /* {
                     key: "0013",
                     name: "Undertime Policy",
                     icon: "timelapse",
                     type: "content",
                     oComponent: <EmpUndertime/>
-                },
-                {
+                }, */
+                /* {
                     key: "0014",
                     name: "Overtime Policy",
                     icon: "clock-fast",
                     type: "content",
                     oComponent: <EmpOvertime/>
-                },
-                {
+                }, */
+                /* {
                     key: "0015",
                     name: "Leaves",
                     icon: "timer-off",
                     type: "content",
                     oComponent: <EmpLeaves/>
+                }, */
+                {
+                    key: "0015",
+                    name: "Rank",
+                    icon: "account-star",
+                    type: "content",
+                    oComponent: <EmpRank/>
                 },
                 {
                     key: "0016",

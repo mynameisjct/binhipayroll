@@ -57,7 +57,6 @@ export class EmpGovBenefits extends Component {
             _bPendingValue: false,
             _bShowEffectiveDateForm: false,
             _showCompanyBenefitsForm: false,
-            _oData: this.props.oEmpBenefits.government.data || [],
             _oDefaultActive: {
                 id: "",
                 name: "",
@@ -89,7 +88,7 @@ export class EmpGovBenefits extends Component {
     }
 
     _updateEffectiveDate = (value) => {
-        let oData = [...this.state._oData];
+        let oData = [...this.props.oEmpBenefits.government.data];
         let strLoading = this.state._bPendingValue ? on_loading_message : off_loading_message;
         let oActive = JSON.parse(JSON.stringify(this.state._oDefaultActive));
         oActive.id = oData[this.state._activeIndex].id;
@@ -150,7 +149,7 @@ export class EmpGovBenefits extends Component {
         this.setState({
             _oData: oData
         }) */
-        let oData = [...this.state._oData];
+        let oData = [...this.props.oEmpBenefits.government.data];
         let strLoading = value ? on_loading_message : off_loading_message;
         let oActive = JSON.parse(JSON.stringify(this.state._oDefaultActive));
         oActive.id = oData[index].id;
@@ -183,7 +182,7 @@ export class EmpGovBenefits extends Component {
                 this._hideLoadingPrompt();
                 bFlag = this._evaluateResponse(res);
                 if(res.flagno === 1){
-                    /* this.props.actions.employee.updateCompanyBenefits(res.benefits.company.data); */
+                    this._updateLocalStore(oData);
                     this._hideEffectiveDateForm();
                 }
             })
@@ -193,24 +192,37 @@ export class EmpGovBenefits extends Component {
             });
     }
 
-
-        //Generic Methods
-        _evaluateResponse = (res) => {
-            switch (res.flagno){
-                case 0:
-                    this._showMsgBox('error-ok', res.message);
-                    return false
-                    break;
-                case 1:
-                    this._showMsgBox('success', res.message);
-                    return true;
-                    break;
-                default:
-                    this._showMsgBox('error-ok', CONSTANTS.ERROR.UNKNOWN);
-                    return false
-                    break;
-            }
+    _updateLocalStore = (oData) => {
+        console.log('oData: ' + JSON.stringify(oData));
+        let newArray = this.props.oEmpBenefits.government.data.slice();
+        iData = newArray.findIndex(obj => obj.id == oData.benefits.government.data.id);
+        if(iData < 0) {
+            //No Action
         }
+        else{
+            newArray.splice(iData, 1, oData.benefits.government.data);
+            console.log('newArray: ' + JSON.stringify(newArray));
+            this.props.actions.employee.updateGovernmentBenefits(newArray);
+        }
+    }
+
+    //Generic Methods
+    _evaluateResponse = (res) => {
+        switch (res.flagno){
+            case 0:
+                this._showMsgBox('error-ok', res.message);
+                return false
+                break;
+            case 1:
+                this._showMsgBox('success', res.message);
+                return true;
+                break;
+            default:
+                this._showMsgBox('error-ok', CONSTANTS.ERROR.UNKNOWN);
+                return false
+                break;
+        }
+    }
     
     _showLoadingPrompt = (msg) => {
         this.setState({
@@ -247,6 +259,7 @@ export class EmpGovBenefits extends Component {
     }
 
     render(){
+        let aData = this.props.oEmpBenefits.government.data;
         let pStatus = [...this.state._status];
         let pProgress = pStatus[0];
         let pMessage = pStatus[1];
@@ -267,7 +280,7 @@ export class EmpGovBenefits extends Component {
                     </View>
                     <View style={styles.benefitsStyles.contContent}>
                         {
-                            this.state._oData.map((oData, index) => 
+                            aData.map((oData, index) => 
                                 <View key={index} style={styles.benefitsStyles.contElementPlaceholder}>
                                     <View style={styles.benefitsStyles.contElementMain}>
                                         <View style={styles.benefitsStyles.contLeftElement}>

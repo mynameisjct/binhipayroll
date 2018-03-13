@@ -423,7 +423,7 @@ const initialState = {
 						},
 						to: {
 							value: "2018-03-02",
-							"format": "MMM DD, YYYY"
+							format: "MMM DD, YYYY"
 						}
 					},
 					remarks: ''
@@ -586,7 +586,7 @@ export const data = (state = initialState, action) => {
 			}
 			break;
 
-		case actionTypes.EMPLOYEEBENEFITS.GOVERNMENT.DATA:
+		case actionTypes.EMPLOYEEBENEFITS.GOVERNMENT.UPDATE.DATA:
 			oState.employmentinfo.benefits.government.data = action.payload;
 			
 			return {
@@ -594,7 +594,7 @@ export const data = (state = initialState, action) => {
 			}
 			break;
 		
-		case actionTypes.EMPLOYEEBENEFITS.COMPANY.DATA:
+		case actionTypes.EMPLOYEEBENEFITS.COMPANY.UPDATE.DATA:
 			oState.employmentinfo.benefits.company.data = action.payload;
 			
 			return {

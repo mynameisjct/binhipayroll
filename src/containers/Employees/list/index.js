@@ -94,18 +94,6 @@ export class List extends Component {
 
     }
 
-    componentWillReceiveProps(nextProps){
-        if(
-            JSON.stringify(nextProps.employees.list.data) !== JSON.stringify(this.props.employees.list.data)
-            
-        ){
-            this._setActiveChild(nextProps.employees.list.data[0]);
-            this.setState({
-                _list: [...nextProps.employees.list.data]
-            })
-        }
-    }
-
     _addNewEmployee = () => {
         this._showLoadingPrompt('Loading required forms. Please wait...');
         requestAnimationFrame(() => {
@@ -176,6 +164,7 @@ export class List extends Component {
     render(){
         /* console.log('this.props.employees.allProfiles: ' + JSON.stringify(this.props.employees.allProfiles)); */
         /* console.log('this.props.employees.list.data: ' + JSON.stringify(this.props.employees.list.data)); */
+        console.log('Rendering EmployeeList...')
         let pStatus = [...this.state._status]
         let pProgress = pStatus[0];
         let pMessage = pStatus[1];

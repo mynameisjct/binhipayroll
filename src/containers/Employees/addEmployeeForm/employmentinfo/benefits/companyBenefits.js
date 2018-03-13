@@ -60,6 +60,10 @@ export class EmpCompBenefits extends Component {
                         value: null,
                         format: 'YYYY-MM-DD'
                     }
+                },
+                amountpermonth: '',
+                scheme: {
+                    value: ''
                 }
             }
         }
@@ -95,6 +99,9 @@ export class EmpCompBenefits extends Component {
         oActive.id = '';
         oActive.benefitid = data.benefittype;
         oActive.effectivedate.from.value = (oHelper.convertDateToString(data.effectivedate, 'YYYY-MM-DD'));
+        oActive.amountpermonth = data.amountpermonth;
+        oActive.scheme.value = data.scheme;
+        oActive.name=this._getBenifitNameFromID(data.benefittype);
         let oData = {
             employeeId: this.props.oEmployee.id,
             benefits: {
@@ -140,8 +147,8 @@ export class EmpCompBenefits extends Component {
             this._hideLoadingPrompt();
             bFlag = this._evaluateResponse(res);
             if(res.flagno === 1){
-                this.props.actions.employee.updateCompanyBenefits(res.benefits.company.data);
-                this._cancelTransaction();
+                this._deleteItemFromLocalStore(oData);
+                this._hideForm();
             }
         })
         .catch((exception) => {
@@ -168,8 +175,8 @@ export class EmpCompBenefits extends Component {
                 this._hideLoadingPrompt();
                 bFlag = this._evaluateResponse(res);
                 if(res.flagno === 1){
-                    this.props.actions.employee.updateCompanyBenefits(res.benefits.company.data);
-                    this._cancelTransaction();
+                    this._updateLocalStore(oData, res);
+                    this._hideForm();
                 }
             })
             .catch((exception) => {
@@ -178,24 +185,54 @@ export class EmpCompBenefits extends Component {
             });
     }
 
-
-        //Generic Methods
-        _evaluateResponse = (res) => {
-            switch (res.flagno){
-                case 0:
-                    this._showMsgBox('error-ok', res.message);
-                    return false
-                    break;
-                case 1:
-                    this._showMsgBox('success', res.message);
-                    return true;
-                    break;
-                default:
-                    this._showMsgBox('error-ok', CONSTANTS.ERROR.UNKNOWN);
-                    return false
-                    break;
-            }
+    _getBenifitNameFromID = (id) => {
+        let newArray = this.props.oBenefitsPolicy.data.company.data.slice();
+        iData = newArray.findIndex(obj => obj.id == id);
+        if (iData < 0){
+            return null;
         }
+        else{ 
+            return newArray[iData].name;
+        }
+    }
+
+    _deleteItemFromLocalStore = oData => {
+        let newArray = this.props.oEmpBenefits.company.data.slice();
+        iData = newArray.findIndex(obj => obj.id == oData.id);
+        if (iData > -1) {
+            newArray.splice(iData, 1);
+            console.log('newArray: ' + JSON.stringify(newArray));
+            this.props.actions.employee.updateCompanyBenefits(newArray);
+        }
+    }
+
+    _updateLocalStore = (oData, res) => {
+        console.log('oData: ' + JSON.stringify(oData));
+        let curData = {...oData.benefits.company.data};
+        curData.id = res.id;
+        let newArray = this.props.oEmpBenefits.company.data.slice();
+        newArray.push(curData);
+        this.props.actions.employee.updateCompanyBenefits(newArray);
+    }
+     
+
+    //Generic Methods
+    _evaluateResponse = (res) => {
+        switch (res.flagno){
+            case 0:
+                this._showMsgBox('error-ok', res.message);
+                return false
+                break;
+            case 1:
+                this._showMsgBox('success', res.message);
+                return true;
+                break;
+            default:
+                this._showMsgBox('error-ok', CONSTANTS.ERROR.UNKNOWN);
+                return false
+                break;
+        }
+    }
     
     _showLoadingPrompt = (msg) => {
         this.setState({
@@ -247,7 +284,7 @@ export class EmpCompBenefits extends Component {
             return(
                 <View style={styles.genericContainer}>
                     <View style={styles.benefitsStyles.contTitle}>
-                        <Text style={styles.txtFormTitle}>{this.props.oEmpBenefits.company.title}</Text>
+                        <Text style={styles.txtFormTitle}>{this.props.oEmpBenefits.company.title || 'COMPANY BENEFITS'}</Text>
                     </View>
                     {
                         oData.length === 0 ?

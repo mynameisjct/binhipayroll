@@ -768,6 +768,7 @@ export class Ranks extends Component{
                             />
                         }>
                         <CustomCard 
+                            hideHeader={this.props.hideHeader || false}
                             title={this.props.title || CARD_TITLE} 
                             oType={!this.state._disabledMode ? 'button' : 'text'}
                             rightHeader={
@@ -898,14 +899,7 @@ export class Ranks extends Component{
                     { 
                         this.state._disabledMode && !bIsEmpty?
                             this.props.viewOnly ? 
-                                <ActionButton 
-                                    bgColor='rgba(0,0,0,0.8)'
-                                    buttonColor="#EEB843"
-                                    spacing={10}>
-                                    <ActionButton.Item buttonColor='#26A65B' title="ADD NEW RANK" onPress={() => {this._addRule()}}>
-                                        <Icon2 name="plus" color='#fff' size={22} style={styles.actionButtonIcon} />
-                                    </ActionButton.Item>
-                                </ActionButton>
+                                null
                             :
                                 <ActionButton 
                                     bgColor='rgba(0,0,0,0.8)'
