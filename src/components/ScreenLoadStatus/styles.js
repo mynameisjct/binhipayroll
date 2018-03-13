@@ -30,7 +30,7 @@ export default {
     txtMsg: {
         color: '#434646',
         fontFamily: 'Helvetica-Light',
-        fontSize: 18,
+        fontSize: 13,
         marginBottom: 10,
     },
 

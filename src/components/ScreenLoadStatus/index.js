@@ -21,7 +21,6 @@ import {
 import styles from './styles';
 import Icon from 'react-native-vector-icons/Ionicons';
 
-
 const dMinOpacity = 0.1;
 const dMaxOpacity = 1;
 
@@ -33,7 +32,7 @@ export class PromptLoading extends Component{
                 <ActivityIndicator
                     animating = {true}
                     color = '#EEB843'
-                    size = "large"/>
+                    size = "small"/>
             </View>
 
         );
