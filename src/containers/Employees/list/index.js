@@ -32,7 +32,7 @@ import { CONSTANTS } from '../../../constants/index';
 const btnActive = 'rgba(255, 255, 255, 0.3);'
 const btnInactive = 'transparent';
 
-export class EmployeeList extends Component{
+export class EmployeeListCard extends Component{
     shouldComponentUpdate(nextProps, nextState){
         if(
             (this.props.activeKey === this.props.item.key) ||
@@ -72,7 +72,7 @@ export class EmployeeList extends Component{
     }
 }
 
-export class List extends Component {
+export class EmployeeList extends Component {
         //List of Children
     constructor(props){
         super(props);
@@ -87,7 +87,12 @@ export class List extends Component {
     }
 
     componentDidMount = () => {
-        this._setActiveChild(this.props.employees.list.data[0]);
+/*         if(
+            this.props.employees.list.status[0] == 1 &&
+            this.props.employees.list.data.length > 0
+        ){
+            this._setActiveChild(this.props.employees.list.data[0]);
+        } */
     }
 
     _doNothing = () => {
@@ -145,6 +150,7 @@ export class List extends Component {
     _refreshList = () => {
         this.setState({_list: [], _activeKey: ''});
         this.props.actions.allProfiles.clearAll();
+        this.props.actions.employeelist.empty();
         this.props.actions.employeelist.get();
     }
 
@@ -165,7 +171,7 @@ export class List extends Component {
         /* console.log('this.props.employees.allProfiles: ' + JSON.stringify(this.props.employees.allProfiles)); */
         /* console.log('this.props.employees.list.data: ' + JSON.stringify(this.props.employees.list.data)); */
         console.log('Rendering EmployeeList...')
-        let pStatus = [...this.state._status]
+        let pStatus = [...this.props.employees.list.status]
         let pProgress = pStatus[0];
         let pMessage = pStatus[1];
 
@@ -215,13 +221,18 @@ export class List extends Component {
                             ref={(ref) => { this.flatListRef = ref; }}
                             data={this.props.employees.list.data}
                             renderItem={({item}) =>
-                                <EmployeeList 
+                                <EmployeeListCard
                                     activeKey={this.state._activeKey}
                                     item={item} 
                                     itemPressed={(pressedItem) => this._setActiveChild(pressedItem)}/>
                             }
                         />
-                        <ActionButton onPress={this._addNewEmployee}/>
+                        {
+                            this.props.viewOnly || false ?
+                                null
+                            :
+                                <ActionButton onPress={this._addNewEmployee}/>
+                        }
                     </View>
                     
                     <PromptScreen.PromptGeneric 
@@ -246,7 +257,7 @@ function mapStateToProps (state) {
     return {
         logininfo: state.loginReducer.logininfo,
         activecompany: state.activeCompanyReducer.activecompany,
-        employees: state.employees
+        employees: state.employees,
     }
 }
 
@@ -263,4 +274,4 @@ function mapDispatchToProps (dispatch) {
   export default connect(
     mapStateToProps,
     mapDispatchToProps
-)(List)
+)(EmployeeList)

@@ -5,9 +5,8 @@ import {
     Button,
     TouchableOpacity
 } from 'react-native';
-import { StackNavigator } from 'react-navigation';
+import { withNavigation } from 'react-navigation';
 import Icon from 'react-native-vector-icons/Ionicons';
-
 import styles from './styles';
 
 //Redux
@@ -21,7 +20,6 @@ import {
 
 export class Header2 extends Component {
     render(){
-        const navigation = this.props.logininfo.navigation;
         return(
             <View style={styles.container}>
 
@@ -33,7 +31,7 @@ export class Header2 extends Component {
                 </View>
 
                 <TouchableOpacity
-                    onPress={() => {navigation.navigate('DrawerToggle')}}>
+                    onPress={() => {this.props.navigation.navigate('DrawerToggle')}}>
                     <View style={styles.headerRight}>
                         <Icon name='md-menu' style={{color: '#EEB843', fontSize: 35}} />
                     </View>
@@ -50,6 +48,6 @@ function mapStateToProps (state) {
     }
 }
 
-export default connect(
+export default withNavigation(connect(
     mapStateToProps,
-)(Header2)
+)(Header2))

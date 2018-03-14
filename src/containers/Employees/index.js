@@ -12,7 +12,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import LinearGradient from 'react-native-linear-gradient';
 
 //Children Components
-import List from './list';
+import EmployeeList from './list';
 
 //Styles Properties
 import styles from './styles';
@@ -67,7 +67,7 @@ export class Employees extends Component {
                 onRefresh={this._getEmployeeListFromDB}>
 
                 <View style={styles.container}>
-                    <List activeProfileStatus={this._setActiveProfileStatus}/>
+                    <EmployeeList activeProfileStatus={this._setActiveProfileStatus}/>
                     <Summary status={this.state._summaryStatus}/>
                 </View>
 

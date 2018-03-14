@@ -43,7 +43,8 @@ export const CONSTANTS = {
     ERROR: {
         SERVER: 'An Unknown Error in the server was encountered. Please contact BINHI-MeDFI.',
         UNKNOWN: 'An Unknown Error was encountered. Please contact BINHI-MeDFI.',
-        SOMETHING: 'Something went wrong.'
+        SOMETHING: 'Something went wrong.',
+        FORM: 'Something went wrong. Refresh the form and try again.'
     },
 
     //LOADING MESSAGES

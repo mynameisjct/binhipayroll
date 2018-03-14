@@ -152,21 +152,21 @@ export let employee = {
 				return(
 					baseURL.activeCompany() +
 					'/employee/'  + payload.employeeId + 
-					'/employmentinfo/rank/'
+					'/employmentinfo/ranks/'
 				)
 			},
 			update: function(payload){
 				return(
 					baseURL.activeCompany() +
 					'/employee/'  + payload.employeeId + 
-					'/employmentinfo/rank/' + payload.id
+					'/employmentinfo/ranks/' + payload.id
 				)
 			},
 			delete: function(payload){
 				return(
 					baseURL.activeCompany() +
 					'/employee/'  + payload.employeeId + 
-					'/employmentinfo/rank/' + payload.id
+					'/employmentinfo/ranks/' + payload.id
 				)
 			}
 		}

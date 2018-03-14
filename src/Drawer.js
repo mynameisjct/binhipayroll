@@ -24,6 +24,9 @@ import Header2 from './containers/Headers/header2';
 //Employee Profile
 import EmployeeProfile from './containers/Employees/profile';
 
+//Transactions
+import DTRModification from './containers/Transactions/dtrModification';
+
 //This is intended so that the sidebar will be full height on screen.
 //this is as of "react-navigation": "^1.0.0-beta.19"
 const EmprDashBoardNav = StackNavigator({
@@ -55,6 +58,10 @@ const EmployeeProfileNav = StackNavigator({
   EmployeeProfile: {screen: EmployeeProfile},
 });
 
+const DTRModificationNav = StackNavigator({
+  DTRModification: {screen: DTRModification},
+});
+
 
 const RootDrawer = DrawerNavigator(
   {
@@ -81,6 +88,10 @@ const RootDrawer = DrawerNavigator(
     //Employer Profile
     EmployeeProfile: {
       screen: EmployeeProfileNav},
+
+    //Transactions
+    DTRModification: {screen: DTRModificationNav}
+    
   },
   
   {

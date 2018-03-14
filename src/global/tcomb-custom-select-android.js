@@ -34,6 +34,10 @@ export const customPickerTemplate = (locals) => {
         specialPickerWrapperStyle = stylesheet.specialPickerWrapper.error;
     }
     
+    if(locals.enabled !== null && locals.enabled === false){
+        specialPickerWrapperStyle = stylesheet.specialPickerWrapper.notEditable;
+    }
+
     let label = locals.label ? (
         <Text style={controlLabelStyle}>{locals.label}</Text>
     ) : null;

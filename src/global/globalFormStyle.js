@@ -103,10 +103,12 @@ const stylesheet = Object.freeze({
   },
   checkbox: {
     normal: {
+      alignSelf: 'flex-start',
       marginBottom: 4
     },
     // the style applied when a validation error occours
     error: {
+      alignSelf: 'flex-start',
       marginBottom: 4
     }
   },
@@ -125,6 +127,15 @@ const stylesheet = Object.freeze({
       borderColor: ERROR_COLOR,
       borderWidth: BORDER_WIDTH
     },
+
+    notEditable: {
+      height: 36,
+      borderRadius: 4,
+      borderColor: BORDER_COLOR,
+      borderWidth: BORDER_WIDTH,
+      backgroundColor: DISABLED_BACKGROUND_COLOR
+    },
+
   },
 
   pickerContainer: {

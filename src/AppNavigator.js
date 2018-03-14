@@ -64,8 +64,9 @@ const AppNavigator = StackNavigator(
         BranchFormNav: {screen: BranchFormNav},
         CompanyIdFormNav: {screen: CompanyIdFormNav},
         EmployeeDTR: {screen: EmployeeDTRNav},
+
         //Employee
-        AddEmployeeForm: {screen: AddEmployeeFormNav}
+        AddEmployeeForm: {screen: AddEmployeeFormNav},
     },
 
     {

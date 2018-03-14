@@ -6,7 +6,8 @@ export default {
     dividerHeader: {
         height: 80,
         backgroundColor: '#FFFFFF',
-        elevation: 5
+        borderBottomWidth: 0.7,
+        borderColor: '#D1D4D6'
     },
 
     dividerBody: {

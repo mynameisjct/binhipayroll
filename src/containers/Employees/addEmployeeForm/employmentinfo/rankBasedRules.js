@@ -132,10 +132,14 @@ export class RankBasedRules extends Component{
         oData.rankid = splitRType[1];
         oData.effectivedate.from.value = (oHelper.convertDateToString(value.effectivedate, 'YYYY-MM-DD'));
         oData.remarks = value.remarks;
-        oData.employeeId = this.props.oEmployee.id
-        
+        let oInputData = {
+            employeeId: this.props.oEmployee.id,
+            rank: {
+                data: oData
+            }
+        };
         if( oData.id === ''){
-            this._saveNewDataToDB(oData);
+            this._saveNewDataToDB(oInputData);
         }
 
         /* else{
@@ -261,9 +265,9 @@ export class RankBasedRules extends Component{
                             <TouchableOpacity 
                                 style={styles.emptyDataContainer}
                                 activeOpacity={0.8}
-                                onPress={this._addNewWorkShift}>
+                                onPress={this._addNewRank}>
                                     <Text>
-                                        No workshift assigned to employee. Tap here to add.
+                                        No Rank assigned to employee. Tap here to add.
                                     </Text>
                             </TouchableOpacity>
                         :

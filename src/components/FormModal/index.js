@@ -43,7 +43,7 @@ export default class FormModal extends PureComponent{
                                 style={styles.modalRules.btnContRight}
                                 onPress={() => this.props.onOK()}>
                                     <Text style={styles.modalRules.txtBtn}>
-                                        OK
+                                        {this.props.submitLabel || 'OK'}
                                     </Text>
                             </TouchableOpacity>
                         </View>

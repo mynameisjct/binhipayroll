@@ -1,4 +1,9 @@
 export default {
+    containerFlexRow: {
+        flex: 1,
+        flexDirection: 'row'
+    },
+
     container: {
         flex:1,
         backgroundColor: '#f9f9f9',
@@ -72,6 +77,30 @@ export default {
             fontSize: 14,
             fontWeight: '300',
             color: '#505251'
+        }
+    },
+
+    formStyles: {
+        container: {
+            paddingTop: 30,
+            paddingBottom: 30,
+            justifyContent: 'center',
+            alignItems: 'center',
+            width: '100%',
+            maxWidth: 400,
+            minWidth: 300
+        },
+
+        contForm: {
+            flex: 1
+        },
+
+        formContent: {
+            flex: 1,
+            paddingTop: 35,
+            paddingLeft: 40,
+            paddingRight: 40,
+            paddingBottom: 25
         }
     }
 }

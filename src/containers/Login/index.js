@@ -133,8 +133,8 @@ export class Login extends Component {
         this.setState({
             _curDate: moment().format("LL"),
             _curDateMDY:  moment().format("MM/DD/YYYY"),
-            _curTime: moment().add(8,'hours').format("hh:mm:ss A"),
-            /* _curTime: moment().format("hh:mm:ss A"), */
+           /*  _curTime: moment().add(8,'hours').format("hh:mm:ss A"), */
+            _curTime: moment().format("hh:mm:ss A"),
             _curDay: this.getDayAbbrev(_curWeekday)
         });
     }
@@ -252,13 +252,13 @@ export class Login extends Component {
                     /* this.props.navigation.navigate('EmprDashBoard') */
                     /* this.props.navigation.navigate('CompanyPolicies') */
                     /* this.props.navigation.navigate('Employees') */
-                    /* this.props.navigation.navigate('Transactions'); */
+                    this.props.navigation.navigate('Transactions');
                     /* this.props.navigation.navigate('AddEmployeeForm') */
                     /* this.props.navigation.navigate('EmploymentInfo') */
                     /* this.props.navigation.navigate('EmployeeWorkShift') */
                     /* this.props.navigation.navigate('EmployeeBenefits') */
                     /* this.props.navigation.navigate('RankBasedRules'); */
-                    this.props.navigation.navigate('RankBasedRules');
+                    /* this.props.navigation.navigate('RankBasedRules'); */
                     /* this.props.navigation.navigate('PersonalInfo'); */
                     break;
 
