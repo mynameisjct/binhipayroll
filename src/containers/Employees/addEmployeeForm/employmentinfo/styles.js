@@ -22,6 +22,10 @@ export default {
         backgroundColor: 'transparent'
     },
 
+    viewContainer: {
+        flex: 1
+    },
+
     emptyDataContainer: {
         flex:1,
         height: '100%',

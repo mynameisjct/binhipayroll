@@ -29,6 +29,7 @@ import * as workshiftSelector from '../../../CompanyPolicies/data/workshift/sele
 //Custom Component
 import * as PromptScreen from '../../../../components/ScreenLoadStatus';
 import MessageBox from '../../../../components/MessageBox';
+import EffectiveDatePicker from '../../../../components/EffectiveDatePicker';
 
 //Helper
 import * as oHelper from '../../../../helper';
@@ -429,33 +430,11 @@ export class EmployeeWorkShift extends Component {
                             </TouchableOpacity>
                         :
                         <View style={styles.container}>
-                            <View style={styles.workshiftStyles.header.container}>
-                                <View style={styles.workshiftStyles.header.contInfo}>
-                                    <View style={styles.workshiftStyles.header.contInfoLabel}>
-                                        <Text style={styles.workshiftStyles.header.txtInfo}>
-                                            Effective Date:
-                                        </Text>
-                                    </View>
-                                    <View style={styles.workshiftStyles.header.contInfoData}>
-                                        <View style={styles.workshiftStyles.header.pickerContainer}>
-                                            <Picker
-                                                style={styles.workshiftStyles.header.namePickerStyle}
-                                                selectedValue={String(this.state._oActiveData.id)}
-                                                onValueChange={(itemValue, itemIndex) => {
-                                                    this._setActiveData(itemValue);
-                                                    }}>
-                                                {
-                                                    this.props.oEmpWorkShift.data.map((oData, index) =>
-                                                        <Picker.Item key={index} label={oHelper.convertRangeDateToString(oData.effectivedate)} value={String(oData.id)} />
-                                                    )
-                                                }
-                                            </Picker>
-                                        </View>
-                                    </View>
-                                </View>
-                                <View style={styles.workshiftStyles.header.contBtn}>
-                                </View>
-                            </View>
+                            <EffectiveDatePicker 
+                                selectedValue={this.state._oActiveData.id}
+                                options={this.props.oEmpWorkShift.data}
+                                onChange={this._setActiveData}/>
+
                             <View style={styles.workshiftStyles.body.container}>
                                 <View style={styles.workshiftStyles.body.contRule}>
                                     <WorkShift hideHeader={true} viewOnly={true}/>

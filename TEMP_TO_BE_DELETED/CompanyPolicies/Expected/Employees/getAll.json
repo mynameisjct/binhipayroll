@@ -160,19 +160,20 @@
         "employmentinfo": {
             "details":{
                 "title": "EMPLOYMENT DETAILS",
-                "employmenttype": "Regular",
-                "datehired": {
-                    "value": "2016-01-16",
-                    "format": "MMMM DD, YYYY"
-                },
-                "dateend": {
-                    "value": "-",
-                    "format": "MMMM DD, YYYY"
-                },
                 "data": [
                     {
                         "id": "0002",
-                        "current": true,
+                        "employmenttype": "Regular",
+                        "datehired": {
+                            "value": "2016-01-16",
+                            "format": "MMMM DD, YYYY"
+                        },
+                        "dateend": {
+                            "value": "-",
+                            "format": "MMMM DD, YYYY"
+                        },
+                        "paytype": "Salary",
+                        "payrate": "10000",
                         "position": "Head Staff",
                         "branch": "Yacapin Branch",
                         "effectivedate": {
@@ -189,7 +190,18 @@
                     },
                     {
                         "id": "0001",
+                        "employmenttype": "Probationary",
+                        "datehired": {
+                            "value": "2016-01-16",
+                            "format": "MMMM DD, YYYY"
+                        },
+                        "dateend": {
+                            "value": "-",
+                            "format": "MMMM DD, YYYY"
+                        },
                         "current": false,
+                        "paytype": "Salary",
+                        "payrate": "5000",
                         "position": "Staff",
                         "branch": "Yacapin Branch",
                         "effectivedate": {

@@ -15,6 +15,7 @@ import EmployeeRankForm from './forms/employeeRankForm';
 //Custom Components
 import GenericContainer from '../../../../components/GenericContainer';
 import * as PromptScreen from '../../../../components/ScreenLoadStatus';
+import EffectiveDatePicker from '../../../../components/EffectiveDatePicker';
 
 //Styles
 import styles from './styles';
@@ -272,33 +273,11 @@ export class RankBasedRules extends Component{
                             </TouchableOpacity>
                         :
                         <View style={styles.container}>
-                            <View style={styles.workshiftStyles.header.container}>
-                                <View style={styles.workshiftStyles.header.contInfo}>
-                                    <View style={styles.workshiftStyles.header.contInfoLabel}>
-                                        <Text style={styles.workshiftStyles.header.txtInfo}>
-                                            Effective Date:
-                                        </Text>
-                                    </View>
-                                    <View style={styles.workshiftStyles.header.contInfoData}>
-                                        <View style={styles.workshiftStyles.header.pickerContainer}>
-                                            <Picker
-                                                style={styles.workshiftStyles.header.namePickerStyle}
-                                                selectedValue={String(this.props.ranksPolicy.activeRule)}
-                                                onValueChange={(itemValue, itemIndex) => {
-                                                    this._setActiveData(itemValue);
-                                                    }}>
-                                                {
-                                                    this.props.oEmpRank.data.map((oData, index) =>
-                                                        <Picker.Item key={index} label={oHelper.convertRangeDateToString(oData.effectivedate)} value={String(oData.id)} />
-                                                    )
-                                                }
-                                            </Picker>
-                                        </View>
-                                    </View>
-                                </View>
-                                <View style={styles.workshiftStyles.header.contBtn}>
-                                </View>
-                            </View>
+                            <EffectiveDatePicker 
+                                selectedValue={this.props.ranksPolicy.activeRule}
+                                options={this.props.oEmpRank.data}
+                                onChange={this._setActiveData}/>
+
                             <View style={styles.workshiftStyles.body.container}>
                                 <View style={styles.workshiftStyles.body.contRule}>
                                     <Ranks hideHeader={true} viewOnly={true}/>

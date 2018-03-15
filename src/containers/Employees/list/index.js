@@ -87,12 +87,12 @@ export class EmployeeList extends Component {
     }
 
     componentDidMount = () => {
-/*         if(
+        if(
             this.props.employees.list.status[0] == 1 &&
             this.props.employees.list.data.length > 0
         ){
             this._setActiveChild(this.props.employees.list.data[0]);
-        } */
+        }
     }
 
     _doNothing = () => {

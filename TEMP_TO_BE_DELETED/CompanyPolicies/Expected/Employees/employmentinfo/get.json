@@ -1,0 +1,66 @@
+{
+    "employmentinfo": {
+        "details":{
+            "title": "EMPLOYMENT DETAILS",
+            "data": [
+                {
+                    "id": "0002",
+                    "employmenttype": "2",
+                    "datehired": {
+                        "value": "2016-01-16",
+                        "format": "MMMM DD, YYYY"
+                    },
+                    "dateend": {
+                        "value": "",
+                        "format": "MMMM DD, YYYY"
+                    },
+                    "paytype": "2",
+                    "payrate": "10000",
+                    "position": {"id": 1, "value": "President"},
+                    "branch": {"id": 1, "value": "Yacapin Branch"},
+                    "effectivedate": {
+                        "from": {
+                            "value": "2000-12-31",
+                            "format": "MMM DD, YYYY"
+                        },
+                        "to": {
+                            "value": "PRESENT",
+                            "format": "MMM DD, YYYY"
+                        }
+                    },
+                    "remarks": "Promoted"
+                },
+                {
+                    "id": "0001",
+                    "employmenttype": "1",
+                    "datehired": {
+                        "value": "2016-01-16",
+                        "format": "MMMM DD, YYYY"
+                    },
+                    "dateend": {
+                        "value": "",
+                        "format": "MMMM DD, YYYY"
+                    },
+                    "paytype": "2",
+                    "payrate": "5000",
+                    "position": {"id": 2, "value": "Vice President"},
+                    "branch": {"id": 1, "value": "Yacapin Branch"},
+                    "effectivedate": {
+                        "from": {
+                            "value": "1990-02-03",
+                            "format": "MMM DD, YYYY"
+                        },
+                        "to": {
+                            "value": "2000-12-31",
+                            "format": "MMM DD, YYYY"
+                        }
+                    },
+                    "remarks": ""
+                }
+            ],
+
+            "employmenttypeoptions": [{"id":"1", "value": "Probationary"}, {"id":"2", "value": "Regular"}],
+            "paytypeoptions": [{"id":"1", "value": "Wage"}, {"id":"2", "value": "Salary"}]
+        }
+    }
+}
