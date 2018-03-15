@@ -4,6 +4,7 @@ import {
     Text,
     ScrollView
 } from 'react-native';
+import ActionButton from 'react-native-action-button';
 import t from 'tcomb-form-native'; // 0.6.9
 import moment from "moment";
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -32,6 +33,19 @@ export class EmployeeDetails extends Component {
                         options={[{id: 1, effectivedate: {from: {value: '2018-01-01', format: 'MMM DD, YYYY'}}}]}
                         onChange={this._setActiveData}/>
                     <EmployeeDetailsView/>
+                    <ActionButton
+                        bgColor='rgba(0,0,0,0.8)'
+                        shadowStyle={{elevation: 30}}
+                        buttonColor="#EEB843"
+                        spacing={10}
+                        icon={<Icon name="alarm-multiple" color='#fff' size={25} style={styles.actionButtonIcon} />}>
+                        <ActionButton.Item size={45} buttonColor='#26A65B' title="ADD NEW EMPLOYEE SCHEDULE" onPress={this._addNewWorkShift}>
+                            <Icon name="bell-plus" color='#fff' size={18} style={styles.actionButtonIcon} />
+                        </ActionButton.Item>
+                        <ActionButton.Item size={45} buttonColor='#4183D7' title="MODIFY ACTIVE EMPLOYEE SCHEDULE" onPress={this._editActiveWorkshift}>
+                            <Icon name="table-edit" color='#fff' size={18} style={styles.actionButtonIcon} />
+                        </ActionButton.Item>
+                    </ActionButton>
                 </View>
             </View>
         )
