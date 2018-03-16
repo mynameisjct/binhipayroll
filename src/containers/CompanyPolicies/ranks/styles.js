@@ -340,5 +340,12 @@ export default {
         color: '#fff'
     },
     
+    txtDisabledValue: {
+        fontFamily: 'Helvetica-Bold',
+        fontSize: 15,
+        color: '#434646',
+        paddingLeft: 15
+    }
+    
     
 }

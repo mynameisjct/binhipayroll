@@ -54,7 +54,9 @@ export class RankBasedRules extends Component{
             _refreshing: false,
             _status: [2, 'Loading...'],
 
-            _oActiveData: null,
+            _oActiveData: {
+                id: ''
+            },
             _bShowRankForm: false,
             _oDefaultData: {
                 id: '',
@@ -95,7 +97,9 @@ export class RankBasedRules extends Component{
     }
 
     _setActiveData = (id) => {
-        this.props.actions.ranks.setActiveRule(id);
+        let oActiveData = oHelper.getElementByPropValue(this.props.oEmpRank.data, 'id', id);
+        this.props.actions.ranks.setActiveRule(oActiveData.rankid);
+        this.setState({_oActiveData: oActiveData})
     }
 
     _generateRanks = () => {
@@ -116,8 +120,9 @@ export class RankBasedRules extends Component{
     }
 
     _editActiveRank = () => {
-        console.log('this.state._oActiveData: ' + JSON.stringify(this.state._oActiveData));
+        let oActiveData = JSON.parse(JSON.stringify(this.state._oActiveData));
         this.setState({ 
+            _oActiveData: oActiveData,
             _bShowRankForm: true 
         })
     }
@@ -143,11 +148,11 @@ export class RankBasedRules extends Component{
             this._saveNewDataToDB(oInputData);
         }
 
-        /* else{
+        else{
             let originalData = {...this.state._oActiveData};
             let newData = {...oData};
             if(
-                (newData.workshiftid==originalData.workshiftid) &&
+                (newData.rankid==originalData.rankid) &&
                 (newData.effectivedate.from.value==originalData.effectivedate.from.value) 
             ){
                 Alert.alert(
@@ -160,18 +165,24 @@ export class RankBasedRules extends Component{
                 )
             }
             else{
+                let oInputData = {
+                    employeeId: this.props.oEmployee.id,
+                    rank: {
+                        data: oData
+                    }
+                }
                 Alert.alert(
                     'Warning',
                     'All changes will be saved and will be irreversible. ' + 
                     'Are you sure you want to proceed ?',
                     [
                         {text: 'NO', onPress: () => {}},
-                        {text: 'YES', onPress: () => this._updateDataToDB(oData)}
+                        {text: 'YES', onPress: () => this._updateDataToDB(oInputData)}
                     ],
                     { cancelable: false }
                 )
             }
-        } */
+        }
     }
 
     _saveNewDataToDB = (oData) => {
@@ -180,16 +191,83 @@ export class RankBasedRules extends Component{
         let oRes = null;
 
         employeeApi.employmentinfo.rank.add(oData)
+        .then((response) => response.json())
+        .then((res) => {
+            console.log('XXXXXXXXXXXXXXXXXXXXXXXXXXXX');
+            console.log('RANKres: ' + JSON.stringify(res));
+            oRes = res;
+            this._hideLoadingPrompt();
+            bFlag = this._evaluateResponse(res);
+            if(res.flagno === 1){
+                this.props.actions.employee.updateRank(res.employee.employmentinfo.rank.data);
+                this._hideForm();
+            }
+        })
+        .catch((exception) => {
+            this._hideLoadingPrompt();
+            this._showMsgBox('error-ok', exception.message);
+        });
+    }
+
+    _updateDataToDB = (oData) => {
+        this._showLoadingPrompt(add_loading_message);
+        let bFlag = false;
+        let oRes = null;
+
+        employeeApi.employmentinfo.rank.update(oData)
+        .then((response) => response.json())
+        .then((res) => {
+            console.log('XXXXXXXXXXXXXXXXXXXXXXXXXXXX');
+            console.log('RANKres: ' + JSON.stringify(res));
+            oRes = res;
+            this._hideLoadingPrompt();
+            bFlag = this._evaluateResponse(res);
+            if(res.flagno === 1){
+                this.props.actions.employee.updateRank(res.employee.employmentinfo.rank.data);
+                this._hideForm();
+            }
+        })
+        .catch((exception) => {
+            this._hideLoadingPrompt();
+            this._showMsgBox('error-ok', exception.message);
+        });
+    }
+
+    _requestDelete = () => {
+        let oData = JSON.parse(JSON.stringify(this.state._oActiveData));
+        oData.employeeId = this.props.oEmployee.id;
+        Alert.alert(
+            'WARNING',
+            'Deleting an assigned employee rank is an irreversible action. ' + 
+            'Are you sure you want to proceed ?',
+            [
+                {text: 'NO', onPress: () => {}},
+                {text: 'YES', onPress: () => this._deleteDataFromDB(oData)}
+            ],
+            { cancelable: false }
+        )
+    }
+
+    deleteDataFromDB = (oData) => {
+        this._showLoadingPrompt(delete_loading_message);
+        let oRes = null;
+        
+        employeeApi.employmentinfo.rank.delete(oData)
             .then((response) => response.json())
             .then((res) => {
                 console.log('XXXXXXXXXXXXXXXXXXXXXXXXXXXX');
-                console.log('RANKres: ' + JSON.stringify(res));
+                console.log('res: ' + JSON.stringify(res));
                 oRes = res;
                 this._hideLoadingPrompt();
                 bFlag = this._evaluateResponse(res);
                 if(res.flagno === 1){
-                    /* this.props.actions.employee.updateWorkshift(res.workshift.data); */
-                    this._hideForm();
+                    this.props.actions.employee.updateRank(res.employee.employmentinfo.rank.data);
+                    this._cancelTransaction();
+                }
+            })
+            .then(() => {
+                if(oRes.flagno === 1){
+                    this._initData(CONSTANTS.STATUS.SUCCESS);
                 }
             })
             .catch((exception) => {
@@ -274,7 +352,7 @@ export class RankBasedRules extends Component{
                         :
                         <View style={styles.container}>
                             <EffectiveDatePicker 
-                                selectedValue={this.props.ranksPolicy.activeRule}
+                                selectedValue={this.state._oActiveData.id}
                                 options={this.props.oEmpRank.data}
                                 onChange={this._setActiveData}/>
 
@@ -297,18 +375,16 @@ export class RankBasedRules extends Component{
                                     <Icon name="table-edit" color='#fff' size={18} style={styles.actionButtonIcon} />
                                 </ActionButton.Item>
                             </ActionButton>
-                            
                         </View>
                     }
                 </View>
                 {
                     this.state._bShowRankForm ?
                         <EmployeeRankForm
-                            activeScheduleValue = {this.state._oActiveData}
+                            activeData = {this.state._oActiveData}
                             minEffectiveDate={null}
                             onDelete={this._requestDelete}
                             visible={this.state._bShowRankForm}
-                            activeData = {this.state._oActiveData}
                             cancelForm={this._hideForm}
                             submitForm={this._submitTransaction}
                             title= {this.state._oActiveData.id ? 'MODIFY EMPLOYEE RANK' : 'ADD NEW EMPLOYEE RANK'}

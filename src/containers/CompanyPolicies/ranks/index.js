@@ -222,6 +222,7 @@ export class Ranks extends Component{
     constructor(props){
         super(props);
         this.state = {
+            _activeType: '',
             //Gereric States
             _promptShow: false,
             _promptMsg: '',
@@ -289,6 +290,13 @@ export class Ranks extends Component{
         ){
             this._initValues();
         }
+
+        if(
+            (this.state._activeType !== nextProps.ranks.activeRule) &&
+            (this.state._status[0] == 1)
+        ){
+            this._setActiveData(nextProps.ranks.activeRule);
+        }
     }
 
     _getDataFromDB = () => {
@@ -338,7 +346,8 @@ export class Ranks extends Component{
     _setActiveData = async(value) => {
         let oNewActive = JSON.parse(JSON.stringify(ranksSelector.getDataFromID(value)));
         this.setState({
-            _activeData: oNewActive
+            _activeData: oNewActive,
+            _activeType: value
         })
         
         this.props.actions.ranks.setActiveRule(oNewActive.id);
@@ -804,28 +813,32 @@ export class Ranks extends Component{
                                         <PropLevel1 
                                             name='Rank Name' 
                                             content={
-                                                this.state._disabledMode ?
-                                                    <Picker
-                                                        mode='dropdown'
-                                                        selectedValue={this.state._activeData.id}
-                                                        onValueChange={(itemValue, itemIndex) => {this._setActiveData(itemValue)}}>
-                                                        {
-                                                            this.state._allData.data.map((data, index) => (
-                                                                <Picker.Item key={index} label={data.name.value} value={data.id} />
-                                                            ))
-                                                        }
-                                                    </Picker>
+                                                this.props.viewOnly || false ?
+                                                    <Text style={styles.txtDisabledValue}>{this.state._activeData.name.value}</Text>
                                                 :
-                                                <TextInput 
-                                                    autoCapitalize='none'
-                                                    placeholder='Leave Type Name'
-                                                    style={{color: '#434646', paddingLeft: 15, paddingRight: 15, height: '100%'}}
-                                                    onChangeText={(text) => this._updateActiveName(text)}
-                                                    value={this.state._activeData.name.value}
-                                                    returnKeyType="done"
-                                                    underlineColorAndroid='transparent'
-                                                />
+                                                    this.state._disabledMode ?
+                                                        <Picker
+                                                            mode='dropdown'
+                                                            selectedValue={this.state._activeData.id}
+                                                            onValueChange={(itemValue, itemIndex) => {this._setActiveData(itemValue)}}>
+                                                            {
+                                                                this.state._allData.data.map((data, index) => (
+                                                                    <Picker.Item key={index} label={data.name.value} value={data.id} />
+                                                                ))
+                                                            }
+                                                        </Picker>
+                                                    :
+                                                    <TextInput 
+                                                        autoCapitalize='none'
+                                                        placeholder='Leave Type Name'
+                                                        style={{color: '#434646', paddingLeft: 15, paddingRight: 15, height: '100%'}}
+                                                        onChangeText={(text) => this._updateActiveName(text)}
+                                                        value={this.state._activeData.name.value}
+                                                        returnKeyType="done"
+                                                        underlineColorAndroid='transparent'
+                                                    />
                                             }
+                                            hideBorder={this.props.viewOnly || false}
                                             
                                         />
                                         <PropTitle name='Time Policies'/>

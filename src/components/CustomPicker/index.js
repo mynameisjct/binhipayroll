@@ -3,8 +3,9 @@ import {
   View,
   Modal,
   Text,
-  TouchableOpacity, 
-  ScrollView
+  TouchableNativeFeedback, 
+  ScrollView,
+  TouchableOpacity
 } from 'react-native';
 
 //Styles
@@ -12,7 +13,30 @@ import styles from './styles';
 
 export default class CustomPicker extends PureComponent{
     render(){
-        let aList = this.props.list || [];
+        const aList = this.props.list || [];
+        const oOptions = (
+            aList.map((data, index) => 
+                <View key={index} style={styles.modalRules.contentCont}>
+                    <TouchableNativeFeedback
+                        onPress={() => this.props.onSelect(data.id)}
+                        background={TouchableNativeFeedback.SelectableBackground()}>
+                        <View style={styles.modalRules.contOption}>
+                            <Text style={styles.modalRules.txtBtn}>
+                                {data.label}
+                            </Text>
+                        </View>
+                    </TouchableNativeFeedback>
+                    {
+                        index === aList.length - 1 ? 
+                            null
+                        :
+                             <View style={styles.modalRules.divider}/>
+                    }
+                   
+                </View>
+            )
+        )
+
         return(
             <Modal 
                 animationType="fade"
@@ -36,23 +60,14 @@ export default class CustomPicker extends PureComponent{
                         </View>
                         {
                             aList.length > 0 ?
-                                <View>
-                                    <ScrollView contentContainerStyle={{flexGrow: 1}}>
-                                        {
-                                            aList.map((data, index) => 
-                                                <View key={index} style={styles.modalRules.contentCont}>
-                                                    <TouchableOpacity 
-                                                        style={styles.modalRules.contOption}
-                                                        onPress={() => this.props.onSelect()}>
-                                                        <Text style={styles.modalRules.txtBtn}>
-                                                            {data.label}
-                                                        </Text>
-                                                    </TouchableOpacity>
-                                                </View>
-                                            )
-                                        }
-                                        
-                                    </ScrollView>
+                                <View style={{flex:0}}>
+                                    {
+
+                                            <ScrollView contentContainerStyle={{flex: 1}}>
+                                                {oOptions}
+                                            </ScrollView>
+                                    }
+                                    
                                 </View>
                             :
                                 <View style={styles.modalRules.emptyList}>

@@ -602,6 +602,14 @@ export const data = (state = initialState, action) => {
 			}
 			break;
 
+		case actionTypes.EMPLOYEERANK.UPDATE.DATA:
+			oState.employmentinfo.rank.data = action.payload;
+			
+			return {
+				...oState
+			}
+			break;
+
 		case actionTypes.ALLINFO.REMOVE.ACTIVEDATA:
 			return initialState;
 			break;

@@ -336,3 +336,9 @@ export const updateGovernmentBenefits = payload => ({
 	payload
 });
 
+export const updateRank = payload => ({
+	type: actionTypes.EMPLOYEERANK.UPDATE.DATA,
+	payload
+});
+
+

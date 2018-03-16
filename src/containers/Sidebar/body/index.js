@@ -7,7 +7,6 @@ import {
 import styles from '../styles';
 
 import SidebarBodyEmployer from './employer';
-import SidebarBodyEmployee from './employee';
 
 export default class SidebarBody extends Component{
     render(){

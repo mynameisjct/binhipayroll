@@ -12,9 +12,10 @@ export default {
     modalRules: {
         container: {     
             backgroundColor: '#FFFFFF',
-            minHeight: '30%',
+            minHeight: '10%',
             borderRadius: 5,
-            maxHeight: '80%'
+            maxHeight: '60%',
+            maxWidth: '80%'
         },
 
         titleCont: {
@@ -23,7 +24,7 @@ export default {
             borderColor: '#D1D4D6',
             justifyContent:'center',
             alignItems:'center',
-            height: 60,
+            minHeight: 50,
             minWidth: 250,
             borderTopLeftRadius: 5,
             borderTopRightRadius: 5,
@@ -50,11 +51,7 @@ export default {
 
         contOption: {
             padding: 20,
-            marginLeft: 10,
-            marginRight: 10,
             backgroundColor: 'transparent',
-            borderTopWidth: 1,
-            borderColor: '#D1D4D6'
         },
 
         emptyList: {
@@ -63,6 +60,13 @@ export default {
             alignItems: 'center',
             borderBottomLeftRadius: 5,
             borderBottomRightRadius: 5,
+        },
+
+        divider: {
+            height: 1,
+            marginLeft: 18,
+            marginRight: 18,
+            backgroundColor: '#D1D4D6'
         }
     },
 }

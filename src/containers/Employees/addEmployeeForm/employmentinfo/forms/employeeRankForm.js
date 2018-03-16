@@ -32,11 +32,13 @@ const Form = t.form.Form;
 export default class EmployeeRankForm extends Component{
     constructor(props){
         super(props);
+        console.log('this.props.activeData: ' + JSON.stringify(this.props.activeData));
         this.state = {
             _oEmpRankForm: {
-                rankid:  '',
-                effectivedate:  null,
-                remarks: ''
+                rankid: this.props.activeData.rankid || '',
+                effectivedate:  this.props.activeData.effectivedate.from.value ?  
+                    new Date(this.props.activeData.effectivedate.from.value) : null,
+                remarks: this.props.activeData.remarks || ''
             },
             _dateFormat: 'MMMM DD, YYYY'
         }

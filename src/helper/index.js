@@ -90,18 +90,24 @@ export const removeElementByIndex = (arrData, index) => {
 }
 
 export const getElementByPropValue = (source, propertyName, propertyValue) => {
+    console.log('source: ' + JSON.stringify(source));
+    console.log('propertyName: ' + propertyName);
+    console.log('propertyValue: ' + propertyValue);
     if(
         source.length === 0 || 
         isStringEmptyOrSpace(propertyName) || 
         isStringEmptyOrSpace(propertyValue)
     ){
+        console.log('EMPTY SOURCE')
         return '';
     }
     else{
         try{
+            console.log('RETURNVAL: ' + JSON.stringify(source.find(x => x[propertyName] == propertyValue)));
             return (source.find(x => x[propertyName] == propertyValue))
         }
         catch(exception){
+            console.log('ERROR')
             return ''
         }
     }

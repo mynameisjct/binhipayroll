@@ -159,7 +159,7 @@ export let employee = {
 				return(
 					baseURL.activeCompany() +
 					'/employee/'  + payload.employeeId + 
-					'/employmentinfo/ranks/' + payload.id
+					'/employmentinfo/ranks/' + payload.rank.data.id
 				)
 			},
 			delete: function(payload){
