@@ -248,7 +248,7 @@ export class RankBasedRules extends Component{
         )
     }
 
-    deleteDataFromDB = (oData) => {
+    _deleteDataFromDB = (oData) => {
         this._showLoadingPrompt(delete_loading_message);
         let oRes = null;
         
@@ -346,7 +346,7 @@ export class RankBasedRules extends Component{
                                 activeOpacity={0.8}
                                 onPress={this._addNewRank}>
                                     <Text>
-                                        No Rank assigned to employee. Tap here to add.
+                                        No Rank is assigned to employee. Tap here to add.
                                     </Text>
                             </TouchableOpacity>
                         :

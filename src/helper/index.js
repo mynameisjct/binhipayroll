@@ -1,6 +1,6 @@
 import moment from "moment";
 
-//Check if String is empty
+//String Function
 export const isStringEmpty = (strValue) => {
     return !strValue
 }
@@ -17,6 +17,7 @@ export const capitalizeFirstLetter = (string) => {
     return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
+//Date Functions
 export const getArrayOfDaysInMonth = (month) => {
     try{
         let iDays = new Date(2018, month, 0).getDate();
@@ -34,7 +35,6 @@ export const getArrayOfDaysInMonth = (month) => {
     
 }
 
-//Dates
 export const convertDateToString = (strDate, format) => {
     /* console.log('strDate:' + strDate); */
     return moment(strDate).format(format);
@@ -82,7 +82,7 @@ export const addDaysFromDate = (oDate, value) => {
     return curDate;
 }
 
-//Arrays
+//Array Functions
 export const removeElementByIndex = (arrData, index) => {
     let curData = [...arrData]
     curData.splice(index, 1);
@@ -113,11 +113,6 @@ export const getElementByPropValue = (source, propertyName, propertyValue) => {
     }
 }
 
-//initially a number
-export const sortArrayOfObjects = (objData, propName) => {
-    
-}
-
 //Abbreviation
 export const getDayAbbrev = (_strDay) => {
     let _curAbbrev = _strDay=='SUNDAY' ? 'SUN':
@@ -128,4 +123,9 @@ export const getDayAbbrev = (_strDay) => {
     _strDay=='FRIDAY'?'FRI':
     _strDay=='SATURDAY'?'SAT':'SUN';
     return _curAbbrev;
+}
+
+//Object Functions
+export const copyObject = (oData) => {
+    return (JSON.parse(JSON.stringify(oData)))
 }

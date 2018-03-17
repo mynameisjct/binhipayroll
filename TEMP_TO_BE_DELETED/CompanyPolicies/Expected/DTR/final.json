@@ -171,13 +171,13 @@
           "2018-02-26":[  
              {  
                 "data":{  
-                   "date":"2018-02-26",
-                   "timein":{  
-                      "value":"07:45:24 AM",
-                      "remarks":"System Recorded",
-                      "remarksColor":"red",
-                      "valueColor":"red"
-                   },
+                    "date":"2018-02-26",
+                    "timein":{  
+                        "value":"07:45:24 AM",
+                        "remarks":"System Recorded",
+                        "remarksColor":"red",
+                        "valueColor":"red"
+                    },
                    "timeout":{  
                       "value":"05:30:09 PM",
                       "remarks":"Manually Modified",
@@ -215,7 +215,7 @@
                       }
                    ]
                 }
-             }
+            }
           ],
           "2018-02-27":[  
              {  

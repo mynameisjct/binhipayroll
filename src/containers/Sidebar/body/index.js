@@ -6,12 +6,13 @@ import {
 
 import styles from '../styles';
 
+import SidebarBodyEmployee from './employee';
 import SidebarBodyEmployer from './employer';
 
 export default class SidebarBody extends Component{
     render(){
         return(
-            <SidebarBodyEmployer/>
+            <SidebarBodyEmployee/>
         )
     }
 }

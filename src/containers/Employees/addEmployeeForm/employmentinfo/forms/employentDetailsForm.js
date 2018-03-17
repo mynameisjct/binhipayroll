@@ -26,16 +26,15 @@ import * as oHelper from '../../../../../helper';
 
 const Form = t.form.Form;
 
-export default class EmployeePositionForm extends Component{
+export default class EmployeeDetailsForm extends Component{
   constructor(props){
     super(props);
     this.state = {
       _oPosition: {
-        position: this.props.activeData.position.value || '',
-        branch: this.props.activeData.branch.value || '',
-        effectivedate: this.props.activeData.effectivedate.from.value ? 
-          new Date(this.props.activeData.effectivedate.from.value) : null,
-        remarks: this.props.activeData.remarks || ''
+        position: '',
+        branch:  '',
+        effectivedate: null,
+        remarks: ''
       },
       _dateFormat: 'MMMM DD, YYYY'
     }
@@ -66,13 +65,13 @@ export default class EmployeePositionForm extends Component{
 
   render(){
     console.log('this.props.ranks: ' + JSON.stringify(this.props.ranks));
-    const bDeletable = 
-      this.props.activeData.position.value!='' && this.props.activeData.effectivedate.from.value!=null ?
+    const bDeletable = false;
+      /* this.props.activeData.position.value!='' && this.props.activeData.effectivedate.from.value!=null ?
         true
       :
-        false 
-    
-    const POSITIONS = t.enums(this.props.ranks);
+        false */
+
+    const POSITIONS = t.enums(this.props.positions);
     const BRANCHES = t.enums(this.props.branches);
 
     let myFormatFunction = (format,strDate) => {

@@ -5,6 +5,7 @@ import {
     FlatList
 } from 'react-native';
 import { withNavigation } from 'react-navigation';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 //Children Components
 import NavigationItem from './navigationItem';
@@ -15,64 +16,65 @@ import styles from '../styles';
 //helper
 import * as oHelper from '../../../helper';
 
-class SidebarBodyEmployer extends Component{
+class SidebarBodyEmployee extends Component{
     constructor(props){
         super(props);
         this.state = {
             _employerNavigationList: [
                 {
                     key: "0001",
-                    label: "Dashboard",
-                    iconName: 'md-apps',
+                    label: "Daily Time Record",
+                    iconName: 'timetable',
                     iconSize: 25,
                     iconColor: '#434646',
-                    navigateTo: 'EmprDashBoard',
+                    isMaterialCommunityIcons: true,
+                    navigateTo: 'EmployeeDTR',
                     isActive: true,
-                    hasSpecialCol: true,
-                    isSpecialColLoading: true,
-                    notificationsCount: 1,
-                    notificationsIconName: 'md-notifications-outline',
-                    notificationsIconSize: 22
                 },
 
                 {
                     key: "0002",
-                    label: "Company Policies",
-                    iconName: 'ios-book',
+                    label: "Personal Information",
+                    iconName: 'information-variant',
                     iconSize: 25,
                     iconColor: '#434646',
+                    isMaterialCommunityIcons: true,
                     navigateTo: 'CompanyPolicies',
                     isActive: false
                 },
 
                 {
                     key: "0003",
-                    label: "My Employees",
-                    iconName: 'ios-people',
+                    label: "Bank Information",
+                    iconName: 'bank',
                     iconSize: 25,
                     iconColor: '#434646',
+                    isMaterialCommunityIcons: true,
+                    navigateTo: 'CompanyPolicies',
+                    isActive: false
+                },
+
+                {
+                    key: "0004",
+                    label: "Employment Information",
+                    iconName: 'file-document',
+                    iconSize: 25,
+                    iconColor: '#434646',
+                    isMaterialCommunityIcons: true,
                     navigateTo: 'Employees',
                     isActive: false
                 },
-                {
-                    key: "0004",
-                    label: "Transactions",
-                    iconName: 'ios-card',
-                    iconSize: 25,
-                    iconColor: '#434646',
-                    navigateTo: 'Transactions',
-                    isActive: false
-                },
+
                 {
                     key: "0005",
                     label: "Reports",
-                    iconName: 'md-list-box',
+                    iconName: 'chart-pie',
                     iconSize: 25,
                     iconColor: '#434646',
-                    navigateTo: 'Reports',
+                    isMaterialCommunityIcons: true,
+                    navigateTo: 'Transactions',
                     isActive: false
                 },
-                
             ]
         }
     }
@@ -112,4 +114,4 @@ class SidebarBodyEmployer extends Component{
     }
 }
 
-export default withNavigation(SidebarBodyEmployer)
+export default withNavigation(SidebarBodyEmployee)

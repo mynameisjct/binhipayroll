@@ -1,215 +1,212 @@
-/**************************************************************
- *  FileName:           styles.js
- *  Description:        Login Styles
- *  Copyright:          Binhi-MeDFI © 2017
- *  Original Author:    Jovanni Auxilio
- *  Date Created:       2017-11-07
-
- *  Modification History:
-        Date              By            Description
-
-**************************************************************/
-const React = require('react-native');
-const { StyleSheet } = React;
-
 export default {
+    container: {
+        backgroundColor: '#fff',
+        flex: 1,
+    },
 
-  //Parent Styles
-  container: {
-    backgroundColor: '#fff',
-    flex: 1,
-  },
+    header: {
+        container: {
+            flex: 0,
+            backgroundColor: '#EEB843',
+            elevation: 5
+        },
 
-  scrollableCont:{
-    flex: 1,
-    backgroundColor: 'transparent'
-    
-  },
+        content:{
+            flexDirection: 'row',
+            paddingTop: 30,
+            paddingBottom: 25,
+        },
 
-  footerCont:{
-    maxHeight: 100,
-    minHeight: 100,
-  },
+        left: {
+            paddingRight: 15,
+            paddingLeft: 25,
+            justifyContent: 'center',
+            alignItems: 'center',
+            backgroundColor: 'transparent'
+        },
 
-  //Company Styles
-  companyCont:{
-    flexDirection: 'row',
-    backgroundColor: '#EEB843',
-    height: 130, 
-    borderBottomWidth: 1,
-    borderColor: '#B5B5B5',
+        right: {
+            
+            flex: 1,
+            paddingRight: 40,
+            justifyContent: 'center',
+            alignItems: 'flex-start',
+            backgroundColor: 'transparent'
+        },
 
-    shadowColor: '#000',
-    shadowOffset: { width: 2, height: 2 },
-    shadowOpacity: 0.8,
-    shadowRadius: 100,
-    elevation: 3,
-  },
-  
-  companyPicker:{
-    backgroundColor: 'transparent',
-    justifyContent: 'center',
-    marginBottom: 80
-  },
+        picker: {
+            position: 'absolute',
+            right:1,
+            top: 1,
+            paddingTop: 12,
+            paddingRight: 12,
+            paddingBottom: 12,
+            paddingLeft: 12
+        }
+          
+    },
 
-  //General Content Elements Divisions
-  mainContentDiv:{
-    flex: 0.8,
-    flexDirection: 'row',
-    backgroundColor: 'transparent',
-    borderWidth: 0,
-  },
+    body: {
+        container: {
+            flex: 1,
+            backgroundColor: '#FFFFFF'
+        },
 
-  miscContentDiv:{
-    flex: 0.2,
-    backgroundColor: 'transparent',
-    borderWidth: 0,
-    justifyContent: 'center'
-  },
+        item: {
+            container: {
+                flex: 1,
+                flexDirection: 'row',
+                paddingTop: 15,
+                paddingBottom: 15
+            },
 
-  iconCont:{
-    flex: 0.4,
-    borderWidth: 0,
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
+            left: {
+                flex: 0.2,
+                paddingLeft: 18,
+                justifyContent: 'center',
+                alignItems: 'center'
+            },
 
-  labelCont: {
-    flex: 0.6,
-    borderWidth: 0,
-    justifyContent: 'center',
-    marginLeft: -10
-  },
+            middle:{
+                flex: 0.6,
+                paddingLeft: 8,
+                justifyContent: 'center',
+                alignItems: 'flex-start',
+            },
 
-  specialProfileLabelCont: {
-    flex: 0.6,
-    flexDirection: 'column',
-    borderWidth: 0,
-    justifyContent: 'center',
-    marginLeft: -10
-  },
+            right: {
+                flex: 0.2,
+                /* backgroundColor: 'blue', */
+                justifyContent: 'center',
+                alignItems: 'center'
+            },
 
-  txtTitle: {
-    fontFamily: 'Helvetica-Bold',
-    fontSize: 20,
-    fontWeight: '900',
-    color: '#434646'
-  },
+            specialCol: {
+                flex: 1,
+                flexDirection: 'row',
+                justifyContent: 'center',
+                alignItems: 'center'
+            },
 
-  txtContent: {
-    fontFamily: 'Helvetica-Light',
-    fontSize: 15,
-    fontWeight: '300',
-    color: '#434646'
-  },
+            specialColLoading: {
+                justifyContent: 'center',
+                alignItems: 'center'
+            },
 
-  /********Company Related Contents Style*******/
-  contentStyle:{
-    height: 50,
-    borderBottomWidth: 0,
-    borderColor: '#B5B5B5'
-  },
+            active: {
+                backgroundColor: 'rgba(0, 0, 0, 0.1);'
+            },
 
-  //Dashboard related styles
-  dashboardCont:{
-    flexDirection: 'row',
-  },
+            notificationIcon:{
+                error: 'red',
+                normal: '#838383'
+            }
+        },
+    },
 
-  notificationCont:{
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
+    footer: {
+        container: {
+            flex: 0,
+            backgroundColor: '#FFFFFF',
+        },
 
-  txtNotification: {
-    fontFamily: 'Helvetica-Light',
-    fontSize: 14,
-    fontWeight: '500',
-    marginRight: 5,
-  },
+        bottom: {
+            flexDirection: 'row',
+        },
 
-  policiesCont:{
-    flexDirection: 'row',
-  },
+        item: {
+            flex: 1,
+            flexDirection: 'row',
+            borderLeftWidth: 1.5,
+            borderColor: '#D1D4D6',
+            paddingTop: 5,
+            paddingBottom: 5,
+        },
 
-  employeesCont:{
-    flexDirection: 'row',
-  },
-  
-  transactionsCont:{
-    flexDirection: 'row',
-  },
+        icon: {
+            flex: 0.4,
+            justifyContent: 'center',
+            alignItems: 'center',
+        },
 
-  reportsCont:{
-    flexDirection: 'row',
-  },
+        label: {
+            flex: 0.6,
+            justifyContent: 'center',
+            alignItems: 'flex-start'
+        },
 
-  profileCont:{
-    flexDirection: 'row',
-    borderBottomWidth: 1,
-    borderTopWidth: 1,
-    borderColor: '#B5B5B5',
-    minHeight: 70,
-  },
+        profile: {
+            container: {
+                flex: 0,
+                flexDirection: 'row',
+                paddingTop: 10,
+                paddingBottom: 10,
+                borderTopWidth: 1.5,
+                borderBottomWidth: 1.5,
+                borderColor: '#D1D4D6',
+            },
 
-  bottomCont:{
-    flexDirection: 'row',
-    minHeight: 40,
-  },
+            icon: {
+                flex: 0.24,
+                paddingLeft: 10,
+                justifyContent: 'center',
+                alignItems: 'center',
+            },
 
-  bottomContentStyle:{
-    borderRightWidth: 1,
-    borderColor: '#B5B5B5'
-  },
+            label: {
+                flex: 0.76,
+                justifyContent: 'center',
+                alignItems: 'flex-start',
+                paddingRight: 15
+            }
+        }
+    },
 
-  settingCont:{
-    flex: 0.3333,
-    flexDirection: 'row',
-  },
+    textStyles: {
+        title: {
+            fontFamily: 'Helvetica-Bold',
+            fontSize: 17,
+            fontWeight: '900',
+            color: '#434646'
+        },
 
-  syncCont:{
-    flexDirection: 'row',
-    flex: 0.3333,
-  },
+        navigationLabel: {
+            fontFamily: 'Helvetica-Light',
+            fontSize: 15,
+            fontWeight: '300',
+            color: '#434646'
+        },
+        
+        notification: {
+            error: {
+                fontFamily: 'Helvetica-Light',
+                fontSize: 14,
+                fontWeight: '500',
+                marginRight: 5,
+                color: 'red'
+            },
 
-  logoutCont:{
-    flexDirection: 'row',
-    flex: 0.3333,
-  },
+            normal: {
+                fontFamily: 'Helvetica-Light',
+                fontSize: 14,
+                fontWeight: '500',
+                marginRight: 5,
+                color: '#838383'
+            }
+        },
+        
+        profileTitle: {
+            fontFamily: 'Helvetica-Light',
+            fontSize: 14,
+            fontWeight: '300',
+            color: '#434646'
+        },
 
-  //Profile Styles
-  txtProfileDesc: {
-    fontFamily: 'Helvetica-Light',
-    fontSize: 10,
-    fontWeight: '300',
-    color: '#434646'
-  },
-
-  footerIconCont:{
-    flex: 0.4,
-    alignItems: 'center',
-  },
-
-  footerLabelCont: {
-    flex: 0.6,
-  },
-
-  txtFooter: {
-    fontFamily: 'Helvetica-Light',
-    fontSize: 13,
-    fontWeight: '300',
-    color: '#434646',
-  },
-
-  iconFooterCorrection:{
-    marginTop: 4
-  },
-
-  specialIconFooterCorrection:{
-    marginTop: 6
-  },
-
-  txtFooterCorrection: {
-    marginTop: 4
-  },
-};
+        profileLabel: {
+            fontFamily: 'Helvetica-Light',
+            fontSize: 12,
+            fontWeight: '300',
+            color: '#434646'
+        }
+    }
+}

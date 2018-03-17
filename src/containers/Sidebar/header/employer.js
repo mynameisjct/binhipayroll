@@ -5,12 +5,13 @@ import {
     TouchableNativeFeedback
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { withNavigation } from 'react-navigation';
 
 //Custom Components
-import CustomPicker from '../../components/CustomPicker';
+import CustomPicker from '../../../components/CustomPicker';
 
 //Styles
-import styles from './styles';
+import styles from '../styles';
 
 //constants
 const COLOR_ICON = '#434646';
@@ -28,7 +29,7 @@ const employer = {
     }
 }
 
-export default class SidebarHeader extends Component{
+class SidebarHeaderEmployer extends Component{
     constructor(props){
         super(props);
         this.state = {
@@ -44,6 +45,7 @@ export default class SidebarHeader extends Component{
     }
 
     _onSelect = (id) => {
+        this.props.navigation.navigate('DrawerClose');
         this._hidePicker();
     }
 
@@ -79,7 +81,6 @@ export default class SidebarHeader extends Component{
                     background={TouchableNativeFeedback.SelectableBackground()}>
                     <View style={headerStyles.picker}>
                         <Icon
-                            iconStyle={{elvation: 5}}
                             size={employer.dropdown.iconSize} 
                             name={employer.dropdown.iconName} 
                             color={employer.dropdown.color}  />
@@ -98,3 +99,5 @@ export default class SidebarHeader extends Component{
         )
     }
 }
+
+export default withNavigation(SidebarHeaderEmployer);

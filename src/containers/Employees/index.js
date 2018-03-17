@@ -29,13 +29,15 @@ import Summary from './summary';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as employeeListActions from './data/list/actions';
+import { CONSTANTS } from '../../constants/index';
 
 const TITLE = 'Loading Employee List'
 export class Employees extends Component {
     constructor(props){
         super(props);
         this.state={
-            _summaryStatus: [2, 'Loading...']
+            _summaryStatus: [2, 'Loading...'],
+            _bDidMount: false
         }
     }
 
@@ -47,6 +49,12 @@ export class Employees extends Component {
     componentDidMount = () => {
         if(this.props.employeelist.status[0] != 1){
             this._getEmployeeListFromDB();
+            this.setState({_bDidMount: true});
+        }
+        else{
+            setTimeout( () => {
+                this.setState({_bDidMount: true});
+            },100);
         }
     }
 
@@ -62,10 +70,9 @@ export class Employees extends Component {
         console.log('Rendering My Employees: ' + this.props.employeelist.status);
         return(
             <GenericContainer 
-                status={this.props.employeelist.status}
+                status={this.state._bDidMount ? this.props.employeelist.status : CONSTANTS.STATUS.LOADING}
                 title={TITLE}
                 onRefresh={this._getEmployeeListFromDB}>
-
                 <View style={styles.container}>
                     <EmployeeList activeProfileStatus={this._setActiveProfileStatus}/>
                     <Summary status={this.state._summaryStatus}/>
