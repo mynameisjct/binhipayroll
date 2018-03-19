@@ -20,6 +20,7 @@ import RootDrawer from './Drawer';
 import ChangePassword from './containers/ChangePassword';
 import BranchForm from './containers/CompanyProfile/forms/branch';
 import CompanyIdForm from './containers/CompanyProfile/forms/companyid';
+import PayrollSummary from './containers/PayrollSummary';
 
 //TabNavigators
 import {AddEmployeeForm} from './TabNavigatorEmployeeForm';
@@ -55,6 +56,14 @@ const EmployeeDTRNav = StackNavigator({
     }
 );
 
+const PayrollSummaryNav = StackNavigator({
+    PayrollSummary: {screen: PayrollSummary},
+    },
+    {
+        headerMode: 'none'
+    }
+);
+
 /******APP NAVIGATOR******/
 const AppNavigator = StackNavigator(
     {
@@ -67,10 +76,13 @@ const AppNavigator = StackNavigator(
 
         //Employee
         AddEmployeeForm: {screen: AddEmployeeFormNav},
+
+        //Payroll Summary
+        PayrollSummary: {screen: PayrollSummaryNav}
     },
 
     {
-        initialRouteName: 'Login',
+        initialRouteName: 'PayrollSummary',
         headerMode: 'none',
         mode: 'modal',
         navigationOptions: {

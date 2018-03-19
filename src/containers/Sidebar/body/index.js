@@ -12,7 +12,7 @@ import SidebarBodyEmployer from './employer';
 export default class SidebarBody extends Component{
     render(){
         return(
-            <SidebarBodyEmployee/>
+            <SidebarBodyEmployer/>
         )
     }
 }

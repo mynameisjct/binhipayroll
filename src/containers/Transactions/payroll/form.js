@@ -36,10 +36,10 @@ export default class PayrollTransactionForm extends Component{
             _bHasMounted: false,
             _oFormData: {
                 payrolldate: '',
-                code: '',
-                periodfrom: null,
-                periodto: null,
-                status: ''
+                code: 'TEMP',
+                periodfrom: new Date(),
+                periodto: new Date(),
+                status: 'TEMP'
             },
             _options: {}
         }
