@@ -5,6 +5,7 @@ import {
     Button
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import LinearGradient from 'react-native-linear-gradient';
 
 import PayrollSummaryInfo from './summary';
 import PayrollSummaryEmployeeList from './employeeList';
@@ -22,16 +23,28 @@ export default class PayrollSummary extends Component {
 
                 payrollsummary: {
                     title: 'PAYROLL SUMMARY',
-                    data: [
-                        ["Payroll Generated", "Mar 30, 2018"],
-                        ["Pay Period", "Mar 11, 2018 - Mar 25, 2018"],
-                        ["Pay Date", "Mar 31, 2018"],
-                        ["Gross Income", "100,871.50 "],
-                        ["Status", "Open"]
-                    ]
+                    payrollinfo: {
+                        title: 'General Information',
+                        data: [
+                            ["Payroll Generated", "Mar 30, 2018"],
+                            ["Pay Period", "Mar 11, 2018 - Mar 25, 2018"],
+                            ["Pay Date", "Mar 31, 2018"],
+                            ["Status", "Open"]
+                        ]
+                    },
+                    amountsummary: {
+                        title: 'Details',
+                        data: [
+                            ["Gross Income", "12,000.00"],
+                            ["Gross SSS Contribution", "12,000.00"],
+                            ["Gross HDMF Contribution", "12,000.00"]
+                        ]
+                    }
                 },
                 employeelist: {
                     title: 'EMPLOYEE LIST',
+                    markallasclosed: false,
+                    status: '0/2 closed',
                     data: [
                         {
                             id: '0001',
@@ -44,7 +57,8 @@ export default class PayrollSummary extends Component {
                                 ['Total Deductions', '751.00'],
                                 ['Net Pay', '12,249.00']
                             ],
-                            details:{}
+                            status: 'close',
+                            payslip:{}
                         },
                         {
                             id: '0002',
@@ -57,8 +71,10 @@ export default class PayrollSummary extends Component {
                                 ['Total Deductions', '751.00'],
                                 ['Net Pay', '12,249.00']
                             ],
-                            details:{}
-                        },{
+                            status: 'open',
+                            payslip:{}
+                        },
+                        {
                             id: '0003',
                             name: 'Jovanni G. Auxilio',
                             position: 'Internal Cook',
@@ -69,7 +85,8 @@ export default class PayrollSummary extends Component {
                                 ['Total Deductions', '751.00'],
                                 ['Net Pay', '12,249.00']
                             ],
-                            details:{}
+                            status: 'recalculate',
+                            payslip:{}
                         },
                         {
                             id: '0004',
@@ -82,19 +99,25 @@ export default class PayrollSummary extends Component {
                                 ['Total Deductions', '751.00'],
                                 ['Net Pay', '12,249.00']
                             ],
-                            details:{}
+                            status: 'close',
+                            payslip:{}
                         }
                     ]
                 }
             }
         }
     }
+    
     render(){
         return(
-            <View style={styles.container}>
+            <LinearGradient 
+                colors={['#304352', '#d7d2cc']}
+                start={{ x: 0, y: 1 }}
+                end={{ x: 1, y: 1 }}
+                style={styles.container}>
                 <PayrollSummaryInfo data={this.state._oData}/>
                 <PayrollSummaryEmployeeList data={this.state._oData}/>
-            </View>
+            </LinearGradient>
         );
     }
 }

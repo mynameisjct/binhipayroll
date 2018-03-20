@@ -228,27 +228,6 @@ export class Login extends Component {
                         id: this.state._resDefaultCompanyId
                     });
 
-/*                     this.props.navigation.navigate('EmprDashBoard', 
-                        {
-                            username: this.state._username,
-                            company: this.state._resCompany,
-                            firstname: this.state._resFName,
-                            middlename: this.state._resMName,
-                            lastname: this.state._resLName
-                    }); */
-
-
-/*                     this.props.navigation.navigate('CompanyProfile', 
-                        {
-                            username: this.state._username,
-                            password: this.state._password,
-                            company: this.state._resCompany,
-                            firstname: this.state._resFName,
-                            middlename: this.state._resMName,
-                            lastname: this.state._resLName
-                        });
-                    break; */
-
                     this.props.navigation.navigate('EmprDashBoard')
                     /* this.props.navigation.navigate('CompanyPolicies') */
                     /* this.props.navigation.navigate('Employees') */

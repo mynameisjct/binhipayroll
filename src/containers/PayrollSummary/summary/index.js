@@ -18,9 +18,9 @@ export default class PayrollSummaryInfo extends Component {
         const summaryStyles = styles.summaryStyles;
         return(
             <View style={summaryStyles.container}>
-                <PayrollSummaryInfoHeader/>
-                <PayrollSummaryInfoBody/>
-                <PayrollSummaryInfoFooter/>
+                <PayrollSummaryInfoHeader data={this.props.data}/>
+                <PayrollSummaryInfoBody data={this.props.data}/>
+                <PayrollSummaryInfoFooter data={this.props.data}/>
             </View>
         );
     }

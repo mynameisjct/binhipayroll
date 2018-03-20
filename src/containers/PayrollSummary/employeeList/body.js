@@ -4,6 +4,12 @@ import {
     Text,
     FlatList
 } from 'react-native';
+import {
+    Menu,
+    MenuOptions,
+    MenuOption,
+    MenuTrigger,
+  } from 'react-native-popup-menu';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 //Styles
@@ -31,11 +37,6 @@ export default class PayrollEmployeeListBody extends Component {
 }
 
 class EmployeePayrollCard extends Component {
-    onActionSelected = (position) => {
-        if (position === 0) { // index of 'Settings'
-          showSettings();
-        }
-    }
 
     render(){
         const bodyStyles = styles.listStyles.body;
@@ -49,7 +50,7 @@ class EmployeePayrollCard extends Component {
                 <View style={cardHeaderStyles.container}>
                     <View style={cardHeaderStyles.left}>
                         <View style={cardHeaderStyles.icon}>
-                            <Icon name='account-circle' size={70} color='#434646'/>
+                            <Icon name='account-circle' size={73} color='#434646'/>
                         </View>
                         <View style={cardHeaderStyles.title}>
                             <Text style={textStyles.name}>{item.name}</Text>
@@ -58,7 +59,15 @@ class EmployeePayrollCard extends Component {
                         </View>
                     </View>
                     <View style={cardHeaderStyles.right}>
-                        <Icon name='dots-vertical' size={30} color='#434646'/>
+                        <Menu>
+                            <MenuTrigger children={<Icon name='dots-vertical' size={30} color='#434646'/>}/>
+                            <MenuOptions>
+                                <MenuOption onSelect={this._showPayslip} text='View Payslip' />
+                                <MenuOption onSelect={() => alert(`View Daily Time Record`)} text='View Daily Time Record'/>
+                                <MenuOption onSelect={() => alert(`Special Deduction/Allowance`)} text='Special Deduction/Allowance' />
+                                <MenuOption onSelect={() => alert(`Mark as Closed`)} text='Mark as Closed' />
+                            </MenuOptions>
+                        </Menu>
                     </View>
                 </View>
                 <View style={cardBodyStyles.container}>

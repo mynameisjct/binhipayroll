@@ -13,6 +13,7 @@ import React, { Component } from 'react';
 import AppNavigator from './src/AppNavigator';
 import configureStore from './src/store';
 import {Provider} from 'react-redux';
+import { MenuProvider } from 'react-native-popup-menu';
 
 const store = configureStore();
 
@@ -24,7 +25,9 @@ export default class Main extends Component {
   render() {
     return (
       <Provider store= {store}>
-        <AppNavigator/>
+        <MenuProvider>
+          <AppNavigator/>
+        </MenuProvider>
       </Provider>
     );
   }

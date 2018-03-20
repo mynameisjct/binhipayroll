@@ -10,16 +10,17 @@ export default {
     summaryStyles: {
         container: {
             flex: 1,
-            flexDirection: 'column',
-            borderRightWidth: 1,
+            flexDirection: 'column'
         },
 
         header: {
             container: {
-                height: 50,
+                height: 55,
                 flexDirection: 'row',
-                backgroundColor: '#EEB843',
+                backgroundColor: '#fcfcfc',
                 elevation: 5,
+                borderRightWidth: 0.7,
+                borderColor: '#D1D4D6'
             },
 
             center: {
@@ -45,14 +46,113 @@ export default {
             container: {
                 flex: 1,
                 flexDirection: 'column',
-                backgroundColor: '#FFFFFF',
+                backgroundColor: 'transparent',
+                borderBottomWidth: 1,
+                borderColor: '#D1D4D6'
             },
+
+            content: {
+                flex: 1,
+                backgroundColor: '#FFFFFF',
+                flexDirection: 'column',
+            },
+            upperBlock: {
+                elevation: 1,
+                padding: 40,
+                paddingBottom: 0,
+                flexDirection: 'column'
+            },
+
+            title: {
+                marginBottom: 10
+            },
+
+            details: {
+                flexDirection: 'row'
+            },
+
+            lowerBlock: {
+                elevation: 1,
+                padding: 30,
+                paddingTop: 0,
+                flexDirection: 'column'
+            },
+
+            cardBody: {
+                content: {
+                    /* flex: 1, */
+                    paddingTop: 5,
+                    backgroundColor: 'transparent',
+                    flexDirection: 'row'
+                },
+                
+                label: {
+                    flex: 1,
+                    backgroundColor: 'transparent',
+                    paddingLeft: 25
+                },
+
+                value:{
+                    backgroundColor: 'transparent',
+                    flex: 1, 
+                    alignItems: 'flex-start'
+                }
+            },
+
+            horizontalScrollPlaceHolder: {
+                backgroundColor: 'red'
+            },
+
+            scrollViewPlaceholder: {
+
+            }
         },
 
         footer: {
             container: {
-                height: 37,
                 flexDirection: 'column',
+                backgroundColor: 'transparent'
+            },
+            content: {
+                backgroundColor: '#FFF',
+                paddingBottom: 20,
+                paddingTop: 15,
+                height: 130
+            },
+            
+            upperBlock: {
+                justifyContent: 'center',
+                alignItems: 'center',
+                flexDirection: 'row',
+                backgroundColor: 'transparent'
+            },
+
+            btn: {
+                justifyContent: 'center',
+                alignItems: 'center',
+                backgroundColor: 'green',
+                borderRadius: 20,
+                elevation: 3,
+                margin: 7,
+                width: 160,
+                height: 37
+            },
+
+            btnPost: {
+                backgroundColor: 'green',
+            },
+
+            btnCancel: {
+                backgroundColor: 'gray',
+            },
+
+            btnRegenerate: {
+                backgroundColor: '#EEB843',
+            },
+
+            lowerBlock: {
+                justifyContent: 'center',
+                alignItems: 'center',
                 backgroundColor: 'transparent'
             }
         }
@@ -67,9 +167,9 @@ export default {
 
         header: {
             container: {
-                height: 50,
+                height: 55,
                 flexDirection: 'row',
-                backgroundColor: '#EEB843',
+                backgroundColor: '#fcfcfc',
                 elevation: 5
             },
 
@@ -96,25 +196,26 @@ export default {
             container: {
                 flex: 1,
                 flexDirection: 'column',
-                backgroundColor: '#D1D4D6'
+                backgroundColor: 'transparent'
             },
 
             listComponent: {
-                paddingBottom: 12,
-                paddingTop: 5
+                paddingBottom: 10,
+                paddingTop: 7.5
             },
 
             placeholder: {
-                marginTop: 15,
+                marginTop: 7.5,
                 marginRight: 15,
                 marginLeft: 15,
-                elevation: 5,
+                marginBottom: 7.5,
+                elevation: 3,
                 paddingTop: 15,
                 paddingBottom: 20,
                 paddingLeft: 20,
                 paddingRight: 10,
-                borderLeftWidth: 15,
-                borderColor: 'green',
+                borderLeftWidth: 20,
+                borderColor: 'yellow',
                 backgroundColor: '#FFFFFF'
             },
 
@@ -177,11 +278,44 @@ export default {
 
         footer: {
             container: {
-                height: 37,
-                flexDirection: 'column',
-                backgroundColor: '#434646'
+                height: 35,
+                flexDirection: 'row',
+                backgroundColor: 'rgba(0, 0, 0, 0.5)'
+            },
+            left: {
+                flex: 1,
+                justifyContent: 'center',
+                alignItems: 'flex-start',
+                paddingLeft: 15
+            },
+            right: {
+                paddingRight: 15,
+                flexDirection: 'row'
+
+            },
+            label: {
+                justifyContent: 'center',
+                paddingRight: 5
+            },
+            box:{
+                justifyContent: 'center',
             }
         }
+    },
+
+    form: {
+        container: {
+            paddingTop: 30,
+            paddingBottom: 30,
+            justifyContent: 'center',
+            alignItems: 'center',
+            width: '80%',
+        },
+
+        content: {
+            flex: 1
+        }
+        
     },
 
     textStyles: {
@@ -198,20 +332,51 @@ export default {
         },
 
         description: {
-            fontSize: 12,
+            fontSize: 13,
             color: '#505251'
         },
 
         summary: {
-            fontSize: 14,
+            fontSize: 13.5,
             color: '#434646'
         },
 
         summaryBold: {
-            fontSize: 14,
+            fontSize: 13.5,
             color: '#434646',
             fontWeight: '800',
         },
+
+        footerLabels: {
+            fontSize: 12,
+            color: '#FFF'
+        },
+
+        groupTitle: {
+            fontSize: 14,
+            color: '#434646',
+            fontWeight: '500',
+        },
+
+        groupLabel: {
+            fontSize: 14,
+            color: '#FFFFFF'
+        },
+
+        btnText: {
+            fontSize: 13,
+            color: '#FFFFFF'
+        },
+
+        btnText: {
+            fontSize: 13,
+            color: '#FFFFFF'
+        },
+
+        btnTextError: {
+            fontSize: 13,
+            color: '#ff4d4d'
+        }
     }
 }
    
