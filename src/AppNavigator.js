@@ -26,42 +26,28 @@ import PayrollSummary from './containers/PayrollSummary';
 import {AddEmployeeForm} from './TabNavigatorEmployeeForm';
 
 /******CHILD NAVIGATORS******/
-const BranchFormNav = StackNavigator({
-    BranchForm: {screen: BranchForm},
-    },
-    {
-        headerMode: 'screen',
-    }
+const BranchFormNav = StackNavigator(
+    { BranchForm: {screen: BranchForm} },
+    { headerMode: 'screen' }
 );
 
-const CompanyIdFormNav = StackNavigator({
-    CompanyIdForm: {
-        screen: CompanyIdForm
-    }}
+const CompanyIdFormNav = StackNavigator(
+    { CompanyIdForm: {screen: CompanyIdForm} }
 );
 
-const AddEmployeeFormNav = StackNavigator({
-    AddEmployeeForm: {screen: AddEmployeeForm},
-    },
-    {
-        headerMode: 'screen'
-    }
+const AddEmployeeFormNav = StackNavigator(
+    { AddEmployeeForm: {screen: AddEmployeeForm} },
+    { headerMode: 'screen' }
 );
 
-const EmployeeDTRNav = StackNavigator({
-    EmployeeDTR: {screen: EmployeeDTR},
-    },
-    {
-        headerMode: 'screen'
-    }
+const EmployeeDTRNav = StackNavigator(
+    { EmployeeDTR: {screen: EmployeeDTR}},
+    { headerMode: 'screen' }
 );
 
-const PayrollSummaryNav = StackNavigator({
-    PayrollSummary: {screen: PayrollSummary},
-    },
-    {
-        headerMode: 'none'
-    }
+const PayrollSummaryNav = StackNavigator(
+    { PayrollSummary: {screen: PayrollSummary} },
+    { headerMode: 'none' }
 );
 
 /******APP NAVIGATOR******/
@@ -82,7 +68,7 @@ const AppNavigator = StackNavigator(
     },
 
     {
-        initialRouteName: 'PayrollSummary',
+        initialRouteName: 'Login',
         headerMode: 'none',
         mode: 'modal',
         navigationOptions: {

@@ -64,6 +64,7 @@ import CustomCard,
 from '../../../components/CustomCards';
 import * as PromptScreen from '../../../components/ScreenLoadStatus';
 import MessageBox from '../../../components/MessageBox';
+import GenericContainer from '../../../components/GenericContainer';
 
 //helper
 import * as oHelper from '../../../helper';
@@ -71,11 +72,721 @@ import * as blackOps from '../../../global/blackOps';
 
 //Constants
 import {CONSTANTS} from '../../../constants';
-const CARD_TITLE = 'Employee Ranks'
+const TITLE = 'Employee Ranks'
 
 const add_loading_message = 'Saving New Rank. Please wait...';
 const update_loading_message = 'Updating Existing Rank. Please wait...';
 const delete_loading_message = 'Updating Existing Rank. Please wait...';
+
+export class Ranks extends Component{
+    constructor(props){
+        super(props);
+        this.state = {
+            _activeType: '',
+            //Gereric States
+            _promptShow: false,
+            _promptMsg: '',
+            _msgBoxShow: false,
+            _msgBoxType: '',
+            _resMsg: '',
+            _refreshing: false,
+            _disabledMode: true,
+
+            _allData: {},
+            _activeData: null,
+            _defaultData: {
+                id:'',
+                name:{
+                    label:'NAME',
+                    value:''
+                },
+                tardiness: {
+                    label: 'OFF',
+                    value: ''
+                },
+                undertime: {
+                    label:"OFF",
+                    value: ''
+                },
+                overtime:{
+                    label:"OFF",
+                    value: ''
+                },
+                leaves:{
+                    data:[]
+                }
+            },
+            _modalVisible: false,
+            _activePolicy: ''
+        }
+    }
+
+    componentWillUnmount(){
+        this.props.actions.ranks.setActiveRule(null);
+        this.props.actions.tardiness.setActiveRule('');
+        this.props.actions.overtime.setActiveRule('');
+        this.props.actions.undertime.setActiveRule('');
+    }
+
+    componentDidMount(){
+        if(this.props.ranks.status[0] != 1){
+            this.props.actions.ranks.get({...this._requiredInputs(), transtype:'get'});
+        }
+    }
+
+    _requiredInputs = () => {
+        return({
+            companyid: this.props.activecompany.id,
+            username: this.props.logininfo.resUsername,
+        })
+    }
+
+    _setActiveData = async(oActive) => {
+        console.log('XXXXXXXX: _setActiveData-oActive:' + oActive);
+        let oNewActive = oHelper.getElementByPropValue(
+            this.props.ranks.data.data,
+            'id',
+            oActive
+        )
+        this._setActiveRules(oNewActive);
+    }
+
+    _setActiveRules = (oActiveData) => {
+        console.log('XXXXXX_setActiveRules-oActiveData: ' + JSON.stringify(oActiveData));
+        if(!oHelper.isStringEmptyOrSpace(String(oActiveData.id))){
+            this.props.actions.ranks.setActiveRule(oActiveData);
+            this.props.actions.tardiness.setActiveRule(oActiveData.tardiness.value);
+            this.props.actions.overtime.setActiveRule(oActiveData.overtime.value);
+            this.props.actions.undertime.setActiveRule(oActiveData.undertime.value);
+        }
+    }
+
+    _showPolicy = async (strType, value) => {
+        /* console.log('XXXX=strType: ' + strType); */
+        let iActiveID = (value && value !== 0) ? value : '';
+        switch(strType.toUpperCase()){
+            case 'UNDERTIME':
+                await this.props.actions.undertime.setActiveRule(iActiveID);
+                break;
+            case 'TARDINESS':
+                await this.props.actions.tardiness.setActiveRule(iActiveID);
+                break;
+            case 'OVERTIME':
+                await this.props.actions.overtime.setActiveRule(iActiveID);
+                break;
+        }
+        let strPolicy = strType.toUpperCase()
+        this.setState({
+            _activePolicy: strPolicy,
+            _modalVisible: true,
+        })
+    }
+
+    _updateRuleValue = () => {
+        let oActiveRule = null;
+        let oActiveData = {...this.state._activeData};
+        switch(this.state._activePolicy){
+            case 'TARDINESS':
+                oActiveRule = JSON.parse(JSON.stringify(
+                    tardinessSelector.getActiveTardinessFromID(this.props.tardiness.activeRule)
+                ));
+                oActiveData.tardiness.label = oActiveRule.name;
+                oActiveData.tardiness.value = oActiveRule.id;
+                this.setState({
+                    _activeData: oActiveData
+                },
+                    () =>{
+                        this.props.actions.tardiness.setActiveRule(oActiveRule.id);
+                        this.props.actions.ranks.updateTardiness(oActiveData.tardiness);
+                    }
+                )
+                break;
+            case 'UNDERTIME':
+                oActiveRule = JSON.parse(JSON.stringify(
+                    undertimeSelector.getActiveUndertimeFromID(this.props.undertime.activeRule)
+                ));
+                oActiveData.undertime.label = oActiveRule.name;
+                oActiveData.undertime.value = oActiveRule.id;
+                this.setState({
+                    _activeData: oActiveData
+                },
+                    () => {
+                        this.props.actions.undertime.setActiveRule(oActiveRule.id);
+                        this.props.actions.ranks.updateUndertime(oActiveData.undertime);
+                    }
+                )
+                break;
+            case 'OVERTIME':
+                oActiveRule = JSON.parse(JSON.stringify(
+                    overtimeSelector.getActiveRuleFromID(this.props.overtime.activeRule)
+                ));
+                oActiveData.overtime.label = oActiveRule.name;
+                oActiveData.overtime.value = oActiveRule.id;
+                this.setState({
+                    _activeData: oActiveData
+                },
+                    () => {
+                        this.props.actions.overtime.setActiveRule(oActiveRule.id);
+                        this.props.actions.ranks.updateOvertime(oActiveData.overtime);
+                    }
+                )
+                break;
+
+            case 'LEAVES':
+                oActiveRule = JSON.parse(JSON.stringify(
+                    leavesSelector.getRuleFromID(this.props.leaves.activeRule)
+                ));
+                let obj = {
+                    value: oActiveRule.id,
+                    label: oActiveRule.name,
+                    paiddays: oActiveRule.allowablecount.value
+                }
+                oActiveData.leaves.data.push(obj);
+
+                this.setState({
+                    _activeData: oActiveData
+                },
+                    () => {
+                        this.props.actions.ranks.updateLeaves(oActiveData.leaves);
+                    }
+                );
+                break;
+
+            default:
+                break;
+        }
+
+        this.setState({ _modalVisible: false })
+    }
+
+    _deleteLeaveItem = async(index) => {
+        /* console.log('index:' + index) */
+        let oActiveData = {...this.state._activeData};
+        oActiveData.leaves.data = oHelper.removeElementByIndex(oActiveData.leaves.data, index);
+
+        this.setState({ _activeData: oActiveData });
+    }
+
+    _updateActiveName = (value) => {
+        oActiveData = {...this.state._activeData};
+        oActiveData.name.value = value;
+        this.setState({ _activeData: oActiveData });
+    }
+
+    _destroyEnabledMode = () => {
+        this.setState({
+            _disabledMode: true,
+            _activeData: null,
+            _modalVisible: false
+        })
+        
+    }
+
+    _saveRule = async() => {
+        if(oHelper.isStringEmptyOrSpace(this.state._activeData.id)){
+            if(blackOps.mode){
+                let oAllData = {...this.state._allData};
+                let maxid = 0;
+                oAllData.data.map(oData => {
+                    if (oData.id > maxid) {
+                        maxid = oData.id;    
+                    }
+                });
+                this._pushNewRule(maxid+1, this.state._activeData);
+            }
+            else{
+                this._saveRuleToDB(this.state._activeData);
+            }
+        }else{
+            if(blackOps.mode){
+                this._updateRule(this.state._activeData);
+            }
+            else{
+                this._updateRuleToDB(this.state._activeData);
+            }
+        }
+    }
+
+    _saveRuleToDB = async(value) => {
+        this._showLoadingPrompt(add_loading_message);
+
+        let bFlag = false;
+        let oInput = {data: value};
+
+        await ranksApi.create(oInput)
+            .then((response) => response.json())
+            .then((res) => {
+                console.log('XXXXXXXXXXXXXXXXXXXXXXXXXXXX');
+                console.log('res: ' + JSON.stringify(res));
+                this._hideLoadingPrompt();
+                bFlag = this._evaluateResponse(res);
+                if(res.flagno==1){
+                    this._pushNewRule(res.id,value);
+                }
+                
+            })
+            .catch((exception) => {
+                this._hideLoadingPrompt();
+                this._showMsgBox('error-ok', exception.message);
+            });
+
+        return bFlag;
+    }
+
+    _updateRuleToDB = async(value) => {
+        this._showLoadingPrompt(update_loading_message);
+
+        let bFlag = false;
+        let oInput = {data: value};
+
+        await ranksApi.update(oInput)
+            .then((response) => response.json())
+            .then((res) => {
+                this._hideLoadingPrompt();
+                bFlag = this._evaluateResponse(res);
+                if(res.flagno==1){
+                    this._updateRule(value);
+                }
+            })
+            .catch((exception) => {
+                this._hideLoadingPrompt();
+                this._showMsgBox('error-ok', exception.message);
+            });
+
+        return bFlag;
+    }
+
+    _pushNewRule = async (id, value) => {
+        console.log()
+        let oAllData = oHelper.copyObject(this.props.ranks.data);
+        let oDataArray = [...oAllData.data];
+
+        let oActiveType = {...value};
+        oActiveType.id = id
+        oDataArray.push(oActiveType);
+
+        oAllData.data = oDataArray;
+        console.log('_pushNewRule-oAllData: ' + JSON.stringify(oAllData));
+        console.log('_pushNewRule-oActiveType: ' + JSON.stringify(oActiveType));
+        this.props.actions.ranks.update(oAllData);
+        this.props.actions.ranks.setActiveRule(oActiveType);
+        this._destroyEnabledMode();
+    }
+
+    _updateRule = (value) => {
+        let oAllData = {...this.state._allData}; 
+        let objIndex = oAllData.data.findIndex((obj => obj.id == value.id));
+        
+        oAllData.data[objIndex]=value;
+
+        this.props.actions.ranks.update(oAllData);
+        this._initValues();
+    }
+
+    _addRule = () => {
+        this.setState({ 
+            _activeData: oHelper.copyObject(this.state._defaultData),
+            _disabledMode: false
+        },
+            () => this._setActiveRules(this.state._activeData)
+        )
+    }
+
+    _modifyRule = () => {
+        this.setState({ 
+            _activeData: oHelper.copyObject(this.props.ranks.activeRule),
+            _disabledMode: false 
+        })
+    }
+
+    _deleteActiveRule = async() => {
+        if(blackOps.mode){
+            this._deleteRuleFromStore(this.state._activeData)
+        }
+        else{
+            this._deleteRuleFromDB(this.state._activeData)
+        }
+    }
+
+    _deleteRuleFromDB = async(value) => {
+        this._showLoadingPrompt(delete_loading_message);
+        
+        let bFlag = false;
+        let oInput = {data: value};
+
+        await ranksApi.remove(oInput)
+            .then((response) => response.json())
+            .then((res) => {
+                this._hideLoadingPrompt();
+                bFlag = this._evaluateResponse(res);
+                if(res.flagno==1){
+                    this._deleteRuleFromStore(value);
+                }
+            })
+            .catch((exception) => {
+                this._hideLoadingPrompt();
+                this._showMsgBox('error-ok', exception.message);
+            });
+
+        return bFlag;
+    }
+
+    _deleteRuleFromStore = async(oActiveData) => {
+        await this.props.actions.ranks.setActiveRule('');
+        let oAllData = {...this.state._allData}; 
+        let indexActive = oAllData.data.findIndex((obj => obj.id == oActiveData.id));
+        oAllData.data = oHelper.removeElementByIndex(oAllData.data, indexActive);
+        this.props.actions.ranks.update(oAllData);
+        this._initValues();
+    }
+
+    _evaluateResponse = (res) => {
+        switch (res.flagno){
+            case 0:
+                this._showMsgBox('error-ok', res.message);
+                return false
+                break;
+            case 1:
+                this._showMsgBox('success', res.message);
+                return true;
+                break;
+            default:
+                this._showMsgBox('error-ok', CONSTANTS.ERROR.UNKNOWN);
+                return false
+                break;
+        }
+    }
+
+    _showLoadingPrompt = (msg) => {
+        this.setState({
+            _promptMsg: msg,
+            _promptShow: true
+        })
+    }
+
+    _showMsgBox = (strType, msg) => {
+        this.setState({
+            _msgBoxShow: true,
+            _msgBoxType: strType,
+            _resMsg: msg
+        });
+    }
+
+    _closeMsgBox = () => {
+        this.setState({
+            _msgBoxShow: false
+        })
+    }
+
+    _hideLoadingPrompt = () => {
+        this.setState({
+            _promptShow: false
+        })
+    }
+
+    _onFormClose = () => {
+        this.setState({
+            _bShowCompForm: false,
+            _bShowGovForm: false
+        })
+    }
+
+    render(){
+        console.log('===RENDERING: Ranks');
+        console.log('XXXXXXXXXXXthis.props.ranks.activeRule: ' + JSON.stringify(this.props.ranks.activeRule));
+        console.log('XXXXXXXXXXXthis.props.ranks.data: ' + JSON.stringify(this.props.ranks.data));
+        const pStatus = [...this.props.ranks.status];
+        const pProgress = pStatus[0];
+        const oAllData = this.props.ranks.data;
+        const oActiveData = this.props.ranks.activeRule;
+        let oActivePolicy = null;
+        let vPolicy = null;
+        const bIsEmpty = this.props.ranks.data ?
+                            (this.props.ranks.data.length > 1 ? true : false) :
+                            false
+
+        if(pProgress == 1){
+            switch(this.state._activePolicy){
+                case 'TARDINESS':
+                    oActivePolicy = (<Tardiness disableClearActiveOnUnmount = {true}/>)
+                    break;
+                case 'OVERTIME':
+                    oActivePolicy = (<Overtime disableClearActiveOnUnmount = {true}/>)
+                    break;
+                case 'UNDERTIME':
+                    oActivePolicy = (<Undertime disableClearActiveOnUnmount = {true}/>)
+                    break;
+                case 'LEAVES':
+                    oActivePolicy = (<Leaves/>)
+                    break;
+                default:
+                    break;
+            }
+
+            vPolicy = (
+                <Modal
+                    transparent = {true}
+                    visible={this.state._modalVisible}
+                    animationType={'slide'}
+                    onRequestClose={() => {this._setPolicyModalVisibility(false)}}
+                    >
+                    <View style={styles.modalRules.container}>
+                        <View style={styles.modalRules.innerCont}>
+                            <View style={styles.modalRules.titleCont}>
+                                <Text style={styles.modalRules.txtHeader}>
+                                    { this.state._activePolicy === 'LEAVES' ?
+                                        'Add Leave Type' : 
+                                        'Select a Rule or Modify Policy' }
+                                </Text>
+                            </View>
+
+                            <View style={styles.modalRules.contentCont}>
+                                { oActivePolicy }
+                            </View>
+
+                            <View style={styles.modalRules.footerCont}>
+                                <TouchableOpacity 
+                                    style={styles.modalRules.btnContLeft}
+                                    onPress={() => this._setPolicyModalVisibility(false)}>
+                                        <Text style={styles.modalRules.txtBtn}>CANCEL</Text>
+                                </TouchableOpacity>
+
+
+                                <TouchableOpacity 
+                                    style={styles.modalRules.btnContRight}
+                                    onPress={() => this._updateRuleValue()}>
+                                        <Text style={styles.modalRules.txtBtn}>
+                                            {
+                                                this.state._activePolicy === 'LEAVES' ?
+                                                    'ADD' :   
+                                                    'OK'
+                                            }
+                                        </Text>
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+                    </View>
+                </Modal>
+            );
+        }
+
+        return(
+            <GenericContainer 
+                status={this.props.ranks.status}
+                title={TITLE}
+                onRefresh={this._getDataFromDB}>
+
+                {
+                    pProgress == 1 ?
+                        <View style={styles.container}>
+                            <ScrollView
+                                refreshControl={
+                                    <RefreshControl
+                                        refreshing={this.state._refreshing}
+                                        onRefresh={this._getDataFromDB}
+                                    />
+                                }>
+                                <CustomCard 
+                                    hideHeader={this.props.hideHeader || false}
+                                    title={this.props.title || TITLE} 
+                                    oType={!this.state._disabledMode ? 'button' : 'text'}
+                                    rightHeader={
+                                        <View style={styles.btnRightCont}>
+                                            <TouchableOpacity 
+                                                disabled={false}
+                                                style={styles.btnCancel}
+                                                activeOpacity={0.6}
+                                                onPress={() => {this._cancelEdit()}}>
+                                                <Text style={styles.txtBtn}>CANCEL</Text>
+                                            </TouchableOpacity>
+                                            <View style={{width: 10}}></View>
+                                            <TouchableOpacity 
+                                                disabled={this.props.disabledMode}
+                                                style={styles.btnSave}
+                                                activeOpacity={0.6}
+                                                onPress={() => {this._saveRule()}}>
+                                                <Text style={styles.txtBtn}>SAVE</Text>
+                                            </TouchableOpacity>
+                                        </View>
+                                    }
+                                >
+                                    {
+                                        bIsEmpty && this.state._disabledMode ? 
+                                            <TouchableOpacity 
+                                                activeOpacity={0.6}
+                                                style={styles.contEmpty}
+                                                onPress={() => {this._addRule()}}>
+                                                <Text>No Existing Ranks. Tap here to add.</Text>
+                                            </TouchableOpacity>
+                                        :
+                                            <View>
+                                                <PropLevel1 
+                                                    name='Rank Name' 
+                                                    content={
+                                                        this.props.viewOnly || false ?
+                                                            <Text style={styles.txtDisabledValue}>
+                                                                { oActiveData.name.value }
+                                                            </Text>
+                                                        :
+                                                            this.state._disabledMode ?
+                                                                <Picker
+                                                                    mode='dropdown'
+                                                                    selectedValue={oActiveData.id}
+                                                                    onValueChange={(itemValue, itemIndex) => {this._setActiveData(itemValue)}}>
+                                                                    {
+                                                                        oAllData.data.map((data, index) => (
+                                                                            <Picker.Item key={index} label={data.name.value} value={data.id} />
+                                                                        ))
+                                                                    }
+                                                                </Picker>
+                                                            :
+                                                            <TextInput 
+                                                                autoCapitalize='none'
+                                                                placeholder='Leave Type Name'
+                                                                style={{color: '#434646', paddingLeft: 15, paddingRight: 15, height: '100%'}}
+                                                                onChangeText={(text) => this._updateActiveName(text)}
+                                                                value={ this.state._disabledMode ? 
+                                                                    oActiveData.name.value :
+                                                                    this.state._activeData.name.value
+                                                                    
+                                                                }
+                                                                returnKeyType="done"
+                                                                underlineColorAndroid='transparent'
+                                                            />
+                                                    }
+                                                    hideBorder={this.props.viewOnly || false}
+                                                    
+                                                />
+                                                <PropTitle name='Time Policies'/>
+                                                <PropLevel2 
+                                                    name='Tardiness Rule'
+                                                    content={
+                                                        <Text 
+                                                            style={
+                                                                (this.state._disabledMode && oActiveData.tardiness.value) ? 
+                                                                    styles.level2Styles.button 
+                                                                : 
+                                                                    styles.level2Styles.txt
+                                                            }
+                                                            disabled={oActiveData.tardiness.value || !this.state._disabledMode ? false : true}
+                                                            onPress={() => this._showPolicy('TARDINESS', oActiveData.tardiness.value)}>
+                                                            {
+                                                                this.state._disabledMode ? 
+                                                                    oActiveData.tardiness.label :
+                                                                    this.state._activeData.tardiness.label
+                                                                    
+                                                            }
+                                                        </Text>
+                                                    }
+                                                    hideBorder={this.state._disabledMode}
+                                                    contentStyle={styles.level2Styles.cont}
+                                                />
+                                                <PropLevel2 
+                                                    name='Undertime Rule'
+                                                    content={
+                                                        <Text 
+                                                            style={
+                                                                (this.state._disabledMode && oActiveData.undertime.value) ? 
+                                                                    styles.level2Styles.button 
+                                                                : 
+                                                                    styles.level2Styles.txt
+                                                            }
+                                                            disabled={oActiveData.undertime.value || !this.state._disabledMode ? false : true}
+                                                            onPress={() => this._showPolicy('UNDERTIME', this.propsoActiveData.ranks.activeRule.undertime.value)}>
+                                                            
+                                                            {
+                                                                this.state._disabledMode ? 
+                                                                    oActiveData.undertime.label :
+                                                                    this.state._activeData.undertime.label
+                                                            }
+
+                                                        </Text>
+                                                    }
+                                                    hideBorder={this.state._disabledMode}
+                                                    contentStyle={styles.level2Styles.cont}
+                                                />
+                                                <PropLevel2 
+                                                    name='Overtime Rule'
+                                                    content={
+                                                        <Text 
+                                                            style={
+                                                                (this.state._disabledMode && oActiveData.overtime.value) ? 
+                                                                    styles.level2Styles.button 
+                                                                : 
+                                                                    styles.level2Styles.txt
+                                                            }
+                                                            disabled={oActiveData.overtime.value || !this.state._disabledMode ? false : true}
+                                                            onPress={() => this._showPolicy('OVERTIME', oActiveData.overtime.value)}>
+                                                            
+                                                            {
+                                                                this.state._disabledMode ? 
+                                                                    oActiveData.overtime.label :
+                                                                    this.state._activeData.overtime.label
+                                                            }
+                                                            
+                                                        </Text>
+                                                    }
+                                                    hideBorder={this.state._disabledMode}
+                                                    contentStyle={styles.level2Styles.cont}
+                                                />
+                                                <PropTitle name='Leave Policy'/>
+                                                <LeavesTable 
+                                                    data={this.state._disabledMode ? 
+                                                        oActiveData.leaves :
+                                                        this.state._activeData.leaves
+                                                        
+                                                    }
+                                                    deleteItem={(index) => this._deleteLeaveItem(index) } 
+                                                    showLeaves={(strType) => this._showPolicy(strType)}
+                                                    disabledMode={this.state._disabledMode}
+                                                    />
+                                            </View>
+                                    }
+                                </CustomCard>
+                            </ScrollView>
+
+                            {vPolicy}
+                            { 
+                                this.state._disabledMode && !bIsEmpty?
+                                    this.props.viewOnly ? 
+                                        null
+                                    :
+                                        <ActionButton 
+                                            bgColor='rgba(0,0,0,0.8)'
+                                            buttonColor="#EEB843"
+                                            spacing={10}>
+                                            <ActionButton.Item buttonColor='#26A65B' title="ADD NEW RANK" onPress={() => {this._addRule()}}>
+                                                <Icon2 name="plus" color='#fff' size={22} style={styles.actionButtonIcon} />
+                                            </ActionButton.Item>
+                                            <ActionButton.Item buttonColor='#4183D7' title="MODIFY CURRENT RANK" onPress={() => {this._modifyRule()}}>
+                                                <Icon2 name="table-edit" color='#fff' size={22} style={styles.actionButtonIcon} />
+                                            </ActionButton.Item>
+                                            <ActionButton.Item buttonColor='#D75450' title="DELETE CURRENT RANK" onPress={() => {this._deleteActiveRule()}}>
+                                                <Icon2 name="delete-empty" color='#fff' size={22} style={styles.actionButtonIcon} />
+                                            </ActionButton.Item>
+                                        </ActionButton>
+                                : null
+                            }
+                            <PromptScreen.PromptGeneric 
+                                show= {this.state._promptShow} 
+                                title={this.state._promptMsg}/>
+
+                            <MessageBox
+                                promptType={this.state._msgBoxType}
+                                show={this.state._msgBoxShow}
+                                onClose={this._closeMsgBox}
+                                onWarningContinue={this._continueActionOnWarning}
+                                message={this.state._resMsg}
+                            /> 
+
+                        </View>
+                    : 
+                        null
+                }
+            </GenericContainer>
+        );
+    }
+}
 
 class LeavesTable extends Component{
     constructor(props){
@@ -89,10 +800,6 @@ class LeavesTable extends Component{
     }
 
     componentWillReceiveProps(nextProps){
-        /* console.log('JSON.stringify(nextProps.data): ' + JSON.stringify(nextProps.data))
-        console.log('JSON.stringify((this.state._curData): ' + JSON.stringify(this.state._curData))
-        console.log('this.state._curDisabledMode: ' + this.state._curDisabledMode)
-        console.log('nextProps.disabledMode: ' + nextProps.disabledMode) */
         if(
             (JSON.stringify(this.state._curData) !== JSON.stringify(nextProps.data)) || 
             (this.state._curDisabledMode !== nextProps.disabledMode)
@@ -214,744 +921,6 @@ class LeavesTable extends Component{
                         size = "small"/>
                 </View>
             )
-        }
-    }
-}
-
-export class Ranks extends Component{
-    constructor(props){
-        super(props);
-        this.state = {
-            _activeType: '',
-            //Gereric States
-            _promptShow: false,
-            _promptMsg: '',
-            _msgBoxShow: false,
-            _msgBoxType: '',
-            _resMsg: '',
-            _refreshing: false,
-            _disabledMode: true,
-            _status: [2, 'Loading...'],
-
-            _allData: {},
-            _activeData: {},
-            _defaultData: {
-                id:'',
-                name:{
-                    label:'NAME',
-                    value:''
-                },
-                tardiness:{
-                    label: 'OFF',
-                    value: ''
-                },
-                undertime:{
-                    label:"OFF",
-                    value: ''
-                },
-                overtime:{
-                    label:"OFF",
-                    value: ''
-                },
-                leaves:{
-                    data:[]
-                }
-            },
-            _modalVisible: false,
-            _activePolicy: ''
-        }
-    }
-
-    componentWillUnmount(){
-        this.props.actions.ranks.setActiveRule('');
-        this.props.actions.tardiness.setActiveRule('');
-        this.props.actions.overtime.setActiveRule('');
-        this.props.actions.undertime.setActiveRule('');
-    }
-
-    componentDidMount(){
-        if(this.props.ranks.data){
-            this._initValues();
-            this.setState({_status: [1,'']})
-        }
-        else{
-            this._getDataFromDB();
-        }
-    }
-
-    componentWillReceiveProps(nextProps) {
-        if(this.state._status[0] != nextProps.ranks.status[0]){
-                this.setState({ _status: nextProps.ranks.status })
-        }
-
-        if(
-            (JSON.stringify(this.state._allData) !== JSON.stringify(nextProps.ranks.data)) &&
-            (nextProps.ranks.status[0] == 1)
-        ){
-            this._initValues();
-        }
-
-        if(
-            (this.state._activeType !== nextProps.ranks.activeRule) &&
-            (this.state._status[0] == 1)
-        ){
-            this._setActiveData(nextProps.ranks.activeRule);
-        }
-    }
-
-    _getDataFromDB = () => {
-        this.props.actions.ranks.get({...this._requiredInputs(), transtype:'get'});
-    }
-
-    _requiredInputs = () => {
-        return({
-            companyid: this.props.activecompany.id,
-            username: this.props.logininfo.resUsername,
-            accesstoken: '',
-            clientid: ''
-        })
-    }
-
-    _initValues = () => {
-        try{
-            /* let bFlag = true; */
-            let oAllData = JSON.parse(JSON.stringify(ranksSelector.getAllData()));
-            let oActiveData = JSON.parse(JSON.stringify(
-                this.props.ranks.activeRule == '' ||  isNaN(this.props.ranks.activeRule) ?
-                ranksSelector.getDefaultActive() : ranksSelector.getDataFromID(this.props.ranks.activeRule)
-            ));
-            
-            if (!oActiveData){
-                oActiveData = JSON.parse(JSON.stringify(this.state._defaultData));
-                /* bFlag = false; */
-            }
-
-            
-            this._setActiveRules(oActiveData);
-            this.setState({
-                _allData: oAllData,
-                _activeData: oActiveData,
-                _disabledMode: true
-            })
-            
-
-            this.props.actions.ranks.setActiveRule(oActiveData.id);
-        }
-        catch(exception){
-            /* console.log('exception: ' + exception.message); */
-            this.setState({_status: [0,CONSTANTS.ERROR.SERVER]})
-        }
-    }
-
-    _setActiveData = async(value) => {
-        let oNewActive = JSON.parse(JSON.stringify(ranksSelector.getDataFromID(value)));
-        this.setState({
-            _activeData: oNewActive,
-            _activeType: value
-        })
-        
-        this.props.actions.ranks.setActiveRule(oNewActive.id);
-        this._setActiveRules(oNewActive);
-    }
-
-    _setActiveRules = (oActiveData) => {
-        if(!oHelper.isStringEmptyOrSpace(String(oActiveData.id))){
-            this.props.actions.ranks.setActiveRule(oActiveData.id);
-            this.props.actions.tardiness.setActiveRule(oActiveData.tardiness.value);
-            this.props.actions.overtime.setActiveRule(oActiveData.overtime.value);
-            this.props.actions.undertime.setActiveRule(oActiveData.undertime.value);
-        }
-    }
-
-    _showPolicy = async (strType, value) => {
-        /* console.log('XXXX=strType: ' + strType); */
-        let iActiveID = (value && value !== 0) ? value : '';
-        switch(strType.toUpperCase()){
-            case 'UNDERTIME':
-                await this.props.actions.undertime.setActiveRule(iActiveID);
-                break;
-            case 'TARDINESS':
-                await this.props.actions.tardiness.setActiveRule(iActiveID);
-                break;
-            case 'OVERTIME':
-                await this.props.actions.overtime.setActiveRule(iActiveID);
-                break;
-        }
-        let strPolicy = strType.toUpperCase()
-        this.setState({
-            _activePolicy: strPolicy,
-            _modalVisible: true,
-        })
-    }
-
-    _setPolicyModalVisibility = (bFlag) => {
-        this.setState({ _modalVisible: bFlag })
-    }
-
-    _updateRuleValue = () => {
-        let oActiveRule = null;
-        let oActiveData = {...this.state._activeData};
-        switch(this.state._activePolicy){
-            case 'TARDINESS':
-                oActiveRule = JSON.parse(JSON.stringify(
-                    tardinessSelector.getActiveTardinessFromID(this.props.tardiness.activeRule)
-                ));
-                oActiveData.tardiness.label = oActiveRule.name;
-                oActiveData.tardiness.value = oActiveRule.id;
-                this.setState({
-                    _activeData: oActiveData
-                },
-                    () =>{
-                        this.props.actions.tardiness.setActiveRule(oActiveRule.id);
-                        this.props.actions.ranks.updateTardiness(oActiveData.tardiness);
-                    }
-                )
-                break;
-            case 'UNDERTIME':
-                oActiveRule = JSON.parse(JSON.stringify(
-                    undertimeSelector.getActiveUndertimeFromID(this.props.undertime.activeRule)
-                ));
-                oActiveData.undertime.label = oActiveRule.name;
-                oActiveData.undertime.value = oActiveRule.id;
-                this.setState({
-                    _activeData: oActiveData
-                },
-                    () => {
-                        this.props.actions.undertime.setActiveRule(oActiveRule.id);
-                        this.props.actions.ranks.updateUndertime(oActiveData.undertime);
-                    }
-                )
-                break;
-            case 'OVERTIME':
-                oActiveRule = JSON.parse(JSON.stringify(
-                    overtimeSelector.getActiveRuleFromID(this.props.overtime.activeRule)
-                ));
-                oActiveData.overtime.label = oActiveRule.name;
-                oActiveData.overtime.value = oActiveRule.id;
-                this.setState({
-                    _activeData: oActiveData
-                },
-                    () => {
-                        this.props.actions.overtime.setActiveRule(oActiveRule.id);
-                        this.props.actions.ranks.updateOvertime(oActiveData.overtime);
-                    }
-                )
-                break;
-
-            case 'LEAVES':
-                oActiveRule = JSON.parse(JSON.stringify(
-                    leavesSelector.getRuleFromID(this.props.leaves.activeRule)
-                ));
-                let obj = {
-                    value: oActiveRule.id,
-                    label: oActiveRule.name,
-                    paiddays: oActiveRule.allowablecount.value
-                }
-                oActiveData.leaves.data.push(obj);
-
-                this.setState({
-                    _activeData: oActiveData
-                },
-                    () => {
-                        this.props.actions.ranks.updateLeaves(oActiveData.leaves);
-                    }
-                );
-                break;
-
-            default:
-                break;
-        }
-
-        this.setState({ _modalVisible: false })
-    }
-
-    _deleteLeaveItem = async(index) => {
-        /* console.log('index:' + index) */
-        let oActiveData = {...this.state._activeData};
-        oActiveData.leaves.data = oHelper.removeElementByIndex(oActiveData.leaves.data, index);
-
-        this.setState({ _activeData: oActiveData });
-    }
-
-    _updateActiveName = (value) => {
-        oActiveData = {...this.state._activeData};
-        oActiveData.name.value = value;
-        this.setState({ _activeData: oActiveData });
-    }
-
-    _cancelEdit = () => {
-        this._initValues();
-    }
-
-    _saveRule = async() => {
-        if(oHelper.isStringEmptyOrSpace(this.state._activeData.id)){
-            if(blackOps.mode){
-                let oAllData = {...this.state._allData};
-                let maxid = 0;
-                oAllData.data.map(oData => {
-                    if (oData.id > maxid) {
-                        maxid = oData.id;    
-                    }
-                });
-                this._pushNewRule(maxid+1, this.state._activeData);
-            }
-            else{
-                this._saveRuleToDB(this.state._activeData);
-            }
-        }else{
-            if(blackOps.mode){
-                this._updateRule(this.state._activeData);
-            }
-            else{
-                this._updateRuleToDB(this.state._activeData);
-            }
-        }
-    }
-
-    _saveRuleToDB = async(value) => {
-        this._showLoadingPrompt(add_loading_message);
-
-        let bFlag = false;
-        let oInput = {data: value};
-
-        await ranksApi.create(oInput)
-            .then((response) => response.json())
-            .then((res) => {
-                console.log('XXXXXXXXXXXXXXXXXXXXXXXXXXXX');
-                console.log('res: ' + JSON.stringify(res));
-                this._hideLoadingPrompt();
-                bFlag = this._evaluateResponse(res);
-                if(res.flagno==1){
-                    this._pushNewRule(res.id,value);
-                }
-                
-            })
-            .catch((exception) => {
-                this._hideLoadingPrompt();
-                this._showMsgBox('error-ok', exception.message);
-            });
-
-        return bFlag;
-    }
-
-    _updateRuleToDB = async(value) => {
-        this._showLoadingPrompt(update_loading_message);
-
-        let bFlag = false;
-        let oInput = {data: value};
-
-        await ranksApi.update(oInput)
-            .then((response) => response.json())
-            .then((res) => {
-                this._hideLoadingPrompt();
-                bFlag = this._evaluateResponse(res);
-                if(res.flagno==1){
-                    this._updateRule(value);
-                }
-            })
-            .catch((exception) => {
-                this._hideLoadingPrompt();
-                this._showMsgBox('error-ok', exception.message);
-            });
-
-        return bFlag;
-    }
-
-    _pushNewRule = async (id, value) => {
-        await this.props.actions.ranks.setActiveRule(id);
-        let oAllData = {...this.state._allData};
-        let oDataArray = [...oAllData.data];
-
-        let oActiveType = {...value};
-        oActiveType.id = id
-        oDataArray.push(oActiveType);
-
-        oAllData.data = oDataArray;
-        this.props.actions.ranks.update(oAllData);
-        this._initValues();
-    }
-
-    _updateRule = (value) => {
-        let oAllData = {...this.state._allData}; 
-        let objIndex = oAllData.data.findIndex((obj => obj.id == value.id));
-        
-        oAllData.data[objIndex]=value;
-
-        this.props.actions.ranks.update(oAllData);
-        this._initValues();
-    }
-
-    _addRule = () => {
-        this.setState({ 
-            _activeData: JSON.parse(JSON.stringify(this.state._defaultData)),
-            _disabledMode: false
-        },
-            () => this._setActiveRules(this.state._activeData)
-        )
-        
-    }
-
-    _modifyRule = () => {
-        this.setState({ _disabledMode: false })
-    }
-
-    _deleteActiveRule = async() => {
-        if(blackOps.mode){
-            this._deleteRuleFromStore(this.state._activeData)
-        }
-        else{
-            this._deleteRuleFromDB(this.state._activeData)
-        }
-    }
-
-    _deleteRuleFromDB = async(value) => {
-        this._showLoadingPrompt(delete_loading_message);
-        
-        let bFlag = false;
-        let oInput = {data: value};
-
-        await ranksApi.remove(oInput)
-            .then((response) => response.json())
-            .then((res) => {
-                this._hideLoadingPrompt();
-                bFlag = this._evaluateResponse(res);
-                if(res.flagno==1){
-                    this._deleteRuleFromStore(value);
-                }
-            })
-            .catch((exception) => {
-                this._hideLoadingPrompt();
-                this._showMsgBox('error-ok', exception.message);
-            });
-
-        return bFlag;
-    }
-
-    _deleteRuleFromStore = async(oActiveData) => {
-        await this.props.actions.ranks.setActiveRule('');
-        let oAllData = {...this.state._allData}; 
-        let indexActive = oAllData.data.findIndex((obj => obj.id == oActiveData.id));
-        oAllData.data = oHelper.removeElementByIndex(oAllData.data, indexActive);
-        this.props.actions.ranks.update(oAllData);
-        this._initValues();
-    }
-
-    _evaluateResponse = (res) => {
-        switch (res.flagno){
-            case 0:
-                this._showMsgBox('error-ok', res.message);
-                return false
-                break;
-            case 1:
-                this._showMsgBox('success', res.message);
-                return true;
-                break;
-            default:
-                this._showMsgBox('error-ok', CONSTANTS.ERROR.UNKNOWN);
-                return false
-                break;
-        }
-    }
-
-    _showLoadingPrompt = (msg) => {
-        this.setState({
-            _promptMsg: msg,
-            _promptShow: true
-        })
-    }
-
-    _showMsgBox = (strType, msg) => {
-        this.setState({
-            _msgBoxShow: true,
-            _msgBoxType: strType,
-            _resMsg: msg
-        });
-    }
-
-    _closeMsgBox = () => {
-        this.setState({
-            _msgBoxShow: false
-        })
-    }
-
-    _hideLoadingPrompt = () => {
-        this.setState({
-            _promptShow: false
-        })
-    }
-
-    _onFormClose = () => {
-        this.setState({
-            _bShowCompForm: false,
-            _bShowGovForm: false
-        })
-    }
-
-    render(){
-        let pStatus = [...this.state._status];
-        let pProgress = pStatus[0];
-        let pMessage = pStatus[1];
-
-        if(pProgress==0){
-            return (
-                <PromptScreen.PromptError title='Tardiness Policy' onRefresh={this._getDataFromDB}/>
-            );
-        }
-
-        else if(pProgress==1){
-            let bIsEmpty = this.state._allData.data.length < 1 ? true : false;
-            let oActivePolicy = null;
-            switch(this.state._activePolicy){
-                case 'TARDINESS':
-                    oActivePolicy = (<Tardiness disableClearActiveOnUnmount = {true}/>)
-                    break;
-                case 'OVERTIME':
-                    oActivePolicy = (<Overtime disableClearActiveOnUnmount = {true}/>)
-                    break;
-                case 'UNDERTIME':
-                    oActivePolicy = (<Undertime disableClearActiveOnUnmount = {true}/>)
-                    break;
-                case 'LEAVES':
-                    oActivePolicy = (<Leaves/>)
-                    break;
-                default:
-                    break;
-            }
-    
-            const vPolicy = (
-                <Modal
-                    transparent = {true}
-                    visible={this.state._modalVisible}
-                    animationType={'slide'}
-                    onRequestClose={() => {this._setPolicyModalVisibility(false)}}
-                >
-                    <View style={styles.modalRules.container}>
-                        <View style={styles.modalRules.innerCont}>
-                            <View style={styles.modalRules.titleCont}>
-                                <Text style={styles.modalRules.txtHeader}>
-                                    {
-                                        this.state._activePolicy === 'LEAVES' ?
-                                            'Add Leave Type'
-                                        :   
-                                            'Select a Rule or Modify Policy'
-                                    }
-                                </Text>
-                            </View>
-
-                            <View style={styles.modalRules.contentCont}>
-                                { oActivePolicy }
-                            </View>
-
-                            <View style={styles.modalRules.footerCont}>
-                                <TouchableOpacity 
-                                    style={styles.modalRules.btnContLeft}
-                                    onPress={() => this._setPolicyModalVisibility(false)}>
-                                        <Text style={styles.modalRules.txtBtn}>CANCEL</Text>
-                                </TouchableOpacity>
-
-
-                                <TouchableOpacity 
-                                    style={styles.modalRules.btnContRight}
-                                    onPress={() => this._updateRuleValue()}>
-                                        <Text style={styles.modalRules.txtBtn}>
-                                            {
-                                                this.state._activePolicy === 'LEAVES' ?
-                                                    'ADD'
-                                                :   
-                                                    'OK'
-                                            }
-                                        </Text>
-                                </TouchableOpacity>
-                            </View>
-                        </View>
-                    </View>
-                </Modal>
-            )
-            return(
-                <View style={styles.container}>
-                    <ScrollView
-                        refreshControl={
-                            <RefreshControl
-                                refreshing={this.state._refreshing}
-                                onRefresh={this._getDataFromDB}
-                            />
-                        }>
-                        <CustomCard 
-                            hideHeader={this.props.hideHeader || false}
-                            title={this.props.title || CARD_TITLE} 
-                            oType={!this.state._disabledMode ? 'button' : 'text'}
-                            rightHeader={
-                                <View style={styles.btnRightCont}>
-                                    <TouchableOpacity 
-                                        disabled={false}
-                                        style={styles.btnCancel}
-                                        activeOpacity={0.6}
-                                        onPress={() => {this._cancelEdit()}}>
-                                        <Text style={styles.txtBtn}>CANCEL</Text>
-                                    </TouchableOpacity>
-                                    <View style={{width: 10}}></View>
-                                    <TouchableOpacity 
-                                        disabled={this.props.disabledMode}
-                                        style={styles.btnSave}
-                                        activeOpacity={0.6}
-                                        onPress={() => {this._saveRule()}}>
-                                        <Text style={styles.txtBtn}>SAVE</Text>
-                                    </TouchableOpacity>
-                                </View>
-                            }
-                        >
-                            {
-                                bIsEmpty && this.state._disabledMode ? 
-                                    <TouchableOpacity 
-                                        activeOpacity={0.6}
-                                        style={styles.contEmpty}
-                                        onPress={() => {this._addRule()}}>
-                                        <Text>No Existing Ranks. Tap here to add.</Text>
-                                    </TouchableOpacity>
-                                :
-                                    <View>
-                                        <PropLevel1 
-                                            name='Rank Name' 
-                                            content={
-                                                this.props.viewOnly || false ?
-                                                    <Text style={styles.txtDisabledValue}>{this.state._activeData.name.value}</Text>
-                                                :
-                                                    this.state._disabledMode ?
-                                                        <Picker
-                                                            mode='dropdown'
-                                                            selectedValue={this.state._activeData.id}
-                                                            onValueChange={(itemValue, itemIndex) => {this._setActiveData(itemValue)}}>
-                                                            {
-                                                                this.state._allData.data.map((data, index) => (
-                                                                    <Picker.Item key={index} label={data.name.value} value={data.id} />
-                                                                ))
-                                                            }
-                                                        </Picker>
-                                                    :
-                                                    <TextInput 
-                                                        autoCapitalize='none'
-                                                        placeholder='Leave Type Name'
-                                                        style={{color: '#434646', paddingLeft: 15, paddingRight: 15, height: '100%'}}
-                                                        onChangeText={(text) => this._updateActiveName(text)}
-                                                        value={this.state._activeData.name.value}
-                                                        returnKeyType="done"
-                                                        underlineColorAndroid='transparent'
-                                                    />
-                                            }
-                                            hideBorder={this.props.viewOnly || false}
-                                            
-                                        />
-                                        <PropTitle name='Time Policies'/>
-                                        <PropLevel2 
-                                            name='Tardiness Rule'
-                                            content={
-                                                <Text 
-                                                    style={
-                                                        (this.state._disabledMode && this.state._activeData.tardiness.value) ? 
-                                                            styles.level2Styles.button 
-                                                        : 
-                                                            styles.level2Styles.txt
-                                                    }
-                                                    disabled={this.state._activeData.tardiness.value || !this.state._disabledMode ? false : true}
-                                                    onPress={() => this._showPolicy('TARDINESS', this.state._activeData.tardiness.value)}>
-                                                    {this.state._activeData.tardiness.label}
-                                                </Text>
-                                            }
-                                            hideBorder={this.state._disabledMode}
-                                            contentStyle={styles.level2Styles.cont}
-                                        />
-                                        <PropLevel2 
-                                            name='Undertime Rule'
-                                            content={
-                                                <Text 
-                                                    style={
-                                                        (this.state._disabledMode && this.state._activeData.undertime.value) ? 
-                                                            styles.level2Styles.button 
-                                                        : 
-                                                            styles.level2Styles.txt
-                                                    }
-                                                    disabled={this.state._activeData.undertime.value || !this.state._disabledMode ? false : true}
-                                                    onPress={() => this._showPolicy('UNDERTIME', this.state._activeData.undertime.value)}>
-                                                    {this.state._activeData.undertime.label}
-                                                </Text>
-                                            }
-                                            hideBorder={this.state._disabledMode}
-                                            contentStyle={styles.level2Styles.cont}
-                                        />
-                                        <PropLevel2 
-                                            name='Overtime Rule'
-                                            content={
-                                                <Text 
-                                                    style={
-                                                        (this.state._disabledMode && this.state._activeData.overtime.value) ? 
-                                                            styles.level2Styles.button 
-                                                        : 
-                                                            styles.level2Styles.txt
-                                                    }
-                                                    disabled={this.state._activeData.overtime.value || !this.state._disabledMode ? false : true}
-                                                    onPress={() => this._showPolicy('OVERTIME', this.state._activeData.overtime.value)}>
-                                                    {this.state._activeData.overtime.label}
-                                                </Text>
-                                            }
-                                            hideBorder={this.state._disabledMode}
-                                            contentStyle={styles.level2Styles.cont}
-                                        />
-                                        <PropTitle name='Leave Policy'/>
-                                        <LeavesTable 
-                                            data={this.state._activeData.leaves}
-                                            deleteItem={(index) => this._deleteLeaveItem(index) } 
-                                            showLeaves={(strType) => this._showPolicy(strType)}
-                                            disabledMode={this.state._disabledMode}
-                                            />
-                                    </View>
-                            }
-                        </CustomCard>
-                    </ScrollView>
-
-                    {vPolicy}
-                    { 
-                        this.state._disabledMode && !bIsEmpty?
-                            this.props.viewOnly ? 
-                                null
-                            :
-                                <ActionButton 
-                                    bgColor='rgba(0,0,0,0.8)'
-                                    buttonColor="#EEB843"
-                                    spacing={10}>
-                                    <ActionButton.Item buttonColor='#26A65B' title="ADD NEW RANK" onPress={() => {this._addRule()}}>
-                                        <Icon2 name="plus" color='#fff' size={22} style={styles.actionButtonIcon} />
-                                    </ActionButton.Item>
-                                    <ActionButton.Item buttonColor='#4183D7' title="MODIFY CURRENT RANK" onPress={() => {this._modifyRule()}}>
-                                        <Icon2 name="table-edit" color='#fff' size={22} style={styles.actionButtonIcon} />
-                                    </ActionButton.Item>
-                                    <ActionButton.Item buttonColor='#D75450' title="DELETE CURRENT RANK" onPress={() => {this._deleteActiveRule()}}>
-                                        <Icon2 name="delete-empty" color='#fff' size={22} style={styles.actionButtonIcon} />
-                                    </ActionButton.Item>
-                                </ActionButton>
-                        : null
-                    }
-                    <PromptScreen.PromptGeneric 
-                        show= {this.state._promptShow} 
-                        title={this.state._promptMsg}/>
-
-                    <MessageBox
-                        promptType={this.state._msgBoxType}
-                        show={this.state._msgBoxShow}
-                        onClose={this._closeMsgBox}
-                        onWarningContinue={this._continueActionOnWarning}
-                        message={this.state._resMsg}
-                    /> 
-
-                </View>
-            );
-        }
-
-        else{
-            return (
-                <View style={styles.container}>
-                    <PromptScreen.PromptLoading title={pMessage}/>
-                </View>
-            );
         }
     }
 }

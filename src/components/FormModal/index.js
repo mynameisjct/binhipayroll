@@ -3,15 +3,27 @@ import {
   View,
   Modal,
   Text,
-  TouchableOpacity 
+  TouchableOpacity,
+  ActivityIndicator
 
 } from 'react-native';
 
 //Styles
 import styles from './styles';
 
-export default class FormModal extends PureComponent{
+export default class FormModal extends PureComponent {
+    constructor(props){
+        super(props);
+        this.state = {
+            _bHasMounted: false
+        }
+    }
+    componentDidMount = () => {
+        this.setState({_bHasMounted: true})
+    }
+
     render(){
+        console.log('this.state._bHasMounted: ' + this.state._bHasMounted);
         return(
             <Modal 
                 animationType="fade"
@@ -28,24 +40,32 @@ export default class FormModal extends PureComponent{
                         </View>
 
                         <View style={styles.modalRules.contentCont}>
-                            {this.props.children}
+                            {
+                                this.state._bHasMounted ? this.props.children :
+                                    <ActivityIndicator size="small" color="#EEB843" />
+                            }
                         </View>
 
                         <View style={styles.modalRules.footerCont}>
                             <TouchableOpacity 
-                                style={styles.modalRules.btnContLeft}
+                                style={this.props.viewOnly || false ?  styles.modalRules.btnContSingleBtn : styles.modalRules.btnContLeft}
                                 onPress={() => this.props.onCancel()}>
-                                    <Text style={styles.modalRules.txtBtn}>CANCEL</Text>
+                                    <Text style={styles.modalRules.txtBtn}>{this.props.cancelLabel || 'CANCEL'}</Text>
                             </TouchableOpacity>
 
-
-                            <TouchableOpacity 
-                                style={styles.modalRules.btnContRight}
-                                onPress={() => this.props.onOK()}>
-                                    <Text style={styles.modalRules.txtBtn}>
-                                        {this.props.submitLabel || 'OK'}
-                                    </Text>
-                            </TouchableOpacity>
+                            {
+                                this.props.viewOnly || false?
+                                    null
+                                :
+                                    <TouchableOpacity 
+                                        style={styles.modalRules.btnContRight}
+                                        onPress={() => this.props.onOK()}>
+                                            <Text style={styles.modalRules.txtBtn}>
+                                                {this.props.submitLabel || 'OK'}
+                                            </Text>
+                                    </TouchableOpacity>
+                            }
+                            
                         </View>
                     </View>
                 </View>

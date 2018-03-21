@@ -3,6 +3,12 @@ export default {
         flex:1
     },
 
+    emptyContainer: {
+        flex:1,
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+
     dividerHeader: {
         height: 80,
         backgroundColor: '#FFFFFF',

@@ -28,7 +28,7 @@ export default class PayrollEmployeeListBody extends Component {
                     data={this.props.data.employeelist.data}
                     keyExtractor={this._keyExtractor}
                     renderItem={({item}) => 
-                        <EmployeePayrollCard item={item}/>
+                        <EmployeePayrollCard {...this.props} item={item}/>
                     }
                 />
             </View>
@@ -37,7 +37,7 @@ export default class PayrollEmployeeListBody extends Component {
 }
 
 class EmployeePayrollCard extends Component {
-
+    
     render(){
         const bodyStyles = styles.listStyles.body;
         const cardHeaderStyles = styles.listStyles.body.cardHeader;
@@ -60,11 +60,11 @@ class EmployeePayrollCard extends Component {
                     </View>
                     <View style={cardHeaderStyles.right}>
                         <Menu>
-                            <MenuTrigger children={<Icon name='dots-vertical' size={30} color='#434646'/>}/>
+                            <MenuTrigger children={<Icon name='dots-vertical' size={25} color='#434646'/>}/>
                             <MenuOptions>
-                                <MenuOption onSelect={this._showPayslip} text='View Payslip' />
-                                <MenuOption onSelect={() => alert(`View Daily Time Record`)} text='View Daily Time Record'/>
-                                <MenuOption onSelect={() => alert(`Special Deduction/Allowance`)} text='Special Deduction/Allowance' />
+                                <MenuOption onSelect={() => this.props.showPayslip()} text='View Payslip' />
+                                <MenuOption onSelect={() => this.props.showDTR()} text='View Daily Time Record'/>
+                                <MenuOption onSelect={() => this.props.showMonetaryAdjustmentForm()} text='Special Deduction/Allowance'/>
                                 <MenuOption onSelect={() => alert(`Mark as Closed`)} text='Mark as Closed' />
                             </MenuOptions>
                         </Menu>

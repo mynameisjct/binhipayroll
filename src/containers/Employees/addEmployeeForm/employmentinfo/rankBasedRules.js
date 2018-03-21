@@ -75,6 +75,7 @@ export class RankBasedRules extends Component{
             }
         }
     }
+    
     componentDidMount(){
         this._getRanksPolicyFromDB();
     }
@@ -83,17 +84,6 @@ export class RankBasedRules extends Component{
         if(this.props.ranksPolicy.status[0] != 1){
             this.props.actions.ranks.get()
         }
-    }
-
-    _getDataFromDB = () => {
-        this.props.actions.ranks.get({...this._requiredInputs(), transtype:'get'});
-    }
-
-    _requiredInputs = () => {
-        return({
-            companyid: this.props.activecompany.id,
-            username: this.props.logininfo.resUsername
-        })
     }
 
     _setActiveData = (id) => {
@@ -262,12 +252,7 @@ export class RankBasedRules extends Component{
                 bFlag = this._evaluateResponse(res);
                 if(res.flagno === 1){
                     this.props.actions.employee.updateRank(res.employee.employmentinfo.rank.data);
-                    this._cancelTransaction();
-                }
-            })
-            .then(() => {
-                if(oRes.flagno === 1){
-                    this._initData(CONSTANTS.STATUS.SUCCESS);
+                    this._hideForm();
                 }
             })
             .catch((exception) => {
@@ -330,8 +315,7 @@ export class RankBasedRules extends Component{
     }
 
     render(){
-        console.log('this.props.ranksPolicy.status: ' + this.props.ranksPolicy.status);
-        console.log('this.props.oEmpRank: ' + JSON.stringify(this.props.oEmpRank));
+        console.log('===RENDERING: RankBasedRules')
         return(
             <GenericContainer 
                 status={this.props.ranksPolicy.status}

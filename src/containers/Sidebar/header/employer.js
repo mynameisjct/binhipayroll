@@ -6,6 +6,7 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { withNavigation } from 'react-navigation';
+import { connect } from 'react-redux';
 
 //Custom Components
 import CustomPicker from '../../../components/CustomPicker';
@@ -100,4 +101,22 @@ class SidebarHeaderEmployer extends Component{
     }
 }
 
-export default withNavigation(SidebarHeaderEmployer);
+function mapStateToProps (state) {
+    return {
+        logininfo: state.loginReducer.logininfo,
+        activecompany: state.activeCompanyReducer.activecompany
+    }
+}
+
+function mapDispatchToProps (dispatch) {  
+    return {
+      dispatchStoreValues: (activecompany) => {
+        dispatch(SetActiveCompany(activecompany))
+    }
+  }
+}
+
+export default withNavigation(connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(SidebarHeaderEmployer));

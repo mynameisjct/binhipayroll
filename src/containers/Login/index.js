@@ -228,8 +228,8 @@ export class Login extends Component {
                         id: this.state._resDefaultCompanyId
                     });
 
-                    this.props.navigation.navigate('EmprDashBoard')
-                    /* this.props.navigation.navigate('CompanyPolicies') */
+                    /* this.props.navigation.navigate('EmprDashBoard') */
+                    this.props.navigation.navigate('CompanyPolicies')
                     /* this.props.navigation.navigate('Employees') */
                     /* this.props.navigation.navigate('Transactions'); */
                     /* this.props.navigation.navigate('AddEmployeeForm') */

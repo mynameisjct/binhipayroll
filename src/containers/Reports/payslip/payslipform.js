@@ -4,7 +4,8 @@ import {
     Text,
     Button,
     ScrollView,
-    TouchableOpacity
+    TouchableOpacity,
+    ActivityIndicator
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Icon2 from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -69,9 +70,9 @@ const oTempData = {
                 ['systembreak'],
                 ['Reg Wrk', '97', '6700'],
                 ['Reg OT', '5', '6700'],
-                ['Rest Wrk/OT', '5', '6700'],
-                ['RegHol Wrk/OT', '', ''],
-                ['SplHol Wrk/OT', '', ''],
+                ['Rest\nWrk/OT', '5', '6700'],
+                ['RegHol\nWrk/OT', '', ''],
+                ['SplHol\nWrk/OT', '', ''],
                 ['Tardiness', '', ''],
                 ['Absences', '24', '-1,700.00']
             ]
@@ -128,8 +129,15 @@ export default class EmployeePayslipForm extends Component {
         super(props);
         this.state = {
             _bShowPicker: false,
-            _bHasError: false
+            _bHasError: false,
+            _bDidMount: false
         }
+    }
+
+    componentDidMount(){
+        setTimeout( () => {
+            this.setState({_bDidMount: true});
+        },100);
     }
 
     _onPeriodChange = () => {
@@ -156,154 +164,167 @@ export default class EmployeePayslipForm extends Component {
         const bodyStyles = styles.body;
         const systemStyles = styles.system;
         const textStyles = styles.textStyles;
-        return(
-            <View style={styles.container}>
-
-                <View style={navigatorStyles.container}>
-                    <View style={navigatorStyles.left}>
-                        <Text style={textStyles.cardTitle}>Employee Detailed Payslip</Text>
-                    </View>
-                    <View style={navigatorStyles.right}>
-                        <TouchableOpacity
-                            activeOpacity={0.6}
-                            onPress={this._onPeriodChange}>
-                            <Icon2 name='calendar-clock' size={35} color='#434646'/>
-                        </TouchableOpacity>
-                    </View>
-                </View>
-
-                <View style={headerStyles.container}>
-                    <View style={headerStyles.left}>
-                        <View style={headerStyles.generalInfoCont}>
-                            <View style={headerStyles.iconCont}>
-                                <Icon 
-                                    size={40} 
-                                    name='md-home' 
-                                    color='#434646'/>
+        if(this.state._bDidMount){
+            return(
+                <View style={styles.container}>
+                    {
+                        this.props.hideHeader || false ?
+                            null
+                        :
+                            <View style={navigatorStyles.container}>
+                                <View style={navigatorStyles.left}>
+                                    <Text style={textStyles.cardTitle}>Employee Detailed Payslip</Text>
+                                </View>
+                                <View style={navigatorStyles.right}>
+                                    <TouchableOpacity
+                                        activeOpacity={0.6}
+                                        onPress={this._onPeriodChange}>
+                                        <Icon2 name='calendar-clock' size={35} color='#434646'/>
+                                    </TouchableOpacity>
+                                </View>
                             </View>
-                            <View style={headerStyles.titleCont}>
-                                <Text style={textStyles.companyName}>JCA Realty Corporation</Text>
-                                <Text style={textStyles.address}>#80 Yacapin Sts., Cagayan de Oro City, Misamis Oriental 9000</Text>
+                    }
+
+                    <View style={headerStyles.container}>
+                        <View style={headerStyles.left}>
+                            <View style={headerStyles.generalInfoCont}>
+                                <View style={headerStyles.iconCont}>
+                                    <Icon 
+                                        size={40} 
+                                        name='md-home' 
+                                        color='#434646'/>
+                                </View>
+                                <View style={headerStyles.titleCont}>
+                                    <Text style={textStyles.companyName}>JCA Realty Corporation</Text>
+                                    <Text style={textStyles.address}>#80 Yacapin Sts., Cagayan de Oro City, Misamis Oriental 9000</Text>
+                                </View>
                             </View>
+                        </View>
+
+                        <View style={headerStyles.right}>
+                            {
+                                oTempData.info.map((aParamsList, indexParamsList) => 
+                                    <View key={indexParamsList} style={headerStyles.paramsList}>
+                                        {
+                                            aParamsList.map((aParamsArgs, indexParamsArgs) => 
+                                                <View key={indexParamsArgs} style={headerStyles.param}>
+                                                    <View style={headerStyles.label}>
+                                                        <Text style={textStyles.label}>{aParamsArgs[0]}</Text>
+                                                    </View>
+                                                    <View style={headerStyles.value}>
+                                                        <Text style={textStyles.value}>{aParamsArgs[1]}</Text>
+                                                    </View>
+                                                </View>
+                                            )
+                                        }
+                                    </View>
+                                )
+                            }
                         </View>
                     </View>
 
-                    <View style={headerStyles.right}>
+                    <View style={contentStyles.container}>
                         {
-                            oTempData.info.map((aParamsList, indexParamsList) => 
-                                <View key={indexParamsList} style={headerStyles.paramsList}>
-                                    {
-                                        aParamsList.map((aParamsArgs, indexParamsArgs) => 
-                                            <View key={indexParamsArgs} style={headerStyles.param}>
-                                                <View style={headerStyles.label}>
-                                                    <Text style={textStyles.label}>{aParamsArgs[0]}</Text>
-                                                </View>
-                                                <View style={headerStyles.value}>
-                                                    <Text style={textStyles.value}>{aParamsArgs[1]}</Text>
-                                                </View>
+                            oTempData.data.map((oData, indexData) => 
+                                <View key={indexData} style={contentStyles.placeholder}>
+                                    <View style={titleStyles.container}>
+                                        <Text style={textStyles.detailsHeader}>{oData.title}</Text>
+                                    </View>
+                                    <View style={bodyStyles.container}>
+                                        <ScrollView>
+                                            <View style={bodyStyles.paramsList}>
+                                                {
+                                                    oData.list.map((aList, indexList) => {
+                                                        switch(aList[0].toLowerCase()){
+                                                            case 'systembreak':
+                                                                return <View key={indexList} style={systemStyles.break}/>;
+                                                                break;
+                                                            case 'systemdiv':
+                                                                return <View key={indexList} style={systemStyles.div}/>;
+                                                                break;
+                                                            case 'systemfooter':
+                                                                return null;
+                                                                break;
+                                                            default:
+                                                                return(
+                                                                        <View key={indexData} style={bodyStyles.params}>
+                                                                            {
+                                                                                aList.map((strParam, indexParams) =>
+                                                                                    <View 
+                                                                                        key={indexParams} 
+                                                                                        style={[bodyStyles.paramsArg, 
+                                                                                            indexParams==0 ? bodyStyles.paramsLeftMost :
+                                                                                            indexParams==(aList.length-1) ? bodyStyles.paramsRightMost :
+                                                                                            bodyStyles.paramsCenter]
+                                                                                        }
+                                                                                    >
+
+                                                                                        <Text style={textStyles.details}>{strParam}</Text>
+                                                                                    </View>
+                                                                                )
+                                                                            }
+                                                                        </View>
+                                                                );
+                                                        }
+                                                    })
+                                                }
+                                                {}
                                             </View>
-                                        )
-                                    }
+                                        </ScrollView>
+                                        {
+                                            oData.list.map((aList, indexList) => {
+                                                if(aList[0].toLowerCase() === 'systemfooter'){
+                                                    return(
+                                                        <View key={indexList} 
+                                                            style={systemStyles.footer.container}>
+
+                                                            <View style={systemStyles.footer.title}>
+                                                                <Text style={textStyles.footerTitle}>
+                                                                    { aList[1] }
+                                                                </Text>
+                                                            </View>
+
+                                                            <View style={systemStyles.footer.value}>
+                                                                <Text style={textStyles.footerValue}>
+                                                                    { aList[2] }
+                                                                </Text>
+                                                            </View>
+                                                            
+                                                        </View>
+                                                    )
+                                                }
+                                                else{
+                                                    return null;
+                                                }
+                                            })
+                                        }
+                                    </View>
                                 </View>
                             )
                         }
                     </View>
-                </View>
-
-                <View style={contentStyles.container}>
                     {
-                        oTempData.data.map((oData, indexData) => 
-                            <View key={indexData} style={contentStyles.placeholder}>
-                                <View style={titleStyles.container}>
-                                    <Text style={textStyles.detailsHeader}>{oData.title}</Text>
-                                </View>
-                                <View style={bodyStyles.container}>
-                                    <ScrollView>
-                                        <View style={bodyStyles.paramsList}>
-                                            {
-                                                oData.list.map((aList, indexList) => {
-                                                    switch(aList[0].toLowerCase()){
-                                                        case 'systembreak':
-                                                            return <View key={indexList} style={systemStyles.break}/>;
-                                                            break;
-                                                        case 'systemdiv':
-                                                            return <View key={indexList} style={systemStyles.div}/>;
-                                                            break;
-                                                        case 'systemfooter':
-                                                            return null;
-                                                            break;
-                                                        default:
-                                                            return(
-                                                                    <View key={indexData} style={bodyStyles.params}>
-                                                                        {
-                                                                            aList.map((strParam, indexParams) =>
-                                                                                <View 
-                                                                                    key={indexParams} 
-                                                                                    style={[bodyStyles.paramsArg, 
-                                                                                        indexParams==0 ? bodyStyles.paramsLeftMost :
-                                                                                        indexParams==(aList.length-1) ? bodyStyles.paramsRightMost :
-                                                                                        bodyStyles.paramsCenter]
-                                                                                    }
-                                                                                >
-
-                                                                                    <Text style={textStyles.details}>{strParam}</Text>
-                                                                                </View>
-                                                                            )
-                                                                        }
-                                                                    </View>
-                                                            );
-                                                    }
-                                                })
-                                            }
-                                            {}
-                                        </View>
-                                    </ScrollView>
-                                    {
-                                        oData.list.map((aList, indexList) => {
-                                            if(aList[0].toLowerCase() === 'systemfooter'){
-                                                return(
-                                                    <View key={indexList} 
-                                                        style={systemStyles.footer.container}>
-
-                                                        <View style={systemStyles.footer.title}>
-                                                            <Text style={textStyles.footerTitle}>
-                                                                { aList[1] }
-                                                            </Text>
-                                                        </View>
-
-                                                        <View style={systemStyles.footer.value}>
-                                                            <Text style={textStyles.footerValue}>
-                                                                { aList[2] }
-                                                            </Text>
-                                                        </View>
-                                                        
-                                                    </View>
-                                                )
-                                            }
-                                            else{
-                                                return null;
-                                            }
-                                        })
-                                    }
-                                </View>
-                            </View>
-                        )
+                        this.state._bShowPicker ? 
+                            <CustomPicker 
+                                list={oTempData.payrollperiods}
+                                dateformat={oTempData.datedisplayformat}
+                                emptyprompt = 'Error: No data found'
+                                title='SELECT PAYROLL PERIOD'
+                                onSelect={this._onSelect}
+                                visible={this.state._bShowPicker}
+                                onClose={this._hidePicker}/>
+                        :
+                            null
                     }
                 </View>
-                {
-                    this.state._bShowPicker ? 
-                        <CustomPicker 
-                            list={oTempData.payrollperiods}
-                            dateformat={oTempData.datedisplayformat}
-                            emptyprompt = 'Error: No data found'
-                            title='SELECT PAYROLL PERIOD'
-                            onSelect={this._onSelect}
-                            visible={this.state._bShowPicker}
-                            onClose={this._hidePicker}/>
-                    :
-                        null
-                }
-            </View>
-        );
+            );
+        }
+        else{
+            return(
+                <View style={styles.emptyContainer}>
+                    <ActivityIndicator size="small" color="#EEB843" />
+                </View>
+            )
+        }
     }
 }

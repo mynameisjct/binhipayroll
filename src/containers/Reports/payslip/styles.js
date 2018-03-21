@@ -6,6 +6,12 @@ export default {
         flexDirection: 'column'
     },
 
+    emptyContainer: {
+        flex:1,
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+
     content: {
         container: {
             flex: 1,

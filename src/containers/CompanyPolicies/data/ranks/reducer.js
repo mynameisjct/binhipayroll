@@ -4,7 +4,7 @@ import  { CONSTANTS } from '../../../../constants';
 
 const initialState = null;
 const initialStatus = CONSTANTS.STATUS.LOADING;
-const initialActiveRule = '';
+const initialActiveRule = null;
 
 export const data = (state = initialState, action) => {
 	let oState = JSON.parse(JSON.stringify(state));

@@ -33,7 +33,7 @@ export default {
             borderColor: '#D1D4D6',
             justifyContent: 'center',
             alignItems: 'center',
-            height: 60,
+            height: 50,
             borderTopLeftRadius: 15,
             borderTopRightRadius: 15,
         },
@@ -67,6 +67,16 @@ export default {
             flex: 1,
             borderWidth: 0.7,
             borderColor: '#D1D4D6',
+            borderBottomLeftRadius: 15
+        },
+
+        btnContSingleBtn: {
+            justifyContent: 'center',
+            alignItems: 'center',
+            flex: 1,
+            borderWidth: 0.7,
+            borderColor: '#D1D4D6',
+            borderBottomRightRadius: 15,
             borderBottomLeftRadius: 15
         },
 

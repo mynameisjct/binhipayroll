@@ -309,11 +309,21 @@ export default {
             paddingBottom: 30,
             justifyContent: 'center',
             alignItems: 'center',
-            width: '80%',
+            width: '90%',
         },
 
         content: {
-            flex: 1
+            flex: 1,
+            marginLeft: 15,
+            marginRight: 15,
+            borderWidth: 0.7,
+            borderColor: '#D1D4D6'
+        },
+
+        contentFullscreen: {
+            flex: 1,
+            borderWidth: 0.7,
+            borderColor: '#D1D4D6'
         }
         
     },
