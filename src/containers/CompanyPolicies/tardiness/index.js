@@ -205,8 +205,8 @@ export class Tardiness extends Component{
                 oActiveTardiness = JSON.parse(JSON.stringify(tardinessSelector.getDefaultTardiness()));
                 bFlag = false;
             }
-            /* console.log('oActiveTardiness: ' + JSON.stringify(oActiveTardiness));
-            console.log('bFlag: ' + bFlag); */
+            console.log('oActiveTardiness: ' + JSON.stringify(oActiveTardiness));
+            console.log('bFlag: ' + bFlag);
 
             this.setState({
                 _tardinessData: JSON.parse(JSON.stringify(tardinessSelector.getTardinessData())),
@@ -767,6 +767,7 @@ export class Tardiness extends Component{
                             rightHeader={
                                 oRightOption
                             }
+                            hideHeader={this.props.viewOnly || false}
                         >
 
                         { 
@@ -902,7 +903,7 @@ export class Tardiness extends Component{
                         </CustomCard>
                     </ScrollView>
                     { 
-                        this.state._tardinessData.enabled && this.state._disabledMode ? 
+                        this.state._tardinessData.enabled && this.state._disabledMode && !(this.props.viewOnly || false) ? 
                             <ActionButton 
                                 bgColor='rgba(0,0,0,0.8)'
                                 buttonColor="#EEB843"
@@ -915,7 +916,7 @@ export class Tardiness extends Component{
                                     <Icon2 name="delete-empty" color='#fff' size={22} style={styles.actionButtonIcon} />
                                 </ActionButton.Item>
                             </ActionButton>
-                        :null
+                        : null
                     }
                     <MessageBox
                         promptType={this.state._msgBoxType}

@@ -16,6 +16,7 @@ import { bindActionCreators } from 'redux';
 import * as employeeActions from '../../data/activeProfile/actions';
 import * as ranksActions from '../../../CompanyPolicies/data/ranks/actions';
 import * as companyProfileActions from '../../../CompanyProfile/data/actions';
+import * as positionsActions from '../../../CompanyPolicies/data/positions/actions';
 
 //Styles
 import styles from './styles';
@@ -25,7 +26,7 @@ import EffectiveDatePicker from '../../../../components/EffectiveDatePicker';
 import FixedCard1 from '../../../../components/FixedCards';
 
 //Children Components
-import EmployeeDetailsForm from './forms/employentDetailsForm';
+import EmploymentDetailsForm from './forms/employmentDetailsForm';
 
 //helper
 import * as oHelper from '../../../../helper';
@@ -44,46 +45,143 @@ export class EmployeeDetails extends Component {
             _status: [2, 'Loading...'],
 
             _oActiveData: {
-            },
-            _bShowForm: false,
-            _oDefaultData: {
                 id: '',
-                rankid: '',
-                effectivedate: {
-                    from: {
-                        value: null,
-                        format: "MMM DD, YYY"
-                    },
-                    to: {
-                        value: null,
-                        format: "MMM DD, YYYY"
-                    }
+                employmenttype:{  
+                   label:'',
+                   value:''
+                },
+                datehired:{  
+                   format:"MMMM DD, YYYY",
+                   value: ''
+                },
+                dateend:{  
+                   format:"MMMM DD, YYYY",
+                   value: ""
+                },
+                paytype:{  
+                   label: '',
+                   value: ''
+                },
+                payrate: '',
+                position: {  
+                   id:  '',
+                   value: ''
+                },
+                branch: {  
+                   id: '',
+                   value: ''
+                },
+                effectivedate:{  
+                    from: {  
+                        format:"MMMM DD, YYYY",
+                        value: ''
+                   },
+                    to: {  
+                        format:"MMMM DD, YYYY",
+                        value: ''
+                   }
+                },
+                remarks: ''
+            },
+            
+            _bShowForm: false,
+            _oDefaultData: {  
+                id: '',
+                employmenttype:{  
+                   label:'',
+                   value:''
+                },
+                datehired:{  
+                   format:"MMMM DD, YYYY",
+                   value: ''
+                },
+                dateend:{  
+                   format:"MMMM DD, YYYY",
+                   value: ""
+                },
+                paytype:{  
+                   label: '',
+                   value: ''
+                },
+                payrate: '',
+                position: {  
+                   id:  '',
+                   value: ''
+                },
+                branch: {  
+                   id: '',
+                   value: ''
+                },
+                effectivedate:{  
+                    from: {  
+                        format:"MMMM DD, YYYY",
+                        value: ''
+                   },
+                    to: {  
+                        format:"MMMM DD, YYYY",
+                        value: ''
+                   }
                 },
                 remarks: ''
             }
+    
+        }
+    }
+
+    componentDidMount(){
+        const oAllData = this.props.oEmpDetails.data;
+        this.props.actions.companyProfile.getBranches();
+        this.props.actions.positions.get();
+        if(oAllData.length > 0){
+            this.setState({ _oActiveData: oAllData[0]})
         }
     }
 
     _addNewData = () => {
         this.setState({ 
-            _oDefaultData: oHelper.copyObject(this.state._oDefaultData),
+            _oActiveData: oHelper.copyObject(this.state._oDefaultData),
             _bShowForm: true
         })
     }
 
-    _editNewData = () => {
+    _editActiveData = () => {
         this.setState({ 
-            _oDefaultData: oHelper.copyObject(this.state._oActiveData),
+            _oActiveData: oHelper.copyObject(this.state._oActiveData),
             _bShowForm: true
         })
     }
     
+    _cancelForm = () => {
+        this.setState({ _bShowForm: false });
+    }
+
+    _submitForm = (oData) => {
+        let oInput = {};
+        let oActiveData = oHelper.copyObject(this.state._oActiveData);
+        oActiveData.employmenttype.value = oData.employmenttype;
+        oActiveData.datehired.value = oHelper.convertDateToString(oData.datehired, 'YYYY-MM-DD');
+        oActiveData.dateend.value = oHelper.convertDateToString(oData.dateend, 'YYYY-MM-DD');
+        oActiveData.paytype.value = oData.paytype;
+        oActiveData.payrate = oData.payrate;
+        oActiveData.position.id = oData.position;
+        oActiveData.branch.id = oData.branch;
+        oActiveData.effectivedate.from.value = oHelper.convertDateToString(oData.effectivedate, 'YYYY-MM-DD');
+        oActiveData.remarks = oData.remarks;
+
+        oInput.employeeId = this.props.oActiveEmployee.id;
+        oInput.employmentinfo = {
+            details: oActiveData
+        }
+        let oRes = this.props.actions.employee.addEmployeeDetails(oInput);
+        
+    }
+    
     render(){
-        console.log('this.props.oEmpDetails.data.length: ' + this.props.oEmpDetails.data.length);
+        const oAllData = this.props.oEmpDetails.data;
         return(
             <View style={styles.genericContainer}>
                 {
-                    this.props.oEmpDetails.data.length <= 1 ?
+                    oAllData.length < 1 ?
                         <TouchableOpacity 
                             style={styles.emptyDataContainer}
                             activeOpacity={0.8}
@@ -95,10 +193,10 @@ export class EmployeeDetails extends Component {
                     :
                         <View style={styles.container}>
                             <EffectiveDatePicker 
-                                selectedValue={1}
-                                options={[{id: 1, effectivedate: {from: {value: '2018-01-01', format: 'MMM DD, YYYY'}}}]}
+                                selectedValue={this.state._oActiveData.id}
+                                options={oAllData}
                                 onChange={this._setActiveData}/>
-                            <EmployeeDetailsView/>
+                            <EmployeeDetailsView data={this.state._oActiveData}/>
                             <ActionButton
                                 bgColor='rgba(0,0,0,0.8)'
                                 shadowStyle={{elevation: 30}}
@@ -114,21 +212,32 @@ export class EmployeeDetails extends Component {
                             </ActionButton>
                         </View>
                 }
+
                 {
                     this.state._bShowForm ?
-                        <EmployeeDetailsForm
+                        <EmploymentDetailsForm
                             minEffectiveDate={null}
                             onDelete={this._requestDeleteData}
                             visible={this.state._bShowForm}
                             activeData = {this.state._oActiveData}
-                            cancelForm={this._cancelFormTransaction}
-                            submitForm={this._submitFormTransaction}
+                            cancelForm={this._cancelForm}
+                            submitForm={this._submitForm}
                             title={this.state._oActiveData.id ? 'MODIFY EMPLOYENT DETAILS' : 'ADD NEW EMPLOYMENT DETAILS'}
-                            positions={[{1: 'TEMP POS1'}, {2: 'TEMP POS2'}, {3: 'TEMP POS3'}]}
-                            branches={this.state._branchesList}
+                            employmenttypeoptions={
+                                oHelper.generateEnums(this.props.oEmpDetails.employmenttypeoptions, 'id', 'name')
+                            }
+                            paytypeoptions={
+                                oHelper.generateEnums(this.props.oEmpDetails.paytypeoptions, 'id', 'name')
+                            }
+                            positions={
+                                oHelper.generateEnums(this.props.positionsPolicy.data.position.data, 'id', 'name')
+                            }
+                            branches={
+                                oHelper.generateEnums(this.props.companyProfile.branch, 'id', 'name')
+                            }
                         />
                     :
-                        null   
+                        null
                 }
             </View>
         )
@@ -140,8 +249,9 @@ function mapStateToProps (state) {
         logininfo: state.loginReducer.logininfo,
         activecompany: state.activeCompanyReducer.activecompany,
         oEmpDetails: state.employees.activeProfile.data.employmentinfo.details,
-        ranks: state.companyPoliciesReducer.ranks,
-        companyProfile: state.companyProfile
+        oActiveEmployee: state.employees.activeProfile.data,
+        companyProfile: state.companyProfile.data,
+        positionsPolicy: state.companyPoliciesReducer.positions,
     }
 }
 
@@ -150,7 +260,8 @@ function mapDispatchToProps (dispatch) {
         actions: {
             employee: bindActionCreators(employeeActions, dispatch),
             ranks: bindActionCreators(ranksActions, dispatch),
-            companyProfile: bindActionCreators(companyProfileActions,dispatch)
+            companyProfile: bindActionCreators(companyProfileActions,dispatch),
+            positions: bindActionCreators(positionsActions,dispatch)
         },
     }
   }
@@ -162,35 +273,37 @@ export default connect(
 
 export class EmployeeDetailsView extends Component{
     render(){
+        console.log('this.props.data: ' + JSON.stringify(this.props.data));
+        let oActiveData = this.props.data;
         const attribs = 
         [
             {
                 label: 'EMPLOYMENT STATUS',
-                value: 'PROBATIONARY'
+                value: oActiveData.employmenttype.label || ''
             },
             {
                 label:  'DATE HIRED',
-                value: 'January 21, 2018'
+                value: oHelper.convertDateToString(oActiveData.datehired.value, oActiveData.datehired.format) || '' 
             },
             {
                 label: 'PAY TYPE',
-                value: 'SALARY'
+                value: oActiveData.paytype.label || ''
             },
             {
                 label: 'PAY RATE',
-                value: '25,000.00'
+                value: oActiveData.payrate || ''
             },
             {
                 label: 'POSITION',
-                value: 'Secretary'
+                value: oActiveData.position.value || ''
             },
             {
                 label: 'BRANCH',
-                value: 'Yacapin Branch'
+                value: oActiveData.branch.value || ''
             },
             {
                 label: 'REMARKS',
-                value: 'Newly Hired Employee'
+                value: oActiveData.remarks || ''
             }
         ]
 

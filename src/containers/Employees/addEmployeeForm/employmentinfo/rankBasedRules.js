@@ -57,6 +57,7 @@ export class RankBasedRules extends Component{
             _oActiveData: {
                 id: ''
             },
+            _tempRankValue: null,
             _bShowRankForm: false,
             _oDefaultData: {
                 id: '',
@@ -88,7 +89,10 @@ export class RankBasedRules extends Component{
 
     _setActiveData = (id) => {
         let oActiveData = oHelper.getElementByPropValue(this.props.oEmpRank.data, 'id', id);
-        this.props.actions.ranks.setActiveRule(oActiveData.rankid);
+        let aRanksPolicy = this.props.ranksPolicy.data.data;
+        let oActiveRankRule = oHelper.getElementByPropValue(aRanksPolicy, 'id', oActiveData.rankid);
+
+        this.props.actions.ranks.setActiveRule(oActiveRankRule);
         this.setState({_oActiveData: oActiveData})
     }
 
@@ -104,14 +108,19 @@ export class RankBasedRules extends Component{
     _addNewRank = () => {
         let oCurData = JSON.parse(JSON.stringify(this.state._oDefaultData));
         this.setState({
+            _tempRankValue: null,
             _oActiveData: oCurData,
             _bShowRankForm: true 
         })
     }
 
     _editActiveRank = () => {
-        let oActiveData = JSON.parse(JSON.stringify(this.state._oActiveData));
+        let oActiveData = oHelper.copyObject(this.state._oActiveData);
+        let arrRTypes = [...this.props.ranksPolicy.data.data];
+        let oActiveRankRule = oHelper.getElementByPropValue(arrRTypes, 'id', oActiveData.rankid);
+        let tempRankValue = oActiveRankRule.name.value + CONSTANTS.SPLITSTRING + oActiveRankRule.id;
         this.setState({ 
+            _tempRankValue: tempRankValue,
             _oActiveData: oActiveData,
             _bShowRankForm: true 
         })
@@ -215,6 +224,7 @@ export class RankBasedRules extends Component{
             if(res.flagno === 1){
                 this.props.actions.employee.updateRank(res.employee.employmentinfo.rank.data);
                 this._hideForm();
+                this._setActiveData(oData.rank.data.id);
             }
         })
         .catch((exception) => {
@@ -365,6 +375,7 @@ export class RankBasedRules extends Component{
                 {
                     this.state._bShowRankForm ?
                         <EmployeeRankForm
+                            rankValue={this.state._tempRankValue}
                             activeData = {this.state._oActiveData}
                             minEffectiveDate={null}
                             onDelete={this._requestDelete}

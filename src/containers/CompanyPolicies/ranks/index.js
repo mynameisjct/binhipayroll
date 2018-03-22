@@ -65,6 +65,7 @@ from '../../../components/CustomCards';
 import * as PromptScreen from '../../../components/ScreenLoadStatus';
 import MessageBox from '../../../components/MessageBox';
 import GenericContainer from '../../../components/GenericContainer';
+import FormModal from '../../../components/FormModal';
 
 //helper
 import * as oHelper from '../../../helper';
@@ -122,7 +123,6 @@ export class Ranks extends Component{
     }
 
     componentWillUnmount(){
-        this.props.actions.ranks.setActiveRule(null);
         this.props.actions.tardiness.setActiveRule('');
         this.props.actions.overtime.setActiveRule('');
         this.props.actions.undertime.setActiveRule('');
@@ -197,7 +197,6 @@ export class Ranks extends Component{
                 },
                     () =>{
                         this.props.actions.tardiness.setActiveRule(oActiveRule.id);
-                        this.props.actions.ranks.updateTardiness(oActiveData.tardiness);
                     }
                 )
                 break;
@@ -212,7 +211,6 @@ export class Ranks extends Component{
                 },
                     () => {
                         this.props.actions.undertime.setActiveRule(oActiveRule.id);
-                        this.props.actions.ranks.updateUndertime(oActiveData.undertime);
                     }
                 )
                 break;
@@ -227,7 +225,6 @@ export class Ranks extends Component{
                 },
                     () => {
                         this.props.actions.overtime.setActiveRule(oActiveRule.id);
-                        this.props.actions.ranks.updateOvertime(oActiveData.overtime);
                     }
                 )
                 break;
@@ -279,7 +276,10 @@ export class Ranks extends Component{
             _activeData: null,
             _modalVisible: false
         })
-        
+    }
+
+    _hidePolicyModal = () => {
+        this.setState({ _modalVisible: false });
     }
 
     _saveRule = async() => {
@@ -357,7 +357,6 @@ export class Ranks extends Component{
     }
 
     _pushNewRule = async (id, value) => {
-        console.log()
         let oAllData = oHelper.copyObject(this.props.ranks.data);
         let oDataArray = [...oAllData.data];
 
@@ -374,13 +373,14 @@ export class Ranks extends Component{
     }
 
     _updateRule = (value) => {
-        let oAllData = {...this.state._allData}; 
+        let oAllData = oHelper.copyObject(this.props.ranks.data);
         let objIndex = oAllData.data.findIndex((obj => obj.id == value.id));
         
         oAllData.data[objIndex]=value;
 
         this.props.actions.ranks.update(oAllData);
-        this._initValues();
+        this.props.actions.ranks.setActiveRule(value);
+        this._destroyEnabledMode();
     }
 
     _addRule = () => {
@@ -401,10 +401,10 @@ export class Ranks extends Component{
 
     _deleteActiveRule = async() => {
         if(blackOps.mode){
-            this._deleteRuleFromStore(this.state._activeData)
+            this._deleteRuleFromStore(this.props.ranks.activeRule)
         }
         else{
-            this._deleteRuleFromDB(this.state._activeData)
+            this._deleteRuleFromDB(this.props.ranks.activeRule)
         }
     }
 
@@ -431,13 +431,18 @@ export class Ranks extends Component{
         return bFlag;
     }
 
-    _deleteRuleFromStore = async(oActiveData) => {
-        await this.props.actions.ranks.setActiveRule('');
-        let oAllData = {...this.state._allData}; 
+    _deleteRuleFromStore = (oActiveData) => {
+        let oAllData = oHelper.copyObject(this.props.ranks.data);
+        if(oAllData.data.length > 0){
+            this.props.actions.ranks.setActiveRule(oAllData.data[0]);
+        }
+        else{
+            this.props.actions.ranks.setActiveRule(null);
+        }
         let indexActive = oAllData.data.findIndex((obj => obj.id == oActiveData.id));
         oAllData.data = oHelper.removeElementByIndex(oAllData.data, indexActive);
         this.props.actions.ranks.update(oAllData);
-        this._initValues();
+        this._destroyEnabledMode();
     }
 
     _evaluateResponse = (res) => {
@@ -501,72 +506,69 @@ export class Ranks extends Component{
         const oActiveData = this.props.ranks.activeRule;
         let oActivePolicy = null;
         let vPolicy = null;
+        let strFormTitle = '';
         const bIsEmpty = this.props.ranks.data ?
                             (this.props.ranks.data.length > 1 ? true : false) :
                             false
-
+        
         if(pProgress == 1){
             switch(this.state._activePolicy){
                 case 'TARDINESS':
-                    oActivePolicy = (<Tardiness disableClearActiveOnUnmount = {true}/>)
+                    oActivePolicy = (
+                        <Tardiness 
+                            disableClearActiveOnUnmount = {true}
+                            viewOnly = {this.state._disabledMode}
+                        />
+                    )
+                    strFormTitle = 'Tardiness Rules';
                     break;
                 case 'OVERTIME':
-                    oActivePolicy = (<Overtime disableClearActiveOnUnmount = {true}/>)
+                    oActivePolicy = (
+                        <Overtime 
+                            disableClearActiveOnUnmount = {true}
+                            viewOnly = {this.state._disabledMode}
+                        />
+                    )
+                    strFormTitle = 'Overtime Rules';
                     break;
                 case 'UNDERTIME':
-                    oActivePolicy = (<Undertime disableClearActiveOnUnmount = {true}/>)
+                    oActivePolicy = (
+                        <Undertime
+                            disableClearActiveOnUnmount = {true}
+                            viewOnly = {this.state._disabledMode}
+                        />
+                    )
+                    strFormTitle = 'Undertime Rules';
                     break;
                 case 'LEAVES':
                     oActivePolicy = (<Leaves/>)
+                    strFormTitle = 'Leave Rules';
                     break;
                 default:
                     break;
             }
 
             vPolicy = (
-                <Modal
-                    transparent = {true}
+                <FormModal 
+                    cancelLabel={this.state._disabledMode ? 'Close' : 'Cancel'}
+                    submitLabel={this.state._disabledMode ? 'OK' : 'Select'}
+                    viewOnly={this.state._disabledMode}
+                    containerStyle={styles.form.container}
                     visible={this.state._modalVisible}
-                    animationType={'slide'}
-                    onRequestClose={() => {this._setPolicyModalVisibility(false)}}
-                    >
-                    <View style={styles.modalRules.container}>
-                        <View style={styles.modalRules.innerCont}>
-                            <View style={styles.modalRules.titleCont}>
-                                <Text style={styles.modalRules.txtHeader}>
-                                    { this.state._activePolicy === 'LEAVES' ?
-                                        'Add Leave Type' : 
-                                        'Select a Rule or Modify Policy' }
-                                </Text>
-                            </View>
+                    onCancel={this._hidePolicyModal}
+                    onOK={this._updateRuleValue}
+                    title={ this.state._disabledMode ? strFormTitle : 
+                        this.state._activePolicy === 'LEAVES' ?
+                            'Add Leave Type' : 
+                            'Select a Rule or Modify Policy' 
+                    }
+                >
 
-                            <View style={styles.modalRules.contentCont}>
-                                { oActivePolicy }
-                            </View>
-
-                            <View style={styles.modalRules.footerCont}>
-                                <TouchableOpacity 
-                                    style={styles.modalRules.btnContLeft}
-                                    onPress={() => this._setPolicyModalVisibility(false)}>
-                                        <Text style={styles.modalRules.txtBtn}>CANCEL</Text>
-                                </TouchableOpacity>
-
-
-                                <TouchableOpacity 
-                                    style={styles.modalRules.btnContRight}
-                                    onPress={() => this._updateRuleValue()}>
-                                        <Text style={styles.modalRules.txtBtn}>
-                                            {
-                                                this.state._activePolicy === 'LEAVES' ?
-                                                    'ADD' :   
-                                                    'OK'
-                                            }
-                                        </Text>
-                                </TouchableOpacity>
-                            </View>
-                        </View>
+                    <View style={styles.form.content}>
+                        { oActivePolicy }
                     </View>
-                </Modal>
+                    
+                </FormModal>
             );
         }
 
@@ -596,7 +598,7 @@ export class Ranks extends Component{
                                                 disabled={false}
                                                 style={styles.btnCancel}
                                                 activeOpacity={0.6}
-                                                onPress={() => {this._cancelEdit()}}>
+                                                onPress={this._destroyEnabledMode}>
                                                 <Text style={styles.txtBtn}>CANCEL</Text>
                                             </TouchableOpacity>
                                             <View style={{width: 10}}></View>
@@ -669,7 +671,15 @@ export class Ranks extends Component{
                                                                     styles.level2Styles.txt
                                                             }
                                                             disabled={oActiveData.tardiness.value || !this.state._disabledMode ? false : true}
-                                                            onPress={() => this._showPolicy('TARDINESS', oActiveData.tardiness.value)}>
+                                                            onPress={
+                                                                () => this._showPolicy(
+                                                                    'TARDINESS',
+                                                                    this.state._disabledMode ? 
+                                                                        oActiveData.tardiness.value :
+                                                                        this.state._activeData.tardiness.value
+                                                                )
+                                                            }
+                                                        >
                                                             {
                                                                 this.state._disabledMode ? 
                                                                     oActiveData.tardiness.label :
@@ -692,7 +702,15 @@ export class Ranks extends Component{
                                                                     styles.level2Styles.txt
                                                             }
                                                             disabled={oActiveData.undertime.value || !this.state._disabledMode ? false : true}
-                                                            onPress={() => this._showPolicy('UNDERTIME', this.propsoActiveData.ranks.activeRule.undertime.value)}>
+                                                            onPress={
+                                                                () => this._showPolicy(
+                                                                    'UNDERTIME', 
+                                                                    this.state._disabledMode ? 
+                                                                        oActiveData.undertime.value :
+                                                                        this.state._activeData.undertime.value
+                                                                )
+                                                            }
+                                                        >
                                                             
                                                             {
                                                                 this.state._disabledMode ? 
@@ -716,7 +734,15 @@ export class Ranks extends Component{
                                                                     styles.level2Styles.txt
                                                             }
                                                             disabled={oActiveData.overtime.value || !this.state._disabledMode ? false : true}
-                                                            onPress={() => this._showPolicy('OVERTIME', oActiveData.overtime.value)}>
+                                                            onPress={
+                                                                () => this._showPolicy(
+                                                                    'OVERTIME', 
+                                                                    this.state._disabledMode ? 
+                                                                        oActiveData.overtime.value :
+                                                                        this.state._activeData.overtime.value
+                                                                    )
+                                                                }
+                                                        >
                                                             
                                                             {
                                                                 this.state._disabledMode ? 

@@ -642,6 +642,7 @@ export class Undertime extends Component{
                             rightHeader={
                                 oRightOption
                             }
+                            hideHeader={this.props.viewOnly || false}
                         >
 
                         { 
@@ -722,7 +723,7 @@ export class Undertime extends Component{
                         </CustomCard>
                     </ScrollView>
                     { 
-                        this.state._undertimeData.enabled && this.state._disabledMode ? 
+                        this.state._undertimeData.enabled && this.state._disabledMode && !(this.props.viewOnly || false) ? 
                             <ActionButton 
                                 bgColor='rgba(0,0,0,0.8)'
                                 buttonColor="#EEB843"

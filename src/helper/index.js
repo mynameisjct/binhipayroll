@@ -40,6 +40,10 @@ export const convertDateToString = (strDate, format) => {
     return moment(strDate).format(format);
 }
 
+export const convertStringToDate = (strDate) => {
+    return  strDate ?  new Date(strDate) : null;
+}
+
 export const convertRangeDateToString = (oDate) => {
     try{
         let strFrom = '';
@@ -128,4 +132,13 @@ export const getDayAbbrev = (_strDay) => {
 //Object Functions
 export const copyObject = (oData) => {
     return (JSON.parse(JSON.stringify(oData)))
+}
+
+//Enums function
+export const generateEnums = (sourceArray, strPropName, strValue) => {
+    let oEnums = {};
+    sourceArray.map((data,index) => {
+        oEnums[data[strPropName]] = data[strValue]
+    });
+    return(oEnums);
 }

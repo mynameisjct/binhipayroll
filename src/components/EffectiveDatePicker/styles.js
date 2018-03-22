@@ -9,10 +9,32 @@ export default {
         borderWidth: 1.5
     },
 
-    contBtn: {
-        borderTopRightRadius: 4,
-        width: 200,
-        backgroundColor: 'transparent'
+    remarks: {
+        container: {
+            width: 200,
+            borderTopRightRadius: 4,
+            backgroundColor: '#FFF',
+            flexDirection: 'column'
+        },
+
+        top: {
+            borderTopRightRadius: 4,
+            paddingLeft: 10,
+            paddingRight: 10,
+            height: 35,
+            justifyContent: 'center',
+            backgroundColor: '#838383'
+        },
+
+        bottom: {
+            paddingLeft: 10,
+            flex: 1,
+            backgroundColor: '#D1D4D6'
+        },
+        
+        scrollview: {
+            justifyContent: 'center'
+        }
     },
 
     contInfo: {

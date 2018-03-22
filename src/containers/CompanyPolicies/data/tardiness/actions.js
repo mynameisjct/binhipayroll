@@ -33,7 +33,7 @@ export const get = payload =>
 		api.get(payload)
 		.then((response) => response.json())
 		.then((res) => {
-			console.log('res: ' + JSON.stringify(res));
+			console.log('XXXXTARDINESS_res: ' + JSON.stringify(res));
 			dispatch(update(res));
 			objRes = {...res}
 		})

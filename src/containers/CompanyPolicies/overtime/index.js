@@ -146,7 +146,9 @@ class OvertimeForm extends Component {
                 oType={oRightOptionType}
                 rightHeader={
                     oRightOption
-                }>
+                }
+                hideHeader={this.props.viewOnly || false}
+            >
 
                 { this.props.data.enabled ?
                     <View>
@@ -775,6 +777,7 @@ export class Overtime extends Component {
                         }
                     >
                         <OvertimeForm
+                            {...this.props}
                             disabledMode={this.state._disabledMode}
                             data={this.state._allData}
                             activeRule={this.state._activeRule}
@@ -790,7 +793,7 @@ export class Overtime extends Component {
                     </ScrollView>
 
                     { 
-                        this.state._allData.enabled && this.state._disabledMode ? 
+                        this.state._allData.enabled && this.state._disabledMode && !(this.props.viewOnly || false)? 
                             <ActionButton 
                                 bgColor='rgba(0,0,0,0.8)'
                                 buttonColor="#EEB843"

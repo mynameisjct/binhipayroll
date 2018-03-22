@@ -35,7 +35,7 @@ export default class EmployeeRankForm extends Component{
         console.log('this.props.activeData: ' + JSON.stringify(this.props.activeData));
         this.state = {
             _oEmpRankForm: {
-                rankid: this.props.activeData.rankid || '',
+                rankid: this.props.rankValue || '' ,
                 effectivedate:  this.props.activeData.effectivedate.from.value ?  
                     new Date(this.props.activeData.effectivedate.from.value) : null,
                 remarks: this.props.activeData.remarks || ''

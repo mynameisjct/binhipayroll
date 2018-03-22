@@ -341,4 +341,24 @@ export const updateRank = payload => ({
 	payload
 });
 
-
+//Employee Details
+export const addEmployeeDetails = payload =>
+	dispatch => {
+		let objRes = {};
+		api.employmentinfo.details.add(payload)
+		.then((response) => response.json())
+		.then((res) => {
+			console.log('res: ' + JSON.stringify(res));
+			if(res.flagno == 1){
+				/* dispatch(updateBankInfo(res)); */
+			}
+			objRes = {...res}
+			alert(JSON.stringify(res));
+		})
+		.then(() => {
+			return (objRes);
+		})
+		.catch((exception) => {
+			alert(exception.message);
+		});
+	}

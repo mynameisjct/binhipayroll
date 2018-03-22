@@ -9,6 +9,7 @@ import { reducer as leavesReducer } from './leaves/reducer';
 import { reducer as benefitsReducer } from './benefits/reducer';
 import { reducer as bonusReducer } from './bonus/reducer';
 import { reducer as ranksReducer } from './ranks/reducer';
+import { reducer as positionsReducer } from './positions/reducer';
 
 export const reducer = combineReducers({
 	workshift: workshiftReducer,
@@ -20,5 +21,6 @@ export const reducer = combineReducers({
 	leaves: leavesReducer,
 	benefits: benefitsReducer,
 	bonus: bonusReducer,
-	ranks: ranksReducer
+	ranks: ranksReducer,
+	positions: positionsReducer
 });

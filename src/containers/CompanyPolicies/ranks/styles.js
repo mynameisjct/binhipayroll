@@ -345,6 +345,20 @@ export default {
         fontSize: 15,
         color: '#434646',
         paddingLeft: 15
+    },
+    
+    form: {
+        container: {
+            paddingTop: 50,
+            paddingBottom: 50,
+            justifyContent: 'center',
+            alignItems: 'center',
+            width: '70%',
+        },
+
+        content: {
+            flex: 1
+        }
     }
     
     

@@ -185,7 +185,7 @@ export class CompanyPolicies extends Component {
                 _objActiveCompany: {...oProps.activecompany}
             },
                 () => {
-                    this._setActiveChild({key:'003'});
+                    this._setActiveChild({key:'010'});
                     this.setState({_status: 1});
                 }
             )

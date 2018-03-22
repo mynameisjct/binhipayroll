@@ -25,7 +25,7 @@ import {
 
 export class CompanyProfile extends Component {
     static navigationOptions = {
-        header : 
+        header: 
             <Header2
                 title= 'COMPANY PROFILE'
             />

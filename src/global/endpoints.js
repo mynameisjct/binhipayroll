@@ -169,6 +169,30 @@ export let employee = {
 					'/employmentinfo/ranks/' + payload.id
 				)
 			}
+		},
+
+		details: {
+			add: function(payload){
+				return(
+					baseURL.activeCompany() +
+					'/employee/'  + payload.employeeId + 
+					'/employmentinfo/details/'
+				)
+			},
+			update: function(payload){
+				return(
+					baseURL.activeCompany() +
+					'/employee/'  + payload.employeeId + 
+					'/employmentinfo/details/' + payload.rank.data.id
+				)
+			},
+			delete: function(payload){
+				return(
+					baseURL.activeCompany() +
+					'/employee/'  + payload.employeeId + 
+					'/employmentinfo/details/' + payload.id
+				)
+			}
 		}
 
 	},
@@ -202,7 +226,16 @@ export let policy = {
 				payload.data.id
 			)
 		},
- 	}
+	 },
+	 
+	 positions: {
+		get: function(payload){
+			return(
+				baseURL.activeCompany() +
+				'/position'
+			)
+		},
+	 }
 }
 
 export let mock = {

@@ -3,7 +3,8 @@ import {
     View,
     Text, 
     TouchableNativeFeedback,
-    Picker
+    Picker,
+    ScrollView
 } from 'react-native';
 
 import styles from './styles';
@@ -43,7 +44,12 @@ export default class EffectiveDatePicker extends Component {
                         </View>
                     </View>
                 </View>
-                <View style={styles.contBtn}>
+                <View style={styles.remarks.container}>
+                    {/* <View style={styles.remarks.bottom}>
+                        <ScrollView contentContainerStyle={styles.remarks.scrollview}>
+                            <Text>Remarks</Text>  
+                        </ScrollView>
+                    </View> */}
                 </View>
             </View>
         )
