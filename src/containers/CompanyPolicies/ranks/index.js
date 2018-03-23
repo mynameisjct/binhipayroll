@@ -130,8 +130,12 @@ export class Ranks extends Component{
 
     componentDidMount(){
         if(this.props.ranks.status[0] != 1){
-            this.props.actions.ranks.get({...this._requiredInputs(), transtype:'get'});
+            this._getDataFromDB();
         }
+    }
+
+    _getDataFromDB = () => {
+        this.props.actions.ranks.get({...this._requiredInputs(), transtype:'get'});
     }
 
     _requiredInputs = () => {
@@ -503,12 +507,12 @@ export class Ranks extends Component{
         const pStatus = [...this.props.ranks.status];
         const pProgress = pStatus[0];
         const oAllData = this.props.ranks.data;
-        const oActiveData = this.props.ranks.activeRule;
+        const oActiveData = this.props.ranks.activeRule || oHelper.copyObject(this.state._defaultData)
         let oActivePolicy = null;
         let vPolicy = null;
         let strFormTitle = '';
         const bIsEmpty = this.props.ranks.data ?
-                            (this.props.ranks.data.length > 1 ? true : false) :
+                            (this.props.ranks.data.length > 0 ? false : true) :
                             false
         
         if(pProgress == 1){

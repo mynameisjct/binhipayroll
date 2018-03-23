@@ -305,15 +305,6 @@ export const updateBankInfoStatus = payload => ({
 	payload
 });
 
-export const updateEmploymentDetails = payload => ({
-	type: actionTypes.EMPLOYMENTDETAILS.UPDATE.DATA,
-	payload
-});
-
-export const updateEmploymentDetailsStatus = payload => ({
-	type: actionTypes.EMPLOYMENTDETAILS.UPDATE.STATUS,
-	payload
-});
 
 export const updateWorkshift = payload => ({
 	type: actionTypes.EMPLOYEEWORKSHIFT.UPDATE.DATA,
@@ -342,18 +333,28 @@ export const updateRank = payload => ({
 });
 
 //Employee Details
-export const addEmployeeDetails = payload =>
-	dispatch => {
+export const updateEmploymentDetails = payload => ({
+	type: actionTypes.EMPLOYMENTDETAILS.UPDATE.DATA,
+	payload
+});
+
+export const updateEmploymentDetailsStatus = payload => ({
+	type: actionTypes.EMPLOYMENTDETAILS.UPDATE.STATUS,
+	payload
+});
+
+export const addEmploymentDetailsToDB = payload =>
+	async dispatch => {
 		let objRes = {};
-		api.employmentinfo.details.add(payload)
+		await api.employmentinfo.details.add(payload)
 		.then((response) => response.json())
 		.then((res) => {
 			console.log('res: ' + JSON.stringify(res));
 			if(res.flagno == 1){
-				/* dispatch(updateBankInfo(res)); */
+				console.log('res.employee.employmentinfo.details.data: ' + JSON.stringify(res.employee.employmentinfo.details.data));
+				dispatch(updateEmploymentDetails(res.employee.employmentinfo.details.data));
 			}
-			objRes = {...res}
-			alert(JSON.stringify(res));
+			objRes = {...res};
 		})
 		.then(() => {
 			return (objRes);
@@ -361,4 +362,50 @@ export const addEmployeeDetails = payload =>
 		.catch((exception) => {
 			alert(exception.message);
 		});
+		return(objRes);
 	}
+
+export const deleteEmploymentDetailsFromDB = payload =>
+	async dispatch => {
+		let objRes = {};
+		await api.employmentinfo.details.delete(payload)
+		.then((response) => response.json())
+		.then((res) => {
+			console.log('res: ' + JSON.stringify(res));
+			if(res.flagno == 1){
+				console.log('res.employee.employmentinfo.details.data: ' + JSON.stringify(res.employee.employmentinfo.details.data));
+				dispatch(updateEmploymentDetails(res.employee.employmentinfo.details.data));
+			}
+			objRes = {...res};
+		})
+		.then(() => {
+			return (objRes);
+		})
+		.catch((exception) => {
+			alert(exception.message);
+		});
+		return(objRes);
+	}
+
+export const modifyEmploymentDetailsToDB = payload =>
+	async dispatch => {
+		let objRes = {};
+		await api.employmentinfo.details.update(payload)
+		.then((response) => response.json())
+		.then((res) => {
+			console.log('res: ' + JSON.stringify(res));
+			if(res.flagno == 1){
+				console.log('res.employee.employmentinfo.details.data: ' + JSON.stringify(res.employee.employmentinfo.details.data));
+				dispatch(updateEmploymentDetails(res.employee.employmentinfo.details.data));
+			}
+			objRes = {...res};
+		})
+		.then(() => {
+			return (objRes);
+		})
+		.catch((exception) => {
+			alert(exception.message);
+		});
+		return(objRes);
+	}
+

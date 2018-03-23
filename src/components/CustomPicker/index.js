@@ -22,7 +22,7 @@ export default class CustomPicker extends PureComponent{
                         background={TouchableNativeFeedback.SelectableBackground()}>
                         <View style={styles.modalRules.contOption}>
                             <Text style={styles.modalRules.txtBtn}>
-                                {data.label}
+                                {data[this.props.objLabelName || 'label']}
                             </Text>
                         </View>
                     </TouchableNativeFeedback>
@@ -62,10 +62,9 @@ export default class CustomPicker extends PureComponent{
                             aList.length > 0 ?
                                 <View style={{flex:0}}>
                                     {
-
-                                            <ScrollView contentContainerStyle={{flex: 1}}>
-                                                {oOptions}
-                                            </ScrollView>
+                                        <ScrollView contentContainerStyle={{flex: 1}}>
+                                            {oOptions}
+                                        </ScrollView>
                                     }
                                     
                                 </View>

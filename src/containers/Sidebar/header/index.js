@@ -11,7 +11,9 @@ import SidebarHeaderEmployer from './employer';
 export default class SidebarHeader extends Component{
     render(){
         return(
-            <SidebarHeaderEmployer loginInfo={this.props.loginInfo}/>
+            <SidebarHeaderEmployer 
+                loginInfo={this.props.loginInfo}
+            />
         )
     }
 }

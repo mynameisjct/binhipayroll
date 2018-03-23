@@ -6,7 +6,13 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { withNavigation } from 'react-navigation';
+
+//Redux
 import { connect } from 'react-redux';
+import { SetActiveCompany } from '../../../actions';
+
+//helper
+import * as oHelper from '../../../helper';
 
 //Custom Components
 import CustomPicker from '../../../components/CustomPicker';
@@ -38,16 +44,23 @@ class SidebarHeaderEmployer extends Component{
         }
     }
     _navigateHeaderView = () => {
-
+        this.props.navigation.navigate('CompanyProfile');
     }
 
     _showPickerMenu = () => {
         this.setState({ _bShowPicker: true });
     }
 
-    _onSelect = (id) => {
+    _onSelect = (value) => {
+        let oActiveCompany = oHelper.getElementByPropValue(this.props.logininfo.resCompany, 'id', value)
+        this.props.setActiveCompany(oActiveCompany);
         this.props.navigation.navigate('DrawerClose');
+        this.props.navigation.navigate('EmprDashBoard');
         this._hidePicker();
+    }
+
+    _resetData = () => {
+        let oPoliciesStore = this.props.reduxState.companyPoliciesReducer;
     }
 
     _hidePicker = () => {
@@ -72,7 +85,7 @@ class SidebarHeaderEmployer extends Component{
                         </View>
                         <View style={headerStyles.right}>
                             <Text style={textStyles.title}>
-                                JCA REALTY CORPORATION
+                                {this.props.activecompany.name}
                             </Text>
                         </View>
                     </View>
@@ -89,9 +102,10 @@ class SidebarHeaderEmployer extends Component{
                 </TouchableNativeFeedback>
                 {
                     <CustomPicker 
-                        list={[{label: 'JCA Realty Corporation ', id: 1}, {label: 'Bank of the Philippines', id: 2}]}
+                        list={this.props.logininfo.resCompany}
                         emptyprompt = 'Error: No data found'
                         title='SWITCH COMPANY'
+                        objLabelName={'name'}
                         onSelect={this._onSelect}
                         visible={this.state._bShowPicker}
                         onClose={this._hidePicker}/>
@@ -103,6 +117,7 @@ class SidebarHeaderEmployer extends Component{
 
 function mapStateToProps (state) {
     return {
+        reduxState: state,
         logininfo: state.loginReducer.logininfo,
         activecompany: state.activeCompanyReducer.activecompany
     }
@@ -110,10 +125,10 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {  
     return {
-      dispatchStoreValues: (activecompany) => {
-        dispatch(SetActiveCompany(activecompany))
+        setActiveCompany: (activecompany) => {
+            dispatch(SetActiveCompany(activecompany))
+        }
     }
-  }
 }
 
 export default withNavigation(connect(

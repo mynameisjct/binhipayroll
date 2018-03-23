@@ -11,8 +11,8 @@ export const data = (state = initialState, action) => {
 			return action.payload;
 			break;
 
-		case actionTypes.EMPTY:
-			return {};
+		case actionTypes.RESET:
+			return initialState;
 			break;
 
 		default:
@@ -25,11 +25,7 @@ const status = (state = initialStatus, action) => {
 		case actionTypes.STATUS:
 			return action.payload;
 			break;
-
-		case actionTypes.EMPTY:
-			return {};
-			break;
-
+			
 		default:
 			return state;
 	}

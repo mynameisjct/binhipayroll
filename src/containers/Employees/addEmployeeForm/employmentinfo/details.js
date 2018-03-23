@@ -3,7 +3,8 @@ import {
     View,
     Text,
     ScrollView,
-    TouchableOpacity
+    TouchableOpacity,
+    Alert
 } from 'react-native';
 import ActionButton from 'react-native-action-button';
 import t from 'tcomb-form-native'; // 0.6.9
@@ -24,12 +25,17 @@ import styles from './styles';
 //Custom Components
 import EffectiveDatePicker from '../../../../components/EffectiveDatePicker';
 import FixedCard1 from '../../../../components/FixedCards';
+import * as PromptScreen from '../../../../components/ScreenLoadStatus';
+import MessageBox from '../../../../components/MessageBox';
 
 //Children Components
 import EmploymentDetailsForm from './forms/employmentDetailsForm';
 
 //helper
 import * as oHelper from '../../../../helper';
+
+//CONSTANTS
+const add_loading_message = 'Saving a Employment Details. Please wait.';
 
 export class EmployeeDetails extends Component {
     constructor(props){
@@ -151,32 +157,157 @@ export class EmployeeDetails extends Component {
         })
     }
     
-    _cancelForm = () => {
+    _hideForm = () => {
         this.setState({ _bShowForm: false });
     }
 
-    _submitForm = (oData) => {
+    _submitForm = async(oData) => {
         let oInput = {};
+        let oRes = {};
         let oActiveData = oHelper.copyObject(this.state._oActiveData);
-        oActiveData.employmenttype.value = oData.employmenttype;
-        oActiveData.datehired.value = oHelper.convertDateToString(oData.datehired, 'YYYY-MM-DD');
-        oActiveData.dateend.value = oHelper.convertDateToString(oData.dateend, 'YYYY-MM-DD');
-        oActiveData.paytype.value = oData.paytype;
-        oActiveData.payrate = oData.payrate;
-        oActiveData.position.id = oData.position;
-        oActiveData.branch.id = oData.branch;
-        oActiveData.effectivedate.from.value = oHelper.convertDateToString(oData.effectivedate, 'YYYY-MM-DD');
-        oActiveData.remarks = oData.remarks;
+        if(this._validateBeforeSubmit(oActiveData)){
+            oActiveData.employmenttype.value = oData.employmenttype;
+            oActiveData.datehired.value = oHelper.convertDateToString(oData.datehired, 'YYYY-MM-DD');
+            oActiveData.dateend.value = oHelper.convertDateToString(oData.dateend, 'YYYY-MM-DD');
+            oActiveData.paytype.value = oData.paytype;
+            oActiveData.payrate = oData.payrate;
+            oActiveData.position.id = oData.position;
+            oActiveData.branch.id = oData.branch;
+            oActiveData.effectivedate.from.value = oHelper.convertDateToString(oData.effectivedate, 'YYYY-MM-DD');
+            oActiveData.remarks = oData.remarks;
 
-        oInput.employeeId = this.props.oActiveEmployee.id;
-        oInput.employmentinfo = {
-            details: oActiveData
+            oInput.employeeId = this.props.oActiveEmployee.id;
+            oInput.employmentinfo = {
+                details: oActiveData
+            }
+            this._showLoadingPrompt(add_loading_message);
+            if(oActiveData.id == ''){
+                oRes = await this.props.actions.employee.addEmploymentDetailsToDB(oInput);
+            }
+            else{
+                oRes = await this.props.actions.employee.modifyEmploymentDetailsToDB(oInput);
+            }
+            
+            this._hideLoadingPrompt();
+            this._evaluateResponse(oRes);
+            if(oRes.flagno == 1){
+                this._hideForm();
+                if(oActiveData.id == ''){
+                    this._setActiveData(this.props.oEmpDetails.data[0].id);
+                }
+                else{
+                    this._setActiveData(oActiveData.id);
+                }
+            }
         }
-        let oRes = this.props.actions.employee.addEmployeeDetails(oInput);
-        
+
+    }
+
+    _validateBeforeSubmit = async(oData) => {
+        if(oData.id == ''){
+            return true;
+        }
+        else{
+            await Alert.alert(
+                'WARNING',
+                'Deleting an Employment Details on a specific date is an irreversible action. ' + 
+                'Are you sure you want to proceed ?',
+                [
+                    {text: 'NO', onPress: async() => { return false }},
+                    {text: 'YES', onPress: async() => { return true }}
+                ],
+                { cancelable: false }
+            )
+        }
+    }
+
+    _requestDeleteData = () => {
+        let oData = oHelper.copyObject(this.state._oActiveData);
+        oData.employeeId = this.props.oActiveEmployee.id;
+        Alert.alert(
+            'WARNING',
+            'Deleting an Employment Details on a specific date is an irreversible action. ' + 
+            'Are you sure you want to proceed ?',
+            [
+                {text: 'NO', onPress: () => {}},
+                {text: 'YES', onPress: () => this._deleteDataFromDB(oData)}
+            ],
+            { cancelable: false }
+        )
+    }
+
+    _deleteDataFromDB = async(oData) => {
+        this._showLoadingPrompt(add_loading_message);
+        let oRes = await this.props.actions.employee.deleteEmploymentDetailsFromDB(oData);
+        this._hideLoadingPrompt();
+        this._evaluateResponse(oRes);
+        if(oRes.flagno == 1){
+                this._hideForm();
+                if(this.props.oEmpDetails.data.length > 0){
+                    this._setActiveData(this.props.oEmpDetails.data[0].id);
+                }
+            }
     }
     
+    //Generic Methods
+    _evaluateResponse = (res) => {
+        switch (res.flagno){
+            case 0:
+                this._showMsgBox('error-ok', res.message);
+                return false
+                break;
+            case 1:
+                this._showMsgBox('success', res.message);
+                return true;
+                break;
+            default:
+                this._showMsgBox('error-ok', CONSTANTS.ERROR.UNKNOWN);
+                return false
+                break;
+        }
+    }
+
+    _showLoadingPrompt = (msg) => {
+        this.setState({
+            _promptMsg: msg,
+            _promptShow: true
+        })
+    }
+    
+    _showMsgBox = (strType, msg) => {
+        this.setState({
+        _msgBoxShow: true,
+        _msgBoxType: strType,
+        _resMsg: msg
+        });
+    }
+    
+    _closeMsgBox = () => {
+        this.setState({
+            _msgBoxShow: false
+        })
+    }
+    
+    _hideLoadingPrompt = () => {
+        this.setState({
+            _promptShow: false
+        })
+    }
+    
+    _onFormClose = () => {
+        this.setState({
+        _bShowCompForm: false,
+        _bShowGovForm: false
+        })
+    }
+
+    _setActiveData = (value) => {
+        let oActiveData = oHelper.getElementByPropValue(this.props.oEmpDetails.data, 'id', value)
+        this.setState({ _oActiveData: oActiveData})
+    }
+
     render(){
+        console.log('this.props.oEmpDetails.data: ' + JSON.stringify(this.props.oEmpDetails.data));
         const oAllData = this.props.oEmpDetails.data;
         return(
             <View style={styles.genericContainer}>
@@ -220,7 +351,7 @@ export class EmployeeDetails extends Component {
                             onDelete={this._requestDeleteData}
                             visible={this.state._bShowForm}
                             activeData = {this.state._oActiveData}
-                            cancelForm={this._cancelForm}
+                            cancelForm={this._hideForm}
                             submitForm={this._submitForm}
                             title={this.state._oActiveData.id ? 'MODIFY EMPLOYENT DETAILS' : 'ADD NEW EMPLOYMENT DETAILS'}
                             employmenttypeoptions={
@@ -239,6 +370,19 @@ export class EmployeeDetails extends Component {
                     :
                         null
                 }
+
+                <PromptScreen.PromptGeneric 
+                    show= {this.state._promptShow} 
+                    title={this.state._promptMsg}/>
+
+                <MessageBox
+                    promptType={this.state._msgBoxType}
+                    show={this.state._msgBoxShow}
+                    onClose={this._closeMsgBox}
+                    onWarningContinue={this._continueActionOnWarning}
+                    message={this.state._resMsg}
+                /> 
+
             </View>
         )
     }

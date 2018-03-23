@@ -566,17 +566,6 @@ export const data = (state = initialState, action) => {
 				...oState
 			}
 			break;
-		
-		case actionTypes.EMPLOYMENTDETAILS.UPDATE.DATA:
-			oState.employmentinfo.details.employmenttype = action.payload.employmenttype;
-			oState.employmentinfo.details.datehired = action.payload.datehired;
-			oState.employmentinfo.details.dateend = action.payload.dateend;
-			oState.employmentinfo.details.data = action.payload.data;
-
-			return {
-				...oState
-			}
-			break;
 
 		case actionTypes.EMPLOYEEWORKSHIFT.UPDATE.DATA:
 			oState.employmentinfo.workshift.data = action.payload;
@@ -604,6 +593,14 @@ export const data = (state = initialState, action) => {
 
 		case actionTypes.EMPLOYEERANK.UPDATE.DATA:
 			oState.employmentinfo.rank.data = action.payload;
+			
+			return {
+				...oState
+			}
+			break;
+
+		case actionTypes.EMPLOYMENTDETAILS.UPDATE.DATA:
+			oState.employmentinfo.details.data = action.payload;
 			
 			return {
 				...oState

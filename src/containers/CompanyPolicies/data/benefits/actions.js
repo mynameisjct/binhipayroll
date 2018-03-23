@@ -7,8 +7,8 @@ export const update = payload => ({
 	payload,
 });
 
-export const empty = () => ({
-	type: actionTypes.EMPTY,
+export const reset = () => ({
+	type: actionTypes.RESET,
 });
 
 export const get = payload => 
