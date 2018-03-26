@@ -483,7 +483,7 @@ export class EmployeeDependents extends Component {
             .then((res) => {
                 if(bFlag){
                     this.props.actions.employee.updateActiveID(oRes.id);
-                    this.props.navigation.navigate('BankAccount');
+                    this.props.navigation.navigate('EmployeeBankAccount');
                 }
             })
             .catch((exception) => {
@@ -610,15 +610,7 @@ export class EmployeeDependents extends Component {
     }
 
     _closeMsgBox = () => {
-        if(this.state._msgBoxType == 'success'){
-          this.props.hideForm();
-        }
-        else{
-          this.setState({
-            _msgBoxShow: false
-          })
-        }
-        
+        this.setState({ _msgBoxShow: false });
     }
 
     _hideLoadingPrompt = () => {

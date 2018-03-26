@@ -118,7 +118,7 @@ export class EmployeeBankAccount extends Component {
     const navigation = this.props.logininfo.navigation;
     let bSuccess = await this._saveDataToDB({id: this.props.oEmployee.id, bankinfo: this.props.oEmployeeBankInfo});
     if(bSuccess && !formTriggerSave){
-        navigation.navigate('EmplomentDetails');
+        navigation.navigate('EmployeeDetails');
     }
   }
 
