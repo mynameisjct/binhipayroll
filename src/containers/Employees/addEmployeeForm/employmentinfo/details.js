@@ -89,6 +89,8 @@ export class EmployeeDetails extends Component {
                 },
                 remarks: ''
             },
+
+            _oFormData: {},
             
             _bShowForm: false,
             _oDefaultData: {  
@@ -143,16 +145,33 @@ export class EmployeeDetails extends Component {
         }
     }
 
-    _addNewData = () => {
+    _addNewData = async() => {
+        let oActiveData = {};
+        console.log('CCCCCCCCCCCCCCCthis.props.oEmpDetails.data.length: ' + this.props.oEmpDetails.data.length);
+        if(this.props.oEmpDetails.data.length > 0){
+            oActiveData = await oHelper.copyObject(this.props.oEmpDetails.data[0]);
+            oActiveData.id = '';
+            oActiveData.effectivedate.from.value = null;
+            oActiveData.effectivedate.to.value = null;
+        }
+        else{
+            oActiveData = await oHelper.copyObject(this.state._oDefaultData);
+        }
+        
         this.setState({ 
-            _oActiveData: oHelper.copyObject(this.state._oDefaultData),
-            _bShowForm: true
-        })
+            _oFormData: oActiveData,
+        }, 
+            () => {
+                console.log('CCCCCCCCCCCCthis.state._oFormData: ' + JSON.stringify(this.state._oFormData));
+                console.log('CCCCCCCCCCCCoActiveData: ' + JSON.stringify(oActiveData))
+                this.setState({_bShowForm: true});
+            }
+        )
     }
 
     _editActiveData = () => {
         this.setState({ 
-            _oActiveData: oHelper.copyObject(this.state._oActiveData),
+            _oFormData: oHelper.copyObject(this.state._oActiveData),
             _bShowForm: true
         })
     }
@@ -161,60 +180,57 @@ export class EmployeeDetails extends Component {
         this.setState({ _bShowForm: false });
     }
 
-    _submitForm = async(oData) => {
+    _addOrUpdateDataToDB = async(oData) => {
         let oInput = {};
         let oRes = {};
-        let oActiveData = oHelper.copyObject(this.state._oActiveData);
-        if(this._validateBeforeSubmit(oActiveData)){
-            oActiveData.employmenttype.value = oData.employmenttype;
-            oActiveData.datehired.value = oHelper.convertDateToString(oData.datehired, 'YYYY-MM-DD');
-            oActiveData.dateend.value = oHelper.convertDateToString(oData.dateend, 'YYYY-MM-DD');
-            oActiveData.paytype.value = oData.paytype;
-            oActiveData.payrate = oData.payrate;
-            oActiveData.position.id = oData.position;
-            oActiveData.branch.id = oData.branch;
-            oActiveData.effectivedate.from.value = oHelper.convertDateToString(oData.effectivedate, 'YYYY-MM-DD');
-            oActiveData.remarks = oData.remarks;
+        let oActiveData = oHelper.copyObject(this.state._oFormData);
+        oActiveData.employmenttype.value = oData.employmenttype;
+        oActiveData.datehired.value = oHelper.convertDateToString(oData.datehired, 'YYYY-MM-DD');
+        oActiveData.dateend.value = oHelper.convertDateToString(oData.dateend, 'YYYY-MM-DD');
+        oActiveData.paytype.value = oData.paytype;
+        oActiveData.payrate = oData.payrate;
+        oActiveData.position.id = oData.position;
+        oActiveData.branch.id = oData.branch;
+        oActiveData.effectivedate.from.value = oHelper.convertDateToString(oData.effectivedate, 'YYYY-MM-DD');
+        oActiveData.remarks = oData.remarks;
 
-            oInput.employeeId = this.props.oActiveEmployee.id;
-            oInput.employmentinfo = {
-                details: oActiveData
-            }
-            this._showLoadingPrompt(add_loading_message);
-            if(oActiveData.id == ''){
-                oRes = await this.props.actions.employee.addEmploymentDetailsToDB(oInput);
-            }
-            else{
-                oRes = await this.props.actions.employee.modifyEmploymentDetailsToDB(oInput);
-            }
-            
-            this._hideLoadingPrompt();
-            this._evaluateResponse(oRes);
-            if(oRes.flagno == 1){
-                this._hideForm();
-                if(oActiveData.id == ''){
-                    this._setActiveData(this.props.oEmpDetails.data[0].id);
-                }
-                else{
-                    this._setActiveData(oActiveData.id);
-                }
-            }
+        oInput.employeeId = this.props.oActiveEmployee.id;
+        oInput.employmentinfo = {
+            details: oActiveData
         }
-
-    }
-
-    _validateBeforeSubmit = async(oData) => {
-        if(oData.id == ''){
-            return true;
+        this._showLoadingPrompt(add_loading_message);
+        if(oActiveData.id == ''){
+            oRes = await this.props.actions.employee.addEmploymentDetailsToDB(oInput);
         }
         else{
-            await Alert.alert(
+            oRes = await this.props.actions.employee.modifyEmploymentDetailsToDB(oInput);
+        }
+        
+        this._hideLoadingPrompt();
+        this._evaluateResponse(oRes);
+        if(oRes.flagno == 1){
+            this._hideForm();
+            if(oActiveData.id == ''){
+                this._setActiveData(this.props.oEmpDetails.data[0].id);
+            }
+            else{
+                this._setActiveData(oActiveData.id);
+            }
+        }
+    }
+
+    _submitForm = async(oData) => {
+        if(this.state._oFormData.id == ''){
+            this._addOrUpdateDataToDB(oData);
+        }
+        else {
+            Alert.alert(
                 'WARNING',
                 'Deleting an Employment Details on a specific date is an irreversible action. ' + 
                 'Are you sure you want to proceed ?',
                 [
-                    {text: 'NO', onPress: async() => { return false }},
-                    {text: 'YES', onPress: async() => { return true }}
+                    {text: 'NO', onPress: async() => {}},
+                    {text: 'YES', onPress: async() => {this._addOrUpdateDataToDB(oData)}}
                 ],
                 { cancelable: false }
             )
@@ -307,7 +323,6 @@ export class EmployeeDetails extends Component {
     }
 
     render(){
-        console.log('this.props.oEmpDetails.data: ' + JSON.stringify(this.props.oEmpDetails.data));
         const oAllData = this.props.oEmpDetails.data;
         return(
             <View style={styles.genericContainer}>
@@ -350,10 +365,10 @@ export class EmployeeDetails extends Component {
                             minEffectiveDate={null}
                             onDelete={this._requestDeleteData}
                             visible={this.state._bShowForm}
-                            activeData = {this.state._oActiveData}
+                            activeData = {this.state._oFormData}
                             cancelForm={this._hideForm}
                             submitForm={this._submitForm}
-                            title={this.state._oActiveData.id ? 'MODIFY EMPLOYENT DETAILS' : 'ADD NEW EMPLOYMENT DETAILS'}
+                            title={this.state._oFormData.id ? 'MODIFY EMPLOYENT DETAILS' : 'ADD NEW EMPLOYMENT DETAILS'}
                             employmenttypeoptions={
                                 oHelper.generateEnums(this.props.oEmpDetails.employmenttypeoptions, 'id', 'name')
                             }

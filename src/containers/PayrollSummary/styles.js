@@ -4,7 +4,7 @@ const { StyleSheet } = React;
 export default {
     container: {
         flex: 1,
-        flexDirection: 'row',
+        flexDirection: 'row'
     },
 
     summaryStyles: {

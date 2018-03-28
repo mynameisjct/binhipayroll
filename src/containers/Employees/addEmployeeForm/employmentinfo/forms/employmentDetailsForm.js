@@ -30,6 +30,7 @@ export default class EmploymentDetailsForm extends Component{
   constructor(props){
     super(props);
     const oActiveData  = this.props.activeData;
+    console.log('DDDDDDDDDDDDDoActiveData: ' + JSON.stringify(oActiveData));
     this.state = {
       _oData: {
         effectivedate: oHelper.convertStringToDate(oActiveData.effectivedate.from.value),
@@ -47,7 +48,7 @@ export default class EmploymentDetailsForm extends Component{
   }
 
   _onChange = (value) => {
-    
+    this.setState({ _oData: {...value} });
   }
 
   _onCanncel = () => {
@@ -106,6 +107,7 @@ export default class EmploymentDetailsForm extends Component{
           template: customDatePickerTemplate,
           label: 'DATE END',
           mode:'date',
+          hidden: !oHelper.isValidDate(this.props.activeData.dateend.value),
           minimumDate: this.props.minEffectiveDate,
           config:{
               format:  (strDate) => oHelper.convertDateToString(strDate, this.state._dateFormat)

@@ -512,7 +512,7 @@ export class Ranks extends Component{
         let vPolicy = null;
         let strFormTitle = '';
         const bIsEmpty = this.props.ranks.data ?
-                            (this.props.ranks.data.length > 0 ? false : true) :
+                            (this.props.ranks.data.data.length > 0 ? false : true) :
                             false
         
         if(pProgress == 1){

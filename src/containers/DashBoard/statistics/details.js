@@ -15,11 +15,11 @@ class StatsDetails extends Component {
         const detailsStyles = styles.detailsStyles;
         return(
             <View style={detailsStyles.container}>
-                <StatsToday {...this.props}/>
-                <View style={detailsStyles.lowerBlock}>
+                {/* <StatsToday {...this.props}/> */}
+                {/* <View style={detailsStyles.lowerBlock}>
                     <StatsPayroll {...this.props}/>
                     <StatsAttendance {...this.props}/>
-                </View>
+                </View> */}
             </View>
         )
     }

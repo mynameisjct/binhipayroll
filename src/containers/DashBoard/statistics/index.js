@@ -27,7 +27,7 @@ class DashboardStatistics extends Component {
                 },
 
                 employees:{
-                    label: 'TOTAL EMPLOYEES',
+                    label: 'ACTIVE EMPLOYEES',
                     value: 103
                 },
 
