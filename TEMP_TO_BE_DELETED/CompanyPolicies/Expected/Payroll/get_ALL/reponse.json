@@ -1,0 +1,77 @@
+{
+    "flagno": 1,
+    "message": "Generating March 31, 2018 Payroll",
+    "data": [
+        {
+            "id": "0001",
+            "code": "20180302",
+            "summary": {
+                "title": "PAYROLL SUMMARY",
+                "generalinfo": {
+                    "title": "General Information",
+                    "data": [
+                        ["Payroll Generated", "Mar 30, 2018"],
+                        ["Pay Period", "Mar 11, 2018 - Mar 25, 2018"],
+                        ["Pay Date", "Mar 31, 2018"],
+                        ["Status", "Open"]
+                    ]
+                },
+                "details": {
+                    "title": "Details",
+                    "data": [
+                        ["Gross Income", "12,000.00"],
+                        ["Gross SSS Contribution", "12,000.00"],
+                        ["Gross HDMF Contribution", "12,000.00"]
+                    ]
+                }
+            },
+
+            "employees": {
+                "title": "EMPLOYEE LIST",
+                "markallasclosed": false,
+                "status": "0/2 closed",
+                "data": [
+                    {
+                        "id": "0001",
+                        "name": "Jovanni G. Auxilio",
+                        "position": "Internal Janitor",
+                        "branch": "TEMP Branch",
+                        "summary": [
+                            ["Total Income", "12,500.00"],
+                            ["Total Allowances", "500"],
+                            ["Total Deductions", "751.00"],
+                            ["Net Pay", "12,249.00"]
+                        ],
+                        "isclosed": false
+                    },
+                    {
+                        "id": "0002",
+                        "name": "Jovanni G. Auxilio",
+                        "position": "Internal Janitor",
+                        "branch": "TEMP Branch",
+                        "summary": [
+                            ["Total Income", "12,500.00"],
+                            ["Total Allowances", "500"],
+                            ["Total Deductions", "751.00"],
+                            ["Net Pay", "12,249.00"]
+                        ],
+                        "isclosed": false
+                    },
+                    {
+                        "id": "0003",
+                        "name": "Jovanni G. Auxilio",
+                        "position": "Internal Janitor",
+                        "branch": "TEMP Branch",
+                        "summary": [
+                            ["Total Income", "12,500.00"],
+                            ["Total Allowances", "500"],
+                            ["Total Deductions", "751.00"],
+                            ["Net Pay", "12,249.00"]
+                        ],
+                        "isclosed": false
+                    }
+                ]
+            }
+        }
+    ]
+}

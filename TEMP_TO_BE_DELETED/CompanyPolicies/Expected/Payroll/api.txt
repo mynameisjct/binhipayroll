@@ -1,0 +1,13 @@
+http://192.168.1.11:8080/payroll/company/17/payroll/123/generate                -POST
+http://192.168.1.11:8080/payroll/company/17/payroll/123/post                    -POST
+http://192.168.1.11:8080/payroll/company/17/payroll/123/cancel                  -POST
+http://192.168.1.11:8080/payroll/company/17/payroll/123/status                  -GET
+http://192.168.1.11:8080/payroll/company/17/payroll/123/progress                -GET
+http://192.168.1.11:8080/payroll/company/17/payroll/123/details
+http://192.168.1.11:8080/payroll/company/17/payroll/123                         -GET/PUT/DELETE
+http://192.168.1.11:8080/payroll/company/17/payroll/ALL                         -GET
+http://192.168.1.11:8080/payroll/company/17/payroll/                            -POST
+
+http://192.168.1.11:8080/payroll/company/17/payroll/123/employee/001/close      -POST
+http://192.168.1.11:8080/payroll/company/17/payroll/123/employee/001/status     -GET
+http://192.168.1.11:8080/payroll/company/17/payroll/123/employee/001/generate   -POST

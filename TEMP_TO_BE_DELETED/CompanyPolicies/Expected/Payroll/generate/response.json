@@ -1,0 +1,8 @@
+{
+    "flagno": 1,
+    "message": "Generating March 31, 2018 Payroll",
+    "payroll": {
+        "progress": "10%",
+        "iscomplete": false
+    }
+}
