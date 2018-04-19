@@ -5,6 +5,7 @@ import {
     TouchableNativeFeedback,
 } from 'react-native';
 import * as PromptScreen from '../ScreenLoadStatus';
+import MessageBox from '../MessageBox';
 
 import styles from './styles';
 
@@ -22,6 +23,20 @@ export default class GenericContainer extends Component {
             return (
                 <View style={[styles.container, this.props.containerStyle ? this.props.containerStyle : {}]}>
                     { this.props.children }
+                    
+                    <MessageBox
+                        promptType={this.props.msgBoxType || ''}
+                        show={this.props.msgBoxShow || false}
+                        onClose={() => this.props.msgBoxOnClose()}
+                        onWarningContinue={() => this.props.msgBoxOnContinue()}
+                        message={this.props.msgBoxMsg || ''}
+                    />
+
+                    <PromptScreen.PromptGeneric 
+                        show= {this.props.loadingScreenShow || false} 
+                        title={this.props.loadingScreenMsg || ''}
+                    />
+                    
                 </View>
             );
         }

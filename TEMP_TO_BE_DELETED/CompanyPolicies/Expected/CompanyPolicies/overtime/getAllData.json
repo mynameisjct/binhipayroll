@@ -19,6 +19,9 @@
                 "value": "5 hours",
                 "options": ["Unlimited Duration",  "1 hour", "2 hours", "3 hours", "4 hours", "5 hours"]
             },
+
+            "isabsoluterule": false,
+            "isabsoluterulenote": "make threshhold rule applicable to holidays and restdays",
             
             "rates":{
                 "regularworkingday": {

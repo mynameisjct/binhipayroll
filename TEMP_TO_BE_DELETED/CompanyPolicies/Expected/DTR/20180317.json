@@ -72,7 +72,7 @@
                         "label":"UNDERTIME",
                         "value":"1 Hour",
                         "remarks":"System Computed",
-                        "marking": "nodispute"
+                        "marking":"nodispute"
                     },
                     {
                         "label":"TARDINESS",

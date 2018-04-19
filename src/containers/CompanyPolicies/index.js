@@ -24,6 +24,7 @@ import Leaves from './leaves';
 import Benefits from './benefits';
 import Bonus from './bonus';
 import Ranks from './ranks';
+import EmployeeSavingsPolicy from './savings';
 
 //Redux
 import { connect } from 'react-redux';
@@ -133,7 +134,7 @@ export class CompanyPolicies extends Component {
                     key : '009',
                     name: '13th Month Pay',
                     iconName: 'wunderlist',
-                    btnColor: btnActive,
+                    btnColor: btnInactive,
                     /* childComponent: <Bonus 
                         status={this.state._bonusStatus} 
                         triggerRefresh={this._getBonusRule}/> */
@@ -147,6 +148,15 @@ export class CompanyPolicies extends Component {
                         status={this.state._ranksStatus} 
                         triggerRefresh={this._getRanksRule}/> */
                 },
+                {
+                    key : '011',
+                    name: 'Employee Savings',
+                    iconName: 'cash-100',
+                    btnColor: btnActive,
+                    /* childComponent: <Ranks 
+                        status={this.state._ranksStatus} 
+                        triggerRefresh={this._getRanksRule}/> */
+                }
             ],
         }
         
@@ -185,7 +195,7 @@ export class CompanyPolicies extends Component {
                 _objActiveCompany: {...oProps.activecompany}
             },
                 () => {
-                    this._setActiveChild({key:'010'});
+                    this._setActiveChild({key:'011'});
                     this.setState({_status: 1});
                 }
             )
@@ -215,7 +225,7 @@ export class CompanyPolicies extends Component {
             this._setButtons(oItem); //immediately trigg
             requestAnimationFrame(() => {
                 this._setChildComponent(oItem);
-                this.flatListRef.scrollToIndex({animated: true, index: Number(oItem.key)-1});
+                /* this.flatListRef.scrollToIndex({animated: true, index: Number(oItem.key)-1}); */
             })
         }
     }
@@ -231,9 +241,9 @@ export class CompanyPolicies extends Component {
         this.setState({ _activeChild: oItem.key })
     }
 
-    _getItemLayout = (data, index) => (
-        { length: 50, offset: 50 * index, index }
-      )
+    /* _getItemLayout = (data, index) => (
+        { length: 60, offset: 60 * index, index }
+      ) */
 
     render(){
         
@@ -278,6 +288,9 @@ export class CompanyPolicies extends Component {
                 case '010':
                     childComponent = (<Ranks/>);
                     break;
+                case '011':
+                    childComponent = (<EmployeeSavingsPolicy/>);
+                    break;
                 default:
                     childComponent = (<StatusLoader.PromptLoading title='Loading...'/>);
                     break;
@@ -298,7 +311,7 @@ export class CompanyPolicies extends Component {
                                 </Text>
                             </LinearGradient>
                             <FlatList
-                                getItemLayout={this._getItemLayout}
+                                /* getItemLayout={this._getItemLayout} */
                                 ref={(ref) => { this.flatListRef = ref; }}
                                 data={this.state._policyList}
                                 renderItem={({item}) => 
