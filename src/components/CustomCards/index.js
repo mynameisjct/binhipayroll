@@ -242,7 +242,6 @@ export class PropLevel2 extends Component{
     }
 
     _getBorder = () => {
-        /* console.log('this.state.hideBorder: ' + this.state.hideBorder); */
         if (this.state.hideBorder){
             return({
                 borderWidth: 0
@@ -251,12 +250,6 @@ export class PropLevel2 extends Component{
     }
 
     render(){
-/*         console.log('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX');
-        console.log('this.props.name: ' + this.props.name); 
-        console.log(' this.props.contentType: + ' + this.props.contentType || 'NO CONTENT TYPE');
-        console.log('this.state.contentType: + ' + this.state.contentType || 'NO CONTENT TYPE');
-        console.log('this.props.content: ' + this.props.content);  */
-
         let oContent = null
 
         if(this.state.contentType.toUpperCase() == 'TEXT'){

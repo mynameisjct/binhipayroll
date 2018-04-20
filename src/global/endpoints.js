@@ -18,6 +18,14 @@ export let baseURL = {
  	}
 }
 
+export let newBaseURL = {
+	activeCompany: function(){
+		return(
+		'company/' + getActiveCompany()
+		)
+ 	}
+}
+
 export let company = {
 	branch: function(payload){
 		return(
@@ -226,16 +234,32 @@ export let policy = {
 				payload.data.id
 			)
 		},
-	 },
-	 
-	 positions: {
+	},
+	
+	positions: {
 		get: function(payload){
 			return(
 				baseURL.activeCompany() +
 				'/position'
 			)
 		},
-	 }
+	},
+
+	savings: {
+		get: function(payload){
+			return(
+				newBaseURL.activeCompany() +
+				'/policy/employeesavings/'
+			)
+		},
+
+		update: function(payload){
+			return(
+				newBaseURL.activeCompany() +
+				'/policy/employeesavings/'
+			)
+		}
+	}
 }
 
 export let mock = {

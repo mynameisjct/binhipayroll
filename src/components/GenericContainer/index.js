@@ -3,6 +3,8 @@ import {
     View,
     Text, 
     TouchableNativeFeedback,
+    ScrollView,
+    RefreshControl
 } from 'react-native';
 import * as PromptScreen from '../ScreenLoadStatus';
 import MessageBox from '../MessageBox';
@@ -10,7 +12,10 @@ import MessageBox from '../MessageBox';
 import styles from './styles';
 
 export default class GenericContainer extends Component {
-    
+    state = {
+        refreshing: false
+    }
+
     _onRefresh = () => {
         this.props.onRefresh();
     }
@@ -22,13 +27,23 @@ export default class GenericContainer extends Component {
         else if(this.props.status[0] == 1){
             return (
                 <View style={[styles.container, this.props.containerStyle ? this.props.containerStyle : {}]}>
-                    { this.props.children }
+                    <ScrollView
+                        refreshControl={
+                            <RefreshControl
+                                refreshing={this.state.refreshing}
+                                onRefresh={() => this.props.onRefresh()}
+                            />
+                        }
+                    >
+                        { this.props.children }
+                    </ScrollView>
                     
                     <MessageBox
                         promptType={this.props.msgBoxType || ''}
                         show={this.props.msgBoxShow || false}
+                        onYes={() => this.props.msgBoxOnYes(this.props.msgBoxParam)}
                         onClose={() => this.props.msgBoxOnClose()}
-                        onWarningContinue={() => this.props.msgBoxOnContinue()}
+                        onWarningContinue={() => this.props.msgBoxOnContinue(this.props.msgBoxParam)}
                         message={this.props.msgBoxMsg || ''}
                     />
 

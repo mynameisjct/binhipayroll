@@ -142,3 +142,22 @@ export const generateEnums = (sourceArray, strPropName, strValue) => {
     });
     return(oEnums);
 }
+
+//Custom MessageBox Helper
+export const setMsgBox = (sMsgBox, show, type, msg, param) => {
+    let oMsgBox = {...sMsgBox};
+    oMsgBox.show = show;
+    oMsgBox.type = type;
+    oMsgBox.msg = msg;
+    oMsgBox.param = param;
+    return oMsgBox;
+}
+
+export const clearMsgBox = (sMsgBox) => {
+    let oMsgBox = {...sMsgBox};
+    oMsgBox.show = false;
+    oMsgBox.type = '';
+    oMsgBox.msg = '';
+    oMsgBox.param = '';
+    return oMsgBox;
+}

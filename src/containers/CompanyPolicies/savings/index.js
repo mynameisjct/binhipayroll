@@ -5,8 +5,16 @@ import {
     Alert,
     Switch
 } from 'react-native';
-import CustomCard from '../../../components/CustomCards';
+import CustomCard, {PropLevel2} from '../../../components/CustomCards';
 import GenericContainer from '../../../components/GenericContainer';
+import EmployeeSavingsPolicyForm from './form';
+import * as PromptScreen from '../../../components/ScreenLoadStatus';
+
+//Styles
+import styles from './styles';
+
+//helper
+import * as oHelper from '../../../helper';
 
 //Component Constants
 const TITLE = 'Employee Savings Policy';
@@ -15,12 +23,25 @@ const SWITCH_COLOR_ON = '#838383';
 const SWITCH_COLOR_THUMB = '#EEB843';
 const SWITCH_COLOR_TINT = '#505251';
 
-export default class EmployeeSavingsPolicy extends Component {
+//Redux
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import * as savingsPolicyActions from '../data/savings/actions';
+
+//API
+import * as savingsApi from '../data/savings/api';
+
+export class EmployeeSavingsPolicy extends Component {
     constructor(props){
         super(props);
         this.state = {
+            showEmployeeSavingsPolicyForm: false, 
+            disabledMode: false,
             data: {
-                isenabled: false
+                
+                isenabled: true,
+                datedisplayformat: 'MMM DD YYYY',
+                datedisplayformformat: 'MMMM DD, YYYY'
             },
 
             loadingScreen: {
@@ -31,28 +52,130 @@ export default class EmployeeSavingsPolicy extends Component {
             msgBox: {
                 show: false,
                 type: '',
-                msg: ''
+                msg: '',
+                param: ''
             },
             
         }
     }
-    _onRefresh = () => {
-        
+
+    componentDidMount(){
+        if(this.props.savingsPolicy.status[0] != 1){
+            this._fetchDataFromDB();
+        }
+    }
+
+    _fetchDataFromDB= () => {
+        this.props.actions.savingsPolicy.get();
     }
 
     _toggleSwitch = (value) => {
+        const oSavPol = this.props.savingsPolicy.data;
 
+        if(value){
+            this._setEmpSavPolForm(value);
+        }else{
+            this._setMessageBox(
+                true, 
+                'yes-no',
+                oSavPol ? oSavPol.msgdisablepolicy : '',
+                ['SWITCHPOLICY', value]
+            );
+        }
     }
 
-    _msgBoxOnClose = () => {
-        let oMsgBox = {...this.state.msgBox};
-        oMsgBox.show = false;
-        oMsgBox.type = '';
-        oMsgBox.msg = '';
-        
+    
+
+    _onCloseEmpSavPolForm = () => {
+        const msg = 'Any unsaved data will be lost. Are you sure you want to exit from ' + 
+            TITLE + 
+            ' set-up ?'
+        this._setMessageBox(
+            true, 
+            'yes-no',
+            msg,
+            ['CLOSEPOLICYFORM', true]
+        )
+    }
+    
+    _onSubmitEmpSavPolForm = (value) => {
+        this._setMessageBox(
+            true, 
+            'yes-no',
+            this.props.savingsPolicy.data.questionupdatepolicy,
+            ['UPDATEPOLICY', value]
+        )
+    }
+
+    _updateEmpSavPol= async(data) => {
+        this._setLoadingScreen(true, this.props.savingsPolicy.data.loadingupdatepolicy);
+        await savingsApi.update(data)
+            .then((response) => response.json())
+            .then((res) => {
+                this._setMessageBox(true, res.flagno==1 ? 'success' : 'error-ok', res.flagno);
+            })
+            .catch((exception) => {
+                /* this._setMessageBox(true, 'error-ok', 'Failed to update ' + TITLE); */
+                this._setMessageBox(true, 'error-ok', exception.message);
+            });
+
+        this._setLoadingScreen(false);
+    }
+ 
+    _setEmpSavPolForm = (value) => {
         this.setState({
-            msgBox: oMsgBox
+            showEmployeeSavingsPolicyForm: value
         });
+    }
+
+    _setMessageBox = (show, type, msg, param) => {
+        this.setState({
+            msgBox: oHelper.setMsgBox(
+                this.state.msgBox, 
+                show, 
+                type,
+                msg,
+                param
+            )
+        })
+    }
+
+    _setLoadingScreen = (show, msg) => {
+        let oLoadingScreen = {...this.state.loadingScreen};
+        oLoadingScreen.show = show;
+        oLoadingScreen.msg = msg;
+        this.setState({ loadingScreen: oLoadingScreen });
+    }
+
+    _msgBoxOnClose = (params) => {
+        this.setState({
+            msgBox: oHelper.clearMsgBox(this.state.msgBox)
+        })
+    }
+
+    _msgBoxOnYes = (param) => {
+        console.log('param: ' + param );
+        switch(param[0].toUpperCase()){
+            case 'SWITCHPOLICY':
+                let oData = {...this.props.savingsPolicy.data};
+                oData.isenabled = param[1];
+                this._updateEmpSavPolForm(oData);
+                break;
+
+            case 'CLOSEPOLICYFORM':
+                this._setEmpSavPolForm(false);
+                this._setMessageBox(false);
+                break;
+
+            case 'UPDATEPOLICY':
+                this._setMessageBox(false);
+                this._updateEmpSavPol(param[1]);
+                break;
+
+            default:
+                this._setMessageBox(false);
+                break;
+        }
     }
 
     _onPress = () => {
@@ -65,37 +188,139 @@ export default class EmployeeSavingsPolicy extends Component {
         });
     }
 
-    render(){/*  */
-        return(
-            <GenericContainer
-                msgBoxShow = {this.state.msgBox.show}
-                msgBoxType = {this.state.msgBox.type}
-                msgBoxMsg = {this.state.msgBox.msg}
-                msgBoxOnClose = {this._msgBoxOnClose}
-                msgBoxOnContinue = {this._msgBoxOnClose}
-                loadingScreenShow = {this.state.loadingScreen.show}
-                loadingScreenMsg = {this.state.loadingScreen.msg}
-                status={[1, 'Success!']}
-                title={'TEST'}
-                onRefresh={this._onRefresh}>
+    render(){
+        const oSavPol = this.props.savingsPolicy.data;
+        const oSavPolStatus = this.props.savingsPolicy.status;
+        
+        if(!oSavPol){
+            return <PromptScreen.PromptLoading title={TITLE}/>;
+        }
 
-                <CustomCard 
-                    title={TITLE} 
-                    oType='switch'
-                    description = { DESCRIPTION } 
-                    rightHeader = {
-                        <Switch
-                            onValueChange={ (value) => {this._toggleSwitch(value)}} 
-                            onTintColor={SWITCH_COLOR_ON}
-                            thumbTintColor={SWITCH_COLOR_THUMB}
-                            tintColor={SWITCH_COLOR_TINT}
-                            value={this.state.data.isenabled}
+        else{
+            const lvl2BtnStyle = styles.level2Styles.button;
+            const lvl2TextStyle = styles.level2Styles.txt;
+            const lvl2ContStyle = styles.level2Styles.cont;
+            const lvl2PlaceholderStyle = styles.level2Styles.placeHolder;
+            const specialNoteStyle = styles.specialNoteStyle;
+
+            const oBody = 
+                <View>
+                    <PropLevel2 
+                        name={oSavPol.labelamount}
+                        content={
+                            <Text 
+                                style={this.state.disabledMode ?  lvl2TextStyle :  lvl2BtnStyle}
+                                disabled={ this.state.disabledMode ? true : false }
+                                onPress={() => this._setEmpSavPolForm(true)}
+                            >
+                                { oSavPol.amount }
+                            </Text>
+                        }
+                        hideBorder={true}
+                        placeHolderStyle={lvl2PlaceholderStyle}
+                        contentStyle={lvl2ContStyle}
+                    />
+
+                    <PropLevel2 
+                        name={ oSavPol.labelvalidfrom }
+                        content={
+                            <Text 
+                                style={this.state.disabledMode ?  lvl2TextStyle :  lvl2BtnStyle}
+                                disabled={ this.state.disabledMode ? true : false }
+                                onPress={() => this._setEmpSavPolForm(true)}
+                            >
+                                { oHelper.convertDateToString(oSavPol.validfrom, oSavPol.displaydateformat) }
+                            </Text>
+                        }
+                        hideBorder={true}
+                        placeHolderStyle={lvl2PlaceholderStyle}
+                        contentStyle={lvl2ContStyle}
+                    />
+                    <PropLevel2 
+                        name={oSavPol.labelvalidto}
+                        content={
+                            <Text 
+                                style={this.state.disabledMode ?  lvl2TextStyle :  lvl2BtnStyle}
+                                disabled={ this.state.disabledMode ? true : false }
+                                onPress={() => this._setEmpSavPolForm(true)}
+                            >
+                                { oSavPol.validto ? 
+                                    oHelper.convertDateToString(oSavPol.validto, oSavPol.displaydateformat) :
+                                    oSavPol.displaydatenull 
+                                }
+                            </Text>
+                        }
+                        hideBorder={true}
+                        placeHolderStyle={lvl2PlaceholderStyle}
+                        contentStyle={lvl2ContStyle}
+                    />
+                    <View style={specialNoteStyle.container}>
+                        <Text style={specialNoteStyle.txt}>
+                            {oSavPol.note}
+                        </Text>  
+                    </View>
+                </View>;
+            
+            return(
+                <GenericContainer
+                    msgBoxShow = {this.state.msgBox.show}
+                    msgBoxType = {this.state.msgBox.type}
+                    msgBoxMsg = {this.state.msgBox.msg}
+                    msgBoxOnClose = {this._msgBoxOnClose}
+                    msgBoxOnYes = {this._msgBoxOnYes}
+                    msgBoxParam = {this.state.msgBox.param}
+                    loadingScreenShow = {this.state.loadingScreen.show}
+                    loadingScreenMsg = {this.state.loadingScreen.msg}
+                    status={this.props.savingsPolicy.status}
+                    title={ oSavPol.title}
+                    onRefresh={this._fetchDataFromDB}>
+
+                    <CustomCard 
+                        title={TITLE} 
+                        oType='switch'
+                        description = { oSavPol.description }
+                        rightHeader = {
+                            <Switch
+                                onValueChange={ (value) => {this._toggleSwitch(value)}} 
+                                onTintColor={SWITCH_COLOR_ON}
+                                thumbTintColor={SWITCH_COLOR_THUMB}
+                                tintColor={SWITCH_COLOR_TINT}
+                                value={oSavPol.isenabled}
+                            />
+                        }
+                    >
+                        { oSavPol.isenabled ? oBody : null }
+                        <EmployeeSavingsPolicyForm 
+                            onCancel={this._onCloseEmpSavPolForm}
+                            onSubmit={this._onSubmitEmpSavPolForm}
+                            visible={this.state.showEmployeeSavingsPolicyForm}
+                            title='EMPLOYEE SAVINGS POLICY'
+                            data={oSavPol}
                         />
-                    }
-                >
-                </CustomCard>
-            </GenericContainer>
-        );
+                    
+                    </CustomCard>
+                </GenericContainer>
+            );
+        }
     }
     
 }
+
+function mapStateToProps (state) {
+    return {
+        savingsPolicy: state.companyPoliciesReducer.savings
+    }
+}
+
+function mapDispatchToProps (dispatch) {
+    return {
+        actions: {
+            savingsPolicy: bindActionCreators(savingsPolicyActions, dispatch),
+        }
+    }
+}
+  
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(EmployeeSavingsPolicy)
