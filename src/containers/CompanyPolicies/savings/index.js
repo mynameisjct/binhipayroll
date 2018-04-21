@@ -3,7 +3,9 @@ import {
     View,
     Text,
     Alert,
-    Switch
+    Switch,
+    ScrollView,
+    RefreshControl
 } from 'react-native';
 import CustomCard, {PropLevel2} from '../../../components/CustomCards';
 import GenericContainer from '../../../components/GenericContainer';
@@ -35,6 +37,7 @@ export class EmployeeSavingsPolicy extends Component {
     constructor(props){
         super(props);
         this.state = {
+            refreshing: false,
             showEmployeeSavingsPolicyForm: false, 
             disabledMode: false,
             data: {
@@ -79,7 +82,7 @@ export class EmployeeSavingsPolicy extends Component {
                 true, 
                 'yes-no',
                 oSavPol ? oSavPol.msgdisablepolicy : '',
-                ['SWITCHPOLICY', value]
+                ['SWITCHOFFPOLICY', value]
             );
         }
     }
@@ -112,7 +115,12 @@ export class EmployeeSavingsPolicy extends Component {
         await savingsApi.update(data)
             .then((response) => response.json())
             .then((res) => {
-                this._setMessageBox(true, res.flagno==1 ? 'success' : 'error-ok', res.flagno);
+                console.log('RES: ' + JSON.stringify(res));
+                if(res.flagno == 1){
+                    this._updateLocalStore(data);
+                    this._setEmpSavPolForm(false);
+                }
+                this._setMessageBox(true, res.flagno==1 ? 'success' : 'error-ok', res.message);
             })
             .catch((exception) => {
                 /* this._setMessageBox(true, 'error-ok', 'Failed to update ' + TITLE); */
@@ -120,6 +128,15 @@ export class EmployeeSavingsPolicy extends Component {
             });
 
         this._setLoadingScreen(false);
+    }
+
+    _updateLocalStore(data){
+        let oData = {...this.props.savingsPolicy.data};
+        oData.validfrom = data.validfrom;
+        oData.validto = data.validto;
+        oData.amount = data.amount;
+        oData.isenabled = data.isenabled;
+        this.props.actions.savingsPolicy.update(oData);
     }
  
     _setEmpSavPolForm = (value) => {
@@ -131,7 +148,7 @@ export class EmployeeSavingsPolicy extends Component {
     _setMessageBox = (show, type, msg, param) => {
         this.setState({
             msgBox: oHelper.setMsgBox(
-                this.state.msgBox, 
+                this.state.msgBox,
                 show, 
                 type,
                 msg,
@@ -156,10 +173,10 @@ export class EmployeeSavingsPolicy extends Component {
     _msgBoxOnYes = (param) => {
         console.log('param: ' + param );
         switch(param[0].toUpperCase()){
-            case 'SWITCHPOLICY':
+            case 'SWITCHOFFPOLICY':
                 let oData = {...this.props.savingsPolicy.data};
                 oData.isenabled = param[1];
-                this._updateEmpSavPolForm(oData);
+                this._updateEmpSavPol(oData);
                 break;
 
             case 'CLOSEPOLICYFORM':
@@ -274,31 +291,41 @@ export class EmployeeSavingsPolicy extends Component {
                     status={this.props.savingsPolicy.status}
                     title={ oSavPol.title}
                     onRefresh={this._fetchDataFromDB}>
-
-                    <CustomCard 
-                        title={TITLE} 
-                        oType='switch'
-                        description = { oSavPol.description }
-                        rightHeader = {
-                            <Switch
-                                onValueChange={ (value) => {this._toggleSwitch(value)}} 
-                                onTintColor={SWITCH_COLOR_ON}
-                                thumbTintColor={SWITCH_COLOR_THUMB}
-                                tintColor={SWITCH_COLOR_TINT}
-                                value={oSavPol.isenabled}
+                    <ScrollView
+                        scrollEnabled={this.props.scrollEnabled && true}
+                        refreshControl={
+                            <RefreshControl
+                                refreshing={this.state.refreshing}
+                                onRefresh={this._fetchDataFromDB}
                             />
                         }
                     >
-                        { oSavPol.isenabled ? oBody : null }
-                        <EmployeeSavingsPolicyForm 
-                            onCancel={this._onCloseEmpSavPolForm}
-                            onSubmit={this._onSubmitEmpSavPolForm}
-                            visible={this.state.showEmployeeSavingsPolicyForm}
-                            title='EMPLOYEE SAVINGS POLICY'
-                            data={oSavPol}
-                        />
+                        <CustomCard 
+                            title={TITLE} 
+                            oType='switch'
+                            description = { oSavPol.description }
+                            rightHeader = {
+                                <Switch
+                                    onValueChange={ (value) => {this._toggleSwitch(value)}} 
+                                    onTintColor={SWITCH_COLOR_ON}
+                                    thumbTintColor={SWITCH_COLOR_THUMB}
+                                    tintColor={SWITCH_COLOR_TINT}
+                                    value={oSavPol.isenabled}
+                                />
+                            }
+                        >
                     
-                    </CustomCard>
+                            { oSavPol.isenabled ? oBody : null }
+                            <EmployeeSavingsPolicyForm 
+                                onCancel={this._onCloseEmpSavPolForm}
+                                onSubmit={this._onSubmitEmpSavPolForm}
+                                visible={this.state.showEmployeeSavingsPolicyForm}
+                                title='EMPLOYEE SAVINGS POLICY'
+                                data={oSavPol}
+                            />
+                        
+                        </CustomCard>
+                    </ScrollView>
                 </GenericContainer>
             );
         }

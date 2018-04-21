@@ -7,6 +7,8 @@ import dataActionTriggerReducer  from './dataActionTrigger';
 import {reducer as companyPoliciesReducer} from './../containers/CompanyPolicies/data/reducer';
 import {employees} from './../containers/Employees/data/reducers';
 import {companyProfile} from './../containers/CompanyProfile/data/reducer';
+import { reducer as dtrReducer } from './../containers/DTR/data/reducer';
+
 const rootReducer= combineReducers({
     loginReducer,
     activeCompanyReducer,
@@ -15,7 +17,8 @@ const rootReducer= combineReducers({
     dataActionTriggerReducer,
     companyPoliciesReducer,
     employees,
-    companyProfile
+    companyProfile,
+    dtr: dtrReducer
 });
 
 export default rootReducer;

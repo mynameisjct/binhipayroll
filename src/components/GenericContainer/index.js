@@ -27,17 +27,7 @@ export default class GenericContainer extends Component {
         else if(this.props.status[0] == 1){
             return (
                 <View style={[styles.container, this.props.containerStyle ? this.props.containerStyle : {}]}>
-                    <ScrollView
-                        refreshControl={
-                            <RefreshControl
-                                refreshing={this.state.refreshing}
-                                onRefresh={() => this.props.onRefresh()}
-                            />
-                        }
-                    >
                         { this.props.children }
-                    </ScrollView>
-                    
                     <MessageBox
                         promptType={this.props.msgBoxType || ''}
                         show={this.props.msgBoxShow || false}

@@ -56,7 +56,12 @@ export default class EmployeeSavingsPolicyForm extends Component {
     _onDataChange = (value) => {
         let oData = {...this.state.data};
         oData.validfrom = value.validfrom;
-        oData.validto = value.validto;
+        if(value.isEndSet){
+            oData.validto = value.validto;
+        }else{
+            oData.validto = null;
+        }
+        
         oData.amount = value.amount;
         oData.isEndSet = value.isEndSet;
 
@@ -69,7 +74,7 @@ export default class EmployeeSavingsPolicyForm extends Component {
         Keyboard.dismiss();
         let oData = this.refs.form_employeesavingspolicy.getValue();
         if(oData){
-            this.props.onSubmit(oData)
+            this.props.onSubmit(this.state.data)
         }
     }
 
@@ -77,7 +82,7 @@ export default class EmployeeSavingsPolicyForm extends Component {
         const ENTITY = t.struct({
             amount: t.Number,
             validfrom: t.Date,
-            validto: t.maybe(t.Date),  
+            validto: this.state.data.isEndSet ? t.Date : t.maybe(t.Date),
             isEndSet: t.Boolean
         })
         
