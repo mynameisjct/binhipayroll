@@ -87,8 +87,6 @@ export class EmployeeSavingsPolicy extends Component {
         }
     }
 
-    
-
     _onCloseEmpSavPolForm = () => {
         const msg = 'Any unsaved data will be lost. Are you sure you want to exit from ' + 
             TITLE + 
@@ -172,9 +170,13 @@ export class EmployeeSavingsPolicy extends Component {
 
     _msgBoxOnYes = (param) => {
         console.log('param: ' + param );
+        let oData = null;
         switch(param[0].toUpperCase()){
             case 'SWITCHOFFPOLICY':
-                let oData = {...this.props.savingsPolicy.data};
+                oData = {...this.props.savingsPolicy.data};
+                oData.validfrom = null;
+                oData.validto = null;
+                oData.amount = 0;
                 oData.isenabled = param[1];
                 this._updateEmpSavPol(oData);
                 break;
@@ -186,7 +188,9 @@ export class EmployeeSavingsPolicy extends Component {
 
             case 'UPDATEPOLICY':
                 this._setMessageBox(false);
-                this._updateEmpSavPol(param[1]);
+                oData = {...param[1]};
+                oData.isenabled = true;
+                this._updateEmpSavPol(oData);
                 break;
 
             default:
@@ -219,6 +223,7 @@ export class EmployeeSavingsPolicy extends Component {
             const lvl2ContStyle = styles.level2Styles.cont;
             const lvl2PlaceholderStyle = styles.level2Styles.placeHolder;
             const specialNoteStyle = styles.specialNoteStyle;
+            const noteStyles = styles.noteStyles;
 
             const oBody = 
                 <View>
@@ -278,6 +283,20 @@ export class EmployeeSavingsPolicy extends Component {
                     </View>
                 </View>;
             
+            const oDisabledContent = 
+                <View style={noteStyles.container}>
+                    <View style={noteStyles.content}>
+                        <Text style={noteStyles.txtTitle}>Policy is currently turned OFF.</Text>
+                    </View>
+                        
+                    <View style={noteStyles.content}>
+                        <Text style={noteStyles.txtDescription}>{oSavPol.noteDisabled}</Text>
+                    </View>
+                    <View style={noteStyles.content}>
+                        <Text style={noteStyles.txtDescription}>{oSavPol.noteEnabled}</Text>
+                    </View>
+                </View>
+
             return(
                 <GenericContainer
                     msgBoxShow = {this.state.msgBox.show}
@@ -315,7 +334,7 @@ export class EmployeeSavingsPolicy extends Component {
                             }
                         >
                     
-                            { oSavPol.isenabled ? oBody : null }
+                            { oSavPol.isenabled ? oBody : oDisabledContent }
                             <EmployeeSavingsPolicyForm 
                                 onCancel={this._onCloseEmpSavPolForm}
                                 onSubmit={this._onSubmitEmpSavPolForm}

@@ -39,6 +39,8 @@ export default class DTRHeader extends Component {
 
     render(){
         const headerStyles = styles.header;
+        const oCurPeriod = this.props.data.currentperiod;
+        const oData = this.props.data;
 
         return(
             <View style={headerStyles.container}>
@@ -46,16 +48,16 @@ export default class DTRHeader extends Component {
                 </View>
                 <View style={headerStyles.contCenter}>
                     <View style={headerStyles.contPeriodDescription}>
-                        <Text style={headerStyles.txtTitle}>CURRRENT PERIOD</Text>
+                        <Text style={headerStyles.txtTitle}>{oCurPeriod.description}</Text>
                     </View>
                     <View style={headerStyles.contSchedule}>
                         <View style={headerStyles.contPeriod}>
-                            <Text style={headerStyles.txtSchedule}>PERIOD: Oct 11 to Oct 25, 2017</Text>
+                            <Text style={headerStyles.txtSchedule}>{oCurPeriod.period.label}</Text>
                         </View>
                         <View style={headerStyles.contDivider}>
                         </View>
                         <View style={headerStyles.contPayroll}>
-                            <Text style={headerStyles.txtSchedule}>PAYROLL DATE: Oct 30, 2017</Text>
+                            <Text style={headerStyles.txtSchedule}>{oCurPeriod.payroll.label}</Text>
                         </View>
                     </View>
                 </View>
@@ -69,8 +71,8 @@ export default class DTRHeader extends Component {
                 {
                     this.state._bShowPicker ? 
                         <CustomPicker 
-                            list={this.props.data.payrollperiod}
-                            dateformat={this.props.data.datedisplayformat}
+                            list={oData.payrollperiod}
+                            dateformat={oData.datedisplayformat}
                             emptyprompt = 'Error: No data found'
                             title='SELECT PAYROLL PERIOD'
                             onSelect={this._onSelect}

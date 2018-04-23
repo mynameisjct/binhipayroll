@@ -11,9 +11,15 @@ import styles from './styles';
 import DTRCalendar from './calendar';
 import DTRHeader from './header';
 
+
+//Redux
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import * as empDtrActions from './data/actions';
+
 import {dtr} from './data';
 
-export default class EmployeeDTRCalendar extends Component {
+export class EmployeeDTRCalendar extends Component {
     constructor(props){
         super(props);
         this.state = {
@@ -23,20 +29,28 @@ export default class EmployeeDTRCalendar extends Component {
     }
 
     componentDidMount(){
+        this._getDataFromDB();
+    }
+
+    _getDataFromDB = () => {
+        const activeProfile = this.props.employees.activeProfile.data;
+        this.props.actions.empDtr.get({payrollid: '', employeeId: activeProfile.id});
+    }
+    /* componentDidMount(){
         setTimeout( () => {
             this.setState({_bDidMount: true});
         },100);
-    }
+    } */
     
     render(){
-        if(this.state._bDidMount){
+        if(this.props.empDtr.status[0] == 1){
             return(
                 <View style={styles.container}>
                     <View style={styles.dividerHeader}>
-                        <DTRHeader data={dtr}/>
+                        <DTRHeader data={this.props.empDtr.data}/>
                     </View>
                     <View style={styles.dividerBody}>
-                        <DTRCalendar data={dtr}/>
+                        <DTRCalendar data={this.props.empDtr.data}/>
                     </View>
                 </View>
             )
@@ -51,3 +65,25 @@ export default class EmployeeDTRCalendar extends Component {
         }
     }
 }
+
+function mapStateToProps (state) {
+    return {
+        empDtr: state.dtr,
+        employees: state.employees
+    }
+}
+
+function mapDispatchToProps (dispatch) {
+    return {
+        actions: {
+            empDtr: bindActionCreators(empDtrActions, dispatch),
+        }
+    }
+}
+  
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(EmployeeDTRCalendar)
+
+

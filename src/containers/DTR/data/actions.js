@@ -16,7 +16,7 @@ export const get = payload =>
 		.then((response) => response.json())
 		.then((res) => {
 			console.log('BENEFITS_res: ' + JSON.stringify(res));
-			dispatch(update(res.currentperiod));
+			dispatch(update(res));
 			objRes = {...res}
 		})
 		.then(() => {
@@ -38,3 +38,4 @@ export const updateStatus = payload => ({
 	type: actionTypes.STATUS,
 	payload,
 });
+

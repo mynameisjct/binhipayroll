@@ -150,7 +150,7 @@ export class CompanyPolicies extends Component {
                 },
                 {
                     key : '011',
-                    name: 'Employee Savings',
+                    name: 'Employee\nSavings',
                     iconName: 'cash-100',
                     btnColor: btnActive,
                     /* childComponent: <Ranks 

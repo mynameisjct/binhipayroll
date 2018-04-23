@@ -34,8 +34,7 @@ export default class DTRCalendar extends Component {
           newtime: null,
           remarks: '',
         },
-        items: this.props.data,
-        selected: '2018-02-26'
+        selected: null
     };
   }
 
@@ -71,7 +70,7 @@ export default class DTRCalendar extends Component {
 
   _onDayPress = (day) => {
     this.setState({
-        selected: '2018-02-26'
+        selected: day
     });
   }
 
@@ -87,22 +86,24 @@ export default class DTRCalendar extends Component {
     }
 
   render() {
-    console.log('this.state.items: ' + JSON.stringify(this.state.items));
+    const oData = this.props.data;
+    const oCurPeriod = this.props.data.currentperiod;
+    /* console.log('this.state.items: ' + JSON.stringify(this.state.items)); */
     return (
         <View style={styles.container}>
             <Agenda
                 style={styles.container}
-                items={this.state.items.currentperiod.details}
+                items={oCurPeriod.details}
                 loadItemsForMonth={this.loadItems.bind(this)}
-                selected={this.state.selected}
+                selected={this.state.selected ? this.state.selected : oCurPeriod.period.datefrom}
                 onDayPress={this._onDayPress}
                 renderItem={this.renderItem.bind(this)}
                 renderEmptyDate={this.renderEmptyDate.bind(this)}
                 rowHasChanged={this.rowHasChanged.bind(this)}
-                minDate={'2018-02-26'}
-                maxDate={'2018-03-10'}
+                minDate={oCurPeriod.period.datefrom}
+                maxDate={oCurPeriod.period.dateto}
                 markingType={'multi-dot'}
-                markedDates={this.state.items.currentperiod.markings}
+                markedDates={oCurPeriod.markings}
                 pastScrollRange={1}
                 futureScrollRange={2}
                 // agenda theme
@@ -155,7 +156,8 @@ export default class DTRCalendar extends Component {
   }
 
   renderItem(item) {
-    let oLabels = this.state.items.labels;
+    const oLabels = this.props.data.labels;
+
     let oTimeIn = {...item.data.timein};
     let oTimeOut = {...item.data.timeout};
     let aValidations = [...item.data.rulesvalidation];
@@ -167,7 +169,7 @@ export default class DTRCalendar extends Component {
         <DTRItem
           date={item.data.date}
           name={oLabels.timein} 
-          value={oTimeIn.value}
+          value={oTimeIn.value ? oTimeIn.value : ''}
           remarks={oTimeIn.remarks} 
           remarksColor={null}
           showButton={true} 
@@ -177,7 +179,7 @@ export default class DTRCalendar extends Component {
         <DTRItem 
           date={item.data.date}
           name={oLabels.timeout} 
-          value={oTimeOut.value}
+          value={oTimeOut.value ? oTimeOut.value : ''}
           remarks={oTimeOut.remarks}
           remarksColor={null}
           showButton={true} 

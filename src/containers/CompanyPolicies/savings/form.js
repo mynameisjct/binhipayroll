@@ -36,6 +36,7 @@ export default class EmployeeSavingsPolicyForm extends Component {
             :
             null;
         this.state={
+            disabledSave: true,
             didMount: false,
             data: {
                 id: this.props.data.id,
@@ -64,9 +65,10 @@ export default class EmployeeSavingsPolicyForm extends Component {
         
         oData.amount = value.amount;
         oData.isEndSet = value.isEndSet;
-
+        
         this.setState({
-            data: oData
+            data: oData,
+            disabledSave: false
         })
     }
 
@@ -79,18 +81,36 @@ export default class EmployeeSavingsPolicyForm extends Component {
     }
 
     render() {
+        const dValidFrom = this.state.data.validfrom;
+        const Amount = t.refinement(t.Number, function (n) { return n > 0; });
+        const ValidTo = t.refinement(t.Date, function (n) { return n > dValidFrom; });
+        // if you define a getValidationErrorMessage function, it will be called on validation errors
+
+        Amount.getValidationErrorMessage = function (value, path, context) {
+            return '*Set savings a mount per pay day';
+        };
+
+        ValidTo.getValidationErrorMessage = function (value, path, context) {
+            if(dValidFrom && value){
+                return '*"Valid To" must not be earlier than "Valid From"'
+            }else{
+                return '*Required field'
+            }
+            
+        };
+        
+
         const ENTITY = t.struct({
-            amount: t.Number,
+            amount: Amount,
             validfrom: t.Date,
-            validto: this.state.data.isEndSet ? t.Date : t.maybe(t.Date),
+            validto: this.state.data.isEndSet ? ValidTo : t.maybe(ValidTo),
             isEndSet: t.Boolean
         })
         
         const OPTIONS = {
             fields: {
                 amount:{ 
-                    label: 'AMOUNT PER PAY DAY',
-                    error: '*Enter Savings Amount'
+                    label: 'AMOUNT PER PAY DAY'
                 },
 
                 validfrom: {
@@ -111,7 +131,7 @@ export default class EmployeeSavingsPolicyForm extends Component {
                     config:{
                         format:  (strDate) => oHelper.convertDateToString(strDate, this.props.data.displaydateformformat)
                     },
-                    error: '*Required field'
+                    /* error: '*Required field' */
                 },
 
                 isEndSet: {
@@ -128,6 +148,7 @@ export default class EmployeeSavingsPolicyForm extends Component {
                 visible={this.props.visible}
                 onCancel={this.props.onCancel}
                 onOK={this._onSubmit}
+                disabledSave={this.state.disabledSave}
                 title={this.props.title}
                 submitLabel='SAVE'>
                 

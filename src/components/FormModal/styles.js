@@ -90,9 +90,19 @@ export default {
         },
 
         txtBtn: {
-            fontFamily: 'Helvetica-Bold',
-            fontSize: 15,
-            textAlignVertical: 'center'
+            enabled: {
+                fontFamily: 'Helvetica-Bold',
+                fontSize: 15,
+                textAlignVertical: 'center',
+                color: '#434646'
+            },
+            disabled: {
+                fontFamily: 'Helvetica-Bold',
+                fontSize: 15,
+                textAlignVertical: 'center',
+                color: '#D1D4D6'
+            }
+            
         },
 
         contTextWrapper: {

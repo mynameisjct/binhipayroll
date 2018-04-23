@@ -83,6 +83,32 @@ export default {
             paddingRight: 40,
             paddingBottom: 25
         }
+    },
+
+    noteStyles: {
+        container: {
+            paddingRight: 15,
+            paddingLeft: 15,
+            paddingTop: 10
+        },
+        
+        content: {
+            paddingTop: 20
+        },
+
+        txtTitle: {
+            fontFamily: 'Helvetica-Bold',
+            fontWeight: '500',
+            fontSize: 14,
+            color: '#505251'
+        },
+
+        txtDescription: {
+            fontFamily: 'Helvetica-Light',
+            fontSize: 14,
+            color: '#838383'
+        }
+        
     }
     
 }

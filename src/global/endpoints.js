@@ -9,6 +9,7 @@ export const getActiveCompany = () => {
 	return store.getState().activeCompanyReducer.activecompany.id;
 };
 
+
 export let baseURL = {
 	activeCompany: function(){
 		return(
@@ -259,6 +260,25 @@ export let policy = {
 				'/policy/employeesavings/'
 			)
 		}
+	}
+}
+
+export let reports = {
+	dtr: {
+		get: function(payload){
+			return(
+				baseURL.activeCompany() +
+				'/employee/'  + payload.employeeId + 
+				'/reports/dtr/' + payload.payrollid
+			)
+		},
+
+		update: function(payload){
+			return(
+				policy.ranks.get() + 
+				payload.data.id
+			)
+		},
 	}
 }
 

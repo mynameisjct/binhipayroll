@@ -51,7 +51,7 @@ export default class FormModal extends PureComponent {
                                 <TouchableOpacity 
                                     style={this.props.viewOnly || false ?  styles.modalRules.btnContSingleBtn : styles.modalRules.btnContLeft}
                                     onPress={() => this.props.onCancel()}>
-                                        <Text style={styles.modalRules.txtBtn}>{this.props.cancelLabel || 'CANCEL'}</Text>
+                                        <Text style={styles.modalRules.txtBtn.enabled}>{this.props.cancelLabel || 'CANCEL'}</Text>
                                 </TouchableOpacity>
     
                                 {
@@ -59,9 +59,10 @@ export default class FormModal extends PureComponent {
                                         null
                                     :
                                         <TouchableOpacity 
+                                            disabled={this.props.disabledSave || false}
                                             style={styles.modalRules.btnContRight}
                                             onPress={() => this.props.onOK()}>
-                                                <Text style={styles.modalRules.txtBtn}>
+                                                <Text style={this.props.disabledSave ? styles.modalRules.txtBtn.disabled : styles.modalRules.txtBtn.enabled}>
                                                     {this.props.submitLabel || 'OK'}
                                                 </Text>
                                         </TouchableOpacity>
