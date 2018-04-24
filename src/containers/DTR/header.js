@@ -27,8 +27,9 @@ export default class DTRHeader extends Component {
         })
     }
 
-    _onSelect = () => {
+    _onSelect = (id) => {
         this._hidePicker();
+        this.props.onPeriodSwitch(id);
     }
     
     _hidePicker = () => {

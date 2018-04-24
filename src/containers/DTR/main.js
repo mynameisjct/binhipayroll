@@ -29,12 +29,12 @@ export class EmployeeDTRCalendar extends Component {
     }
 
     componentDidMount(){
-        this._getDataFromDB();
+        this._getDataFromDB('');
     }
 
-    _getDataFromDB = () => {
+    _getDataFromDB = (id) => {
         const activeProfile = this.props.employees.activeProfile.data;
-        this.props.actions.empDtr.get({payrollid: '', employeeId: activeProfile.id});
+        this.props.actions.empDtr.get({payrollid: id, employeeId: activeProfile.id});
     }
     /* componentDidMount(){
         setTimeout( () => {
@@ -47,7 +47,10 @@ export class EmployeeDTRCalendar extends Component {
             return(
                 <View style={styles.container}>
                     <View style={styles.dividerHeader}>
-                        <DTRHeader data={this.props.empDtr.data}/>
+                        <DTRHeader 
+                            data={this.props.empDtr.data}
+                            onPeriodSwitch={this._getDataFromDB}
+                        />
                     </View>
                     <View style={styles.dividerBody}>
                         <DTRCalendar data={this.props.empDtr.data}/>
