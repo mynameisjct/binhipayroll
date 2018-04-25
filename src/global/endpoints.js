@@ -282,6 +282,25 @@ export let reports = {
 	}
 }
 
+export let transactions = {
+	payroll:{
+		get: function(payload){
+			return(
+				baseURL.activeCompany() +
+				'payrollschedule/all?filter=COMPANY&'+
+				'companyid=' + getActiveCompany()
+			)
+		},
+
+		update: function(payload){
+			return(
+				policy.ranks.get() + 
+				payload.data.id
+			)
+		}
+	}
+}
+
 export let mock = {
 	company: {
 		branch: 'http://www.mocky.io/v2/5a8bd883320000f92c1ac015'
