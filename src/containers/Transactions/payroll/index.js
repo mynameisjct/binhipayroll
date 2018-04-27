@@ -9,27 +9,150 @@ import { withNavigation } from 'react-navigation';
 
 //Children Components
 import PayrollTransactionForm from './form';
+import * as PromptScreen from '../../../components/ScreenLoadStatus';
+import MessageBox from '../../../components/MessageBox';
 
 //Constants
 const TITLE = 'GENERATE PAYROLL';
 
-class PayrollTransaction extends Component {
+//Redux
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import * as payrollListActions from '../data/payrollTransaction/actions';
+import * as payrollGenerationApi from '../../PayrollGeneration/data/api';
 
-    _onFormSubmit = () => {
-        this.props.onSubmit();
-        this.props.navigation.navigate('PayrollSummary');
+//helper
+import * as oHelper from '../../../helper';
+
+export class PayrollTransaction extends Component {
+    constructor(props){
+        super(props);
+        this.state = {
+            calculating: false,
+            calculatingMsg: '',
+            refreshing: false
+        }
+    }
+
+    _onFormSubmit = (oData) => {
+        /* this.props.onSubmit(); */
+        /* this.props.navigation.navigate('PayrollGeneration'); */
+        this._setCalculationStatus(true, oData);
+        this._generatePayroll(oData);
+    }
+
+    _generatePayroll = async (oData) => {
+        await payrollGenerationApi.generate(oData.id)
+            .then((response) => response.json())
+            .then((res) => {
+                this._setCalculationStatus(false, oData);
+                console.log('RES_GEN_PAYROLL: ' + JSON.stringify(res));
+                if(res.flagno == 1){
+                    this._hideForm();
+                    this.props.navigation.navigate('PayrollGeneration');
+                }else{
+                    //Promp Error
+                }
+            })
+            .catch((exception) => {
+                this._setCalculationStatus(false, oData);
+                console.log('RES_GEN_PAYROLL: ' + exception.message);
+            });
+    }
+
+    _setCalculationStatus = (value, oData) => {
+        this.setState({
+            calculating: value,
+            calculatingMsg: 'Calculating Payroll. Please wait...' + 
+                '\nPayroll Date: ' + oHelper.convertDateToString(oData.payrollDate, 'MMMM DD, YYYY')+
+                '\nPayroll Period: ' + oHelper.convertDateToString(oData.periodFrom, 'MMM DD, YYYY')+
+                ' - ' + oHelper.convertDateToString(oData.periodTo, 'MMM DD, YYYY')
+        });
+    }
+
+    componentDidMount(){
+        this._getDataFromDB();
+    }
+
+    _getDataFromDB = () => {
+        this.props.actions.payrollList.get(); 
+    }
+
+    _hideForm = () => {
+        this.props.hideForm(true);
     }
 
     render(){
-        console.log('ENTERED LEAVE APPLICATION COMPONENT!')
-        return(
-            <PayrollTransactionForm
-                title={TITLE}
-                visible={this.props.visible}
-                onCancel={() => this.props.onCancel()}
-                onSubmit={this._onFormSubmit}/>
-        );
+        const payrollListData = this.props.payrollList.data;
+        const payrollListStatus = this.props.payrollList.status;
+
+        if(this.state.calculating){
+            return(
+                <PromptScreen.PromptGeneric 
+                    show= {true} 
+                    title={this.state.calculatingMsg}
+                />
+            );
+        }else if(payrollListStatus[0] != 1){
+            return(
+                <View style={{flex: 1, position: 'absolute'}}>
+                    {
+                        payrollListStatus[0] == 0 ?
+                            <MessageBox
+                                promptType={'error-ok'}
+                                show={true}
+                                onClose={this._hideForm}
+                                message={'Unable to fetch Payroll List. Check your internet or Please try again.'}
+                            />
+                        : 
+                            payrollListStatus[0] == 2 ?
+                                <PromptScreen.PromptGeneric 
+                                    show= {true} 
+                                    title={'Fetching Payroll List... Please wait...'}
+                                />
+                            : null
+
+                    }
+                </View>
+            );
+        }else if(payrollListData.list.length < 1){
+            return(
+                <MessageBox
+                    promptType={'error-ok'}
+                    show={true}
+                    onClose={this._hideForm}
+                    message={'Cannot process request. No Existing Payroll Schedule found. Set Payroll Policy first.'}
+                />
+            );
+        }else{
+            return(
+                <PayrollTransactionForm
+                    data={payrollListData.list}
+                    title={TITLE}
+                    visible={this.props.visible}
+                    onCancel={() => this.props.onCancel()}
+                    onSubmit={this._onFormSubmit}/>
+            );
+        }
+        
     }
 }
 
-export default withNavigation(PayrollTransaction);
+function mapStateToProps (state) {
+    return {
+        payrollList: state.transactions.payrollList
+    }
+}
+
+function mapDispatchToProps (dispatch) {
+    return {
+        actions: {
+            payrollList: bindActionCreators(payrollListActions, dispatch),
+        }
+    }
+}
+  
+export default  withNavigation(connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(PayrollTransaction))

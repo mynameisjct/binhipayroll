@@ -9,7 +9,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 //Styles
 import styles from '../styles';
 
-export default class PayrollSummaryInfoHeader extends Component {
+export default class PayrollGenerationInfoHeader extends Component {
     render(){
         const headerStyles = styles.summaryStyles.header;
         const textStyles = styles.textStyles;

@@ -7,7 +7,7 @@ export const update = payload => ({
 	payload,
 });
 
-export const get = payload => 
+export const generate = payload => 
 	dispatch => {
 		let objRes = {};
 		dispatch(updateStatus(CONSTANTS.STATUS.LOADING));
@@ -15,7 +15,7 @@ export const get = payload =>
 		api.get(payload)
 		.then((response) => response.json())
 		.then((res) => {
-			console.log('PAYROLL_LIST: ' + JSON.stringify(res));
+			console.log('PAYROLL TRANSACTION: ' + JSON.stringify(res));
 			dispatch(update(res.data));
 			objRes = {...res}
 		})

@@ -36,7 +36,7 @@ export const getArrayOfDaysInMonth = (month) => {
 }
 
 export const convertDateToString = (strDate, format) => {
-    /* console.log('strDate:' + strDate); */
+    console.log('strDate:' + strDate);
     return moment(strDate).format(format);
 }
 
@@ -139,6 +139,14 @@ export const generateEnums = (sourceArray, strPropName, strValue) => {
     let oEnums = {};
     sourceArray.map((data,index) => {
         oEnums[data[strPropName]] = data[strValue]
+    });
+    return(oEnums);
+}
+
+export const generateDateEnums = (sourceArray, strPropName, strValue, format) => {
+    let oEnums = {};
+    sourceArray.map((data,index) => {
+        oEnums[data[strPropName]] = convertDateToString(data[strValue], format);
     });
     return(oEnums);
 }

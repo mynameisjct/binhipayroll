@@ -18,7 +18,7 @@ import EmployeePayslipForm from '../../Reports/payslip/payslipform';
 import EmployeeDTRCalendar from '../../DTR/main';
 import MonetaryAdjustmentForm from '../../Transactions/monetaryAdjustment';
 
-export default class PayrollSummaryEmployeeList extends Component {
+export default class PayrollGenerationEmployeeList extends Component {
     constructor(props){
         super(props);
         this.state = {

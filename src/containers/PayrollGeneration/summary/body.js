@@ -9,7 +9,7 @@ import {
 //Styles
 import styles from '../styles';
 
-export default class PayrollSummaryInfoBody extends Component {
+export default class PayrollGenerationInfoBody extends Component {
     render(){
         const bodyStyles = styles.summaryStyles.body;
         const textStyles = styles.textStyles;

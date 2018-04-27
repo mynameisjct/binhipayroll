@@ -34,12 +34,14 @@ export default class PayrollTransactionForm extends Component{
         super(props);
         this.state = {
             _bHasMounted: false,
+            _list: this.props.data,
+            _payrollEnums: oHelper.generateDateEnums(this.props.data, 'id', 'payrollDate', 'MMMM DD, YYYY'),
+            _oActiveData: null,
             _oFormData: {
-                payrolldate: '',
-                code: 'TEMP',
-                periodfrom: new Date(),
-                periodto: new Date(),
-                status: 'TEMP'
+                payrollid: '',
+                periodfrom: null,
+                periodto: null,
+                status: ''
             },
             _options: {}
         }
@@ -47,13 +49,32 @@ export default class PayrollTransactionForm extends Component{
     
     _onChange = (value) => {
         console.log('value: ' + JSON.stringify(value));
-        let oFormData = {...oFormData};
-        oFormData.payrolldate = value.payrolldate;
-        oFormData.code = value.code;
-        oFormData.periodfrom = value.periodfrom;
-        oFormData.periodto = value.periodto;
-        oFormData.status = value.status;
-        this.setState({_oFormData: oFormData})
+        let oFormData = {...this.state._oFormData};
+        let oActiveData = {...this.state._oActiveData};
+
+        if(oHelper.isStringEmpty(value.payrollid)){
+            oFormData.periodfrom = null;
+            oFormData.periodto = null;
+            oFormData.status = '';
+            oActiveData = null;
+        }else{
+            let oCurData = oHelper.getElementByPropValue(this.props.data, 'id', value.payrollid);
+            oActiveData = oCurData;
+            oFormData.payrollid = value.payrollid;
+            oFormData.periodfrom = oHelper.convertStringToDate(oCurData.periodFrom);
+            oFormData.periodto = oHelper.convertStringToDate(oCurData.periodTo);
+            if(oCurData.posted){
+                oFormData.status = 'CLOSED';
+            }else{
+                oFormData.status = 'OPEN';
+            }
+            
+        }
+
+        this.setState({
+            _oFormData: oFormData,
+            _oActiveData: oActiveData
+        })
     }
 
     componentDidMount(){
@@ -82,7 +103,7 @@ export default class PayrollTransactionForm extends Component{
         Keyboard.dismiss();
         let oFormData = this.refs.form_leaveapplication.getValue();
         if(oFormData){
-            this.props.onSubmit(oFormData)
+            this.props.onSubmit(this.state._oActiveData);
         }
     }
 
@@ -90,16 +111,10 @@ export default class PayrollTransactionForm extends Component{
         const formStyles = styles.formStyles;
         const OPTIONS = {
             fields: {
-                payrolldate: {
+                payrollid: {
                     template: customPickerTemplate,
                     label: 'SELECT PAYROLL DATE',
                     error: '*Select Payroll Date'
-                },
-
-                code:{ 
-                    label: 'PAYROLL CODE',
-                    editable: false,
-                    error: CONSTANTS.ERROR.FORM
                 },
 
                 periodfrom:{
@@ -134,18 +149,12 @@ export default class PayrollTransactionForm extends Component{
         };
 
         const FORMTYPE = t.struct({
-            payrolldate: t.enums({1:'March 15, 2018', 2:'February 28, 2018'}),
-            code: t.String,
-            periodfrom: t.Date,
-            periodto: t.Date,
-            status: t.String
-            /* effectivedate: t.Date,
-            benefittype: t.enums({1:'TEST1',2:'TEST2'}),
-            amountpermonth: t.maybe(t.String),
-            scheme: t.maybe(t.String) */
+            payrollid: t.enums(this.state._payrollEnums),
+            periodfrom: oHelper.isStringEmpty(this.state._oFormData.payrollid) ? t.maybe(t.Date) : t.Date,
+            periodto: oHelper.isStringEmpty(this.state._oFormData.payrollid) ? t.maybe(t.Date) : t.Date,
+            status: oHelper.isStringEmpty(this.state._oFormData.payrollid) ? t.maybe(t.String) : t.String,
         });
 
-            
         return(
             <FormModal 
                 containerStyle={formStyles.container}

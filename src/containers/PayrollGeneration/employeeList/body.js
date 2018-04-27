@@ -24,7 +24,7 @@ export default class PayrollEmployeeListBody extends Component {
             <View style={bodyStyles.container}>
                 <FlatList
                     contentContainerStyle={bodyStyles.listComponent}
-                    ref={(ref) => { this.ref_payrollSummaryEmployeeList = ref; }}
+                    ref={(ref) => { this.ref_payrollGenerationEmployeeList = ref; }}
                     data={this.props.data.employeelist.data}
                     keyExtractor={this._keyExtractor}
                     renderItem={({item}) => 

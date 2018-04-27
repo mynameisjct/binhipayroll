@@ -7,13 +7,13 @@ import {
 import Icon from 'react-native-vector-icons/Ionicons';
 import LinearGradient from 'react-native-linear-gradient';
 
-import PayrollSummaryInfo from './summary';
-import PayrollSummaryEmployeeList from './employeeList';
+import PayrollGenerationInfo from './summary';
+import PayrollGenerationEmployeeList from './employeeList';
 
 //Styles
 import styles from './styles';
 
-export default class PayrollSummary extends Component {
+export default class PayrollGeneration extends Component {
     constructor(props){
         super(props);
         this.state = {
@@ -115,8 +115,8 @@ export default class PayrollSummary extends Component {
                 start={{ x: 0, y: 1 }}
                 end={{ x: 1, y: 1 }}
                 style={styles.container}>
-                <PayrollSummaryInfo data={this.state._oData}/>
-                <PayrollSummaryEmployeeList data={this.state._oData}/>
+                <PayrollGenerationInfo data={this.state._oData}/>
+                <PayrollGenerationEmployeeList data={this.state._oData}/>
             </LinearGradient>
         );
     }

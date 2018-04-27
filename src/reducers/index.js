@@ -8,6 +8,7 @@ import {reducer as companyPoliciesReducer} from './../containers/CompanyPolicies
 import {employees} from './../containers/Employees/data/reducers';
 import {companyProfile} from './../containers/CompanyProfile/data/reducer';
 import { reducer as dtrReducer } from './../containers/DTR/data/reducer';
+import { reducer as transactionsReducer } from './../containers/Transactions/data/reducer';
 
 const rootReducer= combineReducers({
     loginReducer,
@@ -18,7 +19,8 @@ const rootReducer= combineReducers({
     companyPoliciesReducer,
     employees,
     companyProfile,
-    dtr: dtrReducer
+    dtr: dtrReducer,
+    transactions: transactionsReducer
 });
 
 export default rootReducer;

@@ -283,10 +283,9 @@ export let reports = {
 }
 
 export let transactions = {
-	payroll:{
+	payrollList:{
 		get: function(payload){
 			return(
-				baseURL.activeCompany() +
 				'payrollschedule/all?filter=COMPANY&'+
 				'companyid=' + getActiveCompany()
 			)
@@ -296,6 +295,15 @@ export let transactions = {
 			return(
 				policy.ranks.get() + 
 				payload.data.id
+			)
+		}
+	},
+
+	payroll:{
+		generate: function(payload){
+			return(
+				'payrolltransaction/' +
+				payload
 			)
 		}
 	}

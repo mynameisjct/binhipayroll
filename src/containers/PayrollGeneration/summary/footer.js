@@ -10,7 +10,7 @@ import {
 //Styles
 import styles from '../styles';
 
-export default class PayrollSummaryInfoFooter extends Component {
+export default class PayrollGenerationInfoFooter extends Component {
     render(){
         const footerStyles = styles.summaryStyles.footer;
         const textStyles = styles.textStyles;

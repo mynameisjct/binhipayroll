@@ -157,7 +157,8 @@ export class TransactionsList extends Component {
                         <PayrollTransaction
                             visible={this.state._showPayrollForm}
                             onCancel={this._onCancel}
-                            onSubmit={this._onSubmit}/> 
+                            onSubmit={this._onSubmit}
+                            hideForm={this._hideAllForms}/> 
                     : 
                         null
                 }
