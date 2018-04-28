@@ -70,7 +70,7 @@ export class EmpCompBenefits extends Component {
     }
 
     componentDidMount(){
-        this._getDataFromDB()
+        this._getDataFromDB();
     }
     
     _getDataFromDB = () => {
@@ -272,10 +272,10 @@ export class EmpCompBenefits extends Component {
         let pStatus = this.props.oBenefitsPolicy.status;
         let pProgress = pStatus[0];
         let pMessage = pStatus[1];
-
+        console.log(this.props.oBenefitsPolicy.status)
         if(pProgress==0){
             return (
-                <PromptScreen.PromptError title='Benefits Policy' onRefresh={this._getDataFromDB()}/>
+                <PromptScreen.PromptError title='Benefits Policy' onRefresh={this._getDataFromDB}/>
             ); 
         }
 

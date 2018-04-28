@@ -6,14 +6,21 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import LinearGradient from 'react-native-linear-gradient';
+import { withNavigation } from 'react-navigation'
 
 import PayrollGenerationInfo from './summary';
 import PayrollGenerationEmployeeList from './employeeList';
 
+//Redux
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import * as payrollGenerationApi from './data/api';
+import * as payrollGenerationActions from './data/actions';
+
 //Styles
 import styles from './styles';
 
-export default class PayrollGeneration extends Component {
+export class PayrollGeneration extends Component {
     constructor(props){
         super(props);
         this.state = {
@@ -115,9 +122,28 @@ export default class PayrollGeneration extends Component {
                 start={{ x: 0, y: 1 }}
                 end={{ x: 1, y: 1 }}
                 style={styles.container}>
-                <PayrollGenerationInfo data={this.state._oData}/>
-                <PayrollGenerationEmployeeList data={this.state._oData}/>
+                <PayrollGenerationInfo data={this.props.payrollGeneration.data}/>
+                <PayrollGenerationEmployeeList data={this.props.payrollGeneration.data}/>
             </LinearGradient>
         );
     }
 }
+
+
+function mapStateToProps (state) {
+    return {
+        payrollGeneration: state.payrollGeneration
+    }
+}
+
+function mapDispatchToProps (dispatch) {
+    return {
+        actions: {
+        }
+    }
+}
+  
+export default  withNavigation(connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(PayrollGeneration))

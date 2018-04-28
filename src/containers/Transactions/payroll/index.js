@@ -20,6 +20,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as payrollListActions from '../data/payrollTransaction/actions';
 import * as payrollGenerationApi from '../../PayrollGeneration/data/api';
+import * as payrollGenerationActions from '../../PayrollGeneration/data/actions';
 
 //helper
 import * as oHelper from '../../../helper';
@@ -47,8 +48,10 @@ export class PayrollTransaction extends Component {
             .then((res) => {
                 this._setCalculationStatus(false, oData);
                 console.log('RES_GEN_PAYROLL: ' + JSON.stringify(res));
+
                 if(res.flagno == 1){
                     this._hideForm();
+                    this.props.actions.payrollGeneration.update(res.data);
                     this.props.navigation.navigate('PayrollGeneration');
                 }else{
                     //Promp Error
@@ -102,7 +105,7 @@ export class PayrollTransaction extends Component {
                                 promptType={'error-ok'}
                                 show={true}
                                 onClose={this._hideForm}
-                                message={'Unable to fetch Payroll List. Check your internet or Please try again.'}
+                                message={'Unable to fetch Payroll List. Check your internet connection or Please try again.'}
                             />
                         : 
                             payrollListStatus[0] == 2 ?
@@ -148,6 +151,7 @@ function mapDispatchToProps (dispatch) {
     return {
         actions: {
             payrollList: bindActionCreators(payrollListActions, dispatch),
+            payrollGeneration: bindActionCreators(payrollGenerationActions, dispatch)
         }
     }
 }

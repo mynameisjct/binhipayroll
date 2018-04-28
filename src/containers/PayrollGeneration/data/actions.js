@@ -1,6 +1,6 @@
 import * as api from './api';
 import * as actionTypes from './actionTypes';
-import  { CONSTANTS } from '../../../../constants';
+import  { CONSTANTS } from '../../../constants';
 
 export const update = payload => ({
 	type: actionTypes.UPDATE,

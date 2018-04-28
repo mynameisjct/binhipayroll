@@ -1,6 +1,6 @@
 import * as actionTypes from './actionTypes';
 import { combineReducers } from 'redux';
-import  { CONSTANTS } from '../../../../constants';
+import  { CONSTANTS } from '../../../constants';
 
 const initialState = null;
 const initialStatus = CONSTANTS.STATUS.LOADING;

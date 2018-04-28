@@ -1,2 +1,2 @@
-export const UPDATE = 'payrollList/UPDATE';
-export const STATUS = 'payrollList/STATUS';
+export const UPDATE = 'payrollGeneration/UPDATE';
+export const STATUS = 'payrollGeneration/STATUS';

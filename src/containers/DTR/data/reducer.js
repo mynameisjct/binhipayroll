@@ -18,30 +18,33 @@ export const data = (state = initialState, action) => {
 
 const dtrFormatter = (payload) => {
 	let oData = {...payload};
-	let oCurPeriod = {...oData.currentperiod};
-	let oNewData = {};
-	let markings = {};
-	let details = {};
-	oCurPeriod.data.map((oDay, iDay) => {
-		markings[oDay.date] = {
-			dots: [
-				{color: payload.markingrules[
-					oDay.timein.marking
-				]},
-				{color: payload.markingrules[
-					oDay.timeout.marking
-				]}
-			]
-		};
+	if(oData){
+		let oCurPeriod = {...oData.currentperiod};
+		let oNewData = {};
+		let markings = {};
+		let details = {};
+		oCurPeriod.data.map((oDay, iDay) => {
+			markings[oDay.date] = {
+				dots: [
+					{color: payload.markingrules[
+						oDay.timein.marking
+					]},
+					{color: payload.markingrules[
+						oDay.timeout.marking
+					]}
+				]
+			};
 
-		details[oDay.date] = [{
-			data: {...oDay}
-		}]
-	})
-	/* oNewData.markings = {...markings};
-	oNewData.details = {...details}; */
-	oData.currentperiod.details = {...details};
-	oData.currentperiod.markings = {...markings};
+			details[oDay.date] = [{
+				data: {...oDay}
+			}]
+		})
+		/* oNewData.markings = {...markings};
+		oNewData.details = {...details}; */
+		oData.currentperiod.details = {...details};
+		oData.currentperiod.markings = {...markings};
+	}
+	
 	return oData;
 }
 

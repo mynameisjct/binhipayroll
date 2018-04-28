@@ -103,7 +103,7 @@ export class Undertime extends Component{
 
     componentWillReceiveProps(nextProps) {
         if(this.state._status[0] != nextProps.undertime.status[0]){
-                this.setState({ _status: nextProps.undertime.status })
+            this.setState({ _status: nextProps.undertime.status })
         }
 
         if(

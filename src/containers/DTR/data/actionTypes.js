@@ -1,2 +1,2 @@
-export const UPDATE = 'benefits/UPDATE';
-export const STATUS = 'benefits/STATUS';
+export const UPDATE = 'dtr/UPDATE';
+export const STATUS = 'dtr/STATUS';

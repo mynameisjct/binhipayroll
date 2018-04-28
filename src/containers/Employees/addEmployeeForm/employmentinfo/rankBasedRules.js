@@ -81,6 +81,16 @@ export class RankBasedRules extends Component{
         this._getRanksPolicyFromDB();
     }
 
+    componentWillReceiveProps(nextProps){
+        if(
+            (nextProps.ranksPolicy.status[0] == 1) && 
+            this.state._status[0] != 1
+        ){
+            this.setState({ _status: nextProps.ranksPolicy.status});
+            this._setActiveData(this.props.oEmpRank.data[0].id);
+        }
+    }
+
     _getRanksPolicyFromDB = () => {
         if(this.props.ranksPolicy.status[0] != 1){
             this.props.actions.ranks.get()
@@ -93,7 +103,7 @@ export class RankBasedRules extends Component{
         let oActiveRankRule = oHelper.getElementByPropValue(aRanksPolicy, 'id', oActiveData.rankid);
 
         this.props.actions.ranks.setActiveRule(oActiveRankRule);
-        this.setState({_oActiveData: oActiveData})
+        this.setState({_oActiveData: oActiveData});
     }
 
     _generateRanks = () => {
