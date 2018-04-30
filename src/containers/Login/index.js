@@ -25,7 +25,10 @@ import {
 import Icon from 'react-native-vector-icons/Ionicons';
 import moment from "moment";
 
+//Styles
 import styles from './styles';
+
+//Custom Components
 import DigitalClock from '../../components/DigitalClock';
 import Logo from '../../components/BinhiLogo';
 import MsgBox from '../../components/MessageBox';
@@ -33,7 +36,13 @@ import LoadingScreen from '../../components/LoadingScreen';
 import { NavigationActions } from 'react-navigation';
 import { connect } from 'react-redux';
 import {SetLoginInfo, SetActiveCompany} from '../../actions';
+
+//Api
 import apiConfig from '../../services/api/config';
+import * as session from '../../services/session';
+
+//Utils
+import _ from 'lodash';
 
 let tmpUsername = "admin";
 let tmpUserGroup = "employer";
@@ -186,6 +195,13 @@ export class Login extends Component {
 
 
     transLogin = (strType) => {
+        /* session.authenticate(this.state._username, this.state._password)
+        .then(() => {
+			console.log('transLogin');
+		})
+		.catch((exception) => {
+			console.log('exception');
+		}); */
         this.setState({_showSplash: true},
             () => {
                 this.setTransTime(

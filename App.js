@@ -17,10 +17,10 @@ import { MenuProvider } from 'react-native-popup-menu';
 
 const store = configureStore();
 
-store.subscribe(() => {
+/* store.subscribe(() => {
   console.log("Store is updated!", store.getState().companyPoliciesReducer.benefits);
 });
-
+ */
 export default class Main extends Component {
   render() {
     return (
