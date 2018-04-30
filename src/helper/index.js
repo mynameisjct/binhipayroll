@@ -1,4 +1,5 @@
 import moment from "moment";
+import DeviceInfo from 'react-native-device-info';
 
 //String Function
 export const isStringEmpty = (strValue) => {
@@ -168,4 +169,30 @@ export const clearMsgBox = (sMsgBox) => {
     oMsgBox.msg = '';
     oMsgBox.param = '';
     return oMsgBox;
+}
+
+//Device Info
+export const getDeviceInfo = async() => {
+    let strIpAddress = null;
+    let strMacAddress = null;
+    await DeviceInfo.getIPAddress().then(ip => {strIpAddress = ip});
+    await DeviceInfo.getMACAddress().then(ip => {strMacAddress = ip});
+
+    return ({
+        apilevel: DeviceInfo.getAPILevel(),
+        brand: DeviceInfo.getBrand(),
+        buildnumber:  DeviceInfo.getBuildNumber(),
+        carrier: DeviceInfo.getCarrier(),
+        deviceid: DeviceInfo.getDeviceId(),
+        devicename: DeviceInfo.getDeviceName(),
+        ipaddress: strIpAddress,
+        macaddress: strMacAddress,
+        model: DeviceInfo.getModel(),
+        phonenumber: DeviceInfo.getPhoneNumber(),
+        systemname: DeviceInfo.getSystemName(),
+        systemversion: DeviceInfo.getSystemVersion(),
+        timezone: DeviceInfo.getTimezone(),
+        uniqueid: DeviceInfo.getUniqueID(),
+        istablet: DeviceInfo.isTablet()
+    })
 }

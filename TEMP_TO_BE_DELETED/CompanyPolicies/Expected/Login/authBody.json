@@ -1,3 +1,21 @@
-{
-    
+{  
+    "sysdate":"04/30/2018",
+    "systime":"04:36:26 PM",
+    "deviceinfo":{  
+        "apilevel":25,
+        "brand":"Android",
+        "buildnumber":1,
+        "carrier":"Android",
+        "deviceid":"unknown",
+        "devicename":"Unknown",
+        "ipaddress":"192.168.232.2",
+        "macaddress":"02:00:00:44:55:66",
+        "model":"Android SDK built for x86_64",
+        "phonenumber":"15555215554",
+        "systemname":"Android",
+        "systemversion":"7.1.1",
+        "timezone":"GMT",
+        "uniqueid":"136cab17850969ce",
+        "istablet":true
+    }
 }
