@@ -5,10 +5,11 @@ import {
     TouchableNativeFeedback
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-
+import { withNavigation } from 'react-navigation';
 import styles from '../styles';
+import * as session from '../../../services/session';
 
-export default class SidebarFooterEmployer extends Component{
+class SidebarFooterEmployer extends Component{
     constructor(props){
         super(props);
         this.state = {
@@ -36,15 +37,34 @@ export default class SidebarFooterEmployer extends Component{
                     iconName: 'md-power',
                     iconSize: 20,
                     iconColor: '#434646',
-                    navigateTo: 'Employees',
+                    navigateTo: 'Login',
                     isActive: false
                 }
             ],
         }
     }
 
-    _onItemPress = () => {
+    _onItemPress = (data) => {
+        console.log('data: ' + JSON.stringify(data));
+        switch(data.key){
+            case '0001':
+                break;
+            case '0002':
+                break;
+            case '0003':
+                session.revoke()
+                .then((res)=>{
+                    if(res.flagno == 1){
+                        session.clearSession();
+                        this.props.navigation.navigate(data.navigateTo);
+                    }else{
 
+                    }
+                }).catch((exception)=> {
+                    console.log(exception);
+                });
+                break;
+        }
     }
 
     _navigateToProfile = () => {
@@ -108,3 +128,5 @@ export default class SidebarFooterEmployer extends Component{
         )
     }
 }
+
+export default withNavigation(SidebarFooterEmployer)

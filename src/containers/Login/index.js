@@ -196,16 +196,6 @@ export class Login extends Component {
     
 
     transLogin = async(strType) => {
-        //Test1
-        /* session.authenticate(this.state._username, this.state._password)
-        .then(() => {
-			console.log('transLogin');
-		})
-		.catch((exception) => {
-			console.log('exception');
-        }); */
-
-        //Orig
         this.setState({_showSplash: true},
             () => {
                 this.setTransTime(
@@ -223,12 +213,13 @@ export class Login extends Component {
         );
     } */
 
-    evaluateTransaction = (strType) => {
+    evaluateTransaction = async(strType, objRes) => {
         if(this.state._resSuccess == 1){
             switch(strType.toUpperCase()){
                 case 'LOGIN':
                     //VNX_TEST
-                    this.props.dispatchStoreValues({
+                    await session.onRequestSuccess(objRes);
+                    await this.props.dispatchStoreValues({
                         navigation: this.props.navigation,
                         resUsername: this.state._username,
                         resSuccess: this.state._resSuccess,
@@ -243,7 +234,7 @@ export class Login extends Component {
                         resAccessToken: this.state._resAccessToken,
                     });      
 
-                    this.props.dispatchActiveCompany({
+                    await this.props.dispatchActiveCompany({
                         name: this.state._resDefaultCompanyName,
                         id: this.state._resDefaultCompanyId
                     });
@@ -493,6 +484,7 @@ export class Login extends Component {
         console.log('---------------------------------');
         console.log('START: ' + this.state._curTime);
 
+        let objRes = null;
         let oBody = {
             sysdate: this.state._transDate,
             systime: this.state._transTime,
@@ -505,75 +497,50 @@ export class Login extends Component {
         
         if (strType.toUpperCase()=='LOGIN'){
             
-            fetch(apiConfig.url + script_Login,{
-                method: 'POST',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
+            session.authenticate(this.state._username, this.state._password, oBody)
+            .then((res)=>{
+                objRes = res;
+                console.log('END: ' + this.state._curTime);
+                console.log('JSON.stringify(res): ' + JSON.stringify(res))
+                this.setState({
+                    _resSuccess: res.flagno,
+                    _resMsg: res.message,
+                    _resUserGroup: res.usergroup,
+                    _resFName: res.firstname,
+                    _resMName: res.middlename,
+                    _resLName: res.lastname,
+                    _resCompany: res.companyname,
+                    _resBranch: res.branch,
+                    _resPosition: res.position,
+                    _resAccessToken: res.accesstoken,                          
                 },
-
-                body: JSON.stringify(oBody)
-                
-            }).then((response)=> response.json())
-                .then((res)=>{
-                        console.log('END: ' + this.state._curTime);
-                        console.log('JSON.stringify(res): ' + JSON.stringify(res))
-                        this.setState({
-                            _resSuccess: res.flagno,
-                            _resMsg: res.message,
-                            _resUserGroup: res.usergroup,
-                            _resFName: res.firstname,
-                            _resMName: res.middlename,
-                            _resLName: res.lastname,
-                            _resCompany: res.companyname,
-                            _resBranch: res.branch,
-                            _resPosition: res.position,
-                            _resAccessToken: res.accesstoken,                          
-                        },
-                            () => {
-/*                                 console.log('*************************************')
-                                console.log('INPUTS: ')
-                                console.log('date: ' + this.state._transDate)
-                                console.log('time: ' + this.state._transTime)
-                                console.log('username: ' + this.state._username)
-                                console.log('password: ' + this.state._password)
-                                console.log('-----------------------------------------')
-                                console.log('OUTPUTS: ')
-                                console.log('_resSuccess: ' + this.state._resSuccess)
-                                console.log('_resMsg: ' + this.state._resMsg)
-                                console.log('_resUserGroup: ' + this.state._resUserGroup)
-                                console.log('_resFName: ' + this.state._resFName)
-                                console.log('_resMName: ' + this.state._resMName)
-                                console.log('_resLName: ' + this.state._resLName) */
-
-                                if (this.state._resCompany !== undefined){
-                                    let arrCompany = this.state._resCompany;
-                                    let counter= 0
-                                    arrCompany.forEach(function(element) {
-                                        counter+=1;
-                                        /* console.log('Company' + counter + ': ' + element.name + ' ' + element.default ) */
-                                    
-                                        if(element.default == 1){
-                                            this.setState({
-                                                _resDefaultCompanyName: element.name,
-                                                _resDefaultCompanyId: element.id
-                                            })
-                                        }
-                                    
-                                    }, this);
+                    () => {
+                        if (this.state._resCompany !== undefined){
+                            let arrCompany = this.state._resCompany;
+                            let counter= 0
+                            arrCompany.forEach(function(element) {
+                                counter+=1;
+                                /* console.log('Company' + counter + ': ' + element.name + ' ' + element.default ) */
+                            
+                                if(element.default == 1){
+                                    this.setState({
+                                        _resDefaultCompanyName: element.name,
+                                        _resDefaultCompanyId: element.id
+                                    })
                                 }
-/*                                 console.log('_resBranch: ' + this.state._resBranch)
-                                console.log('_resPosition: ' + this.state._resPosition)
-                                console.log('_resAccessToken: ' + this.state._resAccessToken) */
-                            }
-                        );
-                }).then((res)=>{
-                    this.evaluateTransaction(strType);
-                    this.setState({_showSplash: false});
+                            
+                            }, this);
+                        }
+                    }
+                );
+            }).then((res)=>{
+                this.evaluateTransaction(strType, objRes);
+                this.setState({_showSplash: false});
 
-                }).catch((error)=> {
-                    console.log('error:' + error);
-                    this._showConnectionError(error);
+            }).catch((exception)=> {
+                session.onRequestFailed(exception);
+                console.log('error:' + exception);
+                this._showConnectionError(exception);
             });
         }
         
@@ -604,6 +571,7 @@ export class Login extends Component {
                 
             }).then((response)=> response.json())
                 .then((res)=>{
+                        objRes = res;
                         /* alert(res); */
                         this.setState({
                             _resSuccess: res["flagno"],
@@ -626,7 +594,7 @@ export class Login extends Component {
                                 console.log('_resMsg: ' + this.state._resMsg)
                                 console.log('_resFName: ' + this.state._resFName)
                                 console.log('_resCompany: ' + this.state._resCompany) */
-                                this.evaluateTransaction(strType);
+                                this.evaluateTransaction(strType, objRes);
                                 this.setState({_showSplash: false});
                             }
                         );

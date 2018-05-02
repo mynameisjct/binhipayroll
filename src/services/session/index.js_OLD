@@ -4,7 +4,6 @@ import * as api from './api';
 import * as selectors from './selectors';
 import * as actionCreators from './actions';
 import { initialState } from './reducer';
-import * as oHelper from '../../helper';
 
 const SESSION_TIMEOUT_THRESHOLD = 300; // Will refresh the access token 5 minutes before it expires
 
@@ -18,19 +17,18 @@ const setSessionTimeout = (duration) => {
 	);
 };
 
-export const clearSession = () => {
-	/* clearTimeout(sessionTimeout); */
+const clearSession = () => {
+	clearTimeout(sessionTimeout);
 	store.dispatch(actionCreators.update(initialState));
 };
 
-export const onRequestSuccess = async(response) => {
-	let session = await oHelper.copyObject(selectors.get());
-	console.log('session: ' + JSON.stringify(session));
-	//V1-Manual Format
-	session.tokens.access.type = 'access';
-	session.tokens.access.value = response.access_token;
-	session.user.id = response.userid;
-	store.dispatch(actionCreators.update(session));
+export const onRequestSuccess = (response) => {
+	console.log('onRequestSuccess: ' + JSON.stringify(response));
+	const tokens = response.tokens.reduce((prev, item) => ({
+		...prev,
+		[item.type]: item,
+	}), {});
+	store.dispatch(actionCreators.update({ tokens, user: response.user }));
 	/* setSessionTimeout(tokens.access.expiresIn); */
 };
 
@@ -50,7 +48,6 @@ export const refreshToken = () => {
 
 export const authenticate = (username, password, payload) =>
 	api.authenticate(username, password, payload)
-	.then((response)=> response.json());
 
 export const revoke = () => {
 	const session = selectors.get();
@@ -58,5 +55,6 @@ export const revoke = () => {
 		type: session.tokens[tokenKey].type,
 		value: session.tokens[tokenKey].value,
 	})))
-	.then((response)=> response.json());
+	.then(clearSession())
+	.catch(() => {});
 };
