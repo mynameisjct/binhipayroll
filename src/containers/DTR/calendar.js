@@ -201,6 +201,7 @@ export default class DTRCalendar extends Component {
 
             { this.state.msgBox.show || this.state.loadingScreen.show ?
                 <GenericContainer
+                  containerStyle={{position: 'absolute'}}
                   msgBoxShow = {this.state.msgBox.show}
                   msgBoxType = {this.state.msgBox.type}
                   msgBoxMsg = {this.state.msgBox.msg}
