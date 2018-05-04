@@ -268,15 +268,16 @@ export let reports = {
 		get: function(payload){
 			return(
 				baseURL.activeCompany() +
-				'/employee/'  + payload.employeeId + 
+				'/employee/'  + payload.employeeid + 
 				'/reports/dtr/' + payload.payrollid
 			)
 		},
 
 		update: function(payload){
 			return(
-				policy.ranks.get() + 
-				payload.data.id
+				baseURL.activeCompany() +
+				'/employee/'  + payload.employeeid + 
+				'/reports/dtr/'
 			)
 		},
 	}

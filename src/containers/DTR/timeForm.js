@@ -29,21 +29,42 @@ const Form = t.form.Form;
 export default class DTRTimeForm extends Component {
     constructor(props){
         super(props);
-        let oOldTime = moment(String(this.props.data.date + 'T' + this.props.data.oldtime), 'YYYY-MM-DDThh:mm:ss A');
+        let oOldTime =  this.props.data.oldtime ? 
+            moment(String(this.props.data.date + 'T' + this.props.data.oldtime), 'YYYY-MM-DDThh:mm:ss A') 
+            :
+            null;
         this.state = {
             _bHasError: false,
             _oTimeInfo: {
+                code: this.props.data.code,
+                employeeid: this.props.data.employeeid,
                 employeename: this.props.data.employeename,
                 date: new Date(this.props.data.date),
-                oldtime: new Date(oOldTime),
-                newtime: null ,
+                oldtime: oOldTime ? new Date(oOldTime) : null,
+                newtime: null,
+                notimeentry: false,
                 remarks: this.props.data.remarks || ''
             }
         }
     }
 
     _onChange = (value) => {
-        console.log('value: ' + JSON.stringify(value));
+        /* console.log('value: ' + JSON.stringify(value)); */
+        let oData = {...this.state._oTimeInfo};
+        oData.employeename = value.employeename;
+        oData.date = value.date;
+        oData.oldtime = value.oldtime;
+        
+        oData.remarks = value.remarks;
+        oData.notimeentry = value.notimeentry;
+
+        if(value.notimeentry){
+            oData.newtime = null;
+        }else{
+            oData.newtime = value.newtime;
+        }
+
+        this.setState({ _oTimeInfo: oData });
     }
 
     _onCancel = () => {
@@ -53,7 +74,7 @@ export default class DTRTimeForm extends Component {
     _onSubmit = () => {
         let oTimeForm = this.refs.dtrtime_form.getValue();
         if (oTimeForm) {
-            this._confirmToSubmit(oTimeForm);
+            this._confirmToSubmit(this.state._oTimeInfo);
         }
     }
 
@@ -62,8 +83,8 @@ export default class DTRTimeForm extends Component {
             'Warning',
             'All changes will be saved and will be irreversible. ' + 
             'Are you sure you want to ' + this.props.title + ' from "' + 
-            oHelper.convertDateToString(oTimeForm.oldtime, 'hh:mm:ss A') + '" to "' +
-            oHelper.convertDateToString(oTimeForm.newtime, 'hh:mm:ss A') + '" on ' +
+            (oTimeForm.oldtime ? oHelper.convertDateToString(oTimeForm.oldtime, 'hh:mm:ss A') : '<NOT ENTRY>') + '" to "' +
+            (oTimeForm.newtime ? oHelper.convertDateToString(oTimeForm.newtime, 'hh:mm:ss A') : '<NOT ENTRY>') + " on '" +
             this.props.data.date + ' ?',
             [
                 {text: 'NO', onPress: () => {}},
@@ -115,11 +136,15 @@ export default class DTRTimeForm extends Component {
                     template: customDatePickerTemplate,
                     label: 'NEW TIME',
                     mode:'time',
+                    disabled: this.state._oTimeInfo.notimeentry,
                     config:{
                         dialogMode:'spinner',
                         format: (strDate) => oHelper.convertDateToString(strDate.setSeconds(0), 'hh:mm:ss A')
                     },
                     error: '*Pick a new time'
+                },
+                notimeentry: {
+                    label: 'NO TIME ENTRY'
                 },
                 remarks:{ 
                     label: 'REMARKS' ,
@@ -132,8 +157,9 @@ export default class DTRTimeForm extends Component {
         const TIME_INFO = t.struct({
             employeename: t.String,
             date: t.Date,
-            oldtime: t.Date,
-            newtime: t.Date,
+            oldtime: t.maybe(t.Date),
+            newtime: this.state._oTimeInfo.notimeentry ? t.maybe(t.Date) : t.Date,
+            notimeentry: t.maybe(t.Boolean),
             remarks: t.maybe(t.String)
         });
 

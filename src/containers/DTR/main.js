@@ -6,11 +6,13 @@ import {
   ActivityIndicator
 } from 'react-native';
 
+//Children Components
+import * as PromptScreen from '../../components/ScreenLoadStatus';
+
 //Styles
 import styles from './styles';
 import DTRCalendar from './calendar';
 import DTRHeader from './header';
-
 
 //Redux
 import { connect } from 'react-redux';
@@ -34,7 +36,7 @@ export class EmployeeDTRCalendar extends Component {
 
     _getDataFromDB = (id) => {
         const activeProfile = this.props.employees.activeProfile.data;
-        this.props.actions.empDtr.get({payrollid: id, employeeId: activeProfile.id});
+        this.props.actions.empDtr.get({payrollid: id, employeeid: activeProfile.id ? activeProfile.id : ''});
     }
     /* componentDidMount(){
         setTimeout( () => {
@@ -53,12 +55,16 @@ export class EmployeeDTRCalendar extends Component {
                         />
                     </View>
                     <View style={styles.dividerBody}>
-                        <DTRCalendar data={this.props.empDtr.data}/>
+                        <DTRCalendar data={this.props.empDtr.data} activeEmployee={this.props.employees.activeProfile.data}/>
                     </View>
                 </View>
             )
+        }else if(this.props.empDtr.status[0] == 0){
+            return (
+                <PromptScreen.PromptError title={'Daily Time Record. Check Employee Data.'} onRefresh={this._getDataFromDB}/>
+            );
         }
-        
+
         else{
             return(
                 <View style={styles.emptyContainer}>

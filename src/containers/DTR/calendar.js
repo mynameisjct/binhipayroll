@@ -20,6 +20,13 @@ import styles from './styles';
 //Children Components
 import DTRItem from './dailyItem';
 import DTRTimeForm from './timeForm';
+import GenericContainer from '../../components/GenericContainer';
+
+//Api
+import * as dtrApi from './data/api';
+
+//Helper
+import * as oHelper from '../../helper';
 
 export default class DTRCalendar extends Component {
   constructor(props) {
@@ -34,17 +41,34 @@ export default class DTRCalendar extends Component {
           newtime: null,
           remarks: '',
         },
-        selected: null
+        selected: null,
+
+        loadingScreen: {
+          show: false,
+          msg: 'test'
+        },
+
+        msgBox: {
+          show: false,
+          type: '',
+          msg: '',
+          param: ''
+        },
     };
   }
 
   _onModifyTimeIn = (oDate, oTime) => {
+    const oActiveEmpBasicInfo = this.props.activeEmployee.personalinfo.basicinfo;
+    const oActiveEmpName = oActiveEmpBasicInfo.lastname + ', ' + oActiveEmpBasicInfo.firstname;
+    console.log('activeEmployee: ' + JSON.stringify(this.props.activeEmployee))
     console.log('_onModifyTimeIn_oDate: ' + oDate);
     console.log('_onModifyTimeIn_oTime: ' + oTime);
-    let oActive = {...this.state._activeTimeData};
-    oActive.employeename = 'TEMP'; //TEMP
+    let oActive = {...this.state._activeTimeData}; 
+    oActive.code = '1009';
+    oActive.employeeid = this.props.activeEmployee.id;         
+    oActive.employeename = oActiveEmpName;
     oActive.date = oDate;
-    oActive.oldtime = oTime;
+    oActive.oldtime = oTime ? oTime : null;
     oActive.newtime = null;
     oActive.remarks = '';
     this.setState({
@@ -56,6 +80,7 @@ export default class DTRCalendar extends Component {
 
   _onModifyTimeOut = (oDate, oTime) => {
     let oActive = {...this.state._activeTimeData};
+    oActive.code = '1010';
     oActive.employeename = 'TEMP'; //TEMP
     oActive.date = oDate;
     oActive.oldtime = oTime;
@@ -74,16 +99,64 @@ export default class DTRCalendar extends Component {
     });
   }
 
-    _hideTimeForm = () => {
-        this.setState({
-            _strFormTitle: '',
-            _bShowTimeForm: false
-        })
-    }
+  _hideTimeForm = () => {
+    this.setState({
+        _strFormTitle: '',
+        _bShowTimeForm: false
+    })
+  }
 
-    _onSubmit = () => {
-        this._hideTimeForm();
-    }
+  _onSubmit = async(oData) => {
+      this._setLoadingScreen(true, 'Modifying DTR. Please wait...');
+      let oCurData = {...oData};
+      oCurData.oldtime = await oCurData.oldtime ? oHelper.convertDateToString(oCurData.oldtime, 'hh:mm:mm A') : '';
+      oCurData.newtime = await  oCurData.newtime ? oHelper.convertDateToString(oCurData.newtime, 'hh:mm:mm A') : '';
+      console.log('oCurData: ' + JSON.stringify(oCurData));
+      
+      await dtrApi.update(oCurData)
+      .then((response) => response.json())
+      .then((res) => {
+          console.log('res: ' + JSON.stringify(res));
+          if(res.flagno == 1){
+            this._setMessageBox(true, 'success', res.message);
+            this._hideTimeForm();
+          }else{
+            this._setMessageBox(true, 'error-ok', res.message);
+          }
+      }).catch((exception) => {
+        this._setMessageBox(true, 'error-ok', exception.message);
+          console.log('exception: ' + exception.message);
+          bHideLoading ? this.props.setLoadingStatus(false) : null;
+      });
+
+      this._setLoadingScreen(false);
+      
+  }
+
+  _setMessageBox = (show, type, msg, param) => {
+    this.setState({
+      msgBox: oHelper.setMsgBox(
+          this.state.msgBox,
+          show, 
+          type,
+          msg,
+          param
+      )
+    })
+  }
+
+  _setLoadingScreen = (show, msg) => {
+    let oLoadingScreen = {...this.state.loadingScreen};
+    oLoadingScreen.show = show;
+    oLoadingScreen.msg = msg;
+    this.setState({ loadingScreen: oLoadingScreen });
+  }
+
+  _msgBoxOnClose = (params) => {
+      this.setState({
+          msgBox: oHelper.clearMsgBox(this.state.msgBox)
+      })
+  }
 
   render() {
     const oData = this.props.data;
@@ -123,6 +196,25 @@ export default class DTRCalendar extends Component {
                   onCancel={this._hideTimeForm}
                   onOK={this._onSubmit}/>
               :
+                null
+            }
+
+            { this.state.msgBox.show || this.state.loadingScreen.show ?
+                <GenericContainer
+                  msgBoxShow = {this.state.msgBox.show}
+                  msgBoxType = {this.state.msgBox.type}
+                  msgBoxMsg = {this.state.msgBox.msg}
+                  msgBoxOnClose = {this._msgBoxOnClose}
+                  msgBoxOnYes = {this._msgBoxOnYes}
+                  msgBoxParam = {this.state.msgBox.param}
+                  loadingScreenShow = {this.state.loadingScreen.show}
+                  loadingScreenMsg = {this.state.loadingScreen.msg}
+                  status={[1, '']}
+                  title={''}
+                  onRefresh={this._fetchDataFromDB}>
+                  {null}
+                </GenericContainer>
+              : 
                 null
             }
             
