@@ -79,9 +79,11 @@ export default class DTRCalendar extends Component {
   }
 
   _onModifyTimeOut = (oDate, oTime) => {
+    const oActiveEmpBasicInfo = this.props.activeEmployee.personalinfo.basicinfo;
+    const oActiveEmpName = oActiveEmpBasicInfo.lastname + ', ' + oActiveEmpBasicInfo.firstname;
     let oActive = {...this.state._activeTimeData};
     oActive.code = '1010';
-    oActive.employeename = 'TEMP'; //TEMP
+    oActive.employeename = oActiveEmpName; //TEMP
     oActive.date = oDate;
     oActive.oldtime = oTime;
     oActive.newtime = null;
@@ -109,7 +111,7 @@ export default class DTRCalendar extends Component {
   _onSubmit = async(oData) => {
       this._setLoadingScreen(true, 'Modifying DTR. Please wait...');
       let oCurData = {...oData};
-      oCurData.date = await oCurData.oldtime ? oHelper.convertDateToString(oCurData.date, 'YYYY-MM-DD') : '';
+      oCurData.date = await oCurData.date ? oHelper.convertDateToString(oCurData.date, 'YYYY-MM-DD') : '';
       oCurData.oldtime = await oCurData.oldtime ? oHelper.convertDateToString(oCurData.oldtime, 'hh:mm:mm A') : '';
       oCurData.newtime = await  oCurData.newtime ? oHelper.convertDateToString(oCurData.newtime, 'hh:mm:mm A') : '';
       /* console.log('oCurData: ' + JSON.stringify(oCurData)); */
@@ -117,7 +119,7 @@ export default class DTRCalendar extends Component {
       await dtrApi.update(oCurData)
       .then((response) => response.json())
       .then((res) => {
-          /* console.log('res: ' + JSON.stringify(res)); */
+          console.log('res: ' + JSON.stringify(res));
           if(res.flagno == 1){
             this.props.updateDTRElement(res.data);
             this._setMessageBox(true, 'success', res.message);
@@ -304,8 +306,8 @@ export default class DTRCalendar extends Component {
   }
 
   rowHasChanged = (r1, r2) => {
-    console.log('rowHasChanged_r1: ' + JSON.stringify(r1));
-    console.log('rowHasChanged_r2: ' + JSON.stringify(r2));
+    /* console.log('rowHasChanged_r1: ' + JSON.stringify(r1));
+    console.log('rowHasChanged_r2: ' + JSON.stringify(r2)); */
     return JSON.stringify(r1) !== JSON.stringify(r2);
   }
 
