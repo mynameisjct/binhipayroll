@@ -128,7 +128,6 @@ export default class DTRCalendar extends Component {
       }).catch((exception) => {
         this._setMessageBox(true, 'error-ok', exception.message);
           console.log('exception: ' + exception.message);
-          bHideLoading ? this.props.setLoadingStatus(false) : null;
       });
 
       this._setLoadingScreen(false);
