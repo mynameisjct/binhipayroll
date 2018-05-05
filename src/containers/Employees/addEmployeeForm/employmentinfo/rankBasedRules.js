@@ -87,7 +87,9 @@ export class RankBasedRules extends Component{
             this.state._status[0] != 1
         ){
             this.setState({ _status: nextProps.ranksPolicy.status});
-            this._setActiveData(this.props.oEmpRank.data[0].id);
+            if(this.props.oEmpRank.data.length > 0){
+                this._setActiveData(this.props.oEmpRank.data[0].id);
+            }
         }
     }
 
