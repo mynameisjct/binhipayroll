@@ -7,6 +7,11 @@ export const update = payload => ({
 	payload,
 });
 
+export const updateElement = payload => ({
+	type: actionTypes.UPDATEELEMENT,
+	payload,
+});
+
 export const get = payload => 
 	dispatch => {
 		let objRes = {};

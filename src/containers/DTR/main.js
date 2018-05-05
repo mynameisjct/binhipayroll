@@ -20,6 +20,7 @@ import { bindActionCreators } from 'redux';
 import * as empDtrActions from './data/actions';
 
 import {dtr} from './data';
+import { CONSTANTS } from '../../constants';
 
 export class EmployeeDTRCalendar extends Component {
     constructor(props){
@@ -38,14 +39,14 @@ export class EmployeeDTRCalendar extends Component {
         const activeProfile = this.props.employees.activeProfile.data;
         this.props.actions.empDtr.get({payrollid: id, employeeid: activeProfile.id ? activeProfile.id : ''});
     }
-    /* componentDidMount(){
-        setTimeout( () => {
-            this.setState({_bDidMount: true});
-        },100);
-    } */
+    
+    _updateDTRElement = (payload) => {
+        this.props.actions.empDtr.updateElement(payload)
+    }
     
     render(){
         if(this.props.empDtr.status[0] == 1){
+            /* alert('empDtr.data: ' + JSON.stringify(this.props.empDtr.data)); */
             return(
                 <View style={styles.container}>
                     <View style={styles.dividerHeader}>
@@ -55,13 +56,17 @@ export class EmployeeDTRCalendar extends Component {
                         />
                     </View>
                     <View style={styles.dividerBody}>
-                        <DTRCalendar data={this.props.empDtr.data} activeEmployee={this.props.employees.activeProfile.data}/>
+                        <DTRCalendar 
+                            data={this.props.empDtr.data} 
+                            activeEmployee={this.props.employees.activeProfile.data}
+                            updateDTRElement={this._updateDTRElement}
+                        />
                     </View>
                 </View>
             )
         }else if(this.props.empDtr.status[0] == 0){
             return (
-                <PromptScreen.PromptError title={'Daily Time Record. Check Employee Data.'} onRefresh={this._getDataFromDB}/>
+                <PromptScreen.PromptError title={'Daily Time Record. Check Employee Data.'} onRefresh={()=>this._getDataFromDB('')}/>
             );
         }
 

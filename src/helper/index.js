@@ -118,6 +118,30 @@ export const getElementByPropValue = (source, propertyName, propertyValue) => {
     }
 }
 
+export const getElementIndexByPropValue = (source, propertyName, propertyValue) => {
+    console.log('source: ' + JSON.stringify(source));
+    console.log('propertyName: ' + propertyName);
+    console.log('propertyValue: ' + propertyValue);
+    if(
+        source.length === 0 || 
+        isStringEmptyOrSpace(propertyName) || 
+        isStringEmptyOrSpace(propertyValue)
+    ){
+        console.log('EMPTY SOURCE')
+        return -1;
+    }
+    else{
+        try{
+            console.log('RETURNVAL: ' + (source.findIndex(x => x[propertyName] == propertyValue)));
+            return (source.findIndex(x => x[propertyName] == propertyValue))
+        }
+        catch(exception){
+            console.log('ERROR')
+            return -1
+        }
+    }
+}
+
 //Abbreviation
 export const getDayAbbrev = (_strDay) => {
     let _curAbbrev = _strDay=='SUNDAY' ? 'SUN':

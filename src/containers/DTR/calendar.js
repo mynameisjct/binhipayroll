@@ -60,9 +60,9 @@ export default class DTRCalendar extends Component {
   _onModifyTimeIn = (oDate, oTime) => {
     const oActiveEmpBasicInfo = this.props.activeEmployee.personalinfo.basicinfo;
     const oActiveEmpName = oActiveEmpBasicInfo.lastname + ', ' + oActiveEmpBasicInfo.firstname;
-    console.log('activeEmployee: ' + JSON.stringify(this.props.activeEmployee))
+    /* console.log('activeEmployee: ' + JSON.stringify(this.props.activeEmployee))
     console.log('_onModifyTimeIn_oDate: ' + oDate);
-    console.log('_onModifyTimeIn_oTime: ' + oTime);
+    console.log('_onModifyTimeIn_oTime: ' + oTime); */
     let oActive = {...this.state._activeTimeData}; 
     oActive.code = '1009';
     oActive.employeeid = this.props.activeEmployee.id;         
@@ -109,15 +109,17 @@ export default class DTRCalendar extends Component {
   _onSubmit = async(oData) => {
       this._setLoadingScreen(true, 'Modifying DTR. Please wait...');
       let oCurData = {...oData};
+      oCurData.date = await oCurData.oldtime ? oHelper.convertDateToString(oCurData.date, 'YYYY-MM-DD') : '';
       oCurData.oldtime = await oCurData.oldtime ? oHelper.convertDateToString(oCurData.oldtime, 'hh:mm:mm A') : '';
       oCurData.newtime = await  oCurData.newtime ? oHelper.convertDateToString(oCurData.newtime, 'hh:mm:mm A') : '';
-      console.log('oCurData: ' + JSON.stringify(oCurData));
+      /* console.log('oCurData: ' + JSON.stringify(oCurData)); */
       
       await dtrApi.update(oCurData)
       .then((response) => response.json())
       .then((res) => {
-          console.log('res: ' + JSON.stringify(res));
+          /* console.log('res: ' + JSON.stringify(res)); */
           if(res.flagno == 1){
+            this.props.updateDTRElement(res.data);
             this._setMessageBox(true, 'success', res.message);
             this._hideTimeForm();
           }else{
@@ -167,12 +169,12 @@ export default class DTRCalendar extends Component {
             <Agenda
                 style={styles.container}
                 items={oCurPeriod.details}
-                loadItemsForMonth={this.loadItems.bind(this)}
+                loadItemsForMonth={this.loadItems}
                 selected={this.state.selected ? this.state.selected : oCurPeriod.period.datefrom}
                 onDayPress={this._onDayPress}
-                renderItem={this.renderItem.bind(this)}
-                renderEmptyDate={this.renderEmptyDate.bind(this)}
-                rowHasChanged={this.rowHasChanged.bind(this)}
+                renderItem={this.renderItem}
+                renderEmptyDate={this.renderEmptyDate}
+                rowHasChanged={this.rowHasChanged}
                 minDate={oCurPeriod.period.datefrom}
                 maxDate={oCurPeriod.period.dateto}
                 markingType={'multi-dot'}
@@ -222,7 +224,7 @@ export default class DTRCalendar extends Component {
         </View>
     );
   }
-  loadItems(day) {
+  loadItems = (day) => {
     /* setTimeout(() => {
       for (let i = -15; i < 85; i++) {
         const time = day.timestamp + i * 24 * 60 * 60 * 1000;
@@ -248,7 +250,7 @@ export default class DTRCalendar extends Component {
     // console.log(`Load Items for ${day.year}-${day.month}`); */
   }
 
-  renderItem(item) {
+  renderItem = (item) => {
     const oLabels = this.props.data.labels;
 
     let oTimeIn = {...item.data.timein};
@@ -296,17 +298,19 @@ export default class DTRCalendar extends Component {
     );
   }
 
-  renderEmptyDate() {
+  renderEmptyDate = () => {
     return (
-      <View style={styles.emptyDate}><Text>This is empty date!</Text></View>
+      <View style={styles.emptyDate}><Text>ERROR. NO DATA FOUND.</Text></View>
     );
   }
 
-  rowHasChanged(r1, r2) {
-    return r1.name !== r2.name;
+  rowHasChanged = (r1, r2) => {
+    console.log('rowHasChanged_r1: ' + JSON.stringify(r1));
+    console.log('rowHasChanged_r2: ' + JSON.stringify(r2));
+    return JSON.stringify(r1) !== JSON.stringify(r2);
   }
 
-  timeToString(time) {
+  timeToString = (time) => {
     const date = new Date(time);
     return date.toISOString().split('T')[0];
   }
