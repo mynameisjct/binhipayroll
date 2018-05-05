@@ -5,7 +5,8 @@ import {
     ScrollView,
     Picker,
     RefreshControl,
-    TouchableOpacity
+    TouchableOpacity,
+    DatePickerAndroid
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 
@@ -773,6 +774,22 @@ export class Payroll extends Component{
         })
     }
 
+    _showDatePicker = async() => {
+        try {
+            const {action, year, month, day} = await DatePickerAndroid.open({
+              // Use `new Date()` for current date.
+              // May 25 2020. Month 0 is January.
+              minDate: new Date(),
+              date: new Date()
+            });
+            if (action !== DatePickerAndroid.dismissedAction) {
+                alert('year: ' + year + ', month: ' + month+1 + ', day: ' + day); 
+            }
+          } catch ({code, message}) {
+            console.warn('Cannot open date picker', message);
+          }
+    } 
+
     render(){
         console.log('this.state._status: ' + JSON.stringify(this.state._status));
         let pStatus = [...this.state._status];
@@ -855,6 +872,29 @@ export class Payroll extends Component{
                                 hideBorder={this.state._disabledMode}
                             />
                             { oPayrollSchedule }
+
+                            {/* <PropTitle name='First Payroll Day Schedule'/> */}
+
+                            <PropLevel2 
+                                name={'First Payroll Date'}
+                                content={
+                                    <Text 
+                                        /* disabled={((!this.props.activeData.schedule[index].editable) || this.props.disabledMode)} */
+                                        onPress={this._showDatePicker}
+                                        style={{color: '#434646', 
+                                            height: '100%', 
+                                            textAlignVertical: 'center',
+                                        }}>
+                                        TEMP
+                                    </Text>
+                                }
+                                hideBorder={false}
+                                contentStyle={{
+                                    paddingLeft: 15,
+                                    justifyContent: 'center',
+                                    width: 200
+                                }}
+                            />
 
                         </CustomCard>
                     </ScrollView>

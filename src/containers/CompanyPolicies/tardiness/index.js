@@ -634,7 +634,7 @@ export class Tardiness extends Component{
 
         if(pProgress==0){
             return (
-                <PromptScreen.PromptError title='Tardiness Policy' onRefresh={this._getDataFromDB}/>
+                <PromptScreen.PromptError title={'Tardiness Policy. ' + pMessage} onRefresh={this._getDataFromDB}/>
             );
         }
 

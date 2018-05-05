@@ -27,6 +27,7 @@ export const setActiveRule = payload => ({
 
 export const get = payload => 
 	dispatch => {
+		console.log('XXXXTARDINESS_payload: ' + JSON.stringify(payload));
 		let objRes = {};
 		dispatch(updateStatus(CONSTANTS.STATUS.LOADING));
 
