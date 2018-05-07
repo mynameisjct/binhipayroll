@@ -3,7 +3,8 @@ import { fetchApi, mockFetch } from '../../services/api';
 import apiConfig from '../../services/api/config';
 
 const endPoints = {
-	authenticate: 'authenticate',
+	/* authenticate: 'authenticate', */
+	authenticate: 'logins.php',
 	revoke: 'users/auth/revoke',
 	//Not utilized for initial backend implmentation
 	/* refresh: '/users/auth/refresh' */
@@ -24,4 +25,4 @@ export const revoke = tokens => fetchApi(endPoints.revoke, { tokens }, 'post');
 	'Client-ID': apiConfig.clientId,
 	Authorization: null,
 });  
- */
+*/

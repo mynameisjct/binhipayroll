@@ -83,6 +83,7 @@ export default class DTRCalendar extends Component {
     const oActiveEmpName = oActiveEmpBasicInfo.lastname + ', ' + oActiveEmpBasicInfo.firstname;
     let oActive = {...this.state._activeTimeData};
     oActive.code = '1010';
+    oActive.employeeid = this.props.activeEmployee.id;         
     oActive.employeename = oActiveEmpName; //TEMP
     oActive.date = oDate;
     oActive.oldtime = oTime;
