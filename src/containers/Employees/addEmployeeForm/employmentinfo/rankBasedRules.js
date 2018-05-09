@@ -342,7 +342,7 @@ export class RankBasedRules extends Component{
             <GenericContainer 
                 status={this.props.ranksPolicy.status}
                 title={TITLE}
-                onRefresh={this._getEmployeeListFromDB}>
+                onRefresh={this._getRanksPolicyFromDB}>
 
                 <View style={styles.transparentContainer}>
                     { 
