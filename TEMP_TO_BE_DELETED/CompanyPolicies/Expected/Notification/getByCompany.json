@@ -1,0 +1,21 @@
+{
+    "flagno": 1,
+    "message": "Successfully fetched list of notifications",
+    "data": {
+        "companyid": 17,
+        "title": "Notifications",
+        "data": [
+            {
+                "header": "Current Period"
+            },
+
+            {
+                "id": 5,
+                "category": "error",
+                "typeid": 1,
+                "typename": "Tardiness",
+                
+            }
+        ]
+    }
+}
