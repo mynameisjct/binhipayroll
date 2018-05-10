@@ -13,8 +13,7 @@
                 "id": 5,
                 "category": "error",
                 "typeid": 1,
-                "typename": "Tardiness",
-                
+                "actions": ["dtrmodification", ""]
             }
         ]
     }
