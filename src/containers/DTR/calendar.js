@@ -183,12 +183,21 @@ export default class DTRCalendar extends Component {
                 markedDates={oCurPeriod.markings}
                 pastScrollRange={1}
                 futureScrollRange={2}
+                /* renderDay={(day, item) => {
+                  return (
+                    <View>
+                      <Text>
+                        HALO!
+                      </Text>
+                    </View>
+                  );
+                }} */
                 // agenda theme
                 theme={{
-                agendaDayTextColor: '#838383',
-                agendaDayNumColor: '#434646',
-                agendaTodayColor: '#505251',
-                agendaKnobColor: '#EEB843'
+                  agendaDayTextColor: '#838383',
+                  agendaDayNumColor: '#434646',
+                  agendaTodayColor: '#505251',
+                  agendaKnobColor: '#EEB843'
                 }}
             />
             {
@@ -253,16 +262,32 @@ export default class DTRCalendar extends Component {
   }
 
   renderItem = (item) => {
-    const oLabels = this.props.data.labels;
-
+    const oLabels = {...this.props.data.labels};
+    const oMarkingRules = {...this.props.data.markingrules};
     let oTimeIn = {...item.data.timein};
     let oTimeOut = {...item.data.timeout};
+    let aDayType = [...item.data.daytype];
     let aValidations = [...item.data.rulesvalidation];
     let iValidationsLen = item.data.rulesvalidation.length;
-    
+    let strDayType = null;
+    aDayType.map((oData, index) => {
+      if(strDayType){
+        strDayType = strDayType + ', ' + oData.name;
+      }else{
+        strDayType = oData.name;
+      }
+    });
+
     return (
       /* <View style={[styles.item, {height: 60}]}><Text>{JSON.stringify(item.data.timein)}</Text></View> */
       <View style={styles.itemStyle.container}>
+        <DTRItem 
+          date={item.data.date}
+          name={oLabels.daytype || 'DAY TYPE'} 
+          value={strDayType}
+          remarks={null}
+          remarksColor={null}/>
+
         <DTRItem
           date={item.data.date}
           name={oLabels.timein} 
@@ -293,7 +318,7 @@ export default class DTRCalendar extends Component {
               name={oData.label} 
               value={oData.value}
               remarks={oData.remarks}
-              remarksColor={oData.color}/>
+              remarksColor={oMarkingRules[oData.marking]}/>
           )
         }
       </View>

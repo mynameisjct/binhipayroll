@@ -287,8 +287,8 @@ export let transactions = {
 	payrollList:{
 		get: function(payload){
 			return(
-				'payrollschedule/all?filter=COMPANY&'+
-				'companyid=' + getActiveCompany()
+				'payrollschedule/currentandprevious?filter=COMPANY&'+
+				'id=' + getActiveCompany()
 			)
 		},
 

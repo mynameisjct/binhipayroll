@@ -264,7 +264,9 @@
         "dispute": "red",
         "modifieddispute": "blue"
     },
+    
     "labels":{  
+        "daytype": "DAY TYPE",
         "timein":"TIME-IN",
         "timeout":"TIME-OUT"
     },

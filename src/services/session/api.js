@@ -3,8 +3,8 @@ import { fetchApi, mockFetch } from '../../services/api';
 import apiConfig from '../../services/api/config';
 
 const endPoints = {
-	/* authenticate: 'authenticate', */
-	authenticate: 'logins.php',
+	authenticate: 'authenticate',
+	/* authenticate: 'logins.php', */
 	revoke: 'users/auth/revoke',
 	//Not utilized for initial backend implmentation
 	/* refresh: '/users/auth/refresh' */
