@@ -280,6 +280,15 @@ export let reports = {
 				'/reports/dtr/'
 			)
 		},
+	},
+
+	payrollSchedule: {
+		get: function(payload){
+			return(
+				'payrollschedule/all?filter=COMPANY&'+
+				'id=' + getActiveCompany()
+			)
+		},
 	}
 }
 

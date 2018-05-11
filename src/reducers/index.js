@@ -11,6 +11,7 @@ import { reducer as dtrReducer } from './../containers/DTR/data/reducer';
 import { reducer as transactionsReducer } from './../containers/Transactions/data/reducer';
 import { reducer as payrollGenerationReducer } from './../containers/PayrollGeneration/data/reducer';
 import { reducer as servicesReducer } from '../services/reducer';
+import { reducer as reportsReducer } from '../containers/Reports/data/reducer';
 
 const rootReducer= combineReducers({
     loginReducer,
@@ -24,7 +25,8 @@ const rootReducer= combineReducers({
     dtr: dtrReducer,
     transactions: transactionsReducer,
     payrollGeneration: payrollGenerationReducer,
-    services: servicesReducer
+    services: servicesReducer,
+    reports: reportsReducer
 });
 
 export default rootReducer;
