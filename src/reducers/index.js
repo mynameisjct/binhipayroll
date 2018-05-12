@@ -8,7 +8,7 @@ import {reducer as companyPoliciesReducer} from './../containers/CompanyPolicies
 import {employees} from './../containers/Employees/data/reducers';
 import {companyProfile} from './../containers/CompanyProfile/data/reducer';
 import { reducer as dtrReducer } from './../containers/DTR/data/reducer';
-import { reducer as transactionsReducer } from './../containers/Transactions/data/reducer';
+/* import { reducer as transactionsReducer } from './../containers/Transactions/data/reducer'; */
 import { reducer as payrollGenerationReducer } from './../containers/PayrollGeneration/data/reducer';
 import { reducer as servicesReducer } from '../services/reducer';
 import { reducer as reportsReducer } from '../containers/Reports/data/reducer';
@@ -23,7 +23,7 @@ const rootReducer= combineReducers({
     employees,
     companyProfile,
     dtr: dtrReducer,
-    transactions: transactionsReducer,
+    /* transactions: transactionsReducer, */
     payrollGeneration: payrollGenerationReducer,
     services: servicesReducer,
     reports: reportsReducer

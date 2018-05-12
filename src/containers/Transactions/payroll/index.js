@@ -18,7 +18,7 @@ const TITLE = 'GENERATE PAYROLL';
 //Redux
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import * as payrollListActions from '../data/payrollTransaction/actions';
+import * as payrollListActions from '../../Reports/data/payrollSchedule/actions';
 import * as payrollGenerationApi from '../../PayrollGeneration/data/api';
 import * as payrollGenerationActions from '../../PayrollGeneration/data/actions';
 
@@ -97,6 +97,7 @@ export class PayrollTransaction extends Component {
                 />
             );
         }else if(payrollListStatus[0] != 1){
+            
             return(
                 <View style={{flex: 1, position: 'absolute'}}>
                     {
@@ -118,24 +119,32 @@ export class PayrollTransaction extends Component {
                     }
                 </View>
             );
-        }else if(payrollListData.list.length < 1){
-            return(
-                <MessageBox
-                    promptType={'error-ok'}
-                    show={true}
-                    onClose={this._hideForm}
-                    message={'Cannot process request. No Existing Payroll Schedule found. Set Payroll Policy first.'}
-                />
-            );
         }else{
-            return(
-                <PayrollTransactionForm
-                    data={payrollListData.list}
-                    title={TITLE}
-                    visible={this.props.visible}
-                    onCancel={() => this.props.onCancel()}
-                    onSubmit={this._onFormSubmit}/>
-            );
+            const curPayroll = payrollListData.current;
+            const prevPayroll = payrollListData.previous;
+            const aPayrollList = [...curPayroll, ...prevPayroll];
+
+            if(curPayroll.length == 0){
+                return(
+                    <MessageBox
+                        promptType={'error-ok'}
+                        show={true}
+                        onClose={this._hideForm}
+                        message={'Cannot process request. No Existing Payroll Schedule found. Set Payroll Policy first.'}
+                    />
+                );
+            }
+            
+            else{
+                return(
+                    <PayrollTransactionForm
+                        data={aPayrollList}
+                        title={TITLE}
+                        visible={this.props.visible}
+                        onCancel={() => this.props.onCancel()}
+                        onSubmit={this._onFormSubmit}/>
+                );
+            }
         }
         
     }
@@ -143,7 +152,7 @@ export class PayrollTransaction extends Component {
 
 function mapStateToProps (state) {
     return {
-        payrollList: state.transactions.payrollList
+        payrollList: state.reports.payrollSchedule
     }
 }
 

@@ -106,9 +106,8 @@ export default class MonetaryAdjustmentForm extends Component{
                 },
 
                 type: {
-                    template: customPickerTemplate,
-                    label: 'TYPE',
-                    error: '*Select Type'
+                    label: 'TYPE OR DESCRIPTION',
+                    error: '*Enter Description'
                 },
 
                 amount: {
@@ -134,7 +133,7 @@ export default class MonetaryAdjustmentForm extends Component{
             employeeid: t.enums({1:'Employee1', 2:'Employee2'}),
             payrollid: t.enums({1: 'March 15, 2018', 2: 'March 30, 2018'}),
             category: t.enums({1:'Deduction', 2:'Allowance'}),
-            type: t.enums({1:'Loan', 2:'Others'}),
+            type: t.String,
             amount: t.Number,
             remarks: t.maybe(t.String)
             /* effectivedate: t.Date,
