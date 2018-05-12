@@ -47,16 +47,21 @@ export class MonetaryAdjustment extends Component {
         this.props.hideForm(true);
     }
 
+    _onSubmit = () => {
+        
+    }
+
     render(){
         const payrollListData = this.props.payrollList.data;
         const payrollListStatus = this.props.payrollList.status;
-
-        if(payrollListStatus[0] != 1){
+        const aEmpList = this.props.employeelist.data;
+        const aEmpStatus = this.props.employeelist.status;
+        if(payrollListStatus[0] != 1 || aEmpStatus[0] !=1){
             
             return(
                 <View style={{flex: 1, position: 'absolute'}}>
                     {
-                        payrollListStatus[0] == 0 ?
+                        payrollListStatus[0] == 0 || aEmpStatus[0] == 0 ?
                             <MessageBox
                                 promptType={'error-ok'}
                                 show={true}
@@ -64,23 +69,26 @@ export class MonetaryAdjustment extends Component {
                                 message={'Unable to fetch Payroll List. Check your internet connection or Please try again.'}
                             />
                         : 
-                            payrollListStatus[0] == 2 ?
+                            payrollListStatus[0] == 2 || aEmpStatus[0] == 0 ?
                                 <PromptScreen.PromptGeneric 
                                     show= {true} 
                                     title={'Preparing Employee and Payroll Information... Please wait...'}
                                 />
                             : null
-
                     }
                 </View>
             );
         }else{
-            const aEmpList = this.props.employeelist.data;
-            const aEmpListEnums = oHelper.generateEnums(aEmpList, 'key', 'name');
-            console.log('aEmpListEnums: ' + JSON.stringify(aEmpListEnums));
+            const aEmpListEnums = oHelper.generateEnumsConcatPropAndVal(aEmpList, 'key', 'name');
+            const curPayroll = payrollListData.current;
+            const futurePayroll = payrollListData.future;
+            const aPayrollList = [...curPayroll, ...futurePayroll];
+            const aPayrollListEnums = oHelper.generateEnumsConcatPropAndValDate(aPayrollList, 'id', 'payrollDate', 'MMMM DD, YYYY');
+            console.log('aPayrollListEnums: ' + JSON.stringify(aPayrollListEnums));
             return(
                 <MonetaryAdjustmentForm 
                     title={TITLE}
+                    data ={{employeeList: aEmpListEnums, payrollList: aPayrollListEnums}}
                     visible={this.props.visible}
                     onCancel={() => this.props.onCancel()}
                     onSubmit={() => this.props.onSubmit()}/>

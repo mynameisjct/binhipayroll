@@ -59,21 +59,16 @@ export default class MonetaryAdjustmentForm extends Component{
         this.setState({_oFormData: oFormData})
     }
 
-    componentDidMount(){
-        this.setState({_bHasMounted: true});
-/*         console.log('this.props.options: ' + JSON.stringify(this.props.options));
-        this._generateOptions(); */
+    _onSubmit = () => {
+        Keyboard.dismiss();
+        let oFormData = this.refs.form_monetaryadjustment.getValue();
+        if(oFormData){
+            this.props.onSubmit(this.state._oFormData);
+        }
     }
 
-    _generateOptions(){
-/*         let oOptions = {};
-        this.props.options.map((data,index) =>
-            oOptions[Number(data.id)] = String(data.name)
-        )
-        this.setState({
-            _bHasMounted: true,
-            _options: oOptions
-        }) */
+    componentDidMount(){
+        this.setState({_bHasMounted: true});
     }
 
     _onCancel = () => {
@@ -130,8 +125,8 @@ export default class MonetaryAdjustmentForm extends Component{
         };
 
         const FORMTYPE = t.struct({
-            employeeid: t.enums({1:'Employee1', 2:'Employee2'}),
-            payrollid: t.enums({1: 'March 15, 2018', 2: 'March 30, 2018'}),
+            employeeid: t.enums(this.props.data.employeeList),
+            payrollid: t.enums(this.props.data.payrollList),
             category: t.enums({1:'Deduction', 2:'Allowance'}),
             type: t.String,
             amount: t.Number,
@@ -158,7 +153,7 @@ export default class MonetaryAdjustmentForm extends Component{
                             <ScrollView>
                                 <View style={formStyles.formContent}>
                                     <Form 
-                                        ref='form_leaveapplication'
+                                        ref='form_monetaryadjustment'
                                         type={FORMTYPE}
                                         value={this.state._oFormData}
                                         options={OPTIONS}

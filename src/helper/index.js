@@ -168,6 +168,22 @@ export const generateEnums = (sourceArray, strPropName, strValue) => {
     return(oEnums);
 }
 
+export const generateEnumsConcatPropAndVal = (sourceArray, strPropName, strValue) => {
+    let oEnums = {};
+    sourceArray.map((data,index) => {
+        oEnums[data[strValue] + '_____' + data[strPropName]] = data[strValue]
+    });
+    return(oEnums);
+}
+
+export const generateEnumsConcatPropAndValDate = (sourceArray, strPropName, strValue, strDateFormat) => {
+    let oEnums = {};
+    sourceArray.map((data,index) => {
+        oEnums[ data[strValue] + '_____' + data[strPropName]] = convertDateToString(data[strValue], strDateFormat)
+    });
+    return(oEnums);
+}
+
 export const generateDateEnums = (sourceArray, strPropName, strValue, format) => {
     let oEnums = {};
     sourceArray.map((data,index) => {
