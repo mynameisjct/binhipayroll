@@ -77,6 +77,10 @@ export class RankBasedRules extends Component{
         }
     }
     
+    componentWillUnmount(){
+        this.props.actions.ranks.setActiveRule(null);
+    }
+
     componentDidMount(){
         this._getRanksPolicyFromDB();
     }
@@ -86,7 +90,7 @@ export class RankBasedRules extends Component{
             (nextProps.ranksPolicy.status[0] == 1) && 
             this.state._status[0] != 1
         ){
-            this.setState({ _status: nextProps.ranksPolicy.status});
+            this.setState({ _status: [...nextProps.ranksPolicy.status]});
             if(this.props.oEmpRank.data.length > 0){
                 this._setActiveData(this.props.oEmpRank.data[0].id);
             }
@@ -96,6 +100,8 @@ export class RankBasedRules extends Component{
     _getRanksPolicyFromDB = () => {
         if(this.props.ranksPolicy.status[0] != 1){
             this.props.actions.ranks.get()
+        }else{
+            this._setActiveData(this.props.oEmpRank.data[0].id);
         }
     }
 
