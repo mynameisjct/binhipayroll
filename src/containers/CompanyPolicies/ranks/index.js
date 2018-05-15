@@ -561,6 +561,7 @@ export class Ranks extends Component{
                     visible={this.state._modalVisible}
                     onCancel={this._hidePolicyModal}
                     onOK={this._updateRuleValue}
+                    onForceClose={this._hidePolicyModal}
                     title={ this.state._disabledMode ? strFormTitle : 
                         this.state._activePolicy === 'LEAVES' ?
                             'Add Leave Type' : 

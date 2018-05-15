@@ -78,7 +78,7 @@ export default class MonetaryAdjustmentForm extends Component{
     
     _onSubmit = () => {
         Keyboard.dismiss();
-        let oFormData = this.refs.form_leaveapplication.getValue();
+        let oFormData = this.refs.form_monetaryadjustment.getValue();
         if(oFormData){
             this.props.onSubmit(oFormData)
         }
@@ -127,7 +127,7 @@ export default class MonetaryAdjustmentForm extends Component{
         const FORMTYPE = t.struct({
             employeeid: t.enums(this.props.data.employeeList),
             payrollid: t.enums(this.props.data.payrollList),
-            category: t.enums({1:'Deduction', 2:'Allowance'}),
+            category: t.enums({DEDUCTION:'Deduction', ALLOWANCE:'Allowance'}),
             type: t.String,
             amount: t.Number,
             remarks: t.maybe(t.String)

@@ -147,7 +147,8 @@ export class TransactionsList extends Component {
                         <LeaveApplication
                             visible={this.state._showLeaveForm}
                             onCancel={this._onCancel}
-                            onSubmit={this._onSubmit}/> 
+                            onSubmit={this._onSubmit}
+                            hideForm={this._hideAllForms}/> 
                     : 
                         null
                 }
@@ -168,7 +169,8 @@ export class TransactionsList extends Component {
                         <MonetaryAdjustment
                             visible={this.state._showMonetaryAdjustmentForm}
                             onCancel={this._onCancel}
-                            onSubmit={this._onSubmit}/> 
+                            onSubmit={this._onSubmit}
+                            hideForm={this._hideAllForms}/>  
                     : 
                         null
                 }

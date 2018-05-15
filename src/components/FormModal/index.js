@@ -4,7 +4,8 @@ import {
   Modal,
   Text,
   TouchableOpacity,
-  ActivityIndicator
+  ActivityIndicator,
+  Alert
 
 } from 'react-native';
 
@@ -15,11 +16,24 @@ export default class FormModal extends PureComponent {
     constructor(props){
         super(props);
         this.state = {
-            _bHasMounted: false
+            _bHasMounted: false,
+            _bCloseRequest: false
         }
     }
     componentDidMount = () => {
         this.setState({_bHasMounted: true})
+    }
+
+    _onCloseRequest = () => {
+        Alert.alert(
+            'Feature Disabled',
+            'Android back button is currently disabled in FORMS to avoid lost of data.',
+            [
+              {text: 'OK', onPress: () => {}},
+   /*            {text: 'Yes', onPress: () => {this.props.onForceClose()}}, */
+            ],
+            { cancelable: false }
+        )
     }
 
     render(){
@@ -30,7 +44,7 @@ export default class FormModal extends PureComponent {
                     animationType="fade"
                     transparent={true}
                     visible={this.props.visible || false}
-                    onRequestClose={() => {}}>
+                    onRequestClose={this._onCloseRequest}>
     
                     <View style={styles.mainContainer}>
                         <View style={[styles.modalRules.container, this.props.containerStyle]}>

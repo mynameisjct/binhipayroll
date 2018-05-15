@@ -15,7 +15,7 @@ export const get = payload =>
 		api.get(payload)
 		.then((response) => response.json())
 		.then((res) => {
-			console.log('PAYROLL_LIST: ' + JSON.stringify(res));
+			console.log('monetaryAdjustment: ' + JSON.stringify(res));
 			dispatch(update(res.data));
 			objRes = {...res}
 		})

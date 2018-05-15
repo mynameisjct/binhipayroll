@@ -386,7 +386,7 @@ export class Profile extends Component {
                                     {
                                         oProfile.personalinfo.basicinfo.lastname + ', ' +
                                         oProfile.personalinfo.basicinfo.firstname 
-                                    }
+                                }
                                 </Text>
                                 <Text style={styles.txtProfileLabel}>
                                     {this.props.activecompany.name}

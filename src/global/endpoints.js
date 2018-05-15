@@ -316,6 +316,16 @@ export let transactions = {
 				payload
 			)
 		}
+	},
+
+	monetaryAdjustment:{
+		create: function (){
+			return(
+				'transaction/adjustments/create'
+			)
+		},
+
+		
 	}
 }
 

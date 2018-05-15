@@ -1,6 +1,8 @@
 import moment from "moment";
 import DeviceInfo from 'react-native-device-info';
 
+export const separatorString = '_____';
+
 //String Function
 export const isStringEmpty = (strValue) => {
     return !strValue
@@ -171,7 +173,7 @@ export const generateEnums = (sourceArray, strPropName, strValue) => {
 export const generateEnumsConcatPropAndVal = (sourceArray, strPropName, strValue) => {
     let oEnums = {};
     sourceArray.map((data,index) => {
-        oEnums[data[strValue] + '_____' + data[strPropName]] = data[strValue]
+        oEnums[data[strValue] + separatorString + data[strPropName]] = data[strValue]
     });
     return(oEnums);
 }
@@ -179,7 +181,7 @@ export const generateEnumsConcatPropAndVal = (sourceArray, strPropName, strValue
 export const generateEnumsConcatPropAndValDate = (sourceArray, strPropName, strValue, strDateFormat) => {
     let oEnums = {};
     sourceArray.map((data,index) => {
-        oEnums[ data[strValue] + '_____' + data[strPropName]] = convertDateToString(data[strValue], strDateFormat)
+        oEnums[ data[strValue] + separatorString + data[strPropName]] = convertDateToString(data[strValue], strDateFormat)
     });
     return(oEnums);
 }
@@ -209,6 +211,14 @@ export const clearMsgBox = (sMsgBox) => {
     oMsgBox.msg = '';
     oMsgBox.param = '';
     return oMsgBox;
+}
+
+//Loading Screen Helpere
+export const setLoadingScreen = (bShow, strMsg) => {
+    return {
+        show: bShow,
+        msg: strMsg
+    };
 }
 
 //Device Info
