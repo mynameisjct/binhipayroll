@@ -1,0 +1,8 @@
+*Date: 2018-05-16
+*Description: Error on react-native run-android
+*Error Prompt: 
+React Native Version mismatch. 
+Javascript version: 0.50.1 
+Native version: 0.55.3
+*Issue Reference: https://github.com/facebook/react-native/issues/19259
+

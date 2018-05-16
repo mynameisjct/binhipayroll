@@ -24,7 +24,6 @@ export default class ReportContent extends Component{
                         </Text>
                     </View>
                 </View>
-                
             </View>
         )
     }
