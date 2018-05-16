@@ -1,14 +1,16 @@
 import React, { Component, PureComponent } from 'react';
 import {
     View,
-    Text
+    Text,
+    FlatList
 } from 'react-native';
 
 //Children Components
-import GenericContainer from '../../../components/GenericContainer';
 import ReportContent from '../reportContent';
+import GenericContainer from '../../../components/GenericContainer';
+import MonetaryAdjustmentReportItem from './item';
 
-//Styls
+//Styles
 import styles from '../styles';
 
 //Constants
@@ -18,24 +20,68 @@ export default class MonetaryAdjustmentReport extends Component{
     constructor(props){
         super(props);
         this.state = {
-            refreshing: false,
+            _status: [1, 'Loading...'],
+            _refreshing: false,
+            _data: [
+                {
+                    id: 1,
+                    msg: 'TEST'
+                },
+                {
+                    id: 1,
+                    msg: 'TEST'
+                },
+                {
+                    id: 1,
+                    msg: 'TEST'
+                },
+                {
+                    id: 1,
+                    msg: 'TEST'
+                },
+                {
+                    id: 1,
+                    msg: 'TEST'
+                },
+                {
+                    id: 1,
+                    msg: 'TEST'
+                },
+                {
+                    id: 1,
+                    msg: 'TEST'
+                },
+                {
+                    id: 1,
+                    msg: 'TEST'
+                },
+                {
+                    id: 1,
+                    msg: 'TEST'
+                },
+            ],
+
             loadingScreen: {
                 show: false,
                 msg: 'test'
             },
-            _status: [1, 'Loading...'],
             msgBox: {
                 show: false,
                 type: '',
                 msg: '',
                 param: ''
-            }
+            },
+            
         }
     }
 
     _fetchDataFromDB = () => {
-
     }
+
+    _onCancelTransaction = () => {
+    }
+
+    _keyExtractor = (item, index) => item.id;
 
     render(){
         let item = this.props.item;
@@ -43,7 +89,20 @@ export default class MonetaryAdjustmentReport extends Component{
         let aFilters = [];
 
         if(this.state._status[0] == 1){
-            oBody = <View><Text>CRAZY!</Text></View>;
+            oBody =
+                <FlatList
+                    contentContainerStyle={styles.reportsFlatlist}
+                    ref={(ref) => { this.flatListRef = ref; }}
+                    extraData={this.state._activeItem}
+                    keyExtractor={this._keyExtractor}
+                    data={this.state._data}
+                    renderItem={({item}) =>
+                        <MonetaryAdjustmentReportItem
+                            item={item} 
+                            onCancel={this._onCancelTransaction}/>
+                    }
+                />
+
             aFilters = [];
         }
 
@@ -63,6 +122,7 @@ export default class MonetaryAdjustmentReport extends Component{
                 onRefresh={this._fetchDataFromDB}>
 
                 <ReportContent
+                    title={TITLE}
                     body={oBody}
                     filters={aFilters}
                 />

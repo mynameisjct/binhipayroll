@@ -68,28 +68,28 @@ export class Reports extends Component {
                 {
                     key: "0002",
                     name: "Leaves",
-                    icon: "information-variant",
+                    icon: "timer-off",
                     type: "content",
                     oComponent: <TempClass/>
                 },
                 {
                     key: "0003",
                     name: "Overtime",
-                    icon: "information-variant",
+                    icon: "clock-fast",
                     type: "content",
                     oComponent: <TempClass/>
                 },
                 {
                     key: "0004",
                     name: "Tardiness",
-                    icon: "information-variant",
+                    icon: "clock-alert",
                     type: "content",
                     oComponent: <TempClass/>
                 },
                 {
                     key: "0005",
                     name: "Undertime",
-                    icon: "information-variant",
+                    icon: "timelapse",
                     type: "content",
                     oComponent: <TempClass/>
                 },
@@ -101,14 +101,14 @@ export class Reports extends Component {
                 {
                     key: "0007",
                     name: "Payroll",
-                    icon: "information-variant",
+                    icon: "cash",
                     type: "content",
                     oComponent: <PayrollReport/>
                 },
                 {
                     key: "0008",
                     name: "Payslip",
-                    icon: "information-variant",
+                    icon: "file-account",
                     type: "content",
                     oComponent: <TempClass/>
                 },
@@ -148,21 +148,21 @@ export class Reports extends Component {
                 {
                     key: "0014",
                     name: "DTR Modification",
-                    icon: "information-variant",
+                    icon: "timetable",
                     type: "content",
                     oComponent: <TempClass/>
                 },
                 {
                     key: "0015",
                     name: "Leave Application",
-                    icon: "information-variant",
+                    icon: "timer-off",
                     type: "content",
                     oComponent: <TempClass/>
                 },
                 {
                     key: "0016",
                     name: "Special Monetary\nAdjustments",
-                    icon: "information-variant",
+                    icon: "format-list-numbers",
                     type: "content",
                     oComponent: <MonetaryAdjustmentReport/>
                 },

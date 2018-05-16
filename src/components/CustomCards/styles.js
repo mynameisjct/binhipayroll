@@ -248,5 +248,65 @@ export default {
 
     contFormCardFooter: {
         height: 50
+    },
+
+    simpleCardStyles: {
+        container: {
+            flex: 1,
+        },
+
+        contHeader: {
+            flex: 1,
+            flexDirection: 'row',
+            justifyContent: 'center',
+/*             backgroundColor: 'red',
+            borderTopRightRadius: 8,
+            borderTopLeftRadius: 8, */
+            maxHeight: 55,
+            minHeight: 55
+        },
+
+        contTitle: {
+            flex: 1,
+            justifyContent: 'center',
+            paddingLeft: 30,
+            paddingRight: 30
+        },
+
+        contMenu: {
+            /* borderTopRightRadius: 8, */
+            flex: 1,
+            maxWidth: 40,
+            minWidth: 40,
+            justifyContent: 'center',
+            alignItems: 'center',
+            /* backgroundColor: 'blue' */
+        },
+
+        contContent: {
+            flex: 1,
+            marginTop: 6.5,
+            marginLeft: 13,
+            marginRight: 13,
+            marginBottom: 6.5,
+            borderRadius: 3,
+            minHeight: 150,
+            maxHeight: 150,
+            elevation: 3,
+            backgroundColor: '#FFFFFF'
+        },
+
+        contBody: {
+
+        },
+
+        txtTitle: {
+            color: '#434646',
+            fontSize: 14,
+            fontWeight: '500',
+            fontStyle: 'italic',
+            fontFamily: 'Helvetica-Bold'
+        }
+        
     }
 };

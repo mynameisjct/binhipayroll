@@ -71,8 +71,8 @@ export default {
 
     iconPlaceholder: {
         elevation: 15,
-        width: 35,
-        height: 35,
+        width: 32,
+        height: 32,
         backgroundColor: '#EEB843',
         borderRadius: 100,
         justifyContent: 'center',
@@ -134,22 +134,48 @@ export default {
         backgroundColor: 'transparent',
     },
 
+    txtLabelTitle:{
+        fontFamily: 'Helvetica-Bold',
+        fontSize: 10,
+        color: '#000000',
+        fontWeight: '500',
+        /* fontStyle: 'italic' */
+    },
+
     reportContentStyle: {
         container: {
             flex: 1,
             flexDirection: 'row'
         },
 
-        contBody: {
+        contContent: {
             flex: 1,
-            backgroundColor: '#FFFFFF',
-            elevation: 5
+            flexDirection: 'column',
+            backgroundColor: '#e2e2e2',
+            elevation: 3,
+            
         },
+
+        contHeader: {
+            flex: 1,
+            minHeight: 59,
+            maxHeight: 59,
+            elevation: 3,
+            justifyContent: 'center',
+            alignItems: 'center',
+            backgroundColor: '#D1D4D6'
+        },
+
+        contBody: {
+
+        },
+
 
         contFilter: {
             flex: 1,
-            maxWidth: 160,
-            backgroundColor: 'transparent',
+            maxWidth: 180,
+            minWidth: 180,
+            backgroundColor: '#D1D4D6',
             flexDirection: 'column'
         },
 
@@ -164,8 +190,20 @@ export default {
         txtFilterTitle: {
             fontFamily: 'Helvetica-Bold',
             fontWeight: '500',
-            fontSize: 16,
+            fontSize: 14,
+            color: '#434646'
+        },
+
+        txtHeaderTitle: {
+            fontFamily: 'Helvetica-Bold',
+            fontWeight: '500',
+            fontSize: 14,
             color: '#434646'
         }
+    },
+
+    reportsFlatlist: {
+        paddingBottom: 100,
+        paddingTop: 15
     }
 }

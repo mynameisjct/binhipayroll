@@ -16,6 +16,13 @@ import {
     Button,
     ScrollView,
 } from 'react-native';
+import {
+    Menu,
+    MenuOptions,
+    MenuOption,
+    MenuTrigger,
+  } from 'react-native-popup-menu';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import styles from './styles';
 import { CONSTANTS } from '../../constants/index';
@@ -304,5 +311,53 @@ export class FormCard extends PureComponent{
                 </View>
             </View>
         )
+    }
+}
+
+export class SimpleCard extends PureComponent{
+    render(){
+        const simpleCardStyles = styles.simpleCardStyles;
+        return(
+            <View style={simpleCardStyles.container}>
+
+                <View style={simpleCardStyles.contContent}>
+                    <View style={simpleCardStyles.contHeader}>
+                        <View style={simpleCardStyles.contTitle}>
+                            <Text style={simpleCardStyles.txtTitle}>
+                                ALLOWANCE
+                            </Text>
+                        </View>
+                        <View style={simpleCardStyles.contMenu}>
+                            {
+                                this.props.menu || false ?
+                                    <Menu>
+                                        <MenuTrigger children={<Icon name='dots-vertical' size={25} color='#434646'/>}/>
+                                        <MenuOptions>
+                                            {
+                                                this.props.menu.map((data, index) =>
+                                                    <MenuOption 
+                                                        key={index}
+                                                        onSelect={() => data.onSelect()}
+                                                        text={data.label} 
+                                                    />
+                                                )
+                                            }
+                                        </MenuOptions>
+                                    </Menu>
+                                :
+                                    null
+                            }
+
+                        </View>
+                    </View>
+
+                    <View style={simpleCardStyles.contBody}>
+                        <Text>SAMPLE</Text>
+                    </View>
+                    
+                </View>
+                
+            </View>
+        );
     }
 }
